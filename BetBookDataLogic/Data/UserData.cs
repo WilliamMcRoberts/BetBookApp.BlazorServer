@@ -1,8 +1,8 @@
 ﻿using BetBookDataLogic.Data.Interfaces;
-using BetBookDataLogic.DataAccess;
+using BetBookDataLogic.DbAccess;
 using BetBookDataLogic.Models;
 
-namespace BetBookDataLogic.Data.DataLogic;
+namespace BetBookDataLogic.Data;
 public class UserData : IUserData
 {
 
