@@ -1,6 +1,6 @@
 ﻿using BetBookDataLogic.Models;
 
-namespace BetBookDataLogic.Data;
+namespace BetBookDataLogic.Data.Interfaces;
 public interface ITeamRecordData
 {
     Task DeleteTeamRecord(int teamId);

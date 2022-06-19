@@ -1,9 +1,10 @@
 ﻿using BetBookDataLogic.DataAccess;
-using BetBookDataLogic.Data;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Syncfusion.Blazor;
+using BetBookDataLogic.Data.DataLogic;
+using BetBookDataLogic.Data.Interfaces;
 
 namespace BetBookUI;
 

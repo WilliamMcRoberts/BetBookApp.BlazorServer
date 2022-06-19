@@ -1,8 +1,9 @@
-﻿using BetBookDataLogic.DataAccess;
+﻿using BetBookDataLogic.Data.Interfaces;
+using BetBookDataLogic.DataAccess;
 using BetBookDataLogic.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace BetBookDataLogic.Data;
+namespace BetBookDataLogic.Data.DataLogic;
 public class TeamRecordData : ITeamRecordData
 {
 

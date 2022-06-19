@@ -1,4 +1,4 @@
-﻿using BetBookDataLogic.Data;
+﻿using BetBookDataLogic.Data.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BetBookUI.Helpers;

@@ -1,7 +1,8 @@
-﻿using BetBookDataLogic.DataAccess;
+﻿using BetBookDataLogic.Data.Interfaces;
+using BetBookDataLogic.DataAccess;
 using BetBookDataLogic.Models;
 
-namespace BetBookDataLogic.Data;
+namespace BetBookDataLogic.Data.DataLogic;
 public class HouseAccountData : IHouseAccountData
 {
     private readonly ISqlConnection _db;

@@ -3,8 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Dapper;
 using System.Data;
 using BetBookDataLogic.DataAccess;
+using BetBookDataLogic.Data.Interfaces;
 
-namespace BetBookDataLogic.Data;
+namespace BetBookDataLogic.Data.DataLogic;
 
 
 public class TeamData : ITeamData
