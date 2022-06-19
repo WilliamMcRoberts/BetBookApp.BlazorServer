@@ -1,0 +1,349 @@
+﻿@page "/CreateBet/{GameId}"
+@attribute [Authorize]
+@using BetBookDataLogic.Models
+@using BetBookDataLogic.Data
+@using BetBookDataLogic;
+@using BetBookUI.Helpers
+@using Syncfusion.Blazor.Inputs
+@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+@inject IBetData betData
+@inject IGameData gameData
+@inject ITeamData teamData
+@inject IHouseAccountData houseData
+
+<PageTitle>CreateBet</PageTitle>
+
+@************************************* Demo Display **********************************************@
+
+<div class="game-wager-container">
+    <div class="game-info-container">
+        <h1 style="margin-left: 1em;margin-top: .5em;">Game Details</h1>
+        <ul class="game-info">
+            <li class="team-item">Home Team: @basicGame.HomeTeamName</li>
+            <li class="team-item">Away Team: @basicGame.AwayTeamName</li>
+            <li class="team-item">Favorite: @basicGame.FavoriteTeamName</li>
+            <li class="team-item">Underdog: @basicGame.UnderdogTeamName</li>
+            <li class="team-item">Point Spread: @basicGame.PointSpread</li>
+        </ul>
+    </div>
+    <div class="wager-form-container">
+    <h1 style="margin-left: 1em;margin-top: .5em;">Create A Wager</h1>
+    @if(basicGame is not null)
+{
+            @if(wagerPlaced == false)
+            {
+                <div>
+                    @if(betAmountGood == false)
+                    {
+                        <div style="color:red;text-align:center;">*BET AMOUNT MUST BE MORE THAN ZERO*</div>
+                    }
+                    <div class="wager-box">
+                        <label>Wager Amount</label>
+                        <input type="number" @bind-value="@BetAmount" @bind-value:event="oninput"/>
+                    </div>
+                </div>
+            }
+        @if (winnerChosen == false)
+        {
+            <div class="review">
+                <p>Step 1. Enter a wager amount and choose a team to win.</p>
+                <p>Step 2. Make sure the team chosen is the team you want.</p>
+                <p>Step 3. If you want to undo the choice, click the undo button.</p>
+                <p>Step 4. Once everything looks good, click the "Submit Wager".</p>
+            </div>
+            <div class="winner-btn-container">
+                <button class="mb-2 mt-2 winner-btn btn btn-light" @onclick="(() => ChoseWinner(game.FavoriteId))">Choose @basicGame.FavoriteTeamName</button>
+                <button class="mb-2 mt-2 winner-btn btn btn-light" @onclick="(() => ChoseWinner(game.UnderdogId))">Choose @basicGame.UnderdogTeamName</button>
+            </div>
+        }
+        else if(winnerChosen == true && wagerPlaced == false)
+        {
+            <div class="review">
+                @if(TeamToWin is not null)
+                {
+                    <p>You've chosen the @TeamToWin.TeamName - @basicGame.PointSpread points to win the game.</p>
+                    <p>The amount you've entered to wager is @BetAmount BetBucks.</p>
+                    <p>Make sure the wager amount and team are both correct.</p>
+                    <p>If everything looks good, click the "Submit Wager" button.</p>
+                    <div class="undo-btn-container">
+                        <button class="mb-2 mt-2 undo-btn btn btn-light" @onclick="UndoWinnerSelection">Undo @TeamToWin.TeamName As Winner</button>
+                    </div>
+                }
+            </div>
+        }
+        else if(winnerChosen == true && wagerPlaced == true)
+        {
+            <p style="text-align:center;">Good luck on your new wager! Click "Home" to browse more games.</p>
+        }
+}
+    @if(wagerPlaced == false)
+    {
+        <div class="submit">
+            <button class="mt-4 mb-4 winner-btn btn btn-light" @onclick="(() => PlaceWager(BetAmount, TeamToWin))">Submit Wager</button>
+        </div>
+    }
+    </div>
+</div>
+
+<style>
+
+    p {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    li {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    label {
+        font-weight: 700;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .wager-form-container {
+        border: 4px solid green;
+        background: palegreen;
+        border-radius: 15px;
+        width: 50%;
+        margi-left: 1em;
+    }
+
+    .review {
+        text-align: center;
+        margin-top: 2em;
+    }
+
+    .submit {
+        text-align: center;
+    }
+
+    .team-item {
+        padding: .25em;
+    }
+
+    .game-info-container {
+        border: 4px solid green;
+        width: 50%;
+        border-radius: 15px;
+        background: palegreen;
+        margin-right: 1em;
+    }
+    
+    .game-wager-container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .game-info {
+        list-style-type: none;
+        text-align: center;
+        margin: 6em auto;
+    }
+
+    .wager-box {
+        width: 25%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        margin-top: 2em;
+    }
+
+    .winner-btn-container {
+        text-align: center;
+        margin-top: 2em;
+    }
+
+    .winner-btn {
+        background:#98FB98;
+        color:green;
+        border: 2px solid green;
+        border-radius: 15px;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .winner-btn:hover {
+        background:green;
+        color: white;
+        border: 2px solid green;
+    }
+
+    .undo-btn-container {
+        margin-top: 2em;
+    }
+
+    .undo-btn {
+        border: 2px solid red;
+        background: yellow;
+        color: red;
+        font-family: 'Montserrat', sans-serif;
+        border-radius: 15px;
+        font-weight: 700;
+    }
+
+    .undo-btn:hover {
+        background: red;
+        color: yellow;
+        border: 2px solid yellow;
+    }
+
+</style>
+
+@code {
+
+    // Game id parameter from index page game selection
+    [Parameter]
+    public string GameId { get; set; }
+    // Actual game id
+    private int gameId;
+    // Current game being viewed
+    private GameModel? game = new();
+    // Display info for current game being viewed
+    private BasicGameModel basicGame = new();
+    // Current logged in user
+    private UserModel loggedInUser;
+    // Amount to bet
+    public decimal BetAmount { get; set; }
+    // Chosen winner of game
+    private TeamModel TeamToWin { get; set; }
+    // Boolean sets to true when a winner is chosen
+    private bool winnerChosen = false;
+    // Game favorite property
+    private string Favorite { get; set; }
+    // Game underdog property 
+    private string Undrdog { get; set; }
+    // Account balance of the house
+    private HouseAccountModel? houseAccount;
+    // Boolean to check if wager has been placed
+    private bool wagerPlaced = false;
+    // Boolean to check if bet amount is good
+    private bool betAmountGood = true;
+
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        houseAccount = await houseData.GetHouseAccount();
+
+        gameId = int.Parse(GameId);
+
+        game = await gameData.GetGame(gameId);
+
+        await PopulateBasicGameModel(gameId);
+    }
+
+    /// <summary>
+    /// Async method popluates a basic game model with the team names and 
+    /// point spread of current selected game
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <returns>BasicGameModel</returns>
+    private async Task<BasicGameModel> PopulateBasicGameModel(int gameId)
+    {
+        TeamModel homeTeam =  await teamData.GetTeam(game.HomeTeamId);
+        TeamModel awayTeam = await teamData.GetTeam(game.AwayTeamId);
+        TeamModel favorite = await teamData.GetTeam(game.FavoriteId);
+        TeamModel underdog = await teamData.GetTeam(game.UnderdogId);
+
+        basicGame.HomeTeamName = homeTeam.TeamName;
+        basicGame.AwayTeamName = awayTeam.TeamName;
+        basicGame.FavoriteTeamName = favorite.TeamName;
+        basicGame.UnderdogTeamName = underdog.TeamName;
+        basicGame.PointSpread = game.PointSpread;
+
+        return basicGame;
+    }
+
+    /// <summary>
+    /// Async method to update bet info, insert a new bet
+    /// into the database, update user account balance, and
+    /// update the house account balance
+    /// </summary>
+    /// <param name="amountToBet"></param>
+    /// <param name="teamToWin"></param>
+    /// <returns></returns>
+    private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
+    {
+        if(amountToBet != 0)
+        {
+            BetModel bet = new();
+
+            // 10% vigorish for all bets
+            double vig = .1;
+
+            bet.BetAmount = amountToBet;
+            bet.BetPayout = (decimal)((double)amountToBet - (double)amountToBet * vig);
+            bet.ChosenWinner = teamToWin;
+            bet.Bettor = loggedInUser;
+            bet.GameInBet = game;
+            bet.BetStatus = BetStatus.IN_PROGRESS;
+
+            await betData.InsertBet(bet);
+
+            loggedInUser.AccountBalance -= bet.BetAmount;
+            houseAccount.AccountBalance += bet.BetAmount;
+
+            // Update balances of the user and the house
+            await userData.UpdateUserAccountBalance(loggedInUser);
+            await houseData.UpdateHouseAccount(houseAccount);
+
+            wagerPlaced = true;
+            BetAmount = 0;
+        }
+
+        else
+        {
+            betAmountGood = false;
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Async method to select chosen winner of game
+    /// and grab that team from the database
+    /// </summary>
+    /// <param name="teamId"></param>
+    /// <returns></returns>
+    private async Task ChoseWinner(int teamId)
+    {
+        if(teamId == game.FavoriteId)
+        {
+            TeamToWin = await teamData.GetTeam(game.FavoriteId);
+            winnerChosen = true;
+        }
+
+        else if(teamId == game.UnderdogId)
+        {
+            TeamToWin = await teamData.GetTeam(game.UnderdogId);
+            winnerChosen = true;
+        }
+    }
+
+    /// <summary>
+    /// Syncfusion method for numeric text box on value change
+    /// </summary>
+    /// <param name="args"></param>
+    public void OnChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<decimal> args)
+    {
+        BetAmount = (decimal)args.Value;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Method reverses a winner selection
+    /// </summary>
+    private void UndoWinnerSelection()
+    {
+        TeamToWin = null;
+        winnerChosen = false;
+    }
+
+}

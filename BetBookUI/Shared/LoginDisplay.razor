@@ -1,0 +1,28 @@
+﻿<AuthorizeView Policy="Admin">
+    <Authorized>
+        <a style="margin: .25em .25em;" class="login-link" href="/AdminDataInput">
+            <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Admin Input</button>
+        </a>
+        <a style="margin: .25em .25em;" class="login-link" href="/AdminDataUpdate">
+            <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Admin Update</button>
+        </a>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView>
+    <Authorized>
+        @*<a class="login-link" href="/Profile">
+             <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Profile</button>
+        </a>*@
+        <a style="margin: .25em .25em;" class="login-link" href="/">
+            <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Home</button>
+        </a>
+        <a style="margin: .25em .25em;" class="login-link" href="MicrosoftIdentity/Account/SignOut">
+            <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Logout</button>
+        </a>
+    </Authorized>
+    <NotAuthorized>
+        <a style="margin: .25em .25em;" class="login-link" href="MicrosoftIdentity/Account/SignIn">
+            <button class="auth-btn btn auth-btn-light btn-sm text-uppercase">Login</button>
+        </a>
+    </NotAuthorized>
+</AuthorizeView>

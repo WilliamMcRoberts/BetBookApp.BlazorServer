@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ed0ebf1b-3088-4c79-aae1-1e26420d9869</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\**" />
+    <Content Remove="Components\**" />
+    <EmbeddedResource Remove="Components\**" />
+    <None Remove="Components\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BetBookDataLogic\BetBookDataLogic.csproj" />
+      <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.58" />
+</ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.58" />
+</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.24.1" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.24.1" />
+      <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.58" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.58" />
+</ItemGroup>
+
+</Project>

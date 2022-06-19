@@ -1,0 +1,304 @@
+﻿@page "/AdminDataUpdate"
+@attribute [Authorize(Policy = "Admin")]
+@using BetBookDataLogic.Data
+@using BetBookDataLogic.Models
+@using BetBookDataLogic
+@using Syncfusion.Blazor.Calendars
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject ITeamRecordData recordData
+
+<PageTitle>AdminDataUpdate</PageTitle>
+
+<div class="input">
+    <div class="winner-input">
+        <div class="update-label-container">
+            <h1 class="update-label">Update Scores</h1>
+        </div>
+        <div class="game-id-box">
+            <div style="display: flex;justify-content: space-between;">
+                <div>
+                    <label>Game Id</label>
+                    <input type="number" @bind-value="@GameId" @bind-value:event="oninput"/>
+                </div>
+                <div>
+                    <button class="get-game-btn btn btn-light" @onclick="(() => PopulateBasicGameModel(GameId))">Get Game</button>
+                </div>
+            </div>
+        </div>
+        <div class="game-container">
+            @if (scoresAdded)
+            {
+                <div style="margin: 4em 1em;">
+                    <h1>Winners have been successfully added!</h1>
+                    <h1>You may add more game winners.</h1>
+                </div>
+            }
+            else
+            {
+                <ul class="game-info">
+                    <li class="team-item">Home Team: @BasicGame.HomeTeamName</li>
+                    <li class="team-item">Away Team: @BasicGame.AwayTeamName</li>
+                    <li class="team-item">Favorite: @BasicGame.FavoriteTeamName</li>
+                    <li class="team-item">Underdog: @BasicGame.UnderdogTeamName</li>
+                    <li class="team-item">Point Spread: @BasicGame.FavoriteTeamName - @BasicGame.PointSpread</li>
+                </ul>
+            }
+            <br>
+            <label>Favorite Score</label>
+            <div class="scores-box">
+                <input type="number" @bind-value="@FavoriteScore" @bind-value:event="oninput"/>
+            </div>
+            <label>Underdog Score</label>
+            <div class="scores-box">
+                <input type="number" @bind-value="@UnderdogScore" @bind-value:event="oninput"/>
+            </div>
+            <button @onclick="(() => UpdateGameWinners(FavoriteScore, UnderdogScore))" class="update-btn btn btn-light">Submit Scores</button>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .update-label {
+        margin-left: .75em;
+    }
+
+    .update-label-container {
+        margin-top: 1em;
+    }
+
+    .get-game-btn {
+        background:#98FB98;
+        color:green;
+        border: 2px solid green;
+        border-radius: 15px;
+        font-weight: 700;
+        margin-left: 4em;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .get-game-btn:hover {
+        background:green;
+        color: white;
+        border: 2px solid green;
+    }
+
+    .update-btn {
+        background:#98FB98;
+        color:green;
+        border: 2px solid green;
+        border-radius: 15px;
+        font-weight: 700;
+        margin: 1em 0;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .update-btn:hover {
+        background:green;
+        color: white;
+        border: 2px solid green;
+    }
+
+    .input {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .game-id-box {
+        padding:.5em 0;
+        width: 75%;
+        margin: 0 auto;
+    }
+
+    .scores-box {
+        padding:.5em 0;
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    label {
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    .winner-input {
+        width: 50%;
+        background: #98FB98; /*Pale Green*/
+        margin-left: .5em;
+        border-radius: 15px;
+        border: 4px solid green;
+    }
+
+    .game-container {
+        margin: .5rem .5rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    li {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .team-item {
+        padding: .25em;
+    }
+
+    .game-info {
+        list-style-type: none;
+        padding: .25em 0;
+    }
+
+    .input {
+        border-radius: 15px;
+    }
+
+</style>
+
+@code { // TODO - Create payout method
+
+    // Id of game
+    private int GameId;
+    // Basic game of selected game
+    private BasicGameModel BasicGame { get; set; } = new();
+    // Current game being updated
+    private GameModel CurrentGame { get; set; } = new();
+    // Favorite team
+    private TeamModel? CurrentFavorite { get; set; }
+    // Underdog team
+    private TeamModel? CurrentUnderdog { get; set; }
+    // Home team
+    private TeamModel? CurrentHomeTeam { get; set; }
+    // Away team
+    private TeamModel? CurrentAwayTeam { get; set; }
+    // Score of favorite
+    private int FavoriteScore;
+    // Score of underdog
+    private int UnderdogScore;
+    // Boolean to check if winners were added
+    private bool scoresAdded = false;
+
+    /// <summary>
+    /// Async method updates the scores of the game,
+    /// calls the CalculateWinningTeam() method,
+    /// add winning team to database, and updates
+    /// team records
+    /// </summary>
+    /// <param name="favoriteScore"></param>
+    /// <param name="underdogScore"></param>
+    /// <returns></returns>
+    private async Task UpdateGameWinners(int favoriteScore, int underdogScore)
+    {
+        CurrentGame.FavoriteFinalScore = FavoriteScore;
+        CurrentGame.UnderdogFinalScore = UnderdogScore;
+        CurrentGame.GameStatus = GameStatus.FINISHED;
+
+        await gameData.UpdateGame(CurrentGame);
+
+        TeamModel? winningTeam = CalculateWinningTeam(CurrentGame);
+
+
+        if(winningTeam is not null)
+        {
+            await gameData.AddGameWinner(CurrentGame, winningTeam);
+
+            TeamModel? losingTeam = new();
+
+            if (winningTeam.Id == CurrentFavorite.Id) 
+                losingTeam = CurrentUnderdog;
+            else if (winningTeam.Id == CurrentUnderdog.Id) 
+                losingTeam = CurrentFavorite;
+
+            TeamRecordModel? winnerTeamRecord = await recordData.GetTeamRecord(winningTeam.Id);
+            TeamRecordModel? loserTeamRecord = await recordData.GetTeamRecord(losingTeam.Id);
+
+            winnerTeamRecord.Wins += $"{losingTeam.TeamName}|";
+            loserTeamRecord.Losses += $"{winningTeam.TeamName}|";
+
+            await recordData.UpdateTeamRecord(winnerTeamRecord);
+            await recordData.UpdateTeamRecord(loserTeamRecord);
+
+            scoresAdded = true;
+
+            ClearUpdateWinnersForm();
+
+            // TODO - Call payout method
+        }
+
+        else
+        {
+            TeamRecordModel? teamFavoriteRecord = await recordData.GetTeamRecord(CurrentFavorite.Id);
+            TeamRecordModel? teamUnderdogRecord = await recordData.GetTeamRecord(CurrentUnderdog.Id);
+
+            teamFavoriteRecord.Draws += $"{CurrentUnderdog.TeamName}|";
+            teamUnderdogRecord.Draws += $"{CurrentFavorite.TeamName}|";
+
+            await recordData.UpdateTeamRecord(teamFavoriteRecord);
+            await recordData.UpdateTeamRecord(teamUnderdogRecord);
+
+            scoresAdded = true;
+
+            ClearUpdateWinnersForm();
+
+            // TODO - Call payout method
+        }
+    }
+
+    /// <summary>
+    /// Method calculates winner of current game
+    /// with point spread
+    /// </summary>
+    /// <param name="game"></param>
+    /// <returns>TeamModel</returns>
+    private TeamModel CalculateWinningTeam(GameModel game)
+    {
+        int pointSpread = CurrentGame.PointSpread;
+        int favoriteScoreMinusPointSpread = FavoriteScore - pointSpread;
+
+        TeamModel result = new();
+
+        if (favoriteScoreMinusPointSpread > UnderdogScore) 
+            result =  CurrentFavorite;
+        else if (favoriteScoreMinusPointSpread < UnderdogScore) 
+            result =  CurrentUnderdog;
+        else if (favoriteScoreMinusPointSpread == UnderdogScore) 
+            return null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Method clears update winners form
+    /// </summary>
+    private void ClearUpdateWinnersForm()
+    {
+        GameId = 0;
+        FavoriteScore = 0;
+        UnderdogScore = 0;
+    }
+
+    /// <summary>
+    /// Async method to populate basic game model
+    /// for current game being updated
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <returns></returns>
+    private async Task PopulateBasicGameModel(int gameId)
+    {
+        scoresAdded = false;
+        CurrentGame = await gameData.GetGame(gameId);
+
+        CurrentHomeTeam = await teamData.GetTeam(CurrentGame.HomeTeamId);
+        CurrentAwayTeam = await teamData.GetTeam(CurrentGame.AwayTeamId);
+        CurrentFavorite = await teamData.GetTeam(CurrentGame.FavoriteId);
+        CurrentUnderdog = await teamData.GetTeam(CurrentGame.UnderdogId);
+
+        BasicGame.HomeTeamName = CurrentHomeTeam.TeamName;
+        BasicGame.AwayTeamName = CurrentAwayTeam.TeamName;
+        BasicGame.FavoriteTeamName = CurrentFavorite.TeamName;
+        BasicGame.UnderdogTeamName = CurrentUnderdog.TeamName;
+        BasicGame.PointSpread = CurrentGame.PointSpread;
+    }
+
+}

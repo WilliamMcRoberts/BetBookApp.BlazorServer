@@ -1,0 +1,277 @@
+﻿@page "/"
+@using BetBookDataLogic.Data
+@using BetBookDataLogic.Models
+@inject AuthenticationStateProvider authProvider
+@inject NavigationManager navManager
+@inject IUserData userData
+@inject ITeamData teamData
+@inject IGameData gameData
+
+
+
+<PageTitle>Index</PageTitle>
+
+@******************************  Demo Display  ********************************@
+
+<div class="games">
+    <h1 class="title">Available Games</h1>
+    @if(basicGamesNotStarted is not null)
+    {
+        foreach(BasicGameModel bg in basicGamesNotStarted)
+        {
+            <div class="game-container">
+                <br>
+                <ul class="game-info">
+                    <li class="team-item">Home Team: @bg.HomeTeamName</li>
+                    <li class="team-item">Away Team: @bg.AwayTeamName</li>
+                    <li class="team-item">Favorite: @bg.FavoriteTeamName</li>
+                    <li class="team-item">Underdog: @bg.UnderdogTeamName</li>
+                    <li class="team-item">Point Spread: @bg.FavoriteTeamName - @bg.PointSpread</li>
+                </ul>
+                <br>
+                <button  @onclick="(() => CreateBet(bg.GameId))" class="make-wager-btn btn btn-light">Place A Wager On This Game</button>
+            </div>
+        }
+    }
+</div>
+
+<style>
+
+    li{
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .title {
+        margin-left: 6em;
+    }
+
+    .team-item {
+        padding: .25em;
+    }
+
+    .game-container {
+        border: 4px solid green;
+        background: palegreen;
+        margin: 1rem auto;
+        border-radius: 15px;
+        text-align: center;
+        width: 75%;
+    }
+
+    .game-info {
+        list-style-type: none;
+        padding: .25em 0;
+    }
+
+    .make-wager-btn {
+        margin-bottom: 2em;
+        background:#98FB98;
+        color:green;
+        border: 2px solid green;
+        border-radius: 15px;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .make-wager-btn:hover {
+        background:green;
+        color: white;
+        border: 2px solid green;
+    }
+
+</style>
+
+@code {
+
+    // TODO - Method to display the team record for each
+    //  team in each game that has the status "NOT-STARTED"
+
+    // TODO - User profile page, user bets retrieval methods
+
+    // Current logged in user
+    private UserModel? loggedInUser;
+    // List of basic game models for displaying game info for the current week
+    private List<BasicGameModel> basicGamesNotStarted = new();
+    // Preseason start date
+    private DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+    // Regular season start date
+    private DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+    // Post-season start date
+    private DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+    // Super bowl day
+    private DateTime superBowlDay = new DateTime(2023, 2, 5);
+    // Current date
+    DateTime currentDate = DateTime.Today;
+    // New account balance
+    decimal newAccountBalance = 10000;
+
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadAndVerifyUser();
+
+        basicGamesNotStarted = await PopulateBasicGameModelList();
+    }
+
+    /// <summary>
+    /// Async method that grabs logged in user's info from Azure AD B2C and checks if they have a sql User entry and if not calls the spUsers_Insert stored procedure
+    /// If user has an entry it checks for any new info and if so calls the spUsers_Update stored procedure
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadAndVerifyUser()
+    {
+        var authState = await authProvider.GetAuthenticationStateAsync();
+        string objectIdentifier = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
+
+        if (string.IsNullOrWhiteSpace(objectIdentifier) == false)
+        {
+            loggedInUser = await userData.GetUserFromAuthentication(objectIdentifier) ?? new();
+            string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
+            string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
+            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+            string emailAddress = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+
+            bool isDirty = false;
+
+            if (objectIdentifier.Equals(loggedInUser.ObjectIdentifier) == false)
+            {
+                isDirty = true;
+                loggedInUser.ObjectIdentifier = objectIdentifier;
+            }
+            if (firstName.Equals(loggedInUser.FirstName) == false)
+            {
+                isDirty = true;
+                loggedInUser.FirstName = firstName;
+            }
+
+            if (lastName.Equals(loggedInUser.LastName) == false)
+            {
+                isDirty = true;
+                loggedInUser.LastName = lastName;
+            }
+
+            if (displayName.Equals(loggedInUser.DisplayName) == false)
+            {
+                isDirty = true;
+                loggedInUser.DisplayName = displayName;
+            }
+
+            if (emailAddress.Equals(loggedInUser.EmailAddress) == false)
+            {
+                isDirty = true;
+                loggedInUser.EmailAddress = emailAddress;
+            }
+
+            if (isDirty)
+            {
+                if (loggedInUser.Id == 0)
+                {
+                    loggedInUser.AccountBalance = newAccountBalance;
+                    await userData.InsertUser(loggedInUser);
+                }
+
+                else
+                {
+                    await userData.UpdateUser(loggedInUser);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Async method populates a list of basic game models with all of the team names
+    /// and point spreads of all games that have a status of NOT_STARTED
+    /// </summary>
+    /// <returns>List<BasicGameModel></returns>
+    private async Task<List<BasicGameModel>> PopulateBasicGameModelList()
+    {
+        List<GameModel> games = new();
+        List<BasicGameModel> basicGames = new();
+
+        {
+            games = await GetAllGamesNotStarted();
+
+            foreach(GameModel g in games)
+            {
+                TeamModel? homeTeam = await teamData.GetTeam(g.HomeTeamId);
+                TeamModel? awayTeam = await teamData.GetTeam(g.AwayTeamId);
+                TeamModel? favoriteTeam = await teamData.GetTeam(g.FavoriteId);
+                TeamModel? underdogTeam = await teamData.GetTeam(g.UnderdogId);
+
+                BasicGameModel bg = new();
+
+                bg.HomeTeamName = homeTeam.TeamName;
+                bg.AwayTeamName = awayTeam.TeamName;
+                bg.FavoriteTeamName = favoriteTeam.TeamName;
+                bg.UnderdogTeamName = underdogTeam.TeamName;
+                bg.PointSpread = g.PointSpread;
+                bg.GameId = g.Id;
+
+                basicGames.Add(bg);
+            }
+        }
+
+        return basicGames;
+    }
+
+    /// <summary>
+    /// Async method grabs and returns a list of all games with the 
+    /// current week number
+    /// </summary>
+    /// <param name="weekNumber"></param>
+    /// <returns>List<GameModel></returns>
+    private async Task<List<GameModel>> GetAllGamesNotStarted()
+    {
+        List<GameModel> games = new();
+
+        return games = (List<GameModel>) await gameData.GetAllNotStartedGames();
+    }
+
+    /// <summary>
+    /// Method calculates and returns current week in current season 
+    /// (PRE, REG, POST)
+    /// </summary>
+    /// <returns>int</returns>
+    private int GetCurrentWeek()
+    {
+        double weekInTicks = 604800;
+        int currentWeek = 0;
+
+        if(currentDate > preSeasonStartDate && currentDate < regularSeasonStartDate)
+        {
+            double currentWeekInTicks = (currentDate - preSeasonStartDate).TotalDays / 7;
+            currentWeek = (int)(currentWeekInTicks / weekInTicks);
+            currentWeek += 1;
+        }
+
+        else if(currentDate > regularSeasonStartDate && currentDate < postSeasonStartDate)
+        {
+            double currentWeekInTicks = (currentDate - regularSeasonStartDate).TotalDays / 7;
+            currentWeek = (int)(currentWeekInTicks / weekInTicks);
+            currentWeek += 1;
+        }
+
+        else if(currentDate > postSeasonStartDate && currentDate < superBowlDay)
+        {
+            double currentWeekInTicks = (currentDate - postSeasonStartDate).TotalDays / 7;
+            currentWeek = (int)(currentWeekInTicks / weekInTicks);
+            currentWeek += 1;
+        }
+
+        return currentWeek;
+    }
+
+    /// <summary>
+    /// Selects a game to place a wager on and navigates to
+    /// the create bet page
+    /// </summary>
+    /// <param name="gameId"></param>
+    private void CreateBet(int gameId)
+    {
+        navManager.NavigateTo($"/CreateBet/{gameId}");
+    }
+}

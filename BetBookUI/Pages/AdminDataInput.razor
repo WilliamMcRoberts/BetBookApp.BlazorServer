@@ -1,0 +1,380 @@
+﻿@page "/AdminDataInput"
+@attribute [Authorize(Policy = "Admin")]
+@using BetBookDataLogic.Data
+@using BetBookDataLogic.Models
+@using BetBookDataLogic
+@using Syncfusion.Blazor.Calendars
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject ITeamRecordData recordData
+@inject ITeamRecordData recordData
+
+<PageTitle>AdminDataInput</PageTitle>
+
+@************************** Demo Display *********************************@
+
+<div class="input">
+    <div class="team-input">
+        <div class="pb-4 input-label-container">
+            <h1 class="input-label">Team Input</h1>
+            <div>
+                @if(teamFormGood == false)
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">*YOU MUST FILL OUT ALL OF THE INFO*</div>
+                }
+                else
+                {
+                    <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right: 2em;">FILL OUT THE FORM TO CREATE A TEAM</div>
+                }
+            </div>
+        </div>
+        <div class="mt-5 input-box">
+            <SfTextBox  Input="@((args) => teamName = args.Value)" FloatLabelType="FloatLabelType.Always" @bind-Value="@teamName" Placeholder="Team Name" ></SfTextBox>  
+        </div>
+        <div class="input-box">
+            <SfTextBox Input="@((args) => city = args.Value)" FloatLabelType="FloatLabelType.Always" @bind-Value="@city" Placeholder="City" ></SfTextBox>  
+        </div>
+        <div class="input-box">
+            <SfTextBox Input="@((args) => teamStadium = args.Value)" FloatLabelType="FloatLabelType.Always" @bind-Value="@teamStadium" Placeholder="Stadium" ></SfTextBox>  
+        </div>
+        <div>
+            <button class="mb-2 mt-2 insert-btn btn btn-light" @onclick="InsertTeam">Insert Team</button>
+        </div>
+        <div class="input-box">
+            <label>Win Count</label>
+            <input type="number" @bind-value="@winCount" @bind-value:event="oninput"/>
+        </div>
+        <div class="input-box">
+            <label>Loss Count</label>
+            <input type="number" @bind-value="@lossCount" @bind-value:event="oninput"/>
+        </div>
+        <div class="input-box">
+            <label>Draw Count</label>
+            <input type="number" @bind-value="@drawCount" @bind-value:event="oninput"/>
+        </div>
+    </div>
+    <div class="game-input">
+        <div class="input-label-container">
+            <h1 class="input-label">Game Input</h1>
+            <div>
+                @if(gameFormGood == false)
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">*YOU MUST FILL OUT ALL OF THE INFO*</div>
+                }
+                else
+                {
+                    <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">FILL OUT THE FORM TO CREATE A GAME</div>
+                }
+            </div>
+        </div>
+        <div class="input-box">
+            <label>Game Stadium</label>
+            <SfTextBox  Input="@((args) => gameStadium = args.Value)" @bind-Value="@gameStadium" ></SfTextBox>  
+        </div>
+        <div class="input-box">
+            <label>Date Of Game</label>
+            <SfDateTimePicker TValue="DateTime?"> 
+                <DateTimePickerEvents TValue="DateTime?" ValueChange="DateChangeHandler"></DateTimePickerEvents>
+            </SfDateTimePicker>
+        </div>
+        <div class="input-box">
+            <label>Home Team Id</label>
+            <input type="number" @bind-value="@homeTeamId" @bind-value:event="oninput"/>
+        </div>
+        <div class="input-box">
+            <label>Away Team Id</label>
+            <input type="number" @bind-value="@awayTeamId" @bind-value:event="oninput"/>
+        </div>
+        <div>
+             <button class="mb-2 mt-2 insert-btn btn btn-light" @onclick="InsertGame">Insert Game</button>
+        </div>
+        <div class="input-box">
+            <label>Favorite Id</label>
+            <input type="number" @bind-value="@favoriteId" @bind-value:event="oninput"/>
+        </div>
+        <div class="input-box">
+            <label>Underdog Id</label>
+            <input type="number" @bind-value="@underdogId" @bind-value:event="oninput"/>
+        </div>
+        <div class="input-box">
+            <label>Point Spread</label>
+            <input type="number" @bind-value="@pointSpread" @bind-value:event="oninput"/>
+        </div>
+        <div style="margin-bottom: 1em;" class="input-box">
+            <label>Week Number</label>
+            <input type="number" @bind-value="@weekNumber" @bind-value:event="oninput"/>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .team-item {
+        padding: .25em;
+    }
+
+    .game-info {
+        list-style-type: none;
+        padding: .25em 0;
+    }
+
+    .input {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .team-input {
+        border: 4px solid green;
+        width: 50%;
+        margin-right: .5em;
+        padding-bottom: 5em;
+        border-radius: 15px;
+        background: #98FB98; /*Pale Green*/
+    }
+
+    .game-input {
+        border: 4px solid green;
+        width: 50%;
+        margin-left: .5em;
+        border-radius: 15px;
+        background: #98FB98; /*Pale Green*/
+    }
+
+    .input-box {
+        padding:.5em 0;
+        width: 50%;
+        margin-left: 2em;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    .insert-btn {
+        float: right;
+        margin-right: 6em;
+        background:#98FB98;
+        color:green;
+        border: 2px solid green;
+        border-radius: 15px;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .insert-btn:hover {
+        background:green;
+        color: white;
+        border: 2px solid green;
+    }
+
+    .input-label-container {
+        display: flex;
+        justify-content: space-between;
+        margin-left: 2em;
+        margin-top: 2em;
+    }
+
+    /******** To specify font size and color of text box placeholder*********/
+    .e-float-input.e-control-wrapper:not(.e-error) input:valid ~ label.e-float-text, .e-float-input.e-control-wrapper:not(.e-error) input ~ label.e-label-top.e-float-text {
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+</style>
+
+@code {
+
+    // new team model
+    private TeamModel TeamToAdd = new();
+    // New game model
+    private GameModel GameToAdd = new();
+    // Name of team
+    private string teamName;
+    // City of team
+    private string city;
+    // Stadium of team
+    private string teamStadium;
+    // Win count of team
+    private int winCount;
+    // Loss count of team
+    private int lossCount;
+    // Draw count of team
+    private int drawCount;
+    // Boolean to check team input form is complete
+    private bool teamFormGood = true;
+    // Boolean to check game input form is complete
+    private bool gameFormGood = true;
+    // Id of home team
+    private int homeTeamId;
+    // Id of away team
+    private int awayTeamId;
+    // Id of favorite
+    private int favoriteId;
+    // Id of underdog
+    private int underdogId;
+    // Point spread of game
+    private int pointSpread;
+    // Week number of game
+    private int weekNumber;
+    // Stadium of game
+    private string gameStadium;
+    // Date of game
+    public DateTime? dateOfGame = new DateTime();
+    // Preseason start date
+    private DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+    // Regular season start date
+    private DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+    // Post-season start date
+    private DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+    // Super bowl day
+    private DateTime superBowlDay = new DateTime(2023, 2, 5);
+
+
+    /// <summary>
+    /// Async method for admin to insert a team into 
+    /// the database
+    /// </summary>
+    /// <returns></returns>
+    private async Task InsertTeam()
+    {
+        if (ValidateTeamForm() == true)
+        {
+            TeamToAdd.TeamName = teamName;
+            TeamToAdd.City = city;
+            TeamToAdd.Stadium = teamStadium;
+            TeamToAdd.WinCount = winCount;
+            TeamToAdd.LossCount = lossCount;
+            TeamToAdd.Drawcount = drawCount;
+
+            int teamId = await teamData.InsertTeam(TeamToAdd);
+
+            await recordData.InsertTeamRecord(teamId);
+
+            ClearTeamForm();
+        }
+
+        else
+        {
+            teamFormGood = false;
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Async method for admin to insert a game into 
+    /// the database
+    /// </summary>
+    /// <returns></returns>
+    private async Task InsertGame()
+    {
+        if (ValidateGameForm() == true)
+        {
+            GameToAdd.HomeTeamId = homeTeamId;
+            GameToAdd.AwayTeamId = awayTeamId;
+            GameToAdd.FavoriteId = favoriteId;
+            GameToAdd.UnderdogId = underdogId;
+            GameToAdd.PointSpread = pointSpread;
+            GameToAdd.Week = weekNumber;
+            GameToAdd.Stadium = gameStadium;
+            GameToAdd.DateOfGame = dateOfGame;
+
+            if (dateOfGame > preSeasonStartDate && dateOfGame < regularSeasonStartDate)
+                GameToAdd.Season = SeasonType.PRE;
+            else if (dateOfGame > regularSeasonStartDate && dateOfGame < postSeasonStartDate)
+                GameToAdd.Season = SeasonType.REG;
+            else if (dateOfGame > postSeasonStartDate && dateOfGame < superBowlDay)
+                GameToAdd.Season = SeasonType.POST;
+            GameToAdd.GameStatus = GameStatus.NOT_STARTED;
+
+            await gameData.InsertGame(GameToAdd);
+
+            ClearGameForm();
+        }
+
+        else
+        {
+            gameFormGood = false;
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Validation for team input
+    /// </summary>
+    /// <returns>bool</returns>
+    private bool ValidateTeamForm()
+    {
+        if (string.IsNullOrWhiteSpace(teamName) || 
+        string.IsNullOrWhiteSpace(city) || 
+        string.IsNullOrWhiteSpace(teamStadium))
+        {
+            return false;
+        }
+
+        else
+        {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Validation for game input
+    /// </summary>
+    /// <returns>bool</returns>
+    private bool ValidateGameForm()
+    {
+        if (homeTeamId == 0 || 
+        awayTeamId == 0 || favoriteId == 0 ||
+        underdogId == 0 || weekNumber == 0 || dateOfGame is null)
+        {
+            return false;
+        }
+
+        else
+        {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Method clears team form after submit
+    /// </summary>
+    private void ClearTeamForm()
+    {
+        teamName = "";
+        city = "";
+        teamStadium = "";
+        winCount = 0;
+        lossCount = 0;
+        drawCount = 0;
+    }
+
+    /// <summary>
+    /// Method clears game form after submit
+    /// </summary>
+    private void ClearGameForm()
+    {
+        homeTeamId = 0;
+        awayTeamId = 0;
+        favoriteId = 0;
+        underdogId = 0;
+        pointSpread = 0;
+        dateOfGame = DateTime.Now;
+        weekNumber = 0;
+        gameStadium = "";
+    }
+
+    /// <summary>
+    /// Method for value change for date of game
+    /// </summary>
+    /// <param name="args"></param>
+    private void DateChangeHandler(ChangedEventArgs<DateTime?> args)
+    {
+        dateOfGame = args.Value;
+        StateHasChanged();
+    }
+
+}
