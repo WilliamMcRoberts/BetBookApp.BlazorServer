@@ -1,6 +1,5 @@
 ﻿
-
-namespace BetBookDataLogic.Models;
+namespace BetBookData.Models;
 
 /// <summary>
 /// Team model

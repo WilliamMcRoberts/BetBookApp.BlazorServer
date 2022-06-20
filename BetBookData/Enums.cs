@@ -1,4 +1,5 @@
-﻿namespace BetBookDataLogic;
+﻿
+namespace BetBookData;
 
 /// <summary>
 /// Enum for the type of season for a GameModel

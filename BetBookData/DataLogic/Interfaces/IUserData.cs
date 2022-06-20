@@ -1,6 +1,6 @@
-﻿using BetBookDataLogic.Models;
+﻿using BetBookData.Models;
 
-namespace BetBookDataLogic.Data.Interfaces;
+namespace BetBookData.DataLogic.Interfaces;
 
 /// <summary>
 /// User data interface

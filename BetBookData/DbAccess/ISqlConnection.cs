@@ -1,4 +1,5 @@
-﻿namespace BetBookDataLogic.DbAccess;
+﻿
+namespace BetBookData.DbAccess;
 
 /// <summary>
 /// Sql connection interface

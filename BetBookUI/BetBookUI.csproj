@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BetBookDataLogic\BetBookDataLogic.csproj" />
       <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
@@ -40,5 +39,9 @@
     <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.58" />
 </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BetBookData\BetBookData.csproj" />
+  </ItemGroup>
 
 </Project>

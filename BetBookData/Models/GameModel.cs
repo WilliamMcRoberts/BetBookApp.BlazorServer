@@ -1,8 +1,6 @@
-﻿
+﻿using BetBookData;
 
-using BetBookDataLogic;
-
-namespace BetBookDataLogic.Models;
+namespace BetBookData.Models;
 
 /// <summary>
 /// Game model

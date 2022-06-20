@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BetBookDataLogic.Models;
+﻿
+namespace BetBookData.Models;
 public class BasicGameModel
 {
     // Id of the basic game model

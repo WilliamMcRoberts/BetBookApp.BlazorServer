@@ -1,8 +1,9 @@
-﻿using BetBookDataLogic.Data.Interfaces;
-using BetBookDataLogic.DbAccess;
-using BetBookDataLogic.Models;
+﻿using BetBookData.DataLogic.Interfaces;
+using BetBookData.DbAccess;
+using BetBookData.Models;
 
-namespace BetBookDataLogic.Data;
+namespace BetBookData.DataLogic;
+
 public class BetData : IBetData
 {
 

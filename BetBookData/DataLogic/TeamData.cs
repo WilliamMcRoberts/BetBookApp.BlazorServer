@@ -1,12 +1,11 @@
-﻿using BetBookDataLogic.Models;
+﻿using BetBookData.Models;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using System.Data;
-using BetBookDataLogic.DbAccess;
-using BetBookDataLogic.Data.Interfaces;
+using BetBookData.DbAccess;
+using BetBookData.DataLogic.Interfaces;
 
-namespace BetBookDataLogic.Data;
-
+namespace BetBookData.DataLogic;
 
 public class TeamData : ITeamData
 {
