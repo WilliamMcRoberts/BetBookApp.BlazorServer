@@ -6,6 +6,11 @@ namespace BetBookDataLogic.Data;
 public class HouseAccountData : IHouseAccountData
 {
     private readonly ISqlConnection _db;
+
+    /// <summary>
+    /// HouseAccountData Constructor
+    /// </summary>
+    /// <param name="db"></param>
     public HouseAccountData(ISqlConnection db)
     {
         _db = db;

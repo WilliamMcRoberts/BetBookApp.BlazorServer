@@ -1,21 +1,33 @@
 ﻿using BetBookDataLogic.Data.Interfaces;
 using BetBookDataLogic.DbAccess;
 using BetBookDataLogic.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace BetBookDataLogic.Data;
 public class TeamRecordData : ITeamRecordData
 {
-
     private readonly ISqlConnection _db;
+    private readonly ITeamData _teamData;
 
     /// <summary>
-    /// Constructor for UserData
+    /// TeamRecordData Constructor
     /// </summary>
     /// <param name="db"></param>
-    public TeamRecordData(ISqlConnection db)
+    /// <param name="teamData"></param>
+    public TeamRecordData(ISqlConnection db, ITeamData teamData)
     {
         _db = db;
+        _teamData = teamData;
+    }
+
+    /// <summary>
+    /// Method calls the spTeamRecords_GetAll stored procedure to retrieve 
+    /// all team records in the database
+    /// </summary>
+    /// <returns>IEnumerable of UserModel</returns>
+    public async Task<IEnumerable<TeamRecordModel>> GetTeamRecords()
+    {
+        return await _db.LoadData<TeamRecordModel, dynamic>(
+        "dbo.spTeamRecords_GetAll", new { });
     }
 
     /// <summary>
@@ -43,9 +55,9 @@ public class TeamRecordData : ITeamRecordData
     /// <returns></returns>
     public async Task InsertTeamRecord(int teamId)
     {
-        var wins = "";
-        var losses = "";
-        var draws = "";
+        string wins = "";
+        string losses = "";
+        string draws = "";
         await _db.SaveData("dbo.spTeamRecords_Insert", new
         {
             teamId,
@@ -70,6 +82,17 @@ public class TeamRecordData : ITeamRecordData
             teamRecord.Losses,
             teamRecord.Draws
         });
+
+        TeamModel? team = await _teamData.GetTeam(teamRecord.TeamId);
+
+        if (team is not null)
+        {
+            team.WinCount = teamRecord.Wins.ToList().Count;
+            team.LossCount = teamRecord.Losses.ToList().Count;
+            team.Drawcount = teamRecord.Draws.ToList().Count;
+
+            await _teamData.UpdateTeam(team);
+        }
     }
 
     /// <summary>

@@ -15,7 +15,7 @@ public class TeamData : ITeamData
     private readonly IConfiguration _config;
 
     /// <summary>
-    /// Constructor for TeamData
+    /// TeamData Constructor
     /// </summary>
     /// <param name="db"></param>
     /// <param name="config"></param>

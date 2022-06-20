@@ -22,11 +22,11 @@ public class BetModel
     public TeamModel ChosenWinner { get; set; }
     // Final winner of the game in the bet
     public TeamModel FinalWinner { get; set; }
-    // Boolean to check if bet is a winner
-    public bool IsWinner { get; set; }
-
+    // Status of the bet
     public BetStatus BetStatus { get; set; }
-    
-    
-    
+    // Status of the payout of the bet
+    public PayoutStatus PayoutStatus { get; set; }
+
+
+
 }

@@ -7,13 +7,17 @@ public class SqlConnection : ISqlConnection
 {
     private readonly IConfiguration _config;
 
+    /// <summary>
+    /// SqlConnection Constructor
+    /// </summary>
+    /// <param name="config"></param>
     public SqlConnection(IConfiguration config)
     {
         _config = config;
     }
 
     /// <summary>
-    /// Method for data access to sql server database (Load)
+    /// Method to retrieve data from database
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
@@ -33,7 +37,7 @@ public class SqlConnection : ISqlConnection
     }
 
     /// <summary>
-    /// Method for data access to sql server database (Save)
+    /// Method to save data to database
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="storedProcedure"></param>

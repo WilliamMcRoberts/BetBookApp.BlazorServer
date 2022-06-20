@@ -1,4 +1,4 @@
-﻿@page "/AdminDataUpdate"
+﻿@page "/AdminScoresInput"
 @attribute [Authorize(Policy = "Admin")]
 @using BetBookDataLogic.Data.Interfaces
 @using BetBookDataLogic.Models
@@ -8,13 +8,21 @@
 @inject IGameData gameData
 @inject ITeamRecordData recordData
 
-<PageTitle>AdminDataUpdate</PageTitle>
+<PageTitle>AdminScoresInput</PageTitle>
 
 <div class="input">
     <div class="winner-input">
         <div class="update-label-container">
             <h1 class="update-label">Update Scores</h1>
         </div>
+        @if(noGame == true)
+                {
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">*THERE IS NO GAME WITH THAT GAME ID, TRY AGAIN*</div>
+        }
+        else
+        {
+            <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ENTER A GAME ID TO SELECT A GAME</div>
+        }
         <div class="game-id-box">
             <div style="display: flex;justify-content: space-between;">
                 <div>
@@ -156,28 +164,41 @@
 
 </style>
 
-@code { // TODO - Create payout method
+@code {
+    // TODO - Create payout method
 
     // Id of game
     private int GameId;
+
     // Basic game of selected game
     private BasicGameModel BasicGame { get; set; } = new();
+
     // Current game being updated
     private GameModel CurrentGame { get; set; } = new();
+
     // Favorite team
     private TeamModel? CurrentFavorite { get; set; }
+
     // Underdog team
     private TeamModel? CurrentUnderdog { get; set; }
+
     // Home team
     private TeamModel? CurrentHomeTeam { get; set; }
+
     // Away team
     private TeamModel? CurrentAwayTeam { get; set; }
+
     // Score of favorite
     private int FavoriteScore;
+
     // Score of underdog
     private int UnderdogScore;
+
     // Boolean to check if winners were added
     private bool scoresAdded = false;
+
+    // Boolean to check if current game is null
+    private bool noGame = false;
 
     /// <summary>
     /// Async method updates the scores of the game,
@@ -287,18 +308,28 @@
     private async Task PopulateBasicGameModel(int gameId)
     {
         scoresAdded = false;
+
         CurrentGame = await gameData.GetGame(gameId);
 
-        CurrentHomeTeam = await teamData.GetTeam(CurrentGame.HomeTeamId);
-        CurrentAwayTeam = await teamData.GetTeam(CurrentGame.AwayTeamId);
-        CurrentFavorite = await teamData.GetTeam(CurrentGame.FavoriteId);
-        CurrentUnderdog = await teamData.GetTeam(CurrentGame.UnderdogId);
+        if (CurrentGame is not null)
+        {
+            CurrentHomeTeam = await teamData.GetTeam(CurrentGame.HomeTeamId);
+            CurrentAwayTeam = await teamData.GetTeam(CurrentGame.AwayTeamId);
+            CurrentFavorite = await teamData.GetTeam(CurrentGame.FavoriteId);
+            CurrentUnderdog = await teamData.GetTeam(CurrentGame.UnderdogId);
 
-        BasicGame.HomeTeamName = CurrentHomeTeam.TeamName;
-        BasicGame.AwayTeamName = CurrentAwayTeam.TeamName;
-        BasicGame.FavoriteTeamName = CurrentFavorite.TeamName;
-        BasicGame.UnderdogTeamName = CurrentUnderdog.TeamName;
-        BasicGame.PointSpread = CurrentGame.PointSpread;
+            BasicGame.HomeTeamName = CurrentHomeTeam.TeamName;
+            BasicGame.AwayTeamName = CurrentAwayTeam.TeamName;
+            BasicGame.FavoriteTeamName = CurrentFavorite.TeamName;
+            BasicGame.UnderdogTeamName = CurrentUnderdog.TeamName;
+            BasicGame.PointSpread = CurrentGame.PointSpread;
+        }
+
+        else
+        {
+            noGame = true;
+            ClearUpdateWinnersForm();
+        }
     }
 
 }

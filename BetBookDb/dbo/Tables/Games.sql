@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[Games]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [HomeTeamId] INT NOT NULL, 
+    [AwayTeamId] INT NOT NULL, 
+    [FavoriteId] INT NOT NULL, 
+    [UnderdogId] INT NOT NULL, 
+    [Stadium] NVARCHAR(50) NOT NULL, 
+    [PointSpread] INT NOT NULL, 
+    [FavoriteFinalScore] INT NULL, 
+    [UnderdogFinalScore] INT NULL, 
+    [GameWinnerId] INT NULL, 
+    [WeekNumber] INT NOT NULL, 
+    [SeasonType] NVARCHAR(4) NOT NULL, 
+    [DateOfGame] DATE NOT NULL, 
+    [GameStatus] NVARCHAR(20) NOT NULL,
+    FOREIGN KEY (HomeTeamId) REFERENCES Teams(Id),
+    FOREIGN KEY (AwayTeamId) REFERENCES Teams(Id),
+    FOREIGN KEY (FavoriteId) REFERENCES Teams(Id),
+    FOREIGN KEY (UnderdogId) REFERENCES Teams(Id),
+    FOREIGN KEY (GameWinnerId) REFERENCES Teams(Id),
+)

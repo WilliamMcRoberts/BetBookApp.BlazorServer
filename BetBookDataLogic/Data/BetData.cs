@@ -9,7 +9,7 @@ public class BetData : IBetData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// Contstructor for BetData class
+    /// BetData Constructor
     /// </summary>
     /// <param name="db"></param>
     public BetData(ISqlConnection db)
@@ -46,60 +46,60 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    /// Method calls spBets_GetAllByBetter stored procedure which retrieves 
-    /// all bets ever made by better
+    /// Method calls spBets_GetAllByBettor stored procedure which retrieves 
+    /// all bets ever made by bettor
     /// </summary>
     /// <param name="id"></param>
     /// <returns>BetModel</returns>
-    public async Task<IEnumerable<BetModel>> GetAllBetterBets(int id)
+    public async Task<IEnumerable<BetModel>> GetAllBettorBets(int id)
     {
         return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllByBetter", new
+            "dbo.spBets_GetAllByBettor", new
             {
                 Id = id
             });
     }
 
     /// <summary>
-    /// Method calls spBets_GetAllInProgressByBetter stored procedure which retrieves 
-    /// all open bets by better
+    /// Method calls spBets_GetAllInProgressByBettor stored procedure which retrieves 
+    /// all open bets by bettor
     /// </summary>
     /// <param name="id"></param>
     /// <returns>BetModel</returns>
-    public async Task<IEnumerable<BetModel>> GetAllBetterInProgressBets(int id)
+    public async Task<IEnumerable<BetModel>> GetAllBettorInProgressBets(int id)
     {
         return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllInProgressByBetter", new
+            "dbo.spBets_GetAllInProgressByBettor", new
             {
                 Id = id
             });
     }
 
     /// <summary>
-    /// Method calls spBets_GetAllWinnersByBetter stored procedure which retrieves 
-    /// all bets that have a status of "WINNER" made by better
+    /// Method calls spBets_GetAllWinnersByBettor stored procedure which retrieves 
+    /// all bets that have a status of "WINNER" made by bettor
     /// </summary>
     /// <param name="id"></param>
     /// <returns>BetModel</returns>
-    public async Task<IEnumerable<BetModel>> GetAllBetterWinningBets(int id)
+    public async Task<IEnumerable<BetModel>> GetAllBettorWinningBets(int id)
     {
         return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllWinnersByBetter", new
+            "dbo.spBets_GetAllWinnersByBettor", new
             {
                 Id = id
             });
     }
 
     /// <summary>
-    /// Method calls spBets_GetAllLosersByBetter stored procedure which retrieves 
+    /// Method calls spBets_GetAllLosersByBettor stored procedure which retrieves 
     /// all bets that have a "LOSER" status made by better
     /// </summary>
     /// <param name="id"></param>
     /// <returns>BetModel</returns>
-    public async Task<IEnumerable<BetModel>> GetAllBetterLosingBets(int id)
+    public async Task<IEnumerable<BetModel>> GetAllBettorLosingBets(int id)
     {
         return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllLosersByBetter", new
+            "dbo.spBets_GetAllLosersByBettor", new
             {
                 Id = id
             });
@@ -113,10 +113,11 @@ public class BetData : IBetData
     /// <returns></returns>
     public async Task InsertBet(BetModel bet)
     {
-        var bettorId = bet.Bettor.Id;
-        var gameId = bet.GameInBet.Id;
-        var chosenWinnerId = bet.ChosenWinner.Id;
-        var betStatus = bet.BetStatus.ToString();
+        int bettorId = bet.Bettor.Id;
+        int gameId = bet.GameInBet.Id;
+        int chosenWinnerId = bet.ChosenWinner.Id;
+        string betStatus = bet.BetStatus.ToString();
+        string payoutStatus = bet.PayoutStatus.ToString();
 
         await _db.SaveData("dbo.spBets_Insert", new
         {
@@ -125,7 +126,8 @@ public class BetData : IBetData
             bettorId,
             gameId,
             chosenWinnerId,
-            betStatus
+            betStatus,
+            payoutStatus
         });
     }
 
@@ -136,11 +138,12 @@ public class BetData : IBetData
     /// <returns></returns>
     public async Task UpdateBet(BetModel bet)
     {
-        var bettorId = bet.Bettor.Id;
-        var gameId = bet.GameInBet.Id;
-        var chosenWinnerId = bet.ChosenWinner.Id;
-        var finalWinnerId = bet.FinalWinner.Id;
-        var betStatus = bet.BetStatus.ToString();
+        int bettorId = bet.Bettor.Id;
+        int gameId = bet.GameInBet.Id;
+        int chosenWinnerId = bet.ChosenWinner.Id;
+        int finalWinnerId = bet.FinalWinner.Id;
+        string betStatus = bet.BetStatus.ToString();
+        string payoutStatus = bet.PayoutStatus.ToString();
 
         await _db.SaveData("dbo.spBets_Update", new
         {
@@ -151,7 +154,8 @@ public class BetData : IBetData
             gameId,
             chosenWinnerId,
             finalWinnerId,
-            betStatus
+            betStatus,
+            payoutStatus
         });
     }
 

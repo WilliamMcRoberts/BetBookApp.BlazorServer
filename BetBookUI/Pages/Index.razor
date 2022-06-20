@@ -7,8 +7,6 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 
-
-
 <PageTitle>Index</PageTitle>
 
 @******************************  Demo Display  ********************************@
@@ -84,25 +82,36 @@
 
 @code {
 
-    // TODO - Method to display the team record for each
-    //  team in each game that has the status "NOT-STARTED"
+    /***********************************************************************
+         TODO - Method to display the team record for 
+                each team in each game that has the status "NOT-STARTED" 
+    ***********************************************************************/
 
-    // TODO - User profile page, user bets retrieval methods
+   /***********************************************************************
+         TODO - TODO - User profile page, user bets retrieval methods
+    ***********************************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;
+
     // List of basic game models for displaying game info for the current week
     private List<BasicGameModel> basicGamesNotStarted = new();
+
     // Preseason start date
     private DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+
     // Regular season start date
     private DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+
     // Post-season start date
     private DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+
     // Super bowl day
     private DateTime superBowlDay = new DateTime(2023, 2, 5);
+
     // Current date
     DateTime currentDate = DateTime.Today;
+
     // New account balance
     decimal newAccountBalance = 10000;
 
@@ -125,15 +134,16 @@
     private async Task LoadAndVerifyUser()
     {
         var authState = await authProvider.GetAuthenticationStateAsync();
-        string objectIdentifier = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
+        string? objectIdentifier = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
 
         if (string.IsNullOrWhiteSpace(objectIdentifier) == false)
         {
             loggedInUser = await userData.GetUserFromAuthentication(objectIdentifier) ?? new();
-            string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
-            string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
-            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
-            string emailAddress = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+
+            string? firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
+            string? lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
+            string? displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+            string? emailAddress = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
 
             bool isDirty = false;
 
@@ -226,9 +236,7 @@
     /// <returns>List<GameModel></returns>
     private async Task<List<GameModel>> GetAllGamesNotStarted()
     {
-        List<GameModel> games = new();
-
-        return games = (List<GameModel>) await gameData.GetAllNotStartedGames();
+        return (List<GameModel>) await gameData.GetAllNotStartedGames();
     }
 
     /// <summary>

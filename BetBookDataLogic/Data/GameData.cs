@@ -9,7 +9,7 @@ public class GameData : IGameData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// Constructor for GameData
+    /// GameData Constructor
     /// </summary>
     /// <param name="db"></param>
     public GameData(ISqlConnection db)
@@ -43,36 +43,36 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    /// Method calls the spGames_GetAllGamesFinished stored procedure to retrieve 
+    /// Method calls the spGames_GetAllFinished stored procedure to retrieve 
     /// all games that have a "FINISHED" status
     /// </summary>
     /// <returns>IEnumerable of GameModel</returns>
     public async Task<IEnumerable<GameModel>> GetAllFinishedGames()
     {
         return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllGamesFinished", new { });
+        "dbo.spGames_GetAllFinished", new { });
     }
 
     /// <summary>
-    /// Method calls the spGames_GetAllGamesInProgress stored procedure to retrieve 
+    /// Method calls the spGames_GetAllInProgress stored procedure to retrieve 
     /// all games that have an "IN_PROGRESS" status
     /// </summary>
     /// <returns>IEnumerable of GameModel</returns>
     public async Task<IEnumerable<GameModel>> GetAllInProgressGames()
     {
         return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllGamesInProgress", new { });
+        "dbo.spGames_GetAllInProgress", new { });
     }
 
     /// <summary>
-    /// Method calls the spGames_GetAllGamesNotStarted stored procedure to retrieve 
+    /// Method calls the spGames_GetAllNotStarted stored procedure to retrieve 
     /// all games that have a "NOT_STARTED" status
     /// </summary>
     /// <returns>IEnumerable of GameModel</returns>
     public async Task<IEnumerable<GameModel>> GetAllNotStartedGames()
     {
         return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllGamesNotStarted", new { });
+        "dbo.spGames_GetAllNotStarted", new { });
     }
 
     /// <summary>
@@ -100,9 +100,9 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
-        var weekNumber = game.Week;
-        var seasonType = game.Season.ToString();
-        var gameStatus = game.GameStatus.ToString();
+        int weekNumber = game.Week;
+        string seasonType = game.Season.ToString();
+        string gameStatus = game.GameStatus.ToString();
 
         await _db.SaveData("dbo.spGames_Insert", new
         {
@@ -126,8 +126,8 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task UpdateGame(GameModel game)
     {
-        var seasonType = game.Season.ToString();
-        var gameStatus = game.GameStatus.ToString();
+        string seasonType = game.Season.ToString();
+        string gameStatus = game.GameStatus.ToString();
 
         await _db.SaveData("dbo.spGames_Update", new
         {
@@ -154,7 +154,7 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task AddGameWinner(GameModel game, TeamModel team)
     {
-        var gameWinnerId = team.Id;
+        int gameWinnerId = team.Id;
 
         await _db.SaveData("dbo.spGames_AddWinner", new
         {

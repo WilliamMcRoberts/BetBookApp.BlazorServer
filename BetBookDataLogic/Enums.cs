@@ -13,7 +13,6 @@ public enum SeasonType
 /// <summary>
 /// Enum for the status of a GameModel
 /// </summary>
-
 public enum GameStatus
 {
     NOT_STARTED,
@@ -24,10 +23,18 @@ public enum GameStatus
 /// <summary>
 /// Enum for the status of a BetModel
 /// </summary>
-
 public enum BetStatus
 {
     IN_PROGRESS,
     WINNER,
     LOSER
+}
+
+/// <summary>
+/// Enum for the status of the payout of a BetModel
+/// </summary>
+public enum PayoutStatus
+{
+    UNPAID,
+    PAID
 }

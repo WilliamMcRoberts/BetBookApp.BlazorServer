@@ -9,7 +9,7 @@ public class UserData : IUserData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// Constructor for UserData
+    /// UserData Constructor
     /// </summary>
     /// <param name="db"></param>
     public UserData(ISqlConnection db)
