@@ -9,19 +9,23 @@ public class UserData : IUserData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// UserData Constructor
+    ///     UserData Constructor
     /// </summary>
-    /// <param name="db"></param>
+    /// <param name="db">
+    ///     ISqlConnection represents acces to database
+    /// </param>
     public UserData(ISqlConnection db)
     {
         _db = db;
     }
 
     /// <summary>
-    /// Method calls the spUsers_GetAll stored procedure to retrieve 
-    /// all users in the database
+    ///     Async method calls the spUsers_GetAll stored procedure to retrieve 
+    ///     all users in the database
     /// </summary>
-    /// <returns>IEnumerable of UserModel</returns>
+    /// <returns>
+    ///     IEnumerable of UserModel represents all users in database
+    /// </returns>
     public async Task<IEnumerable<UserModel>> GetUsers()
     {
         return await _db.LoadData<UserModel, dynamic>(
@@ -29,11 +33,15 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls spUsers_Get stored procedure which retrieves one 
-    /// user by user id
+    ///     Async method calls spUsers_Get stored procedure which retrieves one 
+    ///     user by user id
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns>UserModel</returns>
+    /// <param name="id">
+    ///     int represents Id of user to retrieve from the database
+    /// </param>
+    /// <returns>
+    ///     UserModel represents the user from database
+    /// </returns>
     public async Task<UserModel?> GetUser(int id)
     {
         var results = await _db.LoadData<UserModel, dynamic>(
@@ -46,11 +54,15 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls spUsers_GetByObjectIdentifier stored procedure which retieves 
-    /// one user from the database using the object identifier from Azure AD B2C
+    ///     Async method calls spUsers_GetByObjectIdentifier stored procedure which retieves 
+    ///     one user from the database using the object identifier from Azure AD B2C
     /// </summary>
-    /// <param name="objectIdentifier"></param>
-    /// <returns></returns>
+    /// <param name="objectIdentifier">
+    ///     string represents the object id of user from Azure Auth
+    /// </param>
+    /// <returns>
+    ///     UserModel represents user to retrieve from Azure Auth
+    /// </returns>
     public async Task<UserModel?> GetUserFromAuthentication(string objectIdentifier)
     {
         var results = await _db.LoadData<UserModel, dynamic>(
@@ -63,10 +75,12 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls the spUsers_Insert stored procedure to insert one user 
-    /// entry into the database
+    ///     Async method calls the spUsers_Insert stored procedure to insert one user 
+    ///     entry into the database
     /// </summary>
-    /// <param name="user"></param>
+    /// <param name="user">
+    ///     UserModel rpresents a user to insert into the database
+    /// </param>
     /// <returns></returns>
     public async Task InsertUser(UserModel user)
     {
@@ -83,9 +97,11 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls the spUsers_Update stored procedure to update a user
+    ///     Async method calls the spUsers_Update stored procedure to update a user
     /// </summary>
-    /// <param name="user"></param>
+    /// <param name="user">
+    ///     UserModel represents a user to update in the database
+    /// </param>
     /// <returns></returns>
     public async Task UpdateUser(UserModel user)
     {
@@ -102,10 +118,12 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls the spUsers_UpdateAccountBalance stored procedure which
-    /// updates the account balance of a user
+    ///     Async method calls the spUsers_UpdateAccountBalance stored procedure which
+    ///     updates the account balance of a user
     /// </summary>
-    /// <param name="user"></param>
+    /// <param name="user">
+    ///     UserModel represents a user of which the account balance is being updated
+    /// </param>
     /// <returns></returns>
     public async Task UpdateUserAccountBalance(UserModel user)
     {
@@ -118,10 +136,12 @@ public class UserData : IUserData
     }
 
     /// <summary>
-    /// Method calls the spUsers_Delete stored procedure which deletes one 
-    /// user entry in the database
+    ///     Async method calls the spUsers_Delete stored procedure which deletes one 
+    ///     user entry in the database
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">
+    ///     int represents the Id of the user being deleted from database
+    /// </param>
     /// <returns></returns>
     public async Task DeleteUser(int id)
     {

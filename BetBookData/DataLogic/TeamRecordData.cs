@@ -9,10 +9,14 @@ public class TeamRecordData : ITeamRecordData
     private readonly ITeamData _teamData;
 
     /// <summary>
-    /// TeamRecordData Constructor
+    ///     TeamRecordData Constructor
     /// </summary>
-    /// <param name="db"></param>
-    /// <param name="teamData"></param>
+    /// <param name="db">
+    ///     ISqlConnection represents access to the database
+    /// </param>
+    /// <param name="teamData">
+    ///     ITeamData represents access to team data logic
+    /// </param>
     public TeamRecordData(ISqlConnection db, ITeamData teamData)
     {
         _db = db;
@@ -20,10 +24,12 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    /// Method calls the spTeamRecords_GetAll stored procedure to retrieve 
-    /// all team records in the database
+    ///     Async method calls the spTeamRecords_GetAll stored procedure to retrieve 
+    ///     all team records in the database
     /// </summary>
-    /// <returns>IEnumerable of UserModel</returns>
+    /// <returns>
+    ///     IEnumerable of UserModel represents all team records in the database
+    /// </returns>
     public async Task<IEnumerable<TeamRecordModel>> GetTeamRecords()
     {
         return await _db.LoadData<TeamRecordModel, dynamic>(
@@ -31,11 +37,15 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    /// Method calls spTeams_Get stored procedure which retrieves the
-    /// record of a team
+    ///     Async method calls spTeams_Get stored procedure which retrieves the
+    ///     record of a team
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns>TeamRecordModel</returns>
+    /// <param name="id">
+    ///     int represents the id of a team being retrieved from the database
+    /// </param>
+    /// <returns>
+    ///     TeamRecordModel represents the team being retrieved from the database
+    /// </returns>
     public async Task<TeamRecordModel?> GetTeamRecord(int teamId)
     {
         var results = await _db.LoadData<TeamRecordModel, dynamic>(
@@ -48,10 +58,13 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    /// Method calls the spTeamRecords_Insert stored procedure to insert one 
-    /// team record into the database
+    ///     Async method call the spTeamRecords_Insert stored
+    ///     procedure to insert a team record into the database
     /// </summary>
-    /// <param name="teamRecord"></param>
+    /// <param name="teamId">
+    ///     int represents the team id of the team record being inserted
+    ///     into the database
+    /// </param>
     /// <returns></returns>
     public async Task InsertTeamRecord(int teamId)
     {
@@ -68,10 +81,12 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    /// Method calls the spTeamRecords_Update stored procedure to update
-    /// a team record
+    ///     Async method calls the spTeamRecords_Update stored procedure to update
+    ///     a team record
     /// </summary>
-    /// <param name="teamRecord"></param>
+    /// <param name="teamRecord">
+    ///     TeamRecordModel represents the team record being updated in the database
+    /// </param>
     /// <returns></returns>
     public async Task UpdateTeamRecord(TeamRecordModel teamRecord)
     {
@@ -96,10 +111,12 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    /// Method calls the spTeamRecords_Delete stored procedure which deletes one team
-    /// record from the database
+    ///     Async method calls the spTeamRecords_Delete stored procedure which deletes one team
+    ///     record from the database
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">
+    ///     int represents the team id of the team record being deleted from the database
+    /// </param>
     /// <returns></returns>
     public async Task DeleteTeamRecord(int teamId)
     {

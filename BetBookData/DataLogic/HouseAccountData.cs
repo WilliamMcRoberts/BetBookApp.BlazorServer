@@ -9,7 +9,7 @@ public class HouseAccountData : IHouseAccountData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// HouseAccountData Constructor
+    ///     HouseAccountData Constructor
     /// </summary>
     /// <param name="db"></param>
     public HouseAccountData(ISqlConnection db)
@@ -18,11 +18,11 @@ public class HouseAccountData : IHouseAccountData
     }
 
     /// <summary>
-    /// Method calls spHouseAccount_Get stored procedure which retrieves the 
-    /// house account
+    ///     Async method retrieves the house account
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns>HouseAccountModel</returns>
+    /// <returns>
+    ///     HouseAccountModel represents the house account
+    /// </returns>
     public async Task<HouseAccountModel?> GetHouseAccount()
     {
         var result = await _db.LoadData<HouseAccountModel, dynamic>(
@@ -32,10 +32,12 @@ public class HouseAccountData : IHouseAccountData
     }
 
     /// <summary>
-    /// Method calls the spHouseAccount_Update stored procedure to update
-    /// the house account
+    ///     Async method calls the spHouseAccount_Update stored procedure to update
+    ///     the house account
     /// </summary>
-    /// <param name="houseAccount"></param>
+    /// <param name="houseAccount">
+    ///     HouseAccountModel represents the house account
+    /// </param>
     /// <returns></returns>
     public async Task UpdateHouseAccount(HouseAccountModel houseAccount)
     {

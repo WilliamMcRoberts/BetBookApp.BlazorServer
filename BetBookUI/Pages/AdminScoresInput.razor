@@ -58,7 +58,7 @@
             <div class="scores-box">
                 <input type="number" @bind-value="@UnderdogScore" @bind-value:event="oninput"/>
             </div>
-            <button @onclick="(() => UpdateGameWinners(FavoriteScore, UnderdogScore))" class="update-btn btn btn-light">Submit Scores</button>
+            <button @onclick="(() => UpdateGameWinner(FavoriteScore, UnderdogScore))" class="update-btn btn btn-light">Submit Scores</button>
         </div>
     </div>
 </div>
@@ -198,92 +198,155 @@
     private bool noGame = false;
 
     /// <summary>
-    /// Async method updates the scores of the game,
-    /// calls the CalculateWinningTeam() method,
-    /// add winning team to database, and updates
-    /// team records
+    ///     Async method updates the scores of the game,
+    ///     calls the CalculateWinningTeam() method,
+    ///     add winning team to database, and updates
+    ///     team records
     /// </summary>
-    /// <param name="favoriteScore"></param>
-    /// <param name="underdogScore"></param>
+    /// <param name="favoriteScore">
+    ///     int representing the favorite team score of the current game
+    /// </param>
+    /// <param name="underdogScore">
+    ///     int representing the underdog team score of the current game
+    /// </param>
     /// <returns></returns>
-    private async Task UpdateGameWinners(int favoriteScore, int underdogScore)
+    private async Task UpdateGameWinner(int favoriteScore, int underdogScore)
     {
-        CurrentGame.FavoriteFinalScore = FavoriteScore;
-        CurrentGame.UnderdogFinalScore = UnderdogScore;
+        CurrentGame.FavoriteFinalScore = favoriteScore;
+        CurrentGame.UnderdogFinalScore = underdogScore;
         CurrentGame.GameStatus = GameStatus.FINISHED;
 
         await gameData.UpdateGame(CurrentGame);
 
-        TeamModel? winningTeam = CalculateWinningTeam(CurrentGame);
+        TeamModel? winningTeam = 
+            CalculateWinningTeam(CurrentGame, favoriteScore, underdogScore);
 
-
-        if(winningTeam is not null)
-        {
+        if (winningTeam is not null)
             await gameData.AddGameWinner(CurrentGame, winningTeam);
 
-            TeamModel? losingTeam = new();
+        scoresAdded = true;
 
-            if (winningTeam.Id == CurrentFavorite.Id) 
-                losingTeam = CurrentUnderdog;
-            else if (winningTeam.Id == CurrentUnderdog.Id) 
-                losingTeam = CurrentFavorite;
+        ClearUpdateWinnersForm();
 
-            TeamRecordModel? winnerTeamRecord = await recordData.GetTeamRecord(winningTeam.Id);
-            TeamRecordModel? loserTeamRecord = await recordData.GetTeamRecord(losingTeam.Id);
+        await UpdateTeamRecords(favoriteScore, underdogScore);
+    }
 
-            winnerTeamRecord.Wins += $"{losingTeam.TeamName}|";
-            loserTeamRecord.Losses += $"{winningTeam.TeamName}|";
+    /// <summary>
+    ///     Async method updates team records of
+    ///     the actual winning  team and actual losing team
+    /// </summary>
+    /// <param name="favoriteScore">
+    ///      int representing the favorite team score of the current game
+    /// </param>
+    /// <param name="underdogScore">
+    ///     int representing the underdog team score of the current game
+    /// </param>
+    /// <returns></returns>
+    private async Task UpdateTeamRecords(int favoriteScore, int underdogScore)
+    {
+        TeamModel? actualWinningTeam = new();
+        TeamModel? actualLosingTeam = new();
 
-            await recordData.UpdateTeamRecord(winnerTeamRecord);
-            await recordData.UpdateTeamRecord(loserTeamRecord);
-
-            scoresAdded = true;
-
-            ClearUpdateWinnersForm();
-
-            // TODO - Call payout method
+        if (favoriteScore > underdogScore)
+        {
+            actualWinningTeam = CurrentFavorite;
+            actualLosingTeam = CurrentUnderdog;
         }
 
-        else
+        else if (favoriteScore < underdogScore)
+        {
+            actualWinningTeam = CurrentUnderdog;
+            actualLosingTeam = CurrentFavorite;
+        }
+
+        else if (favoriteScore == underdogScore) 
+            actualWinningTeam = null;
+
+        // If game is a draw
+        if(actualWinningTeam is null)
         {
             TeamRecordModel? teamFavoriteRecord = await recordData.GetTeamRecord(CurrentFavorite.Id);
             TeamRecordModel? teamUnderdogRecord = await recordData.GetTeamRecord(CurrentUnderdog.Id);
 
-            teamFavoriteRecord.Draws += $"{CurrentUnderdog.TeamName}|";
-            teamUnderdogRecord.Draws += $"{CurrentFavorite.TeamName}|";
+            if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+            {
+                teamFavoriteRecord.Draws += $"{CurrentUnderdog.TeamName}|";
+                teamUnderdogRecord.Draws += $"{CurrentFavorite.TeamName}|";
 
-            await recordData.UpdateTeamRecord(teamFavoriteRecord);
-            await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                await recordData.UpdateTeamRecord(teamFavoriteRecord);
+                await recordData.UpdateTeamRecord(teamUnderdogRecord);
+            }
+        }
 
-            scoresAdded = true;
+        // If game is not a draw
+        else
+        {
+            TeamRecordModel? winnerTeamRecord = await recordData.GetTeamRecord(actualWinningTeam.Id);
+            TeamRecordModel? loserTeamRecord = await recordData.GetTeamRecord(actualLosingTeam.Id);
 
-            ClearUpdateWinnersForm();
+            if(winnerTeamRecord is not null && loserTeamRecord is not null)
+            {
+                winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
+                loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
 
-            // TODO - Call payout method
+                await recordData.UpdateTeamRecord(winnerTeamRecord);
+                await recordData.UpdateTeamRecord(loserTeamRecord);
+            }
         }
     }
 
     /// <summary>
-    /// Method calculates winner of current game
-    /// with point spread
+    ///     Method calculates and returns winning team of current game
     /// </summary>
-    /// <param name="game"></param>
-    /// <returns>TeamModel</returns>
-    private TeamModel CalculateWinningTeam(GameModel game)
+    /// <param name="game">
+    ///     GameModel representing the current game
+    /// </param>
+    /// <param name="favoriteScore">
+    ///     int representing the favorite team score of the current game
+    /// </param>
+    /// <param name="underdogScore">
+    ///     int representing the underdog team score of the current game
+    /// </param>
+    /// <returns name="winner">
+    ///     TeamModel representing the winner of the current game
+    /// </returns>
+    private TeamModel CalculateWinningTeam(GameModel game, int favoriteScore, int underdogScore)
+    {
+        TeamModel? winner = new();
+
+        winner = (favoriteScore == underdogScore) ? null :
+                 (favoriteScore > underdogScore) ? CurrentFavorite : CurrentUnderdog;
+
+        return winner;
+    }
+
+    /// <summary>
+    ///     Methd calculates and returns the winning team
+    ///     after factoring in the point spread
+    /// </summary>
+    /// <param name="game">
+    ///     GameModel representing the current game
+    /// </param>
+    /// <param name="favoriteScore">
+    ///     int representing the favorite team score
+    /// </param>
+    /// <param name="underdogScore">
+    ///     int representing the underdog team score
+    /// </param>
+    /// <returns name="winner">
+    ///     winner of the game after factoring in the point spread
+    /// </returns>
+    private TeamModel CalculateWinningTeamForBet(GameModel game, int favoriteScore, int underdogScore)
     {
         int pointSpread = CurrentGame.PointSpread;
-        int favoriteScoreMinusPointSpread = FavoriteScore - pointSpread;
+        int favoriteScoreMinusPointSpread = favoriteScore - pointSpread;
 
-        TeamModel result = new();
+        TeamModel? winner = new();
 
-        if (favoriteScoreMinusPointSpread > UnderdogScore) 
-            result =  CurrentFavorite;
-        else if (favoriteScoreMinusPointSpread < UnderdogScore) 
-            result =  CurrentUnderdog;
-        else if (favoriteScoreMinusPointSpread == UnderdogScore) 
-            return null;
+        winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
+                 (favoriteScoreMinusPointSpread > underdogScore) ? CurrentFavorite : CurrentUnderdog;
 
-        return result;
+        return winner;
     }
 
     /// <summary>
@@ -297,10 +360,12 @@
     }
 
     /// <summary>
-    /// Async method to populate basic game model
-    /// for current game being updated
+    ///     Async method to populate basic game model
+    ///     for current game being updated
     /// </summary>
-    /// <param name="gameId"></param>
+    /// <param name="gameId">
+    ///     int Id of current game
+    /// </param>
     /// <returns></returns>
     private async Task PopulateBasicGameModel(int gameId)
     {
