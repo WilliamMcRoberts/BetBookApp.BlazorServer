@@ -29,7 +29,7 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Method calls the spTeams_GetAll stored procedure to retrieve 
+    ///     Async method calls the spTeams_GetAll stored procedure to retrieve 
     ///     all teams in the database
     /// </summary>
     /// <returns>
@@ -42,7 +42,7 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Method calls spTeams_Get stored procedure which retrieves one 
+    ///     Async method calls spTeams_Get stored procedure which retrieves one 
     ///     team by team id
     /// </summary>
     /// <param name="id">
