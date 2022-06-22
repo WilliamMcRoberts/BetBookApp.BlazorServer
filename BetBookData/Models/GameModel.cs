@@ -19,6 +19,7 @@ public class GameModel
     public int UnderdogId { get; set; }
     // Stadium the game is being played in
     public string Stadium { get; set; }
+    // TODO - Change data type of point spread
     // The point spread of the game
     public int PointSpread { get; set; }
     // Final score of the favorite

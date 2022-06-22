@@ -162,7 +162,6 @@
 </style>
 
 @code {
-    // TODO - Create payout method
 
     // Id of game
     private int GameId;
@@ -200,8 +199,8 @@
     /// <summary>
     ///     Async method updates the scores of the game,
     ///     calls the CalculateWinningTeam() method,
-    ///     add winning team to database, and updates
-    ///     team records
+    ///     adds winning team to database, and calls the
+    ///     UpdateTeamRecords() method
     /// </summary>
     /// <param name="favoriteScore">
     ///     int representing the favorite team score of the current game

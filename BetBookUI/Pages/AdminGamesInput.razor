@@ -4,7 +4,6 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
-@inject ITeamRecordData recordData
 
 <PageTitle>AdminGamesInput</PageTitle>
 
@@ -132,9 +131,6 @@
 
 @code {
 
-    // New game model
-    private GameModel GameToAdd = new();
-
     // Boolean to check game input form is complete
     private bool gameFormGood = true;
 
@@ -183,6 +179,8 @@
     {
         if (ValidateGameForm() == true)
         {
+            GameModel GameToAdd = new();
+
             GameToAdd.HomeTeamId = homeTeamId;
             GameToAdd.AwayTeamId = awayTeamId;
             GameToAdd.FavoriteId = favoriteId;

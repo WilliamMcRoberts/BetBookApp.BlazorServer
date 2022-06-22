@@ -74,8 +74,8 @@ public class TeamData : ITeamData
     /// </returns>
     public async Task<int> InsertTeam(TeamModel team)
     {
-        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
-            _config.GetConnectionString("BetBookDB"));
+        using IDbConnection connection = new System.Data.SqlClient
+            .SqlConnection(_config.GetConnectionString("BetBookDB"));
 
         var p = new DynamicParameters();
 
@@ -85,9 +85,11 @@ public class TeamData : ITeamData
         p.Add("@WinCount", team.WinCount);
         p.Add("@LossCount", team.LossCount);
         p.Add("@DrawCount", team.Drawcount);
-        p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+        p.Add("@Id", 0, dbType: DbType.Int32,
+            direction: ParameterDirection.Output);
 
-        await connection.ExecuteAsync("dbo.spTeams_Insert", p, commandType: CommandType.StoredProcedure);
+        await connection.ExecuteAsync("dbo.spTeams_Insert", p, 
+            commandType: CommandType.StoredProcedure);
 
         team.Id = p.Get<int>("@Id");
 

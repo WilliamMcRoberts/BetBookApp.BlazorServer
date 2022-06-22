@@ -360,16 +360,16 @@
     public decimal BetAmount { get; set; }
 
     // Chosen winner of game
-    private TeamModel TeamToWin { get; set; }
+    private TeamModel? TeamToWin { get; set; }
 
     // Boolean sets to true when a winner is chosen
     private bool winnerChosen = false;
 
     // Game favorite property
-    private string Favorite { get; set; }
+    private string? Favorite { get; set; }
 
     // Game underdog property 
-    private string Undrdog { get; set; }
+    private string? Undrdog { get; set; }
 
     // Account balance of the house
     private HouseAccountModel? houseAccount;
