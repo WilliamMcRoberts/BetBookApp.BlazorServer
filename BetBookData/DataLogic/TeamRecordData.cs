@@ -102,9 +102,9 @@ public class TeamRecordData : ITeamRecordData
 
         if (team is not null)
         {
-            team.WinCount = teamRecord.Wins.ToList().Count;
-            team.LossCount = teamRecord.Losses.ToList().Count;
-            team.Drawcount = teamRecord.Draws.ToList().Count;
+            team.WinCount = teamRecord.Wins.Split('|').Length - 1;
+            team.LossCount = teamRecord.Losses.Split('|').Length - 1;
+            team.Drawcount = teamRecord.Draws.Split('|').Length - 1;
 
             await _teamData.UpdateTeam(team);
         }

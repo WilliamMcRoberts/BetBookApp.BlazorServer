@@ -5,9 +5,9 @@
 	@FavoriteId int,
 	@UnderdogId int,
 	@Stadium nvarchar(50),
-	@PointSpread int,
-	@FavoriteFinalScore int,
-	@UnderdogFinalScore int,
+	@PointSpread float,
+	@FavoriteFinalScore float,
+	@UnderdogFinalScore float,
 	@SeasonType nvarchar(4),
 	@DateOfGame date,
 	@GameStatus nvarchar(20)

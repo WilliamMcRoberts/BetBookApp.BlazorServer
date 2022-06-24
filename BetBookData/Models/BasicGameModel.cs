@@ -21,5 +21,5 @@ public class BasicGameModel
     public string UnderdogTeamName { get; set; }
 
     // Point spread of the game
-    public int PointSpread { get; set; }
+    public double PointSpread { get; set; }
 }

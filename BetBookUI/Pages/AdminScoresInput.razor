@@ -185,10 +185,10 @@
     private TeamModel? CurrentAwayTeam { get; set; }
 
     // Score of favorite
-    private int FavoriteScore;
+    private double FavoriteScore;
 
     // Score of underdog
-    private int UnderdogScore;
+    private double UnderdogScore;
 
     // Boolean to check if winners were added
     private bool scoresAdded = false;
@@ -209,7 +209,7 @@
     ///     int representing the underdog team score of the current game
     /// </param>
     /// <returns></returns>
-    private async Task UpdateGameWinner(int favoriteScore, int underdogScore)
+    private async Task UpdateGameWinner(double favoriteScore, double underdogScore)
     {
         CurrentGame.FavoriteFinalScore = favoriteScore;
         CurrentGame.UnderdogFinalScore = underdogScore;
@@ -241,7 +241,7 @@
     ///     int representing the underdog team score of the current game
     /// </param>
     /// <returns></returns>
-    private async Task UpdateTeamRecords(int favoriteScore, int underdogScore)
+    private async Task UpdateTeamRecords(double favoriteScore, double underdogScore)
     {
         TeamModel? actualWinningTeam = new();
         TeamModel? actualLosingTeam = new();
@@ -309,7 +309,7 @@
     /// <returns name="winner">
     ///     TeamModel representing the winner of the current game
     /// </returns>
-    private TeamModel CalculateWinningTeam(GameModel game, int favoriteScore, int underdogScore)
+    private TeamModel CalculateWinningTeam(GameModel game, double favoriteScore, double underdogScore)
     {
         TeamModel? winner = new();
 
@@ -335,10 +335,10 @@
     /// <returns name="winner">
     ///     winner of the game after factoring in the point spread
     /// </returns>
-    private TeamModel CalculateWinningTeamForBet(GameModel game, int favoriteScore, int underdogScore)
+    private TeamModel CalculateWinningTeamForBet(GameModel game, double favoriteScore, double underdogScore)
     {
-        int pointSpread = CurrentGame.PointSpread;
-        int favoriteScoreMinusPointSpread = favoriteScore - pointSpread;
+        double pointSpread = CurrentGame.PointSpread;
+        double favoriteScoreMinusPointSpread = favoriteScore - pointSpread;
 
         TeamModel? winner = new();
 

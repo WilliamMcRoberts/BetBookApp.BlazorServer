@@ -4,7 +4,7 @@
 	@FavoriteId int,
 	@UnderdogId int,
 	@Stadium nvarchar(50),
-	@PointSpread int,
+	@PointSpread float,
 	@WeekNumber int,
 	@SeasonType nvarchar(4),
 	@DateOfGame date,
