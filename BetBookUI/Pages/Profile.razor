@@ -53,10 +53,10 @@
 
 @code {
 
-    // List of winning bets from all users
+    // List of winning bets with status "WINNER" made by user
     private List<BetModel> winningBetsUnpaid = new();
 
-    // List of winning bets with payout status of "UNPAID"
+    // List of winning bets made by current user
     private List<BetModel> winningBets = new();
 
     // List of all bettor bets
@@ -90,18 +90,17 @@
 
         bettorBets = (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
 
+        await PopulateWinningBets(loggedInUser.Id);
+
         bettorPushBetsUnpaid = bettorBets.Where(b => 
             b.BetStatus == BetStatus.PUSH && 
             b.PayoutStatus == PayoutStatus.UNPAID).ToList();
-
-        totalPendingRefund = CalculateTotalPendingRefund();
-
-        await PopulateWinningBets(loggedInUser.Id);
 
         winningBetsUnpaid = winningBets.Where(
             b => b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
         totalPendingPayout = CalculateTotalPendingPayout();
+        totalPendingRefund = CalculateTotalPendingRefund();
 
         houseAccount = await houseData.GetHouseAccount();
 
@@ -184,7 +183,7 @@
             total += bet.BetPayout;
         }
 
-        totalPayout = (total * (decimal)VIG_RECOUP) + (total * 2);
+        totalPayout = ( (decimal)VIG_RECOUP) + (total * 2);
 
         return totalPayout;
     }
