@@ -28,7 +28,8 @@ public enum BetStatus
 {
     IN_PROGRESS,
     WINNER,
-    LOSER
+    LOSER,
+    PUSH
 }
 
 /// <summary>

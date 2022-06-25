@@ -15,13 +15,13 @@ public class BetModel
     // Payout of bet if bet is won
     public decimal BetPayout { get; set; }
     // User that initiated the bet
-    public UserModel Bettor { get; set; }
+    public int BettorId { get; set; }
     // Game that is being bet on
-    public GameModel GameInBet { get; set; }
+    public int GameId { get; set; }
     // Chosen winner of the game in the bet
-    public TeamModel ChosenWinner { get; set; }
+    public int ChosenWinnerId { get; set; }
     // Final winner of the game in the bet
-    public TeamModel FinalWinner { get; set; }
+    public int FinalWinnerId { get; set; }
     // Status of the bet
     public BetStatus BetStatus { get; set; }
     // Status of the payout of the bet

@@ -1,11 +1,10 @@
-﻿CREATE PROCEDURE [dbo].[spBets_Update]
+﻿CREATE PROCEDURE [dbo].[spBets_UpdatePush]
     @Id int,
 	@BetAmount money,
 	@BetPayout money,
 	@BettorId int,
 	@GameId int,
 	@ChosenWinnerId int,
-	@FinalWinnerId int,
 	@BetStatus nvarchar(20),
 	@PayoutStatus nvarchar(20)
 AS
@@ -16,7 +15,6 @@ begin
         BettorId = @BettorId, 
         GameId = @GameId, 
         ChosenWinnerId = @ChosenWinnerId, 
-        FinalWinnerId = @FinalWinnerId,
         BetStatus = @BetStatus, 
         PayoutStatus = @PayoutStatus
 	where Id = @Id;

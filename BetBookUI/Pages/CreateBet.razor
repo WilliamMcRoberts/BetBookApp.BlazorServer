@@ -156,8 +156,12 @@
                 <p>Step 4. Once everything looks good, click "Submit Wager".</p>
             </div>
             <div class="winner-btn-container">
-                <button class="mb-2 mt-2 winner-btn btn btn-light" @onclick="(() => ChoseWinner(game.FavoriteId))">Choose @basicGame.FavoriteTeamName</button>
-                <button class="mb-2 mt-2 winner-btn btn btn-light" @onclick="(() => ChoseWinner(game.UnderdogId))">Choose @basicGame.UnderdogTeamName</button>
+                <button class="mb-2 mt-2 winner-btn btn btn-light" 
+                    @onclick="(() => ChoseWinner(game.FavoriteId))">
+                        Choose @basicGame.FavoriteTeamName</button>
+                <button class="mb-2 mt-2 winner-btn btn btn-light" 
+                    @onclick="(() => ChoseWinner(game.UnderdogId))">
+                        Choose @basicGame.UnderdogTeamName</button>
             </div>
         }
         else if(winnerChosen == true && wagerPlaced == false)
@@ -365,14 +369,8 @@
     // Boolean sets to true when a winner is chosen
     private bool winnerChosen = false;
 
-    // Game favorite property
-    private string? Favorite { get; set; }
-
-    // Game underdog property 
-    private string? Undrdog { get; set; }
-
     // Account balance of the house
-    private HouseAccountModel? houseAccount;
+    private HouseAccountModel houseAccount;
 
     // Boolean to check if wager has been placed
     private bool wagerPlaced = false;
@@ -522,9 +520,9 @@
 
             bet.BetAmount = amountToBet;
             bet.BetPayout = (decimal)((double)amountToBet - (double)amountToBet * VIG);
-            bet.ChosenWinner = teamToWin;
-            bet.Bettor = loggedInUser;
-            bet.GameInBet = game;
+            bet.ChosenWinnerId = teamToWin.Id;
+            bet.BettorId = loggedInUser.Id;
+            bet.GameId = gameId;
             bet.BetStatus = BetStatus.IN_PROGRESS;
             bet.PayoutStatus = PayoutStatus.UNPAID;
 
@@ -542,10 +540,7 @@
         }
 
         else
-        {
             betAmountGood = false;
-            return;
-        }
     }
 
     /// <summary>

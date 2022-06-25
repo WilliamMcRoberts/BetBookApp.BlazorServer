@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BetBookDb", "BetBookDb\BetBookDb.sqlproj", "{4F3DBBF9-8368-48B2-A857-ECADB26F05B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetBookData", "BetBookData\BetBookData.csproj", "{3A2BE722-2496-4570-9C15-595968EC8425}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookData", "BetBookData\BetBookData.csproj", "{3A2BE722-2496-4570-9C15-595968EC8425}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

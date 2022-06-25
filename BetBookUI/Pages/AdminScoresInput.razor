@@ -4,6 +4,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
+@inject IBetData betData
 
 <PageTitle>AdminScoresInput</PageTitle>
 
@@ -203,10 +204,10 @@
     ///     UpdateTeamRecords() method
     /// </summary>
     /// <param name="favoriteScore">
-    ///     int representing the favorite team score of the current game
+    ///     double representing the favorite team score of the current game
     /// </param>
     /// <param name="underdogScore">
-    ///     int representing the underdog team score of the current game
+    ///     double representing the underdog team score of the current game
     /// </param>
     /// <returns></returns>
     private async Task UpdateGameWinner(double favoriteScore, double underdogScore)
@@ -223,11 +224,60 @@
         if (winningTeam is not null)
             await gameData.AddGameWinner(CurrentGame, winningTeam);
 
+        await UpdateBetWinners(favoriteScore, underdogScore);
+
         scoresAdded = true;
 
         ClearUpdateWinnersForm();
 
         await UpdateTeamRecords(favoriteScore, underdogScore);
+    }
+
+    /// <summary>
+    ///     Async method updates final winner and bet status 
+    ///     for all bets that were placed on current game
+    /// </summary>
+    /// <param name="favoriteScore">
+    ///     double represents the favorite team score
+    /// </param>
+    /// <param name="underdogScore">
+    ///     double represents the underdog team score
+    /// </param>
+    /// <returns></returns>
+    private async Task UpdateBetWinners(double favoriteScore, double underdogScore)
+    {
+        TeamModel? winningTeamForBets =
+            CalculateWinningTeamForBet(CurrentGame, favoriteScore, underdogScore);
+
+        List<BetModel> betsOnCurrentGame = 
+           (List<BetModel>) await betData.GetAllBetsOnGame(CurrentGame.Id);
+
+        if(winningTeamForBets is not null)
+        {
+            foreach(BetModel bet in betsOnCurrentGame)
+            {
+                bet.FinalWinnerId = winningTeamForBets.Id;
+
+                if(winningTeamForBets.Id == bet.ChosenWinnerId)
+                    bet.BetStatus = BetStatus.WINNER;
+
+                else
+                    bet.BetStatus = BetStatus.LOSER;
+
+                await betData.UpdateBet(bet);
+            }
+        }
+
+        else
+        {
+            foreach(BetModel bet in betsOnCurrentGame)
+            {
+                bet.BetStatus = BetStatus.PUSH;
+                bet.FinalWinnerId = 0;
+
+                await betData.UpdateBet(bet);
+            }
+        }
     }
 
     /// <summary>
@@ -349,7 +399,7 @@
     }
 
     /// <summary>
-    /// Method clears update winners form
+    ///     Method clears update winners form
     /// </summary>
     private void ClearUpdateWinnersForm()
     {

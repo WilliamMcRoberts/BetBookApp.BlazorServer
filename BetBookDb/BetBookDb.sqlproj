@@ -113,6 +113,8 @@
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_GetAllNotStarted.sql" />
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Insert.sql" />
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Update.sql" />
+    <Build Include="dbo\StoredProcedures\BetProcedures\spGetAllBetsByGame.sql" />
+    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_UpdatePush.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

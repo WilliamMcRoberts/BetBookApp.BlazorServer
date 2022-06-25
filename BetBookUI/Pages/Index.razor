@@ -80,13 +80,13 @@
 
 @code {
 
-   /***********************************************************************
+    /***********************************************************************
                 TODO - User profile page, user bets retrieval methods
     ***********************************************************************/
 
-   /***********************************************************************
-                TODO - Create payout method
-    ***********************************************************************/
+    /***********************************************************************
+                 TODO - Create payout method
+     ***********************************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;
@@ -113,7 +113,7 @@
     decimal newAccountBalance = 10000;
 
     /// <summary>
-    /// Async initialization method
+    ///     Async initialization method
     /// </summary>
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
@@ -124,8 +124,8 @@
     }
 
     /// <summary>
-    /// Async method that grabs logged in user's info from Azure AD B2C and checks if they have a sql User entry and if not calls the spUsers_Insert stored procedure
-    /// If user has an entry it checks for any new info and if so calls the spUsers_Update stored procedure
+    ///     Async method that grabs logged in user's info from Azure AD B2C and checks if they have a sql User entry and if not calls the spUsers_Insert stored procedure
+    ///     If user has an entry it checks for any new info and if so calls the spUsers_Update stored procedure
     /// </summary>
     /// <returns></returns>
     private async Task LoadAndVerifyUser()
@@ -192,10 +192,12 @@
     }
 
     /// <summary>
-    /// Async method populates a list of basic game models with all of the team names
-    /// and point spreads of all games that have a status of NOT_STARTED
+    ///     Async method populates a list of basic game models with all of the team names
+    ///     and point spreads of all games that have a status of NOT_STARTED
     /// </summary>
-    /// <returns>List<BasicGameModel></returns>
+    /// <returns>
+    ///     List<BasicGameModel> representing all basic games that have not started
+    /// </returns>
     private async Task<List<BasicGameModel>> PopulateBasicGameModelList()
     {
         List<GameModel> games = new();
@@ -228,10 +230,9 @@
     }
 
     /// <summary>
-    /// Async method grabs and returns a list of all games with the 
-    /// current week number
+    ///     Async method grabs and returns a list of all games with the 
+    ///     game status "NOT_STARTED"
     /// </summary>
-    /// <param name="weekNumber"></param>
     /// <returns>List<GameModel></returns>
     private async Task<List<GameModel>> GetAllGamesNotStarted()
     {
@@ -239,10 +240,12 @@
     }
 
     /// <summary>
-    /// Method calculates and returns current week in current season 
-    /// (PRE, REG, POST)
+    ///     Method calculates and returns current week in current season 
+    ///     (PRE, REG, POST)
     /// </summary>
-    /// <returns>int</returns>
+    /// <returns>
+    ///     int represents the current week
+    /// </returns>
     private int GetCurrentWeek()
     {
         double weekInTicks = 604800;
@@ -273,10 +276,12 @@
     }
 
     /// <summary>
-    /// Selects a game to place a wager on and navigates to
-    /// the create bet page
+    ///     Selects a game to place a wager on and navigates to
+    ///     the create bet page
     /// </summary>
-    /// <param name="gameId"></param>
+    /// <param name="gameId">
+    ///     int represents the id of game being selected
+    /// </param>
     private void CreateBet(int gameId)
     {
         navManager.NavigateTo($"/CreateBet/{gameId}");
