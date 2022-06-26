@@ -18,20 +18,26 @@
             <div class="game-container">
                 <br>
                 <ul class="game-info">
-                    <li class="team-item">Home Team: @bg.HomeTeamName</li>
-                    <li class="team-item">Away Team: @bg.AwayTeamName</li>
-                    <li class="team-item">Favorite: @bg.FavoriteTeamName</li>
-                    <li class="team-item">Underdog: @bg.UnderdogTeamName</li>
-                    <li class="team-item">Point Spread: @bg.FavoriteTeamName - @bg.PointSpread</li>
+                    <li class="team-item">@bg.AwayTeamName at @bg.HomeTeamName || @bg.FavoriteTeamName - @bg.PointSpread</li>
                 </ul>
                 <br>
                 <button  @onclick="(() => CreateBet(bg.GameId))" class="make-wager-btn btn btn-light">Place A Wager On This Game</button>
             </div>
         }
     }
+    else
+    {
+        <h1 class="title">There are no games currently available.</h1>
+    }
 </div>
 
 <style>
+
+    label {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 auto;
+    }
 
     li{
         font-size: 20px;
@@ -80,6 +86,10 @@
 
 @code {
 
+    /*********************************************************
+            **       TODO - Organize CSS        **
+     * *******************************************************/
+
     // Current logged in user
     private UserModel? loggedInUser;
 
@@ -102,7 +112,7 @@
     DateTime currentDate = DateTime.Today;
 
     // New account balance
-    decimal newAccountBalance = 10000;
+    decimal NEW_ACCOUNT_BALANCE = 10000;
 
     /// <summary>
     ///     Async initialization method
@@ -170,7 +180,7 @@
                 if (loggedInUser.Id == 0)
                 {
                     // New user recieves 10,000 in account
-                    loggedInUser.AccountBalance = newAccountBalance;
+                    loggedInUser.AccountBalance = NEW_ACCOUNT_BALANCE;
 
                     await userData.InsertUser(loggedInUser);
                 }
@@ -200,6 +210,14 @@
 
             foreach(GameModel g in games)
             {
+                // If game has started update game status and re-populate basic games
+                if(g.DateOfGame < DateTime.Now)
+                {
+                    g.GameStatus = GameStatus.IN_PROGRESS;
+                    await gameData.UpdateGame(g);
+                    await PopulateBasicGameModelList();
+                }
+
                 TeamModel? homeTeam = await teamData.GetTeam(g.HomeTeamId);
                 TeamModel? awayTeam = await teamData.GetTeam(g.AwayTeamId);
                 TeamModel? favoriteTeam = await teamData.GetTeam(g.FavoriteId);

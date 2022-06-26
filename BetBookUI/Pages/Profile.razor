@@ -16,27 +16,32 @@
 
 
 <div class="user">
-    <div class="label-container">
-        <h1 class="profile-label">User Profile</h1>
-        <label class="bal-label">Your account balance: $@userAccountBalance</label>
-    </div>
     
+    <div class="label-container">
+        @if(loggedInUser is not null)
+        {
+            <h1 class="profile-label">@loggedInUser.DisplayName 's Profile</h1>
+            <h1 class="bal-label">Balance: $@userAccountBalance</h1>
+        }
+    </div>
     <div class="item">
-        <p>Your total pending payout from winning bets: $@totalPendingPayout</p>
+        <p>Pending Payout: $@totalPendingPayout</p>
     </div>
 
     <div class="item">
-        <p>Your total pending refund amount from push bets: $@totalPendingRefund</p>
+        <p>Pending Refund: $@totalPendingRefund</p>
     </div>
 
-    <div style="text-align: center;margin-bottom: 1em;">
-        <button class="payout-btn btn btn-light" @onclick="PayoutUnpaidBets">Pay My Winning Bets</button>
+    <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+        <button class="payout-btn btn btn-light" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
     </div>
 
     <div style="text-align: center;margin-bottom: 1em;">
         <button class="payout-btn btn btn-light" @onclick="RefundPushBets">Refund My Push Bets</button>
     </div>
-    <br />
+    <div class="divider">
+
+    </div>
     <div class="bets">
         <label style="margin-left: 5.25em;">Open Bets</label>
         @if(bettorInProgressBets.Count != 0)
@@ -107,9 +112,18 @@
 
 <style>
 
+    .bets {
+        margin-bottom: 2em;
+    }
+
     ul {
         list-style-type: none;
         margin: 1em 1em;
+    }
+
+    .divider {
+        border-bottom: 2px solid green;
+        margin: 2em 6em;
     }
 
     .bet {
@@ -337,7 +351,9 @@
         loggedInUser = await userData.GetUser(loggedInUser.Id);
         userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
                                     .ToString("#.00"));
-        totalPendingPayout = CalculateTotalPendingPayout();
+
+        winningBetsUnpaid.Clear();
+        totalPendingPayout = Convert.ToDecimal((0).ToString("#.00"));
     }
 
     /// <summary>
@@ -362,7 +378,9 @@
         loggedInUser = await userData.GetUser(loggedInUser.Id);
         userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
                                     .ToString("#.00"));
-        totalPendingPayout = CalculateTotalPendingPayout();
+
+        bettorPushBetsUnpaid.Clear();
+        totalPendingRefund = Convert.ToDecimal((0).ToString("#.00"));
     }
 
     /// <summary>
