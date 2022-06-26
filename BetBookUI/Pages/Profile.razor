@@ -15,23 +15,122 @@
 @*********************************** Demo Display ******************************************@
 
 
-<div>
-    <h1>Your total pending payout from winning bets: $@totalPendingPayout</h1>
-</div>
+<div class="user">
+    <div class="label-container">
+        <h1 class="profile-label">User Profile</h1>
+        <label class="bal-label">Your account balance: $@userAccountBalance</label>
+    </div>
+    
+    <div class="item">
+        <p>Your total pending payout from winning bets: $@totalPendingPayout</p>
+    </div>
 
-<div>
-    <h1>Your total pending refund amount from push bets: $@totalPendingRefund</h1>
-</div>
+    <div class="item">
+        <p>Your total pending refund amount from push bets: $@totalPendingRefund</p>
+    </div>
 
-<div>
-    <button class="payout-btn btn btn-light" @onclick="PayoutUnpaidBets">Pay My Winning Bets</button>
-</div>
+    <div style="text-align: center;margin-bottom: 1em;">
+        <button class="payout-btn btn btn-light" @onclick="PayoutUnpaidBets">Pay My Winning Bets</button>
+    </div>
 
-<div>
-    <button class="payout-btn btn btn-light" @onclick="RefundPushBets">Refund My Push Bets</button>
+    <div style="text-align: center;margin-bottom: 1em;">
+        <button class="payout-btn btn btn-light" @onclick="RefundPushBets">Refund My Push Bets</button>
+    </div>
+    <br />
+    <div class="bets">
+        <label style="margin-left: 5.25em;">Open Bets</label>
+        @if(bettorInProgressBets.Count != 0)
+        {
+            @foreach(BasicBetModel bet in bettorInProgressBasicBets)
+            {
+                <div class="bet">
+                    <ul>
+                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
+                        <li>Point Spread: @bet.Spread</li>
+                        <li>Payout Amount: @bet.PayoutAmount</li>
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="bet">
+                <p style="margin: 1em 0;">NONE</p>
+            </div>
+            
+        }
+        <label style="margin-left: 5.25em;">Winning Unpaid Bets</label>
+        @if(winningBetsUnpaid.Count != 0)
+        {
+            @foreach(BasicBetModel bet in winningBetsUnpaidBasicBets)
+            {
+                <div class="bet">
+                    <ul>
+                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
+                        <li>Point Spread: @bet.Spread</li>
+                        <li>Payout Amount: @bet.PayoutAmount</li>
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="bet">
+                <p style="margin: 1em 0;">NONE</p>
+            </div>
+        }
+        <label style="margin-left: 5.25em;">Push Bets Not Yet Refunded</label>
+        @if(bettorPushBetsUnpaid.Count != 0)
+        {
+            @foreach(BasicBetModel bet in bettorPushBetsUnpaidBasicBets)
+            {
+                <div class="bet">
+                    <ul>
+                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
+                        <li>Point Spread: @bet.Spread</li>
+                        <li>Payout Amount: @bet.PayoutAmount</li>
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="bet">
+                <p style="margin: 1em 0;">NONE</p>
+            </div>
+        }
+    </div>
 </div>
 
 <style>
+
+    ul {
+        list-style-type: none;
+        margin: 1em 1em;
+    }
+
+    .bet {
+        background: #98FB98; /*Pale Green*/
+        border-radius: 15px;
+        margin: 0 auto;
+        border: 2px solid green;
+        width: 75%;
+        font-size: 15px;
+        font-weight:700;
+        text-align: center;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+
+    .label-container {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 20px;
+    }
 
     .payout-btn {
         background:#98FB98;
@@ -39,7 +138,6 @@
         border: 2px solid green;
         border-radius: 15px;
         font-weight: 700;
-        margin-left: 4em;
         font-family: 'Montserrat', sans-serif;
     }
 
@@ -49,11 +147,47 @@
         border: 2px solid green;
     }
 
+    .user {
+        width: 50%;
+        background: #98FB98; /*Pale Green*/
+        border-radius: 15px;
+        margin: 0 auto;
+        border: 4px solid green;
+    }
+
+    label {
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    .profile-label {
+        margin-left: .75em;
+        margin-top: 1em;
+    }
+
+    .bal-label {
+        margin-right: .75em;
+        margin-top: 1em;
+    }
+
+    .item {
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        margin: 1em 1em;
+    }
+
+    li {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
 </style>
 
 @code {
 
-    // List of winning bets with status "WINNER" made by user
+    // List of winning bets with status "WINNER" and payment status 
+    // of "UNPAID"made by user
     private List<BetModel> winningBetsUnpaid = new();
 
     // List of winning bets made by current user
@@ -64,6 +198,18 @@
 
     // List of all bettor bets with bet status of "PUSH"
     private List<BetModel> bettorPushBetsUnpaid = new();
+
+    // List of all bettor bets with bet status of "IN_PROGRESS"
+    private List<BetModel> bettorInProgressBets = new();
+
+    // List of in progress basic bets
+    private List<BasicBetModel> bettorInProgressBasicBets = new();
+
+    // List of winning bets unpaid basic bets
+    private List<BasicBetModel> winningBetsUnpaidBasicBets = new();
+
+    // List of push bets unpaid basic bets
+    private List<BasicBetModel> bettorPushBetsUnpaidBasicBets = new();
 
     // Total payout of all bets to be payed out
     private decimal totalPendingPayout;
@@ -77,6 +223,9 @@
     // Vig recoup
     private double VIG_RECOUP = .1;
 
+    // User account balance
+    private decimal userAccountBalance;
+
     // Total pending refund from pushed bets
     private decimal totalPendingRefund;
 
@@ -87,6 +236,9 @@
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
+                                    .ToString("#.00"));
 
         bettorBets = (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
 
@@ -99,10 +251,67 @@
         winningBetsUnpaid = winningBets.Where(
             b => b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
+        bettorInProgressBets = bettorBets.Where(b =>
+            b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+
         totalPendingPayout = CalculateTotalPendingPayout();
         totalPendingRefund = CalculateTotalPendingRefund();
 
         houseAccount = await houseData.GetHouseAccount();
+
+        await PopulateBasicBets();
+    }
+
+    /// <summary>
+    ///     Async method populates all basic bet models for display
+    /// </summary>
+    /// <returns></returns>
+    private async Task PopulateBasicBets()
+    {
+        foreach(BetModel bet in bettorInProgressBets)
+        {
+            BasicBetModel bb = new();
+
+            TeamModel chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
+            GameModel gameWagered = await gameData.GetGame(bet.GameId);
+
+            bb.ChosenWinnerTeamName = chosenTeam.TeamName;
+            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.Spread = gameWagered.PointSpread;
+            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+
+            bettorInProgressBasicBets.Add(bb);
+        }
+
+        foreach(BetModel bet in winningBetsUnpaid)
+        {
+            BasicBetModel bb = new();
+
+            TeamModel chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
+            GameModel gameWagered = await gameData.GetGame(bet.GameId);
+
+            bb.ChosenWinnerTeamName = chosenTeam.TeamName;
+            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.Spread = gameWagered.PointSpread;
+            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+
+            winningBetsUnpaidBasicBets.Add(bb);
+        }
+
+        foreach(BetModel bet in bettorPushBetsUnpaid)
+        {
+            BasicBetModel bb = new();
+
+            TeamModel chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
+            GameModel gameWagered = await gameData.GetGame(bet.GameId);
+
+            bb.ChosenWinnerTeamName = chosenTeam.TeamName;
+            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.Spread = gameWagered.PointSpread;
+            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+
+            bettorPushBetsUnpaidBasicBets.Add(bb);
+        }
     }
 
     /// <summary>
@@ -124,6 +333,11 @@
 
         await houseData.UpdateHouseAccount(houseAccount);
         await userData.UpdateUserAccountBalance(loggedInUser);
+
+        loggedInUser = await userData.GetUser(loggedInUser.Id);
+        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
+                                    .ToString("#.00"));
+        totalPendingPayout = CalculateTotalPendingPayout();
     }
 
     /// <summary>
@@ -144,6 +358,11 @@
 
         await houseData.UpdateHouseAccount(houseAccount);
         await userData.UpdateUserAccountBalance(loggedInUser);
+
+        loggedInUser = await userData.GetUser(loggedInUser.Id);
+        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
+                                    .ToString("#.00"));
+        totalPendingPayout = CalculateTotalPendingPayout();
     }
 
     /// <summary>
@@ -187,8 +406,9 @@
         }
 
         totalPayout = Convert
-            .ToDecimal((((decimal)VIG_RECOUP) + (total * 2))
+            .ToDecimal((((decimal)VIG_RECOUP * total) + (total * 2))
             .ToString("#.00"));
+
         return totalPayout;
     }
 
