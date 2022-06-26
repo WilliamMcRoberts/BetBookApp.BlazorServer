@@ -12,7 +12,7 @@
 
 <PageTitle>Profile</PageTitle>
 
-@********************************* Demo Display ******************************************@
+@*********************************** Demo Display ******************************************@
 
 
 <div>
@@ -103,7 +103,6 @@
         totalPendingRefund = CalculateTotalPendingRefund();
 
         houseAccount = await houseData.GetHouseAccount();
-
     }
 
     /// <summary>
@@ -163,6 +162,10 @@
             total += bet.BetPayout;
         }
 
+        total = Convert
+            .ToDecimal((total)
+            .ToString("#.00"));
+
         return total;
     }
 
@@ -183,8 +186,9 @@
             total += bet.BetPayout;
         }
 
-        totalPayout = ( (decimal)VIG_RECOUP) + (total * 2);
-
+        totalPayout = Convert
+            .ToDecimal((((decimal)VIG_RECOUP) + (total * 2))
+            .ToString("#.00"));
         return totalPayout;
     }
 
