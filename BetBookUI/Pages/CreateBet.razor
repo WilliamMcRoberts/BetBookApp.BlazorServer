@@ -19,27 +19,27 @@
         <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Game Details</h1>
         <div style="margin-bottom:1em;">
             <ul class="game-list">
-                <li class="team-item">Home :   @basicGame.HomeTeamName</li>
-                <li class="team-item">Away :   @basicGame.AwayTeamName</li>
-                <li class="team-item">Favorite :   @basicGame.FavoriteTeamName</li>
-                <li class="team-item">Underdog :   @basicGame.UnderdogTeamName</li>
-                <li class="team-item">Spread :   @basicGame.PointSpread</li>
+                <li class="team-item">@basicGame.AwayTeamName at @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread</li>
             </ul>
             <br />
             <div class="records">
                 <div class="fav-records">
-                <label style="font-size: 25px;text-align:center;">@basicGame.FavoriteTeamName Record</label>
+                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicGame.FavoriteTeamName</label>
                 <div class="rec-sec">
                     @if(favoriteTeamWins is not null)
                     {
                         <label style="text-align: center;">Wins: @favWinCount</label>
                         <div class="team">
-                            @foreach(var win in favoriteTeamWins)
+                            @if(favWinCount != 0)
                             {
-                                @if(favWinCount != 0)
+                                @foreach(var win in favoriteTeamWins)
                                 {
-                                    <h6>@win||</h6>
+                                    <h6>@win| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
@@ -50,12 +50,16 @@
                     {
                         <label style="text-align: center;">Losses: @favLossCount</label>
                         <div class="team">
-                            @foreach(var loss in favoriteTeamLosses)
+                            @if(favLossCount != 0)
                             {
-                                @if(favLossCount != 0)
+                                @foreach(var loss in favoriteTeamLosses)
                                 {
-                                    <h6>@loss||</h6>
+                                    <h6>@loss| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
@@ -66,30 +70,38 @@
                     {
                         <label style="text-align: center;">Draws: @favDrawCount</label>
                         <div class="team">
-                            @foreach(var draw in favoriteTeamDraws)
+                            @if(favDrawCount != 0)
                             {
-                                @if(favDrawCount != 0)
+                                @foreach(var draw in favoriteTeamDraws)
                                 {
-                                    <h6>@draw||</h6>
+                                    <h6>@draw| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
                 </div>
             </div>
             <div class="und-records">
-                <label style="font-size: 25px;text-align:center;">@basicGame.UnderdogTeamName Record</label>
+                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicGame.UnderdogTeamName</label>
                 <div class="rec-sec">
                     @if(underdogTeamWins is not null)
                     {
                         <label style="text-align: center;">Wins: @undWinCount</label>
                         <div class="team">
-                            @foreach(var win in underdogTeamWins)
+                            @if(undWinCount != 0)
                             {
-                                @if(undWinCount != 0)
+                                @foreach(var win in underdogTeamWins)
                                 {
-                                    <h6>@win||</h6>
+                                    <h6>@win| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
@@ -100,12 +112,16 @@
                     {
                         <label style="text-align: center;">Losses: @undLossCount</label>
                         <div class="team">
-                            @foreach(var loss in underdogTeamLosses)
+                            @if(undLossCount != 0)
                             {
-                                @if(undLossCount != 0)
+                                @foreach(var loss in underdogTeamLosses)
                                 {
-                                    <h6>@loss||</h6>
+                                    <h6>@loss| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
@@ -116,12 +132,16 @@
                     {
                         <label style="text-align: center;">Draws: @undDrawCount</label>
                         <div class="team">
-                            @foreach(var draw in underdogTeamDraws)
+                            @if(undDrawCount != 0)
                             {
-                                @if(undDrawCount != 0)
+                                @foreach(var draw in underdogTeamDraws)
                                 {
-                                    <h6>@draw||</h6>
+                                    <h6>@draw| |</h6>
                                 }
+                            }
+                            else
+                            {
+                                 <h6>None</h6>   
                             }
                         </div>
                     }
@@ -161,10 +181,10 @@
             <div class="winner-btn-container">
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.FavoriteId))">
-                        Choose @basicGame.FavoriteTeamName</button>
+                        Choose @basicGame.FavoriteTeamName - @basicGame.PointSpread</button>
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.UnderdogId))">
-                        Choose @basicGame.UnderdogTeamName</button>
+                        Choose @basicGame.UnderdogTeamName + @basicGame.PointSpread</button>
             </div>
         }
         else if(winnerChosen == true && wagerPlaced == false)
@@ -402,7 +422,8 @@
                 BetModel bet = new();
 
                 bet.BetAmount = amountToBet;
-                bet.BetPayout = (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                bet.BetPayout = 
+                    (decimal)((double)amountToBet - (double)amountToBet * VIG);
                 bet.ChosenWinnerId = teamToWin.Id;
                 bet.BettorId = loggedInUser.Id;
                 bet.GameId = gameId;
@@ -428,7 +449,6 @@
 
         else
             gameNotStarted = false;
-
     }
 
     /// <summary>
@@ -472,5 +492,4 @@
         teamToWin = null;
         winnerChosen = false;
     }
-
 }

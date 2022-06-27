@@ -19,8 +19,8 @@
     <div class="label-container">
         @if(loggedInUser is not null)
         {
-            <h1 class="profile-label">@loggedInUser.DisplayName 's Profile</h1>
-            <h1 class="bal-label">Balance: $@userAccountBalance</h1>
+            <h1 class="profile-label">@loggedInUser.DisplayName 's Balance</h1>
+            <h1 class="bal-label">$@userAccountBalance</h1>
         }
     </div>
     <div class="item">
@@ -48,10 +48,10 @@
             {
                 <div class="bet">
                     <ul>
-                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
-                        <li>Point Spread: @bet.Spread</li>
-                        <li>Payout Amount: @bet.PayoutAmount</li>
+                        <li>Winner Chosen || @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
+                        <li>Wager Amount || @bet.PayoutAmount</li>
+                        <li>Point Spread || @bet.Spread</li>
                     </ul>
                 </div>
             }
@@ -70,10 +70,10 @@
             {
                 <div class="bet">
                     <ul>
-                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
-                        <li>Point Spread: @bet.Spread</li>
-                        <li>Payout Amount: @bet.PayoutAmount</li>
+                        <li>Winner Chosen || @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
+                        <li>Wager Amount || @bet.PayoutAmount</li>
+                        <li>Point Spread || @bet.Spread</li>
                     </ul>
                 </div>
             }
@@ -91,10 +91,10 @@
             {
                 <div class="bet">
                     <ul>
-                        <li>Chosen Winner: @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner: @bet.FinalWinnerTeamName</li>
-                        <li>Point Spread: @bet.Spread</li>
-                        <li>Payout Amount: @bet.PayoutAmount</li>
+                        <li>Winner Chosen || @bet.ChosenWinnerTeamName</li>
+                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
+                        <li>Wager Amount || @bet.PayoutAmount</li>
+                        <li>Point Spread || @bet.Spread</li>
                     </ul>
                 </div>
             }
@@ -111,10 +111,10 @@
 @code {
 
     // List of winning bets with status "WINNER" and payment status 
-    // of "UNPAID"made by user
+    // of "UNPAID" created by user
     private List<BetModel> winningBetsUnpaid = new();
 
-    // List of winning bets made by current user
+    // List of winning bets created by current user
     private List<BetModel> winningBets = new();
 
     // List of all bettor bets
@@ -164,7 +164,8 @@
         userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
                                     .ToString("#.00"));
 
-        bettorBets = (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
+        bettorBets = 
+            (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
 
         await PopulateWinningBets(loggedInUser.Id);
 
@@ -200,9 +201,11 @@
             GameModel gameWagered = await gameData.GetGame(bet.GameId);
 
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.FinalWinnerTeamName = "None";
             bb.Spread = gameWagered.PointSpread;
-            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+            bb.PayoutAmount = 
+                Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
+                .ToString("#.00"));
 
             bettorInProgressBasicBets.Add(bb);
         }
@@ -217,7 +220,9 @@
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
             bb.FinalWinnerTeamName = "Game not complete.";
             bb.Spread = gameWagered.PointSpread;
-            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+            bb.PayoutAmount = 
+                Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
+                .ToString("#.00"));
 
             winningBetsUnpaidBasicBets.Add(bb);
         }
@@ -232,7 +237,9 @@
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
             bb.FinalWinnerTeamName = "Game not complete.";
             bb.Spread = gameWagered.PointSpread;
-            bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2)).ToString("#.00"));
+            bb.PayoutAmount = 
+                Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
+                .ToString("#.00"));
 
             bettorPushBetsUnpaidBasicBets.Add(bb);
         }

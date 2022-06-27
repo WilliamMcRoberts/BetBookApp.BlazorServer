@@ -1,11 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
 
 <PageTitle>BetBookUI</PageTitle>
 
 <div class="page">
     <main>
         <div class="header px-5 pt-3 nav-links">
-            <div class="icon-container">
+            <div @onclick="NavigateHome" class="icon-container">
                 <image class="fb-icon" src="/images/fb.png"></image>
                 <h3 class="name">Bet Book</h3>
             </div>
@@ -18,3 +19,10 @@
         </article>
     </main>
 </div>
+
+@code {
+    private void NavigateHome()
+    {
+        navManager.NavigateTo("/");
+    }
+}

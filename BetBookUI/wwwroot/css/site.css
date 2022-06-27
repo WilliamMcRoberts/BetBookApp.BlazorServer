@@ -1,7 +1,7 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 h1:focus {
@@ -78,6 +78,7 @@ a, .btn-link {
 label {
     font-weight: 700;
     font-size: 20px;
+    /*font-family: 'Montserrat', sans-serif;*/
 }
 
 p {
@@ -99,6 +100,7 @@ ul {
     display: flex;
     text-align: center;
     justify-content: flex-end;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /******************************
@@ -123,7 +125,6 @@ ul {
 }
 
 .name {
-    font-family: 'Montserrat', sans-serif;
     font-size: 50px;
     margin-top: .25em;
     margin-left: .25em;
@@ -139,6 +140,49 @@ ul {
         Layout
 *******************************/
 
+.home-team {
+    border: 4px solid green;
+    border-radius: 15px;
+    width: 12.5%;
+    margin-right: 12em;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: palegreen;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 1em 3em;
+}
+
+.away-team {
+    border: 4px solid green;
+    border-radius: 15px;
+    width: 12.5%;
+    margin-left: 12em;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: palegreen;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 1em 3em;
+}
+
+.basic-record {
+    display: flex;
+}
+
+.dash {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.local {
+    border: 3px solid green;
+    border-radius: 15px;
+    background: white;
+}
+
 .wager-form-container {
     border: 4px solid green;
     background: palegreen;
@@ -147,12 +191,14 @@ ul {
 }
 
 .title {
-    margin-left: 6em;
     font-family: 'Montserrat', sans-serif;
+    text-align: center;
 }
 
 .team-item {
     padding: .25em;
+    font-size: 25px;
+    font-weight: 700;
 }
 
 .input {
@@ -160,13 +206,17 @@ ul {
     justify-content: space-evenly;
 }
 
-.game-container {
+.game-details {
     border: 4px solid green;
     background: palegreen;
-    margin: 1rem auto;
+    margin: 1rem .5em;
     border-radius: 15px;
     text-align: center;
-    width: 75%;
+    width: 50%;
+}
+
+.game-container {
+    display: flex;
 }
 
 .game-info-container {
@@ -221,6 +271,7 @@ ul {
 .game-info {
     list-style-type: none;
     padding: .25em 0;
+    margin-top: 2em;
 }
 
 .game-list {
@@ -252,6 +303,7 @@ ul {
 
 .team {
     display: flex;
+    margin: 1em 0;
 }
 
 .records {
@@ -287,12 +339,17 @@ ul {
 }
 
 .profile-label {
-    margin-left: .75em;
+    margin-left: 2.5em;
     margin-top: 1em;
 }
 
+.week-title {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .bal-label {
-    margin-right: .75em;
+    margin-right: 2.5em;
     margin-top: 1em;
 }
 
@@ -300,7 +357,7 @@ ul {
     background: white;
     border-radius: 15px;
     margin: 0 auto;
-    border: 4px solid green;
+    border: 3px solid green;
     width: 75%;
     font-size: 15px;
     font-weight: 700;
