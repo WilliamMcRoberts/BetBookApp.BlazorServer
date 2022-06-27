@@ -21,7 +21,7 @@
                     <li class="team-item">@bg.AwayTeamName at @bg.HomeTeamName || @bg.FavoriteTeamName - @bg.PointSpread</li>
                 </ul>
                 <br>
-                <button  @onclick="(() => CreateBet(bg.GameId))" class="make-wager-btn btn btn-light">Place A Wager On This Game</button>
+                <button  @onclick="(() => CreateBet(bg.GameId))" style="margin-bottom: 2em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Place A Wager On This Game</button>
             </div>
         }
     }
@@ -31,64 +31,7 @@
     }
 </div>
 
-<style>
-
-    label {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0 auto;
-    }
-
-    li{
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    .title {
-        margin-left: 6em;
-    }
-
-    .team-item {
-        padding: .25em;
-    }
-
-    .game-container {
-        border: 4px solid green;
-        background: palegreen;
-        margin: 1rem auto;
-        border-radius: 15px;
-        text-align: center;
-        width: 75%;
-    }
-
-    .game-info {
-        list-style-type: none;
-        padding: .25em 0;
-    }
-
-    .make-wager-btn {
-        margin-bottom: 2em;
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .make-wager-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-</style>
-
 @code {
-
-    /*********************************************************
-            **       TODO - Organize CSS        **
-     * *******************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;

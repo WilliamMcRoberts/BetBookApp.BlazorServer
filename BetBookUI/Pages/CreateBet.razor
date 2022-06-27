@@ -17,8 +17,8 @@
 <div class="game-wager-container">
     <div class="game-info-container">
         <h1 style="margin-left: 1em;margin-top: .5em;">Game Details</h1>
-        <div class="stats">
-            <ul class="game-info">
+        <div style="margin-bottom:1em;">
+            <ul class="game-list">
                 <li class="team-item">Home :   @basicGame.HomeTeamName</li>
                 <li class="team-item">Away :   @basicGame.AwayTeamName</li>
                 <li class="team-item">Favorite :   @basicGame.FavoriteTeamName</li>
@@ -28,11 +28,11 @@
             <br />
             <div class="records">
                 <div class="fav-records">
-                <label style="font-size: 25px;">@basicGame.FavoriteTeamName Record</label>
+                <label style="font-size: 25px;text-align:center;">@basicGame.FavoriteTeamName Record</label>
                 <div class="rec-sec">
                     @if(favoriteTeamWins is not null)
                     {
-                        <label>Wins: @favWinCount</label>
+                        <label style="text-align: center;">Wins: @favWinCount</label>
                         <div class="team">
                             @foreach(var win in favoriteTeamWins)
                             {
@@ -48,7 +48,7 @@
                 <div class="rec-sec">
                     @if(favoriteTeamLosses is not null)
                     {
-                        <label>Losses: @favLossCount</label>
+                        <label style="text-align: center;">Losses: @favLossCount</label>
                         <div class="team">
                             @foreach(var loss in favoriteTeamLosses)
                             {
@@ -64,7 +64,7 @@
                 <div class="rec-sec">
                     @if(favoriteTeamDraws is not null)
                     {
-                        <label>Draws: @favDrawCount</label>
+                        <label style="text-align: center;">Draws: @favDrawCount</label>
                         <div class="team">
                             @foreach(var draw in favoriteTeamDraws)
                             {
@@ -78,11 +78,11 @@
                 </div>
             </div>
             <div class="und-records">
-                <label style="font-size: 25px;">@basicGame.UnderdogTeamName Record</label>
+                <label style="font-size: 25px;text-align:center;">@basicGame.UnderdogTeamName Record</label>
                 <div class="rec-sec">
                     @if(underdogTeamWins is not null)
                     {
-                        <label>Wins: @undWinCount</label>
+                        <label style="text-align: center;">Wins: @undWinCount</label>
                         <div class="team">
                             @foreach(var win in underdogTeamWins)
                             {
@@ -98,7 +98,7 @@
                 <div class="rec-sec">
                     @if(underdogTeamLosses is not null)
                     {
-                        <label>Losses: @undLossCount</label>
+                        <label style="text-align: center;">Losses: @undLossCount</label>
                         <div class="team">
                             @foreach(var loss in underdogTeamLosses)
                             {
@@ -114,7 +114,7 @@
                 <div class="rec-sec">
                     @if(underdogTeamDraws is not null)
                     {
-                        <label>Draws: @undDrawCount</label>
+                        <label style="text-align: center;">Draws: @undDrawCount</label>
                         <div class="team">
                             @foreach(var draw in underdogTeamDraws)
                             {
@@ -145,8 +145,8 @@
                     {
                         <div style="color:red;text-align:center;">*GAME HAS ALREADY STARTED*</div>
                     }
-                    <div class="wager-box">
-                    <label>Wager Amount</label>
+                <div class="wager-box">
+                    <label style="text-align: center;">Wager Amount</label>
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                 </div>
             </div>
@@ -159,10 +159,10 @@
                 <p>Once everything looks good, click "Submit Wager"</p>
             </div>
             <div class="winner-btn-container">
-                <button class="mb-2 mt-2 winner-btn btn btn-light" 
+                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.FavoriteId))">
                         Choose @basicGame.FavoriteTeamName</button>
-                <button class="mb-2 mt-2 winner-btn btn btn-light" 
+                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.UnderdogId))">
                         Choose @basicGame.UnderdogTeamName</button>
             </div>
@@ -182,8 +182,8 @@
                         }
                     <p>The amount you've entered to wager is $@betAmount</p>
                     <p>If everything looks good, click the "Submit Wager" button</p>
-                    <div class="undo-btn-container">
-                        <button class="mb-2 mt-2 undo-btn btn btn-light" @onclick="UndoWinnerSelection">Undo @teamToWin.TeamName As Winner</button>
+                    <div style="margin-top:4em;" class="undo-btn-container">
+                        <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" @onclick="UndoWinnerSelection">Undo @teamToWin.TeamName As Winner</button>
                     </div>
                 }
             </div>
@@ -195,143 +195,12 @@
 }
     @if(wagerPlaced == false)
     {
-        <div class="submit">
-            <button class="mt-4 mb-4 winner-btn btn btn-light" @onclick="(() => PlaceWager(betAmount, teamToWin))">Submit Wager</button>
+        <div style="padding: 2em .25em;text-align:center;">
+            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PlaceWager(betAmount, teamToWin))">Submit Wager</button>
         </div>
     }
     </div>
 </div>
-
-<style>
-
-    p {
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    li {
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    label {
-        font-weight: 700;
-        font-size: 20px;
-        text-align: center;
-    }
-
-    .stats {
-        margin-bottom: 1em;
-    }
-
-    .records {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .fav-records {
-        /*TODO*/
-    }
-
-    .und-records {
-        /*TODO*/
-    }
-
-    .rec-sec {
-        margin-bottom: 1em;
-    }
-
-    .wager-form-container {
-        border: 4px solid green;
-        background: palegreen;
-        border-radius: 15px;
-        width: 50%;
-    }
-
-    .team {
-        display: flex;
-    }
-
-    .review {
-        text-align: center;
-        margin-top: 2em;
-    }
-
-    .submit {
-        text-align: center;
-    }
-
-    .team-item {
-        padding: .25em;
-    }
-
-    .game-info-container {
-        border: 4px solid green;
-        width: 50%;
-        border-radius: 15px;
-        background: palegreen;
-        margin-right: 1em;
-    }
-    
-    .game-wager-container {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .game-info {
-        list-style-type: none;
-        text-align: center;
-        margin: 1em auto;
-    }
-
-    .wager-box {
-        width: 25%;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        margin-top: 2em;
-    }
-
-    .winner-btn-container {
-        text-align: center;
-        margin-top: 2em;
-    }
-
-    .winner-btn {
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .winner-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-    .undo-btn-container {
-        margin-top: 2em;
-    }
-
-    .undo-btn {
-        border: 2px solid red;
-        background: yellow;
-        color: red;
-        font-family: 'Montserrat', sans-serif;
-        border-radius: 15px;
-        font-weight: 700;
-    }
-
-    .undo-btn:hover {
-        background: red;
-        color: yellow;
-        border: 2px solid yellow;
-    }
-
-</style>
 
 @code {
 

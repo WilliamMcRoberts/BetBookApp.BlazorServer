@@ -20,6 +20,7 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
+    margin-top: 75px;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -65,11 +66,268 @@ a, .btn-link {
 
 
 
-/**********************************
-            Start 
-***********************************/
+/**********************************************************************
+                                START 
+***********************************************************************/
 
-.auth-btn {
+
+/**********************************
+        Typography
+**********************************/
+
+label {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+p {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+li {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+ul {
+    list-style-type: none;
+    margin: 1em 1em;
+}
+
+.nav-links {
+    display: flex;
+    text-align: center;
+    justify-content: flex-end;
+}
+
+/*******************************
+        Layout
+*******************************/
+
+.wager-form-container {
+    border: 4px solid green;
+    background: palegreen;
+    border-radius: 15px;
+    width: 50%;
+}
+
+.title {
+    margin-left: 6em;
+}
+
+.team-item {
+    padding: .25em;
+}
+
+.input {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.game-container {
+    border: 4px solid green;
+    background: palegreen;
+    margin: 1rem auto;
+    border-radius: 15px;
+    text-align: center;
+    width: 75%;
+}
+
+.game-info-container {
+    border: 4px solid green;
+    width: 50%;
+    border-radius: 15px;
+    background: palegreen;
+    margin-right: 1em;
+}
+
+.game-wager-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.game-input {
+    border: 4px solid green;
+    width: 50%;
+    margin-left: .5em;
+    border-radius: 15px;
+    background: #98FB98; /*Pale Green*/
+}
+
+.input-box {
+    padding: .5em 0;
+    width: 50%;
+    margin-left: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-label-container {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 2em;
+    margin-top: 2em;
+}
+
+.label-container {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.winner-input {
+    width: 50%;
+    background: #98FB98; /*Pale Green*/
+    margin-left: .5em;
+    border-radius: 15px;
+    border: 4px solid green;
+}
+
+.game-info {
+    list-style-type: none;
+    padding: .25em 0;
+}
+
+.game-list {
+    margin: 1em auto;
+    text-align: center;
+}
+
+.wager-box {
+    width: 25%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+}
+
+.undo-btn-container {
+    margin-top: 2em;
+}
+
+.winner-btn-container {
+    text-align: center;
+    margin-top: 4em;
+}
+
+.review {
+    text-align: center;
+    margin-top: 4em;
+}
+
+.team {
+    display: flex;
+}
+
+.records {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.rec-sec {
+    margin-bottom: 1em;
+}
+
+.user {
+    width: 50%;
+    background: #98FB98; /*Pale Green*/
+    border-radius: 15px;
+    margin: 0 auto;
+    border: 4px solid green;
+}
+
+.divider {
+    border-bottom: 2px solid green;
+    margin: 2em 6em;
+}
+
+.game {
+    margin: .5rem .5rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.bets {
+    margin-bottom: 2em;
+}
+
+.profile-label {
+    margin-left: .75em;
+    margin-top: 1em;
+}
+
+.bal-label {
+    margin-right: .75em;
+    margin-top: 1em;
+}
+
+.bet {
+    background: white;
+    border-radius: 15px;
+    margin: 0 auto;
+    border: 4px solid green;
+    width: 75%;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.team-item {
+    padding: .25em;
+}
+
+.item {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 1em 1em;
+}
+
+.update-label {
+    margin-left: .75em;
+    margin-top: 1em;
+}
+
+.game-id-box {
+    padding: .5em 0;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.scores-box {
+    padding: .5em 0;
+    width: 50%;
+    margin: 0 auto;
+}
+
+
+/*************************************
+        Buttons
+ **************************************/
+
+.undo-btn {
+    background: yellow;
+    color: red;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 15px;
+    font-weight: 900;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-width: 3px;
+    border-color: red;
+}
+
+    .undo-btn:hover {
+        background: red;
+        color: yellow;
+        border-color:yellow;
+    }
+
+.site-btn {
     font-family: 'Montserrat', sans-serif;
     border-width: 3px;
     border-radius: 15px;
@@ -80,14 +338,8 @@ a, .btn-link {
     color: green;
 }
 
-.auth-btn-light:hover {
+.site-btn-light:hover {
     color: #FFFFFF;
     background-color: green;
     border-color: green;
-}
-
-.nav-links {
-    display: flex;
-    text-align: center;
-    justify-content: flex-end;
 }

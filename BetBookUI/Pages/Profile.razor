@@ -14,7 +14,6 @@
 
 @*********************************** Demo Display ******************************************@
 
-
 <div class="user">
     
     <div class="label-container">
@@ -33,14 +32,13 @@
     </div>
 
     <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
-        <button class="payout-btn btn btn-light" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
     </div>
 
     <div style="text-align: center;margin-bottom: 1em;">
-        <button class="payout-btn btn btn-light" @onclick="RefundPushBets">Refund My Push Bets</button>
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundPushBets">Refund My Push Bets</button>
     </div>
     <div class="divider">
-
     </div>
     <div class="bets">
         <label style="margin-left: 5.25em;">Open Bets</label>
@@ -109,94 +107,6 @@
         }
     </div>
 </div>
-
-<style>
-
-    .bets {
-        margin-bottom: 2em;
-    }
-
-    ul {
-        list-style-type: none;
-        margin: 1em 1em;
-    }
-
-    .divider {
-        border-bottom: 2px solid green;
-        margin: 2em 6em;
-    }
-
-    .bet {
-        background: #98FB98; /*Pale Green*/
-        border-radius: 15px;
-        margin: 0 auto;
-        border: 2px solid green;
-        width: 75%;
-        font-size: 15px;
-        font-weight:700;
-        text-align: center;
-        margin-top: 1em;
-        margin-bottom: 1em;
-    }
-
-    .label-container {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 700;
-        font-size: 20px;
-    }
-
-    .payout-btn {
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .payout-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-    .user {
-        width: 50%;
-        background: #98FB98; /*Pale Green*/
-        border-radius: 15px;
-        margin: 0 auto;
-        border: 4px solid green;
-    }
-
-    label {
-        font-weight: 700;
-        font-size: 20px;
-    }
-
-    .profile-label {
-        margin-left: .75em;
-        margin-top: 1em;
-    }
-
-    .bal-label {
-        margin-right: .75em;
-        margin-top: 1em;
-    }
-
-    .item {
-        font-size: 20px;
-        font-weight: 700;
-        text-align: center;
-        margin: 1em 1em;
-    }
-
-    li {
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-</style>
 
 @code {
 

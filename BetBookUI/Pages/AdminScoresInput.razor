@@ -26,11 +26,11 @@
                     <input type="number" @bind-value="@GameId" @bind-value:event="oninput"/>
                 </div>
                 <div>
-                    <button class="get-game-btn btn btn-light" @onclick="(() => PopulateBasicGameModel(GameId))">Get Game</button>
+                    <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PopulateBasicGameModel(GameId))">Get Game</button>
                 </div>
             </div>
         </div>
-        <div class="game-container">
+        <div class="game">
             @if (scoresAdded)
             {
                 <div style="margin: 4em 1em;">
@@ -57,105 +57,10 @@
             <div class="scores-box">
                 <input type="number" @bind-value="@UnderdogScore" @bind-value:event="oninput"/>
             </div>
-            <button @onclick="(() => UpdateGameWinner(FavoriteScore, UnderdogScore))" class="update-btn btn btn-light">Submit Scores</button>
+            <button @onclick="(() => UpdateGameWinner(FavoriteScore, UnderdogScore))" style="margin-bottom: 2em;margin-top:2em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Submit Scores</button>
         </div>
     </div>
 </div>
-
-<style>
-
-    .update-label {
-        margin-left: .75em;
-        margin-top: 1em;
-    }
-
-    .get-game-btn {
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        margin-left: 4em;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .get-game-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-    .update-btn {
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        margin: 1em 0;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .update-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-    .input {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .game-id-box {
-        padding:.5em 0;
-        width: 75%;
-        margin: 0 auto;
-    }
-
-    .scores-box {
-        padding:.5em 0;
-        width: 50%;
-        margin: 0 auto;
-    }
-
-    label {
-        font-weight: 700;
-        font-size: 20px;
-    }
-
-    .winner-input {
-        width: 50%;
-        background: #98FB98; /*Pale Green*/
-        margin-left: .5em;
-        border-radius: 15px;
-        border: 4px solid green;
-    }
-
-    .game-container {
-        margin: .5rem .5rem;
-        border-radius: 10px;
-        text-align: center;
-    }
-
-    li {
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    .team-item {
-        padding: .25em;
-    }
-
-    .game-info {
-        list-style-type: none;
-        padding: .25em 0;
-    }
-
-    .input {
-        border-radius: 15px;
-    }
-
-</style>
 
 @code {
 
@@ -207,25 +112,36 @@
     /// <returns></returns>
     private async Task UpdateGameWinner(double favoriteScore, double underdogScore)
     {
-        CurrentGame.FavoriteFinalScore = favoriteScore;
-        CurrentGame.UnderdogFinalScore = underdogScore;
-        CurrentGame.GameStatus = GameStatus.FINISHED;
+        if(CurrentGame is not null)
+        {
+            if (CurrentGame.Id != 0)
+            {
+                CurrentGame.FavoriteFinalScore = favoriteScore;
+                CurrentGame.UnderdogFinalScore = underdogScore;
+                CurrentGame.GameStatus = GameStatus.FINISHED;
 
-        await gameData.UpdateGame(CurrentGame);
+                await gameData.UpdateGame(CurrentGame);
 
-        TeamModel? winningTeam = 
-            CalculateWinningTeam(CurrentGame, favoriteScore, underdogScore);
+                TeamModel? winningTeam =
+                    CalculateWinningTeam(CurrentGame, favoriteScore, underdogScore);
 
-        if (winningTeam is not null)
-            await gameData.AddGameWinner(CurrentGame, winningTeam);
+                if (winningTeam is not null)
+                    await gameData.AddGameWinner(CurrentGame, winningTeam);
 
-        await UpdateBetWinners(favoriteScore, underdogScore);
+                await UpdateBetWinners(favoriteScore, underdogScore);
 
-        scoresAdded = true;
+                scoresAdded = true;
 
-        ClearUpdateWinnersForm();
+                ClearUpdateWinnersForm();
 
-        await UpdateTeamRecords(favoriteScore, underdogScore);
+                await UpdateTeamRecords(favoriteScore, underdogScore);
+
+                noGame = false;
+            }
+
+            else
+                noGame = true;
+        }
     }
 
     /// <summary>

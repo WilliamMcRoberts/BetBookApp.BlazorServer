@@ -43,7 +43,7 @@
             <input type="number" @bind-value="@awayTeamId" @bind-value:event="oninput"/>
         </div>
         <div>
-             <button class="mb-2 mt-2 insert-btn btn btn-light" @onclick="InsertGame">Insert Game</button>
+             <button style="float:right;margin-right:6em;" class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="InsertGame">Insert Game</button>
         </div>
         <div class="input-box">
             <label>Favorite Id</label>
@@ -63,71 +63,6 @@
         </div>
     </div>
 </div>
-
-<style>
-
-    .game-info {
-        list-style-type: none;
-        padding: .25em 0;
-    }
-
-    .input {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .game-input {
-        border: 4px solid green;
-        width: 50%;
-        margin-left: .5em;
-        border-radius: 15px;
-        background: #98FB98; /*Pale Green*/
-    }
-
-    .input-box {
-        padding:.5em 0;
-        width: 50%;
-        margin-left: 2em;
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        font-weight: 700;
-        font-size: 20px;
-    }
-
-    .insert-btn {
-        float: right;
-        margin-right: 6em;
-        background:#98FB98;
-        color:green;
-        border: 2px solid green;
-        border-radius: 15px;
-        font-weight: 700;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .insert-btn:hover {
-        background:green;
-        color: white;
-        border: 2px solid green;
-    }
-
-    .input-label-container {
-        display: flex;
-        justify-content: space-between;
-        margin-left: 2em;
-        margin-top: 2em;
-    }
-
-    /******** To specify font size and color of text box placeholder*********/
-    .e-float-input.e-control-wrapper:not(.e-error) input:valid ~ label.e-float-text, .e-float-input.e-control-wrapper:not(.e-error) input ~ label.e-label-top.e-float-text {
-        font-weight: 700;
-        font-size: 20px;
-    }
-
-</style>
 
 @code {
 
