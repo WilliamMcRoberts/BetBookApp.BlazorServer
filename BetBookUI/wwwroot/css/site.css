@@ -20,7 +20,7 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
-    margin-top: 75px;
+    margin-top: 125px;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -114,6 +114,7 @@ ul {
 
 .title {
     margin-left: 6em;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .team-item {
@@ -166,8 +167,6 @@ ul {
 .input-label-container {
     display: flex;
     justify-content: space-between;
-    margin-left: 2em;
-    margin-top: 2em;
 }
 
 .label-container {
