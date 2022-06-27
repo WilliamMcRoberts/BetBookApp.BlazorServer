@@ -3,7 +3,6 @@
 <PageTitle>BetBookUI</PageTitle>
 
 <div class="page">
-
     <main>
         <div class="header px-5 pt-3 nav-links">
             <div class="icon-container">
@@ -14,44 +13,8 @@
                 <LoginDisplay />
             </div>
         </div>
-
         <article class="content px-4">
             @Body
         </article>
     </main>
-
 </div>
-
-<style>
-
-    .header {
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 99;
-        position: fixed;
-        background: palegreen;
-        padding: 1em 0;
-        border-bottom: 4px solid green;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .icon-container {
-        display: flex;
-    }
-
-    .name {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 50px;
-        margin-top: .25em;
-        margin-left: .25em;
-        color: green;
-        font-weight: 700;
-    }
-
-    .fb-icon {
-        height: 75px;
-    }
-
-</style>
