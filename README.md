@@ -8,5 +8,5 @@ Create A Wager
 ![CreateBetPage2](https://user-images.githubusercontent.com/95720340/176059634-463cb135-3211-4591-8c2c-7d06c859cd79.png)
 
 Profile Page
-![ProfilePage](https://user-images.githubusercontent.com/95720340/176059662-d7c02660-43ee-49a9-be7f-bfd9dd57a35b.png)
+![Profile](https://user-images.githubusercontent.com/95720340/176061055-0cc42466-10ce-4f7a-8928-73ef0d0b0ef9.png)
 
