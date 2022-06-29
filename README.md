@@ -5,7 +5,7 @@ BROWSE GAMES HOME PAGE
 ![Home](https://user-images.githubusercontent.com/95720340/176345888-883476d2-1be5-4e98-a3b1-199c9d91371d.png)
 
 CREATE A WAGER PAGE
-![Create](https://user-images.githubusercontent.com/95720340/176345966-0df1228d-13af-466d-abc7-a8fa87b7cb80.png)
+![CB](https://user-images.githubusercontent.com/95720340/176520483-04ade180-ae7a-41b3-bb6a-58f7c5a8f703.png)
 
 PROFILE PAGE
 ![Prof](https://user-images.githubusercontent.com/95720340/176345162-b0e698b2-8c31-4ba7-a7da-c8d7e9e29a7c.png)
