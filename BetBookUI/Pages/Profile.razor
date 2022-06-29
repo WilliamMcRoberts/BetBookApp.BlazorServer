@@ -201,7 +201,7 @@
             GameModel gameWagered = await gameData.GetGame(bet.GameId);
 
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-            bb.FinalWinnerTeamName = "None";
+            bb.FinalWinnerTeamName = "Game Not Finished";
             bb.Spread = gameWagered.PointSpread;
             bb.PayoutAmount = 
                 Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
