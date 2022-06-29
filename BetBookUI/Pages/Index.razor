@@ -120,10 +120,10 @@
         {
             loggedInUser = await userData.GetUserFromAuthentication(objectIdentifier) ?? new();
 
-            string? firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
-            string? lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
-            string? displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
-            string? emailAddress = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+            string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
+            string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
+            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+            string emailAddress = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
 
             bool isDirty = false;
 
@@ -244,14 +244,18 @@
 
                 BasicGameModel bg = new();
 
-                bg.HomeTeamName = homeTeam.TeamName;
-                bg.AwayTeamName = awayTeam.TeamName;
-                bg.FavoriteTeamName = favoriteTeam.TeamName;
-                bg.UnderdogTeamName = underdogTeam.TeamName;
-                bg.PointSpread = g.PointSpread;
-                bg.GameId = g.Id;
+                if(homeTeam is not null && awayTeam is not null 
+                    && favoriteTeam is not null && underdogTeam is not null)
+                {
+                    bg.HomeTeamName = homeTeam.TeamName;
+                    bg.AwayTeamName = awayTeam.TeamName;
+                    bg.FavoriteTeamName = favoriteTeam.TeamName;
+                    bg.UnderdogTeamName = underdogTeam.TeamName;
+                    bg.PointSpread = g.PointSpread;
+                    bg.GameId = g.Id;
 
-                basicGames.Add(bg);
+                    basicGames.Add(bg);
+                }
             }
         }
 

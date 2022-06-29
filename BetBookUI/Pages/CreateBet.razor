@@ -174,9 +174,9 @@
         @if (winnerChosen == false)
         {
             <div class="review">
-                <p>Enter a wager amount and choose a team to win</p>
-                <p>If you want to undo the choice, click the undo button</p>
-                <p>Once everything looks good, click "Submit Wager"</p>
+                <p>#1 Enter a wager amount</p>
+                <p>#2 Choose a winner</p>
+                <p>#3 Click "Submit Wager"</p>
             </div>
             <div class="winner-btn-container">
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
@@ -190,19 +190,19 @@
         else if(winnerChosen == true && wagerPlaced == false)
         {
             <div class="review">
+                <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
                 @if(teamToWin is not null)
                 {
                         @if(teamToWin.TeamName == basicGame.FavoriteTeamName)
                         {
-                            <p>You've chosen the @teamToWin.TeamName - @basicGame.PointSpread points to win the game</p>
+                            <p>@teamToWin.TeamName - @basicGame.PointSpread points</p>
                         }
                         else
                         {
-                            <p>You've chosen the @teamToWin.TeamName + @basicGame.PointSpread points to win the game</p>
+                            <p>@teamToWin.TeamName + @basicGame.PointSpread points</p>
                         }
-                    <p>The amount you've entered to wager is $@betAmount</p>
-                    <p>If everything looks good, click the "Submit Wager" button</p>
-                    <div style="margin-top:4em;" class="undo-btn-container">
+                    <p>For $@betAmount</p>
+                    <div style="margin-top:3.4em;" class="undo-btn-container">
                         <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" @onclick="UndoWinnerSelection">Undo @teamToWin.TeamName As Winner</button>
                     </div>
                 }
