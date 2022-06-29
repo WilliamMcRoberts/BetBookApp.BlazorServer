@@ -4,17 +4,23 @@ using Microsoft.AspNetCore.Components.Authorization;
 namespace BetBookUI.Helpers;
 
 /// <summary>
-/// Static helper class
+///     Static helper class
 /// </summary>
 public static class AuthenticationStateProviderHelpers
 {
     /// <summary>
-    /// Method to grab object identifier from Azure, 
-    /// then grab user from database
+    ///     Method to grab object identifier from Azure, 
+    ///     then grab user from database
     /// </summary>
-    /// <param name="provider"></param>
-    /// <param name="userData"></param>
-    /// <returns>UserModel</returns>
+    /// <param name="provider">
+    ///     AuthenticationStateProvider represents the identity provider
+    /// </param>
+    /// <param name="userData">
+    ///     IUserData represents instance of UserData class
+    /// </param>
+    /// <returns>
+    ///     UserModel current logged in user
+    /// </returns>
     public static async Task<UserModel> GetUserFromAuth(
         this AuthenticationStateProvider provider, IUserData userData)
     {

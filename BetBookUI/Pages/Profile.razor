@@ -165,8 +165,8 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
-                                    .ToString("#.00"));
+        userAccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
 
         bettorBets = 
             (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
@@ -209,7 +209,7 @@
             bb.Spread = gameWagered.PointSpread;
             bb.PayoutAmount = 
                 Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                .ToString("#.00"));
+                       .ToString("#.00"));
 
             bettorInProgressBasicBets.Add(bb);
         }
@@ -220,13 +220,14 @@
 
             TeamModel chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
             GameModel gameWagered = await gameData.GetGame(bet.GameId);
+            TeamModel finalWinner = await teamData.GetTeam(bet.FinalWinnerId);
 
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.FinalWinnerTeamName = finalWinner.TeamName;
             bb.Spread = gameWagered.PointSpread;
             bb.PayoutAmount = 
                 Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                .ToString("#.00"));
+                       .ToString("#.00"));
 
             winningBetsUnpaidBasicBets.Add(bb);
         }
@@ -239,11 +240,11 @@
             GameModel gameWagered = await gameData.GetGame(bet.GameId);
 
             bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-            bb.FinalWinnerTeamName = "Game not complete.";
+            bb.FinalWinnerTeamName = "Push";
             bb.Spread = gameWagered.PointSpread;
             bb.PayoutAmount = 
                 Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                .ToString("#.00"));
+                       .ToString("#.00"));
 
             bettorPushBetsUnpaidBasicBets.Add(bb);
         }
@@ -269,7 +270,6 @@
         await houseData.UpdateHouseAccount(houseAccount);
         await userData.UpdateUserAccountBalance(loggedInUser);
 
-        loggedInUser = await userData.GetUser(loggedInUser.Id);
         userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
                                     .ToString("#.00"));
 
@@ -297,8 +297,8 @@
         await userData.UpdateUserAccountBalance(loggedInUser);
 
         loggedInUser = await userData.GetUser(loggedInUser.Id);
-        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
-                                    .ToString("#.00"));
+        userAccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
 
         bettorPushBetsUnpaid.Clear();
         totalPendingRefund = Convert.ToDecimal((0).ToString("#.00"));
