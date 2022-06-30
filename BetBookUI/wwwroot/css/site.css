@@ -342,14 +342,14 @@ ul {
     margin-top: 1em;
 }
 
-.week-title {
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .bal-label {
     margin-right: 2.5em;
     margin-top: 1em;
+}
+
+.week-title {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .bet {
