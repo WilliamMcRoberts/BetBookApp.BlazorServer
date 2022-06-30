@@ -39,7 +39,7 @@ public static class RegisterServices
 
         /*********************** Data access / Db access *************************/
 
-        builder.Services.AddScoped<ISqlConnection, SqlConnection>();
+        builder.Services.AddSingleton<ISqlConnection, SqlConnection>();
         builder.Services.AddTransient<IUserData, UserData>();
         builder.Services.AddTransient<ITeamData, TeamData>();
         builder.Services.AddTransient<IBetData, BetData>();
