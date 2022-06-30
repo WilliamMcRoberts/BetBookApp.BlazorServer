@@ -8,7 +8,7 @@ CREATE A WAGER PAGE
 ![CB](https://user-images.githubusercontent.com/95720340/176520483-04ade180-ae7a-41b3-bb6a-58f7c5a8f703.png)
 
 PROFILE PAGE
-![Prof](https://user-images.githubusercontent.com/95720340/176345162-b0e698b2-8c31-4ba7-a7da-c8d7e9e29a7c.png)
+![ProfPage](https://user-images.githubusercontent.com/95720340/176788955-71e6981d-3514-42c4-be03-f55d735e1f69.png)
 
 ADMIN GAME INPUT PAGE
 ![Games](https://user-images.githubusercontent.com/95720340/176346633-6f3021e9-1c41-4989-945f-685d2f615085.png)
