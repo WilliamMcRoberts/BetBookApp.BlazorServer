@@ -249,7 +249,8 @@
 
         try
         {
-            // Transaction balance method
+            // Transaction payout method updates bet statuses, transfers
+            // funds from house account to user account
             await transactions.PayoutBetsTransaction(loggedInUser, 
                                                      houseAccount, 
                                                      bettorWinningBetsUnpaid);
@@ -277,7 +278,8 @@
 
         try
         {
-            // Transaction balance method
+            // Transaction payout method updates bet statuses, transfers
+            // funds from house account to user account
             await transactions.PayoutBetsTransaction(loggedInUser, 
                                                      houseAccount,
                                                      bettorPushBetsUnpaid);

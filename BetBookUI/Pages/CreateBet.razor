@@ -9,7 +9,7 @@
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
-@inject IBalanceData balanceData
+@inject ITranactions transactions
 
 <PageTitle>CreateBet</PageTitle>
 
@@ -433,8 +433,8 @@
                 try
                 {
                     // Tranaction create bet method transfers funds from user account
-                    // to house account and inserts bet into database
-                    await balanceData.CreateBetTransaction(loggedInUser, houseAccount, bet);
+                    // to house account and inserts bet into the database
+                    await transactions.CreateBetTransaction(loggedInUser, houseAccount, bet);
                     //await betData.InsertBet(bet);
                 }
                 catch (Exception ex)
