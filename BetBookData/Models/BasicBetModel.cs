@@ -1,4 +1,4 @@
-﻿namespace BetBookUI.Models;
+﻿namespace BetBookData.Models;
 
 public class BasicBetModel
 {

@@ -10,7 +10,7 @@ public class BetData : IBetData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// HouseAccountData Constructor
+    /// BetData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public BetData(ISqlConnection db)
@@ -33,14 +33,14 @@ public class BetData : IBetData
     /// Async method calls spBets_Get stored procedure which retrieves one 
     /// bet by bet id
     /// </summary>
-    /// <param name="id">int represents the id of the bet being retrieved from the database</param>
+    /// <param name="betId">int represents the id of the bet being retrieved from the database</param>
     /// <returns>BetModel represents the bet being retrieved from the database</returns>
-    public async Task<BetModel?> GetBet(int bettorId)
+    public async Task<BetModel?> GetBet(int betId)
     {
         var result = await _db.LoadData<BetModel, dynamic>(
             "dbo.spBets_Get", new
             {
-                BettorId = bettorId
+                Id = betId
             });
 
         return result.FirstOrDefault();

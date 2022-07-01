@@ -432,7 +432,7 @@
 
                 try
                 {
-                    // Tranaction create bet method transfers funds from user account
+                    // Tranaction method transfers funds from user account
                     // to house account and inserts bet into the database
                     await transactions.CreateBetTransaction(loggedInUser, houseAccount, bet);
                     //await betData.InsertBet(bet);

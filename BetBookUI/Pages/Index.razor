@@ -1,10 +1,12 @@
 ﻿@page "/"
+@using BetBookUI.Helpers
 @inject AuthenticationStateProvider authProvider
 @inject NavigationManager navManager
 @inject IUserData userData
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
+@inject IAvailableGames availableGames
 
 <PageTitle>Index</PageTitle>
 
@@ -12,13 +14,13 @@
 
 <div class="games">
     <div class="week-title">
-        <h1 style="margin-left: 3.5em;" class="title">Available Games</h1>
-        <h1 style="margin-right: 3.5em;" class="title">Week @currentWeek</h1>
+        <h1 style="margin-left: 3em;" class="title">Available Games</h1>
+        <h1 style="margin-right: 3em;" class="title">Week @currentWeek</h1>
     </div>
-    @if(basicGamesNotStarted is not null)
+    @if(basicGamesAvailable is not null)
     {
         int index = 0;
-        foreach(BasicGameModel bg in basicGamesNotStarted)
+        foreach(BasicGameModel bg in basicGamesAvailable)
         {
             <div class="game-container">
                 <div class="away-team">
@@ -65,7 +67,10 @@
     private UserModel? loggedInUser;
 
     // List of basic game models for displaying game info for the current week
-    private List<BasicGameModel> basicGamesNotStarted = new();
+    private List<BasicGameModel> basicGamesAvailable = new();
+
+    // List of available game models for the current week
+    private List<GameModel> gamesAvailable = new();
 
     // Array of team record models for available games
     private TeamRecordModel[] teamRecords = new TeamRecordModel[32];
@@ -99,9 +104,13 @@
     {
         await LoadAndVerifyUser();
 
-        basicGamesNotStarted = await PopulateBasicGameModelList();
+        gamesAvailable = 
+            (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        teamRecords = await GetTeamRecords();
+        basicGamesAvailable = 
+            await availableGames.PopulateBasicGameModelList(gamesAvailable);
+
+        teamRecords = await availableGames.GetTeamRecords(basicGamesAvailable);
 
         currentWeek = GetCurrentWeek();
     }
@@ -114,7 +123,7 @@
     private async Task LoadAndVerifyUser()
     {
         var authState = await authProvider.GetAuthenticationStateAsync();
-        string? objectIdentifier = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
+        string objectIdentifier = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
 
         if (string.IsNullOrWhiteSpace(objectIdentifier) == false)
         {
@@ -172,105 +181,6 @@
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// Populates team records array with the team records
-    /// of all available games for display
-    /// </summary>
-    /// <returns>
-    /// TeamRecordModel[] represents all team records of all teams in
-    /// all games available for wagering
-    /// </returns>
-    private async Task<TeamRecordModel[]> GetTeamRecords()
-    {
-        int index = 0;
-
-        foreach(BasicGameModel bg in basicGamesNotStarted)
-        {
-            GameModel? game = await gameData.GetGame(bg.GameId);
-
-            TeamModel? teamHome = await teamData.GetTeam(game.HomeTeamId);
-            TeamModel? teamAway = await teamData.GetTeam(game.AwayTeamId);
-
-            if(teamHome is not null && teamAway is not null)
-            {
-                TeamRecordModel? teamRecordHome = await recordData.GetTeamRecord(teamHome.Id);
-                TeamRecordModel? teamRecordAway = await recordData.GetTeamRecord(teamAway.Id);
-
-                if(teamRecordHome is not null && teamRecordAway is not null)
-                {
-                    teamRecords[index] = teamRecordAway;
-                    teamRecords[index + 1] = teamRecordHome;
-                }
-            }
-
-            index += 2;
-        }
-
-        return teamRecords;
-    }
-
-    /// <summary>
-    /// Async method populates a list of basic game models with all of the team names
-    /// and point spreads of all games that have a status of NOT_STARTED
-    /// </summary>
-    /// <returns>
-    /// List<BasicGameModel> representing all basic games that have not started
-    /// </returns>
-    private async Task<List<BasicGameModel>> PopulateBasicGameModelList()
-    {
-        List<GameModel> games = new();
-        List<BasicGameModel> basicGames = new();
-
-        {
-            games = await GetAllGamesNotStarted();
-
-            foreach(GameModel g in games)
-            {
-                // If game has started update game status and re-populate basic games
-                if(g.DateOfGame < DateTime.Now)
-                {
-                    g.GameStatus = GameStatus.IN_PROGRESS;
-                    await gameData.UpdateGame(g);
-                    await PopulateBasicGameModelList();
-                }
-
-                TeamModel? homeTeam = await teamData.GetTeam(g.HomeTeamId);
-                TeamModel? awayTeam = await teamData.GetTeam(g.AwayTeamId);
-                TeamModel? favoriteTeam = await teamData.GetTeam(g.FavoriteId);
-                TeamModel? underdogTeam = await teamData.GetTeam(g.UnderdogId);
-
-                BasicGameModel bg = new();
-
-                if(homeTeam is not null && awayTeam is not null 
-                    && favoriteTeam is not null && underdogTeam is not null)
-                {
-                    bg.HomeTeamName = homeTeam.TeamName;
-                    bg.AwayTeamName = awayTeam.TeamName;
-                    bg.FavoriteTeamName = favoriteTeam.TeamName;
-                    bg.UnderdogTeamName = underdogTeam.TeamName;
-                    bg.PointSpread = g.PointSpread;
-                    bg.GameId = g.Id;
-
-                    basicGames.Add(bg);
-                }
-            }
-        }
-
-        return basicGames;
-    }
-
-    /// <summary>
-    /// Async method grabs and returns a list of all games with the 
-    /// game status "NOT_STARTED"
-    /// </summary>
-    /// <returns>
-    /// List<GameModel> represents all games with game status "NOT_STARTED"
-    /// </returns>
-    private async Task<List<GameModel>> GetAllGamesNotStarted()
-    {
-        return (List<GameModel>) await gameData.GetAllNotStartedGames();
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ public class Tranactions : ITranactions
     private readonly IBetData _betData;
 
     /// <summary>
-    /// BalanceData Constructor
+    /// Transactions Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     /// <param name="config">IConfiguration represents Configuration class interface</param>

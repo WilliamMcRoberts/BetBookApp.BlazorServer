@@ -10,7 +10,7 @@ public class GameData : IGameData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    /// HouseAccountData Constructor
+    /// GameData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public GameData(ISqlConnection db)

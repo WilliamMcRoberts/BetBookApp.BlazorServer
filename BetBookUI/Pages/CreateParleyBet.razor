@@ -1,0 +1,97 @@
+﻿@page "/CreateParleyBet"
+@attribute [Authorize]
+@using Syncfusion.Blazor.Inputs
+@using BetBookUI.Helpers
+@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+@inject IBetData betData
+@inject IGameData gameData
+@inject ITeamData teamData
+@inject IHouseAccountData houseData
+@inject ITeamRecordData recordData
+@inject ITranactions transactions
+@inject IAvailableGames availableGames
+
+<PageTitle>CreateParleyBet</PageTitle>
+
+
+
+@code {
+
+    /**************************************************************
+     *                TODO - Test ParleyBetData CRUD              *
+     * ************************************************************/
+
+    /**************************************************************
+     *                TODO - Finish CreateParleyBet page          *
+     * ************************************************************/
+
+    // Current logged in user
+    private UserModel loggedInUser;
+
+    // List of games being included in parley bet
+    private List<GameModel> chosenGames = new();
+
+    // Account balance of the house
+    private HouseAccountModel houseAccount;
+
+    // List of basic game models of games available
+    private List<BasicGameModel> basicGamesAvailable = new();
+
+    // List of basic game models of chosen games for parley bet
+    private List<BasicGameModel> basicGamesChosen = new();
+
+    // List of available game models for the current week
+    private List<GameModel> gamesAvailable = new();
+
+    // List of games chosen for parley bet
+    private List<GameModel> gamesChosen = new();
+
+    // Array of team record models for available games
+    private TeamRecordModel[] teamRecords = new TeamRecordModel[32];
+
+
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        houseAccount = await houseData.GetHouseAccount();
+
+        gamesAvailable = 
+            (List<GameModel>) await gameData.GetAllNotStartedGames();
+
+        basicGamesAvailable = 
+            await availableGames.PopulateBasicGameModelList(gamesAvailable);
+
+        teamRecords = await availableGames.GetTeamRecords(basicGamesAvailable);
+    }
+
+    /// <summary>
+    /// Async method adds a game from a selected basic game 
+    /// to the chosen games list
+    /// </summary>
+    /// <param name="basicGame"></param>
+    /// <returns></returns>
+    private async Task SelectGame(BasicGameModel basicGame)
+    {
+        int gameId = basicGame.GameId;
+
+        GameModel game =  await gameData.GetGame(gameId);
+
+        chosenGames.Add(game);
+    }
+
+    /// <summary>
+    /// Method removes game from the chosen games list
+    /// </summary>
+    /// <param name="game"></param>
+    private void UnselectGame(GameModel game)
+    {
+        chosenGames.Remove(game);
+    }
+
+}

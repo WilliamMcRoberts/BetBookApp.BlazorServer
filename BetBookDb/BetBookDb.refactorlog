@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="3faf57b5-b396-4850-a730-e3f3b068e35d" ChangeDateTime="07/01/2022 19:26:52">
+    <Property Name="ElementName" Value="[dbo].[ParleyBets].[int]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParleyBets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BettorId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="77862314-69dc-42a6-8884-862f97e87cff" ChangeDateTime="07/01/2022 19:28:14">
+    <Property Name="ElementName" Value="[dbo].[ParleyBets].[ParleyPayou]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParleyBets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ParleyPayoutStatus" />
+  </Operation>
+</Operations>

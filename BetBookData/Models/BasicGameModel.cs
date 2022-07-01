@@ -1,5 +1,5 @@
 ﻿
-namespace BetBookUI.Models;
+namespace BetBookData.Models;
 public class BasicGameModel
 {
     // Id of the game of the basic game model

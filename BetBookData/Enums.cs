@@ -40,3 +40,23 @@ public enum PayoutStatus
     UNPAID,
     PAID
 }
+
+/// <summary>
+/// Enum for the status of a ParleyBetModel
+/// </summary>
+public enum ParleyBetStatus
+{
+    IN_PROGRESS,
+    WINNER,
+    LOSER,
+    PUSH
+}
+
+/// <summary>
+/// Enum for the status of the payout of a ParleyBetModel
+/// </summary>
+public enum ParleyPayoutStatus
+{
+    UNPAID,
+    PAID
+}

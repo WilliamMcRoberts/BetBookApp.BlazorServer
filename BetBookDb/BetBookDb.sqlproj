@@ -65,6 +65,7 @@
     <Folder Include="dbo\StoredProcedures\GameProcedures" />
     <Folder Include="dbo\StoredProcedures\HouseAccountProcedures" />
     <Folder Include="dbo\StoredProcedures\BetProcedures" />
+    <Folder Include="dbo\StoredProcedures\ParleyBetProcedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Bets.sql" />
@@ -115,11 +116,21 @@
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Update.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spGetAllBetsByGame.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spBets_UpdatePush.sql" />
+    <Build Include="dbo\Tables\ParleyBets.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Get.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_GetAllByBettor.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Update.sql" />
+    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Delete.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BetBookDb.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BetBookDb.refactorlog" />
   </ItemGroup>
 </Project>
