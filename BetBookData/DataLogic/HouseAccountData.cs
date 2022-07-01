@@ -1,6 +1,8 @@
-﻿using BetBookData.DataLogic.Interfaces;
+﻿using System.Data;
+using BetBookData.DataLogic.Interfaces;
 using BetBookData.DbAccess;
 using BetBookData.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.DataLogic;
 
@@ -9,19 +11,19 @@ public class HouseAccountData : IHouseAccountData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    ///     HouseAccountData Constructor
+    /// HouseAccountData Constructor
     /// </summary>
-    /// <param name="db"></param>
+    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public HouseAccountData(ISqlConnection db)
     {
         _db = db;
     }
 
     /// <summary>
-    ///     Async method retrieves the house account
+    /// Async method retrieves the house account
     /// </summary>
     /// <returns>
-    ///     HouseAccountModel represents the house account
+    /// HouseAccountModel represents the house account
     /// </returns>
     public async Task<HouseAccountModel?> GetHouseAccount()
     {
@@ -32,12 +34,10 @@ public class HouseAccountData : IHouseAccountData
     }
 
     /// <summary>
-    ///     Async method calls the spHouseAccount_Update stored procedure to update
-    ///     the house account
+    /// Async method calls the spHouseAccount_Update stored procedure to update
+    /// the house account
     /// </summary>
-    /// <param name="houseAccount">
-    ///     HouseAccountModel represents the house account
-    /// </param>
+    /// <param name="houseAccount">HouseAccountModel represents the house account</param>
     /// <returns></returns>
     public async Task UpdateHouseAccount(HouseAccountModel houseAccount)
     {

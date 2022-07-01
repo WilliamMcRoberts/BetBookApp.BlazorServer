@@ -1,6 +1,10 @@
 ﻿using BetBookData.Models;
 
 namespace BetBookData.DataLogic.Interfaces;
+
+/// <summary>
+/// BetData interface
+/// </summary>
 public interface IBetData
 {
     Task DeleteBet(int id);

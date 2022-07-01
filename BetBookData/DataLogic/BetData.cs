@@ -10,23 +10,19 @@ public class BetData : IBetData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    ///     BetData Constructor
+    /// HouseAccountData Constructor
     /// </summary>
-    /// <param name="db">
-    ///     ISqlConnection represents access to the database
-    /// </param>
+    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public BetData(ISqlConnection db)
     {
         _db = db;
     }
 
     /// <summary>
-    ///     Async method calls the spBets_GetAll stored procedure to retrieve 
-    ///     all bets in the database
+    /// Async method calls the spBets_GetAll stored procedure to retrieve 
+    /// all bets in the database
     /// </summary>
-    /// <returns>
-    ///     IEnumerable of BetModel represents all bets in the database
-    /// </returns>
+    /// <returns>IEnumerable of BetModel represents all bets in the database</returns>
     public async Task<IEnumerable<BetModel>> GetBets()
     {
         return await _db.LoadData<BetModel, dynamic>(
@@ -34,15 +30,11 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_Get stored procedure which retrieves one 
-    ///     bet by bet id
+    /// Async method calls spBets_Get stored procedure which retrieves one 
+    /// bet by bet id
     /// </summary>
-    /// <param name="id">
-    ///     int represents the id of the bet being retrieved from the database
-    /// </param>
-    /// <returns>
-    ///     BetModel represents the bet being retrieved from the database
-    /// </returns>
+    /// <param name="id">int represents the id of the bet being retrieved from the database</param>
+    /// <returns>BetModel represents the bet being retrieved from the database</returns>
     public async Task<BetModel?> GetBet(int bettorId)
     {
         var result = await _db.LoadData<BetModel, dynamic>(
@@ -55,16 +47,13 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_GetAllByBettor stored procedure which retrieves 
-    ///     all bets ever made by bettor
+    /// Async method calls spBets_GetAllByBettor stored procedure which retrieves 
+    /// all bets ever made by bettor
     /// </summary>
     /// <param name="id">
-    ///     int represents the id of the bettor that is the creater of the bets 
-    ///     being retrieved from the database
+    /// int represents the id of the bettor that is the creater of the bets being retrieved from the database
     /// </param>
-    /// <returns>
-    ///     IEnumerable of BetModel representing all bets created by bettor
-    /// </returns>
+    /// <returns>IEnumerable of BetModel representing all bets created by bettor</returns>
     public async Task<IEnumerable<BetModel>> GetAllBettorBets(int bettorId)
     {
         return await _db.LoadData<BetModel, dynamic>(
@@ -75,15 +64,12 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_GetAllInProgressByBettor stored procedure  
-    ///     which retrieves all bets with status "IN_PROGRESS" by bettor
+    /// Async method calls spBets_GetAllInProgressByBettor stored procedure  
+    /// which retrieves all bets with status "IN_PROGRESS" by bettor
     /// </summary>
-    /// <param name="id">
-    ///     int id of the bettor that created the bets being retrieved
-    /// </param>
+    /// <param name="id">int id of the bettor that created the bets being retrieved</param>
     /// <returns>
-    ///     IEnumerable of BetModel representing all bets created by bettor with
-    ///     the bet status of "IN_PROGRESS"
+    /// IEnumerable of BetModel representing all bets created by bettor withthe bet status of "IN_PROGRESS"
     /// </returns>
     public async Task<IEnumerable<BetModel>> GetAllBettorInProgressBets(int bettorId)
     {
@@ -95,15 +81,13 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_GetAllWinnersByBettor stored procedure which retrieves 
-    ///     all bets that have a status of "WINNER" made by bettor
+    /// Async method calls spBets_GetAllWinnersByBettor stored procedure which retrieves 
+    /// all bets that have a status of "WINNER" made by bettor
     /// </summary>
-    /// <param name="id">
-    ///     int id of the bettor that created the bets being retrieved 
-    /// </param>
+    /// <param name="id">int id of the bettor that created the bets being retrieved</param>
     /// <returns>
-    ///     IEnumerable of BetModel representing all bets created by bettor with
-    ///     the bet status of "WINNER"
+    /// IEnumerable of BetModel representing all bets created by bettor with
+    /// the bet status of "WINNER"
     /// </returns>
     public async Task<IEnumerable<BetModel>> GetAllBettorWinningBets(int bettorId)
     {
@@ -115,15 +99,15 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_GetAllLosersByBettor stored procedure which retrieves 
-    ///     all bets that have a status of "LOSER" made by bettor
+    /// Async method calls spBets_GetAllLosersByBettor stored procedure which retrieves 
+    /// all bets that have a status of "LOSER" made by bettor
     /// </summary>
     /// <param name="id">
-    ///     int id of the bettor that created the bets being retrieved 
+    /// int id of the bettor that created the bets being retrieved 
     /// </param>
     /// <returns>
-    ///     IEnumerable of BetModel representing all bets created by bettor with
-    ///     the bet status of "LOSER"
+    /// IEnumerable of BetModel representing all bets created by bettor with
+    /// the bet status of "LOSER"
     /// </returns>
     public async Task<IEnumerable<BetModel>> GetAllBettorLosingBets(int bettorId)
     {
@@ -135,15 +119,13 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls spBets_GetAllByGame stored procedure which retrieves 
-    ///     all bets placed on a certain game
+    /// Async method calls spBets_GetAllByGame stored procedure which retrieves 
+    /// all bets placed on a certain game
     /// </summary>
-    /// <param name="gameId">
-    ///     int id of the bettor that created the bets being retrieved 
-    /// </param>
+    /// <param name="gameId">int id of the bettor that created the bets being retrieved </param>
     /// <returns>
-    ///     IEnumerable of BetModel representing all bets that were placed
-    ///     on a certain game
+    /// IEnumerable of BetModel representing all bets that were placed
+    /// on a certain game
     /// </returns>
     public async Task<IEnumerable<BetModel>> GetAllBetsOnGame(int gameId)
     {
@@ -155,12 +137,10 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls the spBets_Insert stored procedure to insert one bet 
-    ///     entry into the database
+    /// Async method calls the spBets_Insert stored procedure to insert one bet 
+    /// entry into the database
     /// </summary>
-    /// <param name="bet">
-    ///     BetModel represents a bet to insert into the database
-    /// </param>
+    /// <param name="bet">BetModel represents a bet to insert into the database</param>
     /// <returns></returns>
     public async Task InsertBet(BetModel bet)
     {
@@ -180,12 +160,10 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls the spBets_Update stored procedure if the bet is not a push
-    ///     and calls the spBets_UpdatePush stored procedure if the bet is a push
+    /// Async method calls the spBets_Update stored procedure if the bet is not a push
+    /// and calls the spBets_UpdatePush stored procedure if the bet is a push
     /// </summary>
-    /// <param name="bet">
-    ///     BetModel represents a bet being updated into the database
-    /// </param>
+    /// <param name="bet">BetModel represents a bet being updated into the database</param>
     /// <returns></returns>
     public async Task UpdateBet(BetModel bet)
     {
@@ -226,12 +204,10 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    ///     Async method calls the spBets_Delete stored procedure which deletes one bet
-    ///     entry in the database
+    /// Async method calls the spBets_Delete stored procedure which deletes one bet
+    /// entry in the database
     /// </summary>
-    /// <param name="id">
-    ///     int represents the id of the bet to be deleted from the database
-    /// </param>
+    /// <param name="id">int represents the id of the bet to be deleted from the database</param>
     /// <returns></returns>
     public async Task DeleteBet(int bettorId)
     {

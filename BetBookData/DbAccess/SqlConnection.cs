@@ -8,10 +8,10 @@ public class SqlConnection : ISqlConnection
     private readonly IConfiguration _config;
 
     /// <summary>
-    ///     SqlConnection Constructor
+    /// SqlConnection Constructor
     /// </summary>
     /// <param name="config">
-    ///     IConfiguration represents configuration access
+    /// IConfiguration represents configuration class interface
     /// </param>
     public SqlConnection(IConfiguration config)
     {
@@ -19,21 +19,21 @@ public class SqlConnection : ISqlConnection
     }
 
     /// <summary>
-    ///     Async method to retrieve data from database
+    /// Async method to retrieve data from database
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
     /// <param name="storedProcedure">
-    ///     string represents the stored procedure being called
+    /// string represents the stored procedure being called
     /// </param>
     /// <param name="parameters">
-    ///     dynamic represents the parameters being used in the stored procedure being called
+    /// dynamic represents the parameters being used in the stored procedure being called
     /// </param>
     /// <param name="connectionId">
-    ///     string represents the key for the connection string
+    /// string represents the key for the connection string
     /// </param>
     /// <returns>
-    ///     IEnumerable of dynamic representing the objects being retrieved from the database
+    /// IEnumerable of dynamic representing the objects being retrieved from the database
     /// </returns>
     public async Task<IEnumerable<T>> LoadData<T, U>(
         string storedProcedure, U parameters, string connectionId = "BetBookDB")
@@ -47,17 +47,17 @@ public class SqlConnection : ISqlConnection
     }
 
     /// <summary>
-    ///     Async method to save data to database
+    /// Async method to save data to database
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="storedProcedure">
-    ///     string represents the stored procedure being called 
+    /// string represents the stored procedure being called 
     /// </param>
     /// <param name="parameters">
-    ///     dynamic represents the parameters being used in the stored procedure being called
+    /// dynamic represents the parameters being used in the stored procedure being called
     /// </param>
     /// <param name="connectionId">
-    ///     string represents the key for the connection string
+    /// string represents the key for the connection string
     /// </param>
     /// <returns></returns>
     public async Task SaveData<T>(

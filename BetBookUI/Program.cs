@@ -1,4 +1,4 @@
-using BetBookUI;
+﻿using BetBookUI;
 using Microsoft.AspNetCore.Rewrite;
 using Syncfusion.Blazor;
 
@@ -27,6 +27,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Redirect
 app.UseRewriter(
     new RewriteOptions().Add(
         context =>

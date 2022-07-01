@@ -10,22 +10,20 @@ public class GameData : IGameData
     private readonly ISqlConnection _db;
 
     /// <summary>
-    ///     GameData Constructor
+    /// HouseAccountData Constructor
     /// </summary>
-    /// <param name="db">
-    ///     ISlConnection represents database access
-    /// </param>
+    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public GameData(ISqlConnection db)
     {
         _db = db;
     }
 
     /// <summary>
-    ///     Async method calls the spGames_GetAll stored procedure to retrieve 
-    ///     all games in the database
+    /// Async method calls the spGames_GetAll stored procedure to retrieve 
+    /// all games in the database
     /// </summary>
     /// <returns>
-    ///     IEnumerable of GameModel representing all games in the database
+    /// IEnumerable of GameModel representing all games in the database
     /// </returns>
     public async Task<IEnumerable<GameModel>> GetGames()
     {
@@ -34,14 +32,12 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_GetAllByWeek stored procedure to retrieve 
-    ///     all games in the database by a certain week
+    /// Async method calls the spGames_GetAllByWeek stored procedure to retrieve 
+    /// all games in the database by a certain week
     /// </summary>
-    /// <param name="weekNumber">
-    ///     int represents a week in the NFL season
-    /// </param>
+    /// <param name="weekNumber">int represents a week in the NFL season</param>
     /// <returns>
-    ///     IEnumerable of GameModel represents all games in a specified week
+    /// IEnumerable of GameModel represents all games in a specified week
     /// </returns>
     public async Task<IEnumerable<GameModel>> GetGamesByWeek(int weekNumber)
     {
@@ -53,11 +49,11 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_GetAllFinished stored procedure to retrieve 
-    ///     all games that have a "FINISHED" status
+    /// Async method calls the spGames_GetAllFinished stored procedure to retrieve 
+    /// all games that have a "FINISHED" status
     /// </summary>
     /// <returns>
-    ///     IEnumerable of GameModel represents all games with game status "FINISHED"
+    /// IEnumerable of GameModel represents all games with game status "FINISHED"
     /// </returns>
     public async Task<IEnumerable<GameModel>> GetAllFinishedGames()
     {
@@ -66,11 +62,11 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_GetAllInProgress stored procedure to retrieve 
-    ///     all games that have an "IN_PROGRESS" status
+    /// Async method calls the spGames_GetAllInProgress stored procedure to retrieve 
+    /// all games that have an "IN_PROGRESS" status
     /// </summary>
     /// <returns>
-    ///     IEnumerable of GameModel represents all games with game status "IN_PROGRESS"
+    /// IEnumerable of GameModel represents all games with game status "IN_PROGRESS"
     /// </returns>
     public async Task<IEnumerable<GameModel>> GetAllInProgressGames()
     {
@@ -79,11 +75,11 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_GetAllNotStarted stored procedure to retrieve 
-    ///     all games that have a "NOT_STARTED" status
+    /// Async method calls the spGames_GetAllNotStarted stored procedure to retrieve 
+    /// all games that have a "NOT_STARTED" status
     /// </summary>
     /// <returns>
-    ///     IEnumerable of GameModel represents all games with game status "NOT_STARTED"
+    /// IEnumerable of GameModel represents all games with game status "NOT_STARTED"
     /// </returns>
     public async Task<IEnumerable<GameModel>> GetAllNotStartedGames()
     {
@@ -92,14 +88,12 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls spGames_Get stored procedure which retrieves one 
-    ///     game by game id
+    /// Async method calls spGames_Get stored procedure which retrieves one 
+    /// game by game id
     /// </summary>
-    /// <param name="id">
-    ///     int represents the Id of a game
-    /// </param>
+    /// <param name="id">int represents the Id of a game</param>
     /// <returns>
-    ///     GameModel represents a game to retrieve from database
+    /// GameModel represents a game to retrieve from database
     /// </returns>
     public async Task<GameModel?> GetGame(int id)
     {
@@ -113,12 +107,10 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_Insert stored procedure to insert one game 
-    ///     entry into the database
+    /// Async method calls the spGames_Insert stored procedure to insert one game 
+    /// entry into the database
     /// </summary>
-    /// <param name="game">
-    ///     GameModel represents a game to insert into the database
-    /// </param>
+    /// <param name="game">GameModel represents a game to insert into the database</param>
     /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
@@ -142,11 +134,9 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_Update stored procedure to update a game
+    /// Async method calls the spGames_Update stored procedure to update a game
     /// </summary>
-    /// <param name="game">
-    ///     GameModel represents a game to update in the database
-    /// </param>
+    /// <param name="game">GameModel represents a game to update in the database</param>
     /// <returns></returns>
     public async Task UpdateGame(GameModel game)
     {
@@ -171,12 +161,10 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_AddWinner stored procedure to declare the 
-    ///     winner of a game
+    /// Async method calls the spGames_AddWinner stored procedure to declare the 
+    /// winner of a game
     /// </summary>
-    /// <param name="game">
-    ///     GameModel represents a game to update with the winner
-    /// </param>
+    /// <param name="game">GameModel represents a game to update with the winner</param>
     /// <returns></returns>
     public async Task AddGameWinner(GameModel game, TeamModel team)
     {
@@ -190,12 +178,10 @@ public class GameData : IGameData
     }
 
     /// <summary>
-    ///     Async method calls the spGames_Delete stored procedure which deletes one game
-    ///     entry in the database
+    /// Async method calls the spGames_Delete stored procedure which deletes one game
+    /// entry in the database
     /// </summary>
-    /// <param name="id">
-    ///     int represents the Id of a game to delete from database
-    /// </param>
+    /// <param name="id">int represents the Id of a game to delete from database</param>
     /// <returns></returns>
     public async Task DeleteGame(int id)
     {

@@ -1,6 +1,10 @@
 ﻿using BetBookData.Models;
 
 namespace BetBookData.DataLogic.Interfaces;
+
+/// <summary>
+/// GameData interface
+/// </summary>
 public interface IGameData
 {
     Task AddGameWinner(GameModel game, TeamModel team);

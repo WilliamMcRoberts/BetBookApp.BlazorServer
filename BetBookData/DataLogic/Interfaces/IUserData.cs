@@ -3,7 +3,7 @@
 namespace BetBookData.DataLogic.Interfaces;
 
 /// <summary>
-/// User data interface
+/// UserData interface
 /// </summary>
 public interface IUserData
 {

@@ -106,8 +106,8 @@
     private DateTime superBowlDay = new DateTime(2023, 2, 5);
 
     /// <summary>
-    ///     Async method for admin to insert a game into 
-    ///     the database
+    /// Async method for admin to insert a game into 
+    /// the database
     /// </summary>
     /// <returns></returns>
     private async Task InsertGame()
@@ -146,10 +146,10 @@
     }
 
     /// <summary>
-    ///     Validation for game input
+    /// Validation for game input
     /// </summary>
     /// <returns>
-    ///     bool representing validity of the game form
+    /// bool representing validity of the game form
     /// </returns>
     private bool ValidateGameForm()
     {
@@ -161,7 +161,7 @@
     }
 
     /// <summary>
-    ///     Method clears game form after submit
+    /// Method clears game form after submit
     /// </summary>
     private void ClearGameForm()
     {
@@ -176,11 +176,9 @@
     }
 
     /// <summary>
-    ///     Method for value change for date of game
+    /// Method for value change for date of game
     /// </summary>
-    /// <param name="args">
-    ///     DateTime representing date of game
-    /// </param>
+    /// <param name="args">DateTime representing date of game</param>
     private void DateChangeHandler(ChangedEventArgs<DateTime?> args)
     {
         dateOfGame = args.Value;

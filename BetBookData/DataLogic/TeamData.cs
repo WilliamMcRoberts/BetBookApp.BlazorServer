@@ -14,14 +14,10 @@ public class TeamData : ITeamData
     private readonly IConfiguration _config;
 
     /// <summary>
-    ///     TeamData Constructor
+    /// TeamData Constructor
     /// </summary>
-    /// <param name="db">
-    ///     ISqlConnection represents access to the database
-    /// </param>
-    /// <param name="config">
-    ///     IConfiguration represents access to the configuration
-    /// </param>
+    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
+    /// <param name="config">IConfiguration represents Configuration class interface</param>
     public TeamData(ISqlConnection db, IConfiguration config)
     {
         _db = db;
@@ -29,11 +25,11 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Async method calls the spTeams_GetAll stored procedure to retrieve 
-    ///     all teams in the database
+    /// Async method calls the spTeams_GetAll stored procedure to retrieve 
+    /// all teams in the database
     /// </summary>
     /// <returns>
-    ///     IEnumerable of TeamModel representing all teams in the database
+    /// IEnumerable of TeamModel representing all teams in the database
     /// </returns>
     public async Task<IEnumerable<TeamModel>> GetTeams()
     {
@@ -42,14 +38,14 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Async method calls spTeams_Get stored procedure which retrieves one 
-    ///     team by team id
+    /// Async method calls spTeams_Get stored procedure which retrieves one 
+    /// team by team id
     /// </summary>
     /// <param name="id">
-    ///     int represents the id of the team being retrieved from the database
+    /// int represents the id of the team being retrieved from the database
     /// </param>
     /// <returns>
-    ///     TeamModel represents the team being retrieved from the database
+    /// TeamModel represents the team being retrieved from the database
     /// </returns>
     public async Task<TeamModel?> GetTeam(int id)
     {
@@ -63,14 +59,14 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Async method calls the spTeams_Insert stored procedure to insert one team 
-    ///     entry into the database
+    /// Async method calls the spTeams_Insert stored procedure to insert one team 
+    /// entry into the database
     /// </summary>
     /// <param name="team">
-    ///     TeamModel represents the team being inserted into the database
+    /// TeamModel represents the team being inserted into the database
     /// </param>
     /// <returns>
-    ///     int represents the id of the team that was inserted into the database
+    /// int represents the id of the team that was inserted into the database
     /// </returns>
     public async Task<int> InsertTeam(TeamModel team)
     {
@@ -97,10 +93,10 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Async method calls the spTeams_Update stored procedure to update a team
+    /// Async method calls the spTeams_Update stored procedure to update a team
     /// </summary>
     /// <param name="team">
-    ///     TeamModel represents the team being updated in the database
+    /// TeamModel represents the team being updated in the database
     /// </param>
     /// <returns></returns>
     public async Task UpdateTeam(TeamModel team)
@@ -118,11 +114,11 @@ public class TeamData : ITeamData
     }
 
     /// <summary>
-    ///     Async method calls the spTeams_Delete stored procedure which deletes one team
-    ///     entry in the database
+    /// Async method calls the spTeams_Delete stored procedure which deletes one team
+    /// entry in the database
     /// </summary>
     /// <param name="id">
-    ///     int represents the id of the team being deleted from the database
+    /// int represents the id of the team being deleted from the database
     /// </param>
     /// <returns></returns>
     public async Task DeleteTeam(int id)

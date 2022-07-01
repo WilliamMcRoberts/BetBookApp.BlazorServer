@@ -9,14 +9,10 @@ public class TeamRecordData : ITeamRecordData
     private readonly ITeamData _teamData;
 
     /// <summary>
-    ///     TeamRecordData Constructor
+    /// TeamRecordData Constructor
     /// </summary>
-    /// <param name="db">
-    ///     ISqlConnection represents access to the database
-    /// </param>
-    /// <param name="teamData">
-    ///     ITeamData represents access to team data logic
-    /// </param>
+    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
+    /// <param name="teamData">ITeamData represents TeamData class interface</param>
     public TeamRecordData(ISqlConnection db, ITeamData teamData)
     {
         _db = db;
@@ -24,11 +20,11 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    ///     Async method calls the spTeamRecords_GetAll stored procedure to retrieve 
-    ///     all team records in the database
+    /// Async method calls the spTeamRecords_GetAll stored procedure to retrieve 
+    /// all team records in the database
     /// </summary>
     /// <returns>
-    ///     IEnumerable of UserModel represents all team records in the database
+    /// IEnumerable of UserModel represents all team records in the database
     /// </returns>
     public async Task<IEnumerable<TeamRecordModel>> GetTeamRecords()
     {
@@ -37,14 +33,14 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    ///     Async method calls spTeams_Get stored procedure which retrieves the
-    ///     record of a team
+    /// Async method calls spTeams_Get stored procedure which retrieves the
+    /// record of a team
     /// </summary>
     /// <param name="id">
-    ///     int represents the id of a team being retrieved from the database
+    /// int represents the id of a team being retrieved from the database
     /// </param>
     /// <returns>
-    ///     TeamRecordModel represents the team being retrieved from the database
+    /// TeamRecordModel represents the team being retrieved from the database
     /// </returns>
     public async Task<TeamRecordModel?> GetTeamRecord(int teamId)
     {
@@ -58,12 +54,12 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    ///     Async method call the spTeamRecords_Insert stored
-    ///     procedure to insert a team record into the database
+    /// Async method call the spTeamRecords_Insert stored
+    /// procedure to insert a team record into the database
     /// </summary>
     /// <param name="teamId">
-    ///     int represents the team id of the team record being inserted
-    ///     into the database
+    /// int represents the team id of the team record being inserted
+    /// into the database
     /// </param>
     /// <returns></returns>
     public async Task InsertTeamRecord(int teamId)
@@ -81,11 +77,11 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    ///     Async method calls the spTeamRecords_Update stored procedure to update
-    ///     a team record
+    /// Async method calls the spTeamRecords_Update stored procedure to update
+    /// a team record
     /// </summary>
     /// <param name="teamRecord">
-    ///     TeamRecordModel represents the team record being updated in the database
+    /// TeamRecordModel represents the team record being updated in the database
     /// </param>
     /// <returns></returns>
     public async Task UpdateTeamRecord(TeamRecordModel teamRecord)
@@ -111,11 +107,11 @@ public class TeamRecordData : ITeamRecordData
     }
 
     /// <summary>
-    ///     Async method calls the spTeamRecords_Delete stored procedure which deletes one team
-    ///     record from the database
+    /// Async method calls the spTeamRecords_Delete stored procedure which deletes one team
+    /// record from the database
     /// </summary>
     /// <param name="id">
-    ///     int represents the team id of the team record being deleted from the database
+    /// int represents the team id of the team record being deleted from the database
     /// </param>
     /// <returns></returns>
     public async Task DeleteTeamRecord(int teamId)

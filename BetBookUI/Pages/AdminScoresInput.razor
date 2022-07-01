@@ -98,16 +98,16 @@
     private bool noGame = false;
 
     /// <summary>
-    ///     Async method updates the scores of the game,
-    ///     calls the CalculateWinningTeam() method,
-    ///     adds winning team to database, and calls the
-    ///     UpdateTeamRecords() method
+    /// Async method updates the scores of the game,
+    /// calls the CalculateWinningTeam() method,
+    /// adds winning team to database, and calls the
+    /// UpdateTeamRecords() method
     /// </summary>
     /// <param name="favoriteScore">
-    ///     double representing the favorite team score of the current game
+    /// double representing the favorite team score of the current game
     /// </param>
     /// <param name="underdogScore">
-    ///     double representing the underdog team score of the current game
+    /// double representing the underdog team score of the current game
     /// </param>
     /// <returns></returns>
     private async Task UpdateGameWinner(double favoriteScore, double underdogScore)
@@ -145,14 +145,14 @@
     }
 
     /// <summary>
-    ///     Async method updates final winner and bet status 
-    ///     for all bets that were placed on current game
+    /// Async method updates final winner and bet status 
+    /// for all bets that were placed on current game
     /// </summary>
     /// <param name="favoriteScore">
-    ///     double represents the favorite team score
+    /// double represents the favorite team score
     /// </param>
     /// <param name="underdogScore">
-    ///     double represents the underdog team score
+    /// double represents the underdog team score
     /// </param>
     /// <returns></returns>
     private async Task UpdateBetWinners(double favoriteScore, double underdogScore)
@@ -192,14 +192,14 @@
     }
 
     /// <summary>
-    ///     Async method updates team records of
-    ///     the actual winning  team and actual losing team
+    /// Async method updates team records of
+    /// the actual winning  team and actual losing team
     /// </summary>
     /// <param name="favoriteScore">
-    ///      int representing the favorite team score of the current game
+    /// int representing the favorite team score of the current game
     /// </param>
     /// <param name="underdogScore">
-    ///     int representing the underdog team score of the current game
+    /// int representing the underdog team score of the current game
     /// </param>
     /// <returns></returns>
     private async Task UpdateTeamRecords(double favoriteScore, double underdogScore)
@@ -256,19 +256,19 @@
     }
 
     /// <summary>
-    ///     Method calculates and returns winning team of current game
+    /// Method calculates and returns winning team of current game
     /// </summary>
     /// <param name="game">
-    ///     GameModel representing the current game
+    /// GameModel representing the current game
     /// </param>
     /// <param name="favoriteScore">
-    ///     int representing the favorite team score of the current game
+    /// int representing the favorite team score of the current game
     /// </param>
     /// <param name="underdogScore">
-    ///     int representing the underdog team score of the current game
+    /// int representing the underdog team score of the current game
     /// </param>
     /// <returns name="winner">
-    ///     TeamModel representing the winner of the current game
+    /// TeamModel representing the winner of the current game
     /// </returns>
     private TeamModel CalculateWinningTeam(GameModel game, double favoriteScore, double underdogScore)
     {
@@ -281,20 +281,20 @@
     }
 
     /// <summary>
-    ///     Methd calculates and returns the winning team
-    ///     after factoring in the point spread
+    /// Method calculates and returns the winning team
+    /// after factoring in the point spread
     /// </summary>
     /// <param name="game">
-    ///     GameModel representing the current game
+    /// GameModel representing the current game
     /// </param>
     /// <param name="favoriteScore">
-    ///     int representing the favorite team score
+    /// int representing the favorite team score
     /// </param>
     /// <param name="underdogScore">
-    ///     int representing the underdog team score
+    /// int representing the underdog team score
     /// </param>
     /// <returns name="winner">
-    ///     winner of the game after factoring in the point spread
+    /// winner of the game after factoring in the point spread
     /// </returns>
     private TeamModel CalculateWinningTeamForBet(GameModel game, double favoriteScore, double underdogScore)
     {
@@ -310,7 +310,7 @@
     }
 
     /// <summary>
-    ///     Method clears update winners form
+    /// Method clears update winners form
     /// </summary>
     private void ClearUpdateWinnersForm()
     {
@@ -320,12 +320,10 @@
     }
 
     /// <summary>
-    ///     Async method to populate basic game model
-    ///     for current game being updated
+    /// Async method to populate basic game model
+    /// for current game being updated
     /// </summary>
-    /// <param name="gameId">
-    ///     int Id of current game
-    /// </param>
+    /// <param name="gameId">int Id of current game</param>
     /// <returns></returns>
     private async Task PopulateBasicGameModel(int gameId)
     {

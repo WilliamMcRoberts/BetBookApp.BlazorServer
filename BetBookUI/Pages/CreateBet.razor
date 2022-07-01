@@ -9,6 +9,7 @@
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
+@inject IBalanceData balanceData
 
 <PageTitle>CreateBet</PageTitle>
 
@@ -301,7 +302,7 @@
     private bool gameNotStarted = true;
 
     /// <summary>
-    ///     Async initialization method
+    /// Async initialization method
     /// </summary>
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
@@ -321,7 +322,7 @@
     }
 
     /// <summary>
-    ///     Async method populates team records
+    /// Async method populates team records
     /// </summary>
     /// <returns></returns>
     private async Task PopulateTeamRecords()
@@ -363,12 +364,10 @@
     }
 
     /// <summary>
-    ///     Async method popluates a basic game model with the team names and 
-    ///     point spread of current selected game
+    /// Async method popluates a basic game model with the team names and 
+    /// point spread of current selected game
     /// </summary>
-    /// <param name="gameId">
-    ///     int representing the Id of the current game
-    /// </param>
+    /// <param name="gameId">int representing the Id of the current game</param>
     /// <returns></returns>
     private async Task PopulateBasicGameModel(int gameId)
     {
@@ -389,28 +388,26 @@
     }
 
     /// <summary>
-    ///     Async method gets and returns a team record from the database
+    /// Async method gets and returns a team record from the database
     /// </summary>
-    /// <param name="teamId">
-    ///     int representing the Id of current team
-    /// </param>
+    /// <param name="teamId">int representing the Id of current team</param>
     /// <returns></returns>
     private async Task<TeamRecordModel?> GetCurrentTeamRecord(int teamId) => 
         await recordData.GetTeamRecord(teamId);
 
 
     /// <summary>
-    ///     Async method to update bet info, insert a new bet
-    ///     into the database, update user account balance, and
-    ///     update the house account balance
+    /// Async method to update bet info, insert a new bet
+    /// into the database, update user account balance, and
+    /// update the house account balance
     /// </summary>
     /// <param name="amountToBet">
-    ///     decimal representing the amount of money 
-    ///     the user is wagering on the bet
+    /// decimal representing the amount of money 
+    /// the user is wagering on the bet
     /// </param>
     /// <param name="teamToWin">
-    ///     TeamModel representing the team that the user has chosen
-    ///     to be the winner of the game
+    /// TeamModel representing the team that the user has chosen
+    /// to be the winner of the game
     /// </param>
     /// <returns></returns>
     private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
@@ -430,14 +427,21 @@
                 bet.BetStatus = BetStatus.IN_PROGRESS;
                 bet.PayoutStatus = PayoutStatus.UNPAID;
 
-                await betData.InsertBet(bet);
-
                 loggedInUser.AccountBalance -= bet.BetAmount;
                 houseAccount.AccountBalance += bet.BetAmount;
 
-                // Update balances of the user and the house
-                await userData.UpdateUserAccountBalance(loggedInUser);
-                await houseData.UpdateHouseAccount(houseAccount);
+                try
+                {
+                    // Tranaction create bet method transfers funds from user account
+                    // to house account and inserts bet into database
+                    await balanceData.CreateBetTransaction(loggedInUser, houseAccount, bet);
+                    //await betData.InsertBet(bet);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+                
 
                 wagerPlaced = true;
                 betAmount = Convert.ToDecimal((0).ToString("#.00"));
@@ -452,12 +456,10 @@
     }
 
     /// <summary>
-    ///     Async method to select chosen winner of game
-    ///     and grab that team from the database
+    /// Async method to select chosen winner of game
+    /// and grab that team from the database
     /// </summary>
-    /// <param name="teamId">
-    ///     int representing the Id of the team being chosen
-    /// </param>
+    /// <param name="teamId">int representing the Id of the team being chosen</param>
     /// <returns></returns>
     private async Task ChooseWinner(int teamId)
     {
@@ -475,7 +477,7 @@
     }
 
     /// <summary>
-    ///     Syncfusion method for numeric text box on value change
+    /// Syncfusion method for numeric text box on value change
     /// </summary>
     /// <param name="args"></param>
     public void OnChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<decimal> args)
@@ -485,7 +487,7 @@
     }
 
     /// <summary>
-    ///     Method reverts a winner selection
+    /// Method reverts a winner selection
     /// </summary>
     private void UndoWinnerSelection()
     {

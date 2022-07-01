@@ -6,12 +6,12 @@ using Syncfusion.Blazor;
 namespace BetBookUI;
 
 /// <summary>
-///     Register services class
+/// Register services class
 /// </summary>
 public static class RegisterServices
 {
     /// <summary>
-    ///     Configure services dependency injection method
+    /// Method to configure project services
     /// </summary>
     /// <param name="builder"></param>
     public static void ConfigureServices(this WebApplicationBuilder builder)
@@ -46,6 +46,7 @@ public static class RegisterServices
         builder.Services.AddTransient<IGameData, GameData>();
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<ITeamRecordData, TeamRecordData>();
+        builder.Services.AddTransient<ITranactions, Tranactions>();
         
     }
 }

@@ -9,6 +9,7 @@
 @inject IUserData userData
 @inject IGameData gameData
 @inject ITeamData teamData
+@inject ITranactions transactions
 
 <PageTitle>Profile</PageTitle>
 
@@ -64,9 +65,9 @@
             
         }
         <label style="margin-left: 5.25em;">Winning Unpaid Bets</label>
-        @if(winningBetsUnpaid.Count != 0)
+        @if(bettorWinningBetsUnpaid.Count != 0)
         {
-            @foreach(BasicBetModel bet in winningBetsUnpaidBasicBets)
+            @foreach(BasicBetModel bet in bettorWinningBetsUnpaidBasicBets)
             {
                 <div class="bet">
                     <ul>
@@ -114,16 +115,12 @@
      *              TODO - Add parley option feature            *
      * **********************************************************/
 
-    /*************************************************************
-     *                    TODO - Transactions                   *
-     * ***********************************************************/
-
     // List of winning bets with status "WINNER" and payment status 
     // of "UNPAID" created by user
-    private List<BetModel> winningBetsUnpaid = new();
+    private List<BetModel> bettorWinningBetsUnpaid = new();
 
     // List of winning bets created by current user
-    private List<BetModel> winningBets = new();
+    private List<BetModel> bettorWinningBets = new();
 
     // List of all bettor bets
     private List<BetModel> bettorBets = new();
@@ -138,7 +135,7 @@
     private List<BasicBetModel> bettorInProgressBasicBets = new();
 
     // List of winning bets unpaid basic bets
-    private List<BasicBetModel> winningBetsUnpaidBasicBets = new();
+    private List<BasicBetModel> bettorWinningBetsUnpaidBasicBets = new();
 
     // List of push bets unpaid basic bets
     private List<BasicBetModel> bettorPushBetsUnpaidBasicBets = new();
@@ -162,30 +159,16 @@
     private decimal totalPendingRefund;
 
     /// <summary>
-    ///     Async initialization method
+    /// Async initialization method
     /// </summary>
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        userAccountBalance = 
-            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        await GetUserAccountBalance();
 
-        bettorBets = 
-            (List<BetModel>) await betData.GetAllBettorBets(loggedInUser.Id);
-
-        await PopulateWinningBets(loggedInUser.Id);
-
-        bettorPushBetsUnpaid = bettorBets.Where(b => 
-            b.BetStatus == BetStatus.PUSH && 
-            b.PayoutStatus == PayoutStatus.UNPAID).ToList();
-
-        winningBetsUnpaid = winningBets.Where(
-            b => b.PayoutStatus == PayoutStatus.UNPAID).ToList();
-
-        bettorInProgressBets = bettorBets.Where(b =>
-            b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+        await FilterBetsAndPopulateLists(loggedInUser.Id);
 
         totalPendingPayout = CalculateTotalPendingPayout();
         totalPendingRefund = CalculateTotalPendingRefund();
@@ -196,7 +179,7 @@
     }
 
     /// <summary>
-    ///     Async method populates all basic bet models for display
+    /// Async method populates all basic bet models for display
     /// </summary>
     /// <returns></returns>
     private async Task PopulateBasicBets()
@@ -218,7 +201,7 @@
             bettorInProgressBasicBets.Add(bb);
         }
 
-        foreach(BetModel bet in winningBetsUnpaid)
+        foreach(BetModel bet in bettorWinningBetsUnpaid)
         {
             BasicBetModel bb = new();
 
@@ -233,7 +216,7 @@
                 Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
                        .ToString("#.00"));
 
-            winningBetsUnpaidBasicBets.Add(bb);
+            bettorWinningBetsUnpaidBasicBets.Add(bb);
         }
 
         foreach(BetModel bet in bettorPushBetsUnpaid)
@@ -255,8 +238,8 @@
     }
 
     /// <summary>
-    ///     Async method pays the user all unpaid 
-    ///     payouts
+    /// Async method pays the user all unpaid 
+    /// payouts
     /// </summary>
     /// <returns></returns>
     private async Task PayoutUnpaidBets()
@@ -264,25 +247,27 @@
         houseAccount.AccountBalance -= totalPendingPayout;
         loggedInUser.AccountBalance += totalPendingPayout;
 
-        foreach(BetModel bet in winningBetsUnpaid)
+        try
         {
-            bet.PayoutStatus = PayoutStatus.PAID;
-
-            await betData.UpdateBet(bet);
+            // Transaction balance method
+            await transactions.PayoutBetsTransaction(loggedInUser, 
+                                                     houseAccount, 
+                                                     bettorWinningBetsUnpaid);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
 
-        await houseData.UpdateHouseAccount(houseAccount);
-        await userData.UpdateUserAccountBalance(loggedInUser);
+        await GetUserAccountBalance();
 
-        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
-                                    .ToString("#.00"));
+        ClearBetList(bettorWinningBetsUnpaid);
 
-        winningBetsUnpaid.Clear();
-        totalPendingPayout = Convert.ToDecimal((0).ToString("#.00"));
+        totalPendingPayout = CalculateTotalPendingPayout();
     }
 
     /// <summary>
-    ///     Async method refunds all unpaid push bets
+    /// Async method refunds all unpaid push bets
     /// </summary>
     /// <returns></returns>
     private async Task RefundPushBets()
@@ -290,33 +275,37 @@
         houseAccount.AccountBalance -= totalPendingRefund;
         loggedInUser.AccountBalance += totalPendingRefund;
 
-        foreach(BetModel bet in bettorPushBetsUnpaid)
+        try
         {
-            bet.PayoutStatus = PayoutStatus.PAID;
-
-            await betData.UpdateBet(bet);
+            // Transaction balance method
+            await transactions.PayoutBetsTransaction(loggedInUser, 
+                                                     houseAccount,
+                                                     bettorPushBetsUnpaid);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
 
-        await houseData.UpdateHouseAccount(houseAccount);
-        await userData.UpdateUserAccountBalance(loggedInUser);
+        await GetUserAccountBalance();
 
-        loggedInUser = await userData.GetUser(loggedInUser.Id);
-        userAccountBalance = 
-            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        ClearBetList(bettorPushBetsUnpaid);
 
-        bettorPushBetsUnpaid.Clear();
-        totalPendingRefund = Convert.ToDecimal((0).ToString("#.00"));
+        totalPendingRefund = CalculateTotalPendingRefund();
     }
 
     /// <summary>
-    ///     Method calculates and returns the total pending 
-    ///     refund for all push bets made by current user
+    /// Method calculates and returns the total pending 
+    /// refund for all push bets made by current user
     /// </summary>
     /// <returns>
-    ///     decimal represents total pending refund for current user
+    /// decimal represents total pending refund for current user
     /// </returns>
     private decimal CalculateTotalPendingRefund()
     {
+        if (bettorPushBetsUnpaid.Count == 0) 
+            return 0;
+
         decimal total = 0;
 
         foreach(BetModel bet in bettorPushBetsUnpaid)
@@ -332,18 +321,21 @@
     }
 
     /// <summary>
-    ///     Method calculates and returns the total pending
-    ///     payout for all winning bets made by current user
+    /// Method calculates and returns the total pending
+    /// payout for all winning bets made by current user
     /// </summary>
     /// <returns>
-    ///     decimal represents the pending payout for current user
+    /// decimal represents the pending payout for current user
     /// </returns>
     private decimal CalculateTotalPendingPayout()
     {
+        if (bettorWinningBetsUnpaid.Count == 0)
+            return 0;
+
         decimal total = 0;
         decimal totalPayout = 0;
 
-        foreach(BetModel bet in winningBetsUnpaid)
+        foreach(BetModel bet in bettorWinningBetsUnpaid)
         {
             total += bet.BetPayout;
         }
@@ -356,13 +348,46 @@
     }
 
     /// <summary>
-    ///     Async method gets all winning bets made by current user
+    /// Async method filters user bets and populates all bet lists
     /// </summary>
-    /// <param name="id">
-    ///     int represents id of current user
-    /// </param>
+    /// <param name="id">int represents id of current user</param>
     /// <returns></returns>
-    private async Task PopulateWinningBets(int id) => winningBets = (List<BetModel>) 
-        await betData.GetAllBettorWinningBets(id);
-     
+    private async Task FilterBetsAndPopulateLists(int userId)
+    {
+        bettorBets = 
+            (List<BetModel>) await betData.GetAllBettorBets(userId);
+
+        bettorWinningBets = bettorBets.Where(b => b.BetStatus == BetStatus.WINNER).ToList();
+
+        bettorPushBetsUnpaid = bettorBets.Where(b => 
+            b.BetStatus == BetStatus.PUSH && 
+            b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+
+        bettorWinningBetsUnpaid = bettorWinningBets.Where(
+            b => b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+
+        bettorInProgressBets = bettorBets.Where(b =>
+            b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+    } 
+
+    /// <summary>
+    /// Method clears a list passed as a parameter
+    /// </summary>
+    /// <param name="list">List<BetModel> represents a list to clear</param>
+    private void ClearBetList(List<BetModel> list)
+    {
+        list.Clear();
+    }
+
+    /// <summary>
+    /// Async method retieves most recent user account balance
+    /// </summary>
+    /// <returns></returns>
+    private async Task GetUserAccountBalance()
+    {
+        loggedInUser = await userData.GetUser(loggedInUser.Id);
+        userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
+                                    .ToString("#.00"));
+    }
+
 }
