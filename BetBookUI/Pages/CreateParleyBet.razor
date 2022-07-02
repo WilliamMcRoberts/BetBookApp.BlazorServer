@@ -10,7 +10,6 @@
 @inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
 @inject ITranactions transactions
-@inject IAvailableGames availableGames
 
 <PageTitle>CreateParleyBet</PageTitle>
 
@@ -64,10 +63,10 @@
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        basicGamesAvailable = await GamePopulationHelpers.PopulateBasicGameModelList2(
+        basicGamesAvailable = await PopulationHelpers.PopulateBasicGameModelListFromGameList(
             gamesAvailable, gameData, teamData);
 
-        teamRecords = await GamePopulationHelpers.GetTeamRecords2(
+        teamRecords = await PopulationHelpers.PopulateTeamRecordsArrayFromBasicGameList(
             basicGamesAvailable, gameData, teamData, recordData);
     }
 
@@ -81,9 +80,12 @@
     {
         int gameId = basicGame.GameId;
 
-        GameModel game =  await gameData.GetGame(gameId);
+        GameModel? game =  await gameData.GetGame(gameId);
 
-        chosenGames.Add(game);
+        if(game is not null)
+        {
+            chosenGames.Add(game);
+        }
     }
 
     /// <summary>

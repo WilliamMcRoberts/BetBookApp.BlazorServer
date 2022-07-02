@@ -6,7 +6,6 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
-@inject IAvailableGames availableGames
 
 <PageTitle>Index</PageTitle>
 
@@ -107,10 +106,10 @@
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        basicGamesAvailable = await GamePopulationHelpers.PopulateBasicGameModelList2(
+        basicGamesAvailable = await PopulationHelpers.PopulateBasicGameModelListFromGameList(
             gamesAvailable, gameData, teamData);
 
-        teamRecords = await GamePopulationHelpers.GetTeamRecords2(
+        teamRecords = await PopulationHelpers.PopulateTeamRecordsArrayFromBasicGameList(
             basicGamesAvailable, gameData, teamData, recordData);
 
         currentWeek = GetCurrentWeek();

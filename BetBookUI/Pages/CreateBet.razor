@@ -27,13 +27,11 @@
                 <div class="fav-records">
                 <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.FavoriteTeamName</label>
                 <div class="rec-sec">
-                    @if(favoriteTeamWins is not null)
-                    {
-                        <label style="text-align: center;">Wins: @favWinCount</label>
+                        <label style="text-align: center;">Wins: @teamStats[0]</label>
                         <div class="team">
-                            @if(favWinCount != 0)
+                            @if(teamStats[0] != 0)
                             {
-                                @foreach(var win in favoriteTeamWins)
+                                @foreach(var win in gameTeamRecordsLists[0])
                                 {
                                     <h6>@win| |</h6>
                                 }
@@ -43,17 +41,14 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
                 <br />
                 <div class="rec-sec">
-                    @if(favoriteTeamLosses is not null)
-                    {
-                        <label style="text-align: center;">Losses: @favLossCount</label>
+                        <label style="text-align: center;">Losses: @teamStats[1]</label>
                         <div class="team">
-                            @if(favLossCount != 0)
+                            @if(teamStats[1] != 0)
                             {
-                                @foreach(var loss in favoriteTeamLosses)
+                                @foreach(var loss in gameTeamRecordsLists[1])
                                 {
                                     <h6>@loss| |</h6>
                                 }
@@ -63,17 +58,14 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
                 <br />
                 <div class="rec-sec">
-                    @if(favoriteTeamDraws is not null)
-                    {
-                        <label style="text-align: center;">Draws: @favDrawCount</label>
+                        <label style="text-align: center;">Draws: @teamStats[2]</label>
                         <div class="team">
-                            @if(favDrawCount != 0)
+                            @if(teamStats[2] != 0)
                             {
-                                @foreach(var draw in favoriteTeamDraws)
+                                @foreach(var draw in gameTeamRecordsLists[2])
                                 {
                                     <h6>@draw| |</h6>
                                 }
@@ -83,19 +75,16 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
             </div>
             <div class="und-records">
                 <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.UnderdogTeamName</label>
                 <div class="rec-sec">
-                    @if(underdogTeamWins is not null)
-                    {
-                        <label style="text-align: center;">Wins: @undWinCount</label>
+                        <label style="text-align: center;">Wins: @teamStats[3]</label>
                         <div class="team">
-                            @if(undWinCount != 0)
+                            @if(teamStats[3] != 0)
                             {
-                                @foreach(var win in underdogTeamWins)
+                                @foreach(var win in gameTeamRecordsLists[3])
                                 {
                                     <h6>@win| |</h6>
                                 }
@@ -105,17 +94,14 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
                 <br />
                 <div class="rec-sec">
-                    @if(underdogTeamLosses is not null)
-                    {
-                        <label style="text-align: center;">Losses: @undLossCount</label>
+                        <label style="text-align: center;">Losses: @teamStats[4]</label>
                         <div class="team">
-                            @if(undLossCount != 0)
+                            @if(teamStats[4] != 0)
                             {
-                                @foreach(var loss in underdogTeamLosses)
+                                @foreach(var loss in gameTeamRecordsLists[4])
                                 {
                                     <h6>@loss| |</h6>
                                 }
@@ -125,17 +111,14 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
                 <br />
                 <div class="rec-sec">
-                    @if(underdogTeamDraws is not null)
-                    {
-                        <label style="text-align: center;">Draws: @undDrawCount</label>
+                        <label style="text-align: center;">Draws: @teamStats[5]</label>
                         <div class="team">
-                            @if(undDrawCount != 0)
+                            @if(teamStats[5] != 0)
                             {
-                                @foreach(var draw in underdogTeamDraws)
+                                @foreach(var draw in gameTeamRecordsLists[5])
                                 {
                                     <h6>@draw| |</h6>
                                 }
@@ -145,7 +128,6 @@
                                  <h6>None</h6>   
                             }
                         </div>
-                    }
                 </div>
             </div>
             </div>
@@ -238,23 +220,11 @@
     // Display info for current game being viewed
     private BasicGameModel basicCurrentGame = new();
 
-    // Wins of the favorite
-    private List<string> favoriteTeamWins = new();
+    // List of a list of team records in current game
+    private List<List<string>> gameTeamRecordsLists = new();
 
-    // Losses of the favorite
-    private List<string> favoriteTeamLosses = new();
-
-    // Draws of the favorite
-    private List<string> favoriteTeamDraws = new();
-
-    // Wins of the underdog
-    private List<string> underdogTeamWins = new();
-
-    // Losses of the underdog
-    private List<string> underdogTeamLosses = new();
-
-    // Draws of the underdog
-    private List<string> underdogTeamDraws = new();
+    // Stats of the teams in the game
+    int[] teamStats = new int[6];
 
     // Current logged in user
     private UserModel loggedInUser;
@@ -277,29 +247,12 @@
     // Boolean to check if bet amount is good
     private bool betAmountGood = true;
 
-    // Favorite team win count
-    private int favWinCount;
-
-    // Favorite team loss count
-    private int favLossCount;
-
-    // Favorite team draw count
-    private int favDrawCount;
-
-    // Underdog team win count
-    private int undWinCount;
-
-    // Underdog team loss count
-    private int undLossCount;
-
-    // Underdog team draw count
-    private int undDrawCount;
-
     // 10% vigorish for all bets
     private double VIG = .1;
 
     // bool to check if game has started
     private bool gameNotStarted = true;
+
 
     /// <summary>
     /// Async initialization method
@@ -317,77 +270,14 @@
 
         if(currentGame is not null)
         {
-            await PopulateBasicGameModel(currentGame);
-            await PopulateTeamRecords(currentGame);
-        }
-    }
-
-    /// <summary>
-    /// Async method populates team records
-    /// </summary>
-    /// <returns></returns>
-    private async Task PopulateTeamRecords(GameModel game)
-    {
-        TeamRecordModel? favRecord = 
-            await recordData.GetTeamRecord(game.FavoriteId);
-        TeamRecordModel? undRecord = 
-            await recordData.GetTeamRecord(game.UnderdogId);
-
-        if(favRecord is not null)
-        {
-            favoriteTeamWins = favRecord.Wins.Split('|').ToList();
-            favoriteTeamWins.RemoveRange(favoriteTeamWins.Count - 1, 1);
-
-            favoriteTeamLosses = favRecord.Losses.Split('|').ToList();
-            favoriteTeamLosses.RemoveRange(favoriteTeamLosses.Count - 1, 1);
-
-            favoriteTeamDraws = favRecord.Draws.Split('|').ToList();
-            favoriteTeamDraws.RemoveRange(favoriteTeamDraws.Count - 1, 1);
-
-            favWinCount = favoriteTeamWins.Count ;
-            favLossCount = favoriteTeamLosses.Count;
-            favDrawCount = favoriteTeamDraws.Count;
+            basicCurrentGame = await PopulationHelpers.PopulateBasicGameModelFromGame(
+                currentGame, teamData);
+            gameTeamRecordsLists =  await PopulationHelpers.PopulateRecordsListsFromGame(
+                currentGame, recordData);
         }
 
-        if(undRecord is not null)
-        {
-            underdogTeamWins = undRecord.Wins.Split('|').ToList();
-            underdogTeamWins.RemoveRange(underdogTeamWins.Count - 1, 1);
-
-            underdogTeamLosses = undRecord.Losses.Split('|').ToList();
-            underdogTeamLosses.RemoveRange(underdogTeamLosses.Count - 1, 1);
-
-            underdogTeamDraws = undRecord.Draws.Split('|').ToList();
-            underdogTeamDraws.RemoveRange(underdogTeamDraws.Count - 1, 1);
-
-            undWinCount = underdogTeamWins.Count;
-            undLossCount = underdogTeamLosses.Count;
-            undDrawCount = underdogTeamDraws.Count;
-        }
-    }
-
-    /// <summary>
-    /// Async method popluates a basic game model with the team names and 
-    /// point spread of current selected game
-    /// </summary>
-    /// <param name="gameId">int representing the Id of the current game</param>
-    /// <returns></returns>
-    private async Task PopulateBasicGameModel(GameModel game)
-    {
-        TeamModel? homeTeam =  await teamData.GetTeam(game.HomeTeamId);
-        TeamModel? awayTeam = await teamData.GetTeam(game.AwayTeamId);
-        TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
-        TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
-
-        if(homeTeam is not null && awayTeam is not null && 
-            favorite is not null && underdog is not null)
-        {
-            basicCurrentGame.HomeTeamName = homeTeam.TeamName;
-            basicCurrentGame.AwayTeamName = awayTeam.TeamName;
-            basicCurrentGame.FavoriteTeamName = favorite.TeamName;
-            basicCurrentGame.UnderdogTeamName = underdog.TeamName;
-            basicCurrentGame.PointSpread = game.PointSpread;
-        }
+        teamStats = PopulationHelpers.PopulateTeamStatsFromRecordLists(
+            gameTeamRecordsLists);
     }
 
     /// <summary>
