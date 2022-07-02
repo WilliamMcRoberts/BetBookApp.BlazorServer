@@ -17,15 +17,15 @@
 
 <div class="game-wager-container">
     <div class="game-info-container">
-        <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Game Details</h1>
+        <h1 style="margin-top: .5em;" class="title">Game Details</h1>
         <div style="margin-bottom:1em;">
             <ul class="game-list">
-                <li class="team-item">@basicGame.AwayTeamName at @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</li>
+                <li class="team-item">@basicCurrentGame.AwayTeamName at @basicCurrentGame.HomeTeamName || @basicCurrentGame.FavoriteTeamName - @basicCurrentGame.PointSpread points</li>
             </ul>
             <br />
             <div class="records">
                 <div class="fav-records">
-                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicGame.FavoriteTeamName</label>
+                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.FavoriteTeamName</label>
                 <div class="rec-sec">
                     @if(favoriteTeamWins is not null)
                     {
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="und-records">
-                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicGame.UnderdogTeamName</label>
+                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.UnderdogTeamName</label>
                 <div class="rec-sec">
                     @if(underdogTeamWins is not null)
                     {
@@ -152,8 +152,8 @@
         </div>
     </div>
     <div class="wager-form-container">
-    <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Create A Wager</h1>
-    @if(basicGame is not null)
+    <h1 style="margin-top: .5em;" class="title">Create A Wager</h1>
+    @if(basicCurrentGame is not null)
 {
         @if(wagerPlaced == false)
         {
@@ -182,10 +182,10 @@
             <div class="winner-btn-container">
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.FavoriteId))">
-                        Choose @basicGame.FavoriteTeamName - @basicGame.PointSpread</button>
+                        Choose @basicCurrentGame.FavoriteTeamName - @basicCurrentGame.PointSpread</button>
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(currentGame.UnderdogId))">
-                        Choose @basicGame.UnderdogTeamName + @basicGame.PointSpread</button>
+                        Choose @basicCurrentGame.UnderdogTeamName + @basicCurrentGame.PointSpread</button>
             </div>
         }
         else if(winnerChosen == true && wagerPlaced == false)
@@ -194,13 +194,13 @@
                 <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
                 @if(teamToWin is not null)
                 {
-                        @if(teamToWin.TeamName == basicGame.FavoriteTeamName)
+                        @if(teamToWin.TeamName == basicCurrentGame.FavoriteTeamName)
                         {
-                            <p>@teamToWin.TeamName - @basicGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName - @basicCurrentGame.PointSpread points</p>
                         }
                         else
                         {
-                            <p>@teamToWin.TeamName + @basicGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName + @basicCurrentGame.PointSpread points</p>
                         }
                     <p>For $@betAmount</p>
                     <div style="margin-top:3.4em;" class="undo-btn-container">
@@ -233,10 +233,10 @@
     private int gameId;
 
     // Current game being viewed
-    private GameModel? currentGame;
+    private GameModel currentGame;
 
     // Display info for current game being viewed
-    private BasicGameModel basicGame = new();
+    private BasicGameModel basicCurrentGame = new();
 
     // Wins of the favorite
     private List<string> favoriteTeamWins = new();
@@ -315,56 +315,54 @@
 
         currentGame = await gameData.GetGame(gameId);
 
-        await PopulateBasicGameModel(gameId);
-
-        if (currentGame is not null)
-            await PopulateTeamRecords();
+        if(currentGame is not null)
+        {
+            await PopulateBasicGameModel(currentGame);
+            await PopulateTeamRecords(currentGame);
+        }
     }
 
     /// <summary>
     /// Async method populates team records
     /// </summary>
     /// <returns></returns>
-    private async Task PopulateTeamRecords()
+    private async Task PopulateTeamRecords(GameModel game)
     {
-        if(currentGame is not null)
+        TeamRecordModel? favRecord = 
+            await recordData.GetTeamRecord(game.FavoriteId);
+        TeamRecordModel? undRecord = 
+            await recordData.GetTeamRecord(game.UnderdogId);
+
+        if(favRecord is not null)
         {
-            TeamRecordModel? favRecord = 
-                await GetCurrentTeamRecord(currentGame.FavoriteId);
-            TeamRecordModel? undRecord = 
-                await GetCurrentTeamRecord(currentGame.UnderdogId);
+            favoriteTeamWins = favRecord.Wins.Split('|').ToList();
+            favoriteTeamWins.RemoveRange(favoriteTeamWins.Count - 1, 1);
 
-            if(favRecord is not null)
-            {
-                favoriteTeamWins = favRecord.Wins.Split('|').ToList();
-                favoriteTeamWins.RemoveRange(favoriteTeamWins.Count - 1, 1);
+            favoriteTeamLosses = favRecord.Losses.Split('|').ToList();
+            favoriteTeamLosses.RemoveRange(favoriteTeamLosses.Count - 1, 1);
 
-                favoriteTeamLosses = favRecord.Losses.Split('|').ToList();
-                favoriteTeamLosses.RemoveRange(favoriteTeamLosses.Count - 1, 1);
+            favoriteTeamDraws = favRecord.Draws.Split('|').ToList();
+            favoriteTeamDraws.RemoveRange(favoriteTeamDraws.Count - 1, 1);
 
-                favoriteTeamDraws = favRecord.Draws.Split('|').ToList();
-                favoriteTeamDraws.RemoveRange(favoriteTeamDraws.Count - 1, 1);
+            favWinCount = favoriteTeamWins.Count ;
+            favLossCount = favoriteTeamLosses.Count;
+            favDrawCount = favoriteTeamDraws.Count;
+        }
 
-                favWinCount = favoriteTeamWins.Count ;
-                favLossCount = favoriteTeamLosses.Count;
-                favDrawCount = favoriteTeamDraws.Count;
-            }
+        if(undRecord is not null)
+        {
+            underdogTeamWins = undRecord.Wins.Split('|').ToList();
+            underdogTeamWins.RemoveRange(underdogTeamWins.Count - 1, 1);
 
-            if(undRecord is not null)
-            {
-                underdogTeamWins = undRecord.Wins.Split('|').ToList();
-                underdogTeamWins.RemoveRange(underdogTeamWins.Count - 1, 1);
+            underdogTeamLosses = undRecord.Losses.Split('|').ToList();
+            underdogTeamLosses.RemoveRange(underdogTeamLosses.Count - 1, 1);
 
-                underdogTeamLosses = undRecord.Losses.Split('|').ToList();
-                underdogTeamLosses.RemoveRange(underdogTeamLosses.Count - 1, 1);
+            underdogTeamDraws = undRecord.Draws.Split('|').ToList();
+            underdogTeamDraws.RemoveRange(underdogTeamDraws.Count - 1, 1);
 
-                underdogTeamDraws = undRecord.Draws.Split('|').ToList();
-                underdogTeamDraws.RemoveRange(underdogTeamDraws.Count - 1, 1);
-
-                undWinCount = underdogTeamWins.Count;
-                undLossCount = underdogTeamLosses.Count;
-                undDrawCount = underdogTeamDraws.Count;
-            }
+            undWinCount = underdogTeamWins.Count;
+            undLossCount = underdogTeamLosses.Count;
+            undDrawCount = underdogTeamDraws.Count;
         }
     }
 
@@ -374,35 +372,23 @@
     /// </summary>
     /// <param name="gameId">int representing the Id of the current game</param>
     /// <returns></returns>
-    private async Task PopulateBasicGameModel(int gameId)
+    private async Task PopulateBasicGameModel(GameModel game)
     {
-        if(currentGame is not null)
-        {
-            TeamModel? homeTeam =  await teamData.GetTeam(currentGame.HomeTeamId);
-            TeamModel? awayTeam = await teamData.GetTeam(currentGame.AwayTeamId);
-            TeamModel? favorite = await teamData.GetTeam(currentGame.FavoriteId);
-            TeamModel? underdog = await teamData.GetTeam(currentGame.UnderdogId);
+        TeamModel? homeTeam =  await teamData.GetTeam(game.HomeTeamId);
+        TeamModel? awayTeam = await teamData.GetTeam(game.AwayTeamId);
+        TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
+        TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
 
-            if( homeTeam is not null && awayTeam is not null 
-                && favorite is not null && underdog is not null)
-            {
-                basicGame.HomeTeamName = homeTeam.TeamName;
-                basicGame.AwayTeamName = awayTeam.TeamName;
-                basicGame.FavoriteTeamName = favorite.TeamName;
-                basicGame.UnderdogTeamName = underdog.TeamName;
-                basicGame.PointSpread = currentGame.PointSpread;
-            }
+        if(homeTeam is not null && awayTeam is not null && 
+            favorite is not null && underdog is not null)
+        {
+            basicCurrentGame.HomeTeamName = homeTeam.TeamName;
+            basicCurrentGame.AwayTeamName = awayTeam.TeamName;
+            basicCurrentGame.FavoriteTeamName = favorite.TeamName;
+            basicCurrentGame.UnderdogTeamName = underdog.TeamName;
+            basicCurrentGame.PointSpread = game.PointSpread;
         }
     }
-
-    /// <summary>
-    /// Async method gets and returns a team record from the database
-    /// </summary>
-    /// <param name="teamId">int representing the Id of current team</param>
-    /// <returns></returns>
-    private async Task<TeamRecordModel?> GetCurrentTeamRecord(int teamId) => 
-        await recordData.GetTeamRecord(teamId);
-
 
     /// <summary>
     /// Async method to update bet info, insert a new bet
@@ -420,50 +406,47 @@
     /// <returns></returns>
     private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
     {
-        if(currentGame is not null)
+        if (DateTime.Now < currentGame?.DateOfGame)
         {
-            if (DateTime.Now < currentGame.DateOfGame)
+            if (amountToBet != 0)
             {
-                if (amountToBet != 0)
+                BetModel bet = new();
+
+                bet.BetAmount = amountToBet;
+                bet.BetPayout = 
+                    (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                bet.ChosenWinnerId = teamToWin.Id;
+                bet.BettorId = loggedInUser.Id;
+                bet.GameId = gameId;
+                bet.BetStatus = BetStatus.IN_PROGRESS;
+                bet.PayoutStatus = PayoutStatus.UNPAID;
+
+                loggedInUser.AccountBalance -= bet.BetAmount;
+                houseAccount.AccountBalance += bet.BetAmount;
+
+                try
                 {
-                    BetModel bet = new();
-
-                    bet.BetAmount = amountToBet;
-                    bet.BetPayout = 
-                        (decimal)((double)amountToBet - (double)amountToBet * VIG);
-                    bet.ChosenWinnerId = teamToWin.Id;
-                    bet.BettorId = loggedInUser.Id;
-                    bet.GameId = gameId;
-                    bet.BetStatus = BetStatus.IN_PROGRESS;
-                    bet.PayoutStatus = PayoutStatus.UNPAID;
-
-                    loggedInUser.AccountBalance -= bet.BetAmount;
-                    houseAccount.AccountBalance += bet.BetAmount;
-
-                    try
-                    {
-                        // Tranaction method transfers funds from user account
-                        // to house account and inserts bet into the database
-                        await transactions.CreateBetTransaction(
-                            loggedInUser, houseAccount, bet);
-                        //await betData.InsertBet(bet);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error: {ex.Message}");
-                    }
-
-                    wagerPlaced = true;
-                    betAmount = Convert.ToDecimal((0).ToString("#.00"));
+                    // Tranaction method transfers funds from user account
+                    // to house account and inserts bet into the database
+                    await transactions.CreateBetTransaction(
+                        loggedInUser, houseAccount, bet);
+                    //await betData.InsertBet(bet);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
                 }
 
-                else
-                    betAmountGood = false;
+                wagerPlaced = true;
+                betAmount = Convert.ToDecimal((0).ToString("#.00"));
             }
 
             else
-                gameNotStarted = false;
+                betAmountGood = false;
         }
+
+        else
+            gameNotStarted = false;
     }
 
     /// <summary>
@@ -474,19 +457,16 @@
     /// <returns></returns>
     private async Task ChooseWinner(int teamId)
     {
-        if(currentGame is not null)
+        if(teamId == currentGame?.FavoriteId)
         {
-            if(teamId == currentGame.FavoriteId)
-            {
-                teamToWin = await teamData.GetTeam(currentGame.FavoriteId);
-                winnerChosen = true;
-            }
+            teamToWin = await teamData.GetTeam(currentGame.FavoriteId);
+            winnerChosen = true;
+        }
 
-            else if(teamId == currentGame.UnderdogId)
-            {
-                teamToWin = await teamData.GetTeam(currentGame.UnderdogId);
-                winnerChosen = true;
-            }
+        else if(teamId == currentGame?.UnderdogId)
+        {
+            teamToWin = await teamData.GetTeam(currentGame.UnderdogId);
+            winnerChosen = true;
         }
     }
 

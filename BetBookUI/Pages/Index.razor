@@ -64,7 +64,7 @@
 @code {
 
     // Current logged in user
-    private UserModel? loggedInUser;
+    private UserModel loggedInUser;
 
     // List of basic game models for displaying game info for the current week
     private List<BasicGameModel> basicGamesAvailable = new();
@@ -107,10 +107,11 @@
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        basicGamesAvailable = 
-            await availableGames.PopulateBasicGameModelList(gamesAvailable);
+        basicGamesAvailable = await GamePopulationHelpers.PopulateBasicGameModelList2(
+            gamesAvailable, gameData, teamData);
 
-        teamRecords = await availableGames.GetTeamRecords(basicGamesAvailable);
+        teamRecords = await GamePopulationHelpers.GetTeamRecords2(
+            basicGamesAvailable, gameData, teamData, recordData);
 
         currentWeek = GetCurrentWeek();
     }

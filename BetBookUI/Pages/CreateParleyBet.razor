@@ -64,10 +64,11 @@
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        basicGamesAvailable = 
-            await availableGames.PopulateBasicGameModelList(gamesAvailable);
+        basicGamesAvailable = await GamePopulationHelpers.PopulateBasicGameModelList2(
+            gamesAvailable, gameData, teamData);
 
-        teamRecords = await availableGames.GetTeamRecords(basicGamesAvailable);
+        teamRecords = await GamePopulationHelpers.GetTeamRecords2(
+            basicGamesAvailable, gameData, teamData, recordData);
     }
 
     /// <summary>

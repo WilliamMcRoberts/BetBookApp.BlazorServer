@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 namespace BetBookUI.Helpers;
 
 /// <summary>
-/// Static helper class
+/// Static Auth Provider helper class
 /// </summary>
 public static class AuthenticationStateProviderHelpers
 {

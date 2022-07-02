@@ -95,6 +95,11 @@ ul {
     margin: 1em 1em;
 }
 
+.title {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+
 .nav-links {
     display: flex;
     text-align: center;
@@ -189,10 +194,7 @@ ul {
     width: 50%;
 }
 
-.title {
-    font-family: 'Montserrat', sans-serif;
-    text-align: center;
-}
+
 
 .team-item {
     padding: .25em;

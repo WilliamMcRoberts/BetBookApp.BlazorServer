@@ -241,9 +241,8 @@
                 bb.ChosenWinnerTeamName = chosenTeam.TeamName;
                 bb.FinalWinnerTeamName = "Push";
                 bb.Spread = gameWagered.PointSpread;
-                bb.PayoutAmount = 
-                Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                       .ToString("#.00"));
+                bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + 
+                                      (bet.BetPayout * 2)).ToString("#.00"));
 
                 bettorPushBetsUnpaidBasicBets.Add(bb);
             }
@@ -328,9 +327,7 @@
             total += bet.BetPayout;
         }
 
-        total = Convert
-            .ToDecimal((total)
-            .ToString("#.00"));
+        total = Convert.ToDecimal((total).ToString("#.00"));
 
         return total;
     }
@@ -355,9 +352,8 @@
             total += bet.BetPayout;
         }
 
-        totalPayout = Convert
-            .ToDecimal((((decimal)VIG_RECOUP * total) + (total * 2))
-            .ToString("#.00"));
+        totalPayout = Convert.ToDecimal((((decimal)VIG_RECOUP * total) + 
+                                          (total * 2)).ToString("#.00"));
 
         return totalPayout;
     }
@@ -365,22 +361,22 @@
     /// <summary>
     /// Async method filters user bets and populates all bet lists
     /// </summary>
-    /// <param name="id">int represents id of current user</param>
+    /// <param name="userId">int represents id of current user</param>
     /// <returns></returns>
     private async Task FilterBetsAndPopulateLists(int userId)
     {
         bettorBets = 
             (List<BetModel>) await betData.GetAllBettorBets(userId);
 
-        bettorWinningBets = bettorBets.Where(
-            b => b.BetStatus == BetStatus.WINNER).ToList();
+        bettorWinningBets = bettorBets.Where(b =>
+            b.BetStatus == BetStatus.WINNER).ToList();
 
         bettorPushBetsUnpaid = bettorBets.Where(b => 
             b.BetStatus == BetStatus.PUSH && 
             b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
-        bettorWinningBetsUnpaid = bettorWinningBets.Where(
-            b => b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+        bettorWinningBetsUnpaid = bettorWinningBets.Where(b =>
+            b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
         bettorInProgressBets = bettorBets.Where(b =>
             b.BetStatus == BetStatus.IN_PROGRESS).ToList();
@@ -401,12 +397,10 @@
     /// <returns></returns>
     private async Task RefreshUserAccountBalance()
     {
-        if(loggedInUser is not null)
-        {
-            loggedInUser = await userData.GetUser(loggedInUser.Id);
-            userAccountBalance = Convert.ToDecimal((loggedInUser.AccountBalance)
-                                        .ToString("#.00"));
-        }
+        loggedInUser = await userData.GetUser(loggedInUser.Id);
+        userAccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance)
+                   .ToString("#.00"));
     }
 
 }

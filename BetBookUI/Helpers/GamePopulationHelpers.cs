@@ -1,32 +1,14 @@
-﻿using BetBookData.DataLogic.Interfaces;
-using BetBookData.Models;
+﻿namespace BetBookUI.Helpers;
 
-namespace BetBookData.DataLogic;
-public class AvailableGames : IAvailableGames
+public static class GamePopulationHelpers
 {
-    private readonly IGameData _gameData;
-    private readonly ITeamData _teamData;
-    private readonly ITeamRecordData _recordData;
-
-    /// <summary>
-    /// AvailableGames constructor
-    /// </summary>
-    /// <param name="gameData">IGameData represents game data interface</param>
-    /// <param name="teamData">ITeamData represents team data interface</param>
-    /// <param name="recordData">IRecordData represents team record data interface</param>
-    public AvailableGames(IGameData gameData, ITeamData teamData, ITeamRecordData recordData)
-    {
-        _gameData = gameData;
-        _teamData = teamData;
-        _recordData = recordData;
-    }
-
     /// <summary>
     /// Async method opulates a list of basic game models
     /// </summary>
     /// <param name="games">List<GameModel> represents a list of games to use for populating basic game list</param>
     /// <returns></returns>
-    public async Task<List<BasicGameModel>> PopulateBasicGameModelList(List<GameModel> games)
+    public static async Task<List<BasicGameModel>> PopulateBasicGameModelList(
+                List<GameModel> games, IGameData gameData, ITeamData teamData)
     {
         List<BasicGameModel> basicGames = new();
 
@@ -36,15 +18,15 @@ public class AvailableGames : IAvailableGames
             if (g.DateOfGame < DateTime.Now)
             {
                 g.GameStatus = GameStatus.IN_PROGRESS;
-                await _gameData.UpdateGame(g);
+                await gameData.UpdateGame(g);
                 games.Remove(g);
-                await PopulateBasicGameModelList(games);
+                await PopulateBasicGameModelList(games, gameData, teamData);
             }
 
-            TeamModel? homeTeam = await _teamData.GetTeam(g.HomeTeamId);
-            TeamModel? awayTeam = await _teamData.GetTeam(g.AwayTeamId);
-            TeamModel? favoriteTeam = await _teamData.GetTeam(g.FavoriteId);
-            TeamModel? underdogTeam = await _teamData.GetTeam(g.UnderdogId);
+            TeamModel? homeTeam = await teamData.GetTeam(g.HomeTeamId);
+            TeamModel? awayTeam = await teamData.GetTeam(g.AwayTeamId);
+            TeamModel? favoriteTeam = await teamData.GetTeam(g.FavoriteId);
+            TeamModel? underdogTeam = await teamData.GetTeam(g.UnderdogId);
 
             BasicGameModel bg = new();
 
@@ -73,26 +55,28 @@ public class AvailableGames : IAvailableGames
     /// to use populate the team record array
     /// </param>
     /// <returns>TeamRecordModel[] array of team records</returns>
-    public async Task<TeamRecordModel[]> GetTeamRecords(List<BasicGameModel> basicGames)
+    public static async Task<TeamRecordModel[]> GetTeamRecords(
+            List<BasicGameModel> basicGames, IGameData gameData, 
+            ITeamData teamData, ITeamRecordData recordData)
     {
         TeamRecordModel[] teamRecords = new TeamRecordModel[32];
         int index = 0;
 
         foreach (BasicGameModel bg in basicGames)
         {
-            GameModel? game = await _gameData.GetGame(bg.GameId);
+            GameModel? game = await gameData.GetGame(bg.GameId);
 
-            if(game is not null)
+            if (game is not null)
             {
-                TeamModel? teamHome = await _teamData.GetTeam(game.HomeTeamId);
-                TeamModel? teamAway = await _teamData.GetTeam(game.AwayTeamId);
+                TeamModel? teamHome = await teamData.GetTeam(game.HomeTeamId);
+                TeamModel? teamAway = await teamData.GetTeam(game.AwayTeamId);
 
                 if (teamHome is not null && teamAway is not null)
                 {
-                    TeamRecordModel? teamRecordHome = 
-                        await _recordData.GetTeamRecord(teamHome.Id);
-                    TeamRecordModel? teamRecordAway = 
-                        await _recordData.GetTeamRecord(teamAway.Id);
+                    TeamRecordModel? teamRecordHome =
+                        await recordData.GetTeamRecord(teamHome.Id);
+                    TeamRecordModel? teamRecordAway =
+                        await recordData.GetTeamRecord(teamAway.Id);
 
                     if (teamRecordHome is not null && teamRecordAway is not null)
                     {
