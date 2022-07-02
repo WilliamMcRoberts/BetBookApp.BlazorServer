@@ -228,6 +228,10 @@
     /// </param>
     private void CreateBet(int gameId)
     {
-        navManager.NavigateTo($"/CreateBet/{gameId}");
+        if(loggedInUser is not null)
+            navManager.NavigateTo($"/CreateBet/{gameId}");
+        else
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
+
 }

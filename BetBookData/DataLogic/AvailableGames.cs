@@ -28,10 +28,7 @@ public class AvailableGames : IAvailableGames
     /// <returns></returns>
     public async Task<List<BasicGameModel>> PopulateBasicGameModelList(List<GameModel> games)
     {
-
         List<BasicGameModel> basicGames = new();
-
-
 
         foreach (GameModel g in games)
         {
@@ -85,22 +82,27 @@ public class AvailableGames : IAvailableGames
         {
             GameModel? game = await _gameData.GetGame(bg.GameId);
 
-            TeamModel? teamHome = await _teamData.GetTeam(game.HomeTeamId);
-            TeamModel? teamAway = await _teamData.GetTeam(game.AwayTeamId);
-
-            if (teamHome is not null && teamAway is not null)
+            if(game is not null)
             {
-                TeamRecordModel? teamRecordHome = await _recordData.GetTeamRecord(teamHome.Id);
-                TeamRecordModel? teamRecordAway = await _recordData.GetTeamRecord(teamAway.Id);
+                TeamModel? teamHome = await _teamData.GetTeam(game.HomeTeamId);
+                TeamModel? teamAway = await _teamData.GetTeam(game.AwayTeamId);
 
-                if (teamRecordHome is not null && teamRecordAway is not null)
+                if (teamHome is not null && teamAway is not null)
                 {
-                    teamRecords[index] = teamRecordAway;
-                    teamRecords[index + 1] = teamRecordHome;
-                }
-            }
+                    TeamRecordModel? teamRecordHome = 
+                        await _recordData.GetTeamRecord(teamHome.Id);
+                    TeamRecordModel? teamRecordAway = 
+                        await _recordData.GetTeamRecord(teamAway.Id);
 
-            index += 2;
+                    if (teamRecordHome is not null && teamRecordAway is not null)
+                    {
+                        teamRecords[index] = teamRecordAway;
+                        teamRecords[index + 1] = teamRecordHome;
+                    }
+                }
+
+                index += 2;
+            }
         }
 
         return teamRecords;

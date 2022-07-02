@@ -233,7 +233,7 @@
     private int gameId;
 
     // Current game being viewed
-    private GameModel? currentGame = new();
+    private GameModel? currentGame;
 
     // Display info for current game being viewed
     private BasicGameModel basicGame = new();
@@ -327,39 +327,44 @@
     /// <returns></returns>
     private async Task PopulateTeamRecords()
     {
-        TeamRecordModel? favRecord = await GetCurrentTeamRecord(currentGame.FavoriteId);
-        TeamRecordModel? undRecord = await GetCurrentTeamRecord(currentGame.UnderdogId);
-
-        if(favRecord is not null)
+        if(currentGame is not null)
         {
-            favoriteTeamWins = favRecord.Wins.Split('|').ToList();
-            favoriteTeamWins.RemoveRange(favoriteTeamWins.Count - 1, 1);
+            TeamRecordModel? favRecord = 
+                await GetCurrentTeamRecord(currentGame.FavoriteId);
+            TeamRecordModel? undRecord = 
+                await GetCurrentTeamRecord(currentGame.UnderdogId);
 
-            favoriteTeamLosses = favRecord.Losses.Split('|').ToList();
-            favoriteTeamLosses.RemoveRange(favoriteTeamLosses.Count - 1, 1);
+            if(favRecord is not null)
+            {
+                favoriteTeamWins = favRecord.Wins.Split('|').ToList();
+                favoriteTeamWins.RemoveRange(favoriteTeamWins.Count - 1, 1);
 
-            favoriteTeamDraws = favRecord.Draws.Split('|').ToList();
-            favoriteTeamDraws.RemoveRange(favoriteTeamDraws.Count - 1, 1);
+                favoriteTeamLosses = favRecord.Losses.Split('|').ToList();
+                favoriteTeamLosses.RemoveRange(favoriteTeamLosses.Count - 1, 1);
 
-            favWinCount = favoriteTeamWins.Count ;
-            favLossCount = favoriteTeamLosses.Count;
-            favDrawCount = favoriteTeamDraws.Count;
-        }
+                favoriteTeamDraws = favRecord.Draws.Split('|').ToList();
+                favoriteTeamDraws.RemoveRange(favoriteTeamDraws.Count - 1, 1);
 
-        if(undRecord is not null)
-        {
-            underdogTeamWins = undRecord.Wins.Split('|').ToList();
-            underdogTeamWins.RemoveRange(underdogTeamWins.Count - 1, 1);
+                favWinCount = favoriteTeamWins.Count ;
+                favLossCount = favoriteTeamLosses.Count;
+                favDrawCount = favoriteTeamDraws.Count;
+            }
 
-            underdogTeamLosses = undRecord.Losses.Split('|').ToList();
-            underdogTeamLosses.RemoveRange(underdogTeamLosses.Count - 1, 1);
+            if(undRecord is not null)
+            {
+                underdogTeamWins = undRecord.Wins.Split('|').ToList();
+                underdogTeamWins.RemoveRange(underdogTeamWins.Count - 1, 1);
 
-            underdogTeamDraws = undRecord.Draws.Split('|').ToList();
-            underdogTeamDraws.RemoveRange(underdogTeamDraws.Count - 1, 1);
+                underdogTeamLosses = undRecord.Losses.Split('|').ToList();
+                underdogTeamLosses.RemoveRange(underdogTeamLosses.Count - 1, 1);
 
-            undWinCount = underdogTeamWins.Count;
-            undLossCount = underdogTeamLosses.Count;
-            undDrawCount = underdogTeamDraws.Count;
+                underdogTeamDraws = undRecord.Draws.Split('|').ToList();
+                underdogTeamDraws.RemoveRange(underdogTeamDraws.Count - 1, 1);
+
+                undWinCount = underdogTeamWins.Count;
+                undLossCount = underdogTeamLosses.Count;
+                undDrawCount = underdogTeamDraws.Count;
+            }
         }
     }
 
@@ -371,19 +376,22 @@
     /// <returns></returns>
     private async Task PopulateBasicGameModel(int gameId)
     {
-        TeamModel? homeTeam =  await teamData.GetTeam(currentGame.HomeTeamId);
-        TeamModel? awayTeam = await teamData.GetTeam(currentGame.AwayTeamId);
-        TeamModel? favorite = await teamData.GetTeam(currentGame.FavoriteId);
-        TeamModel? underdog = await teamData.GetTeam(currentGame.UnderdogId);
-
-        if( homeTeam is not null && awayTeam is not null 
-            && favorite is not null && underdog is not null)
+        if(currentGame is not null)
         {
-            basicGame.HomeTeamName = homeTeam.TeamName;
-            basicGame.AwayTeamName = awayTeam.TeamName;
-            basicGame.FavoriteTeamName = favorite.TeamName;
-            basicGame.UnderdogTeamName = underdog.TeamName;
-            basicGame.PointSpread = currentGame.PointSpread;
+            TeamModel? homeTeam =  await teamData.GetTeam(currentGame.HomeTeamId);
+            TeamModel? awayTeam = await teamData.GetTeam(currentGame.AwayTeamId);
+            TeamModel? favorite = await teamData.GetTeam(currentGame.FavoriteId);
+            TeamModel? underdog = await teamData.GetTeam(currentGame.UnderdogId);
+
+            if( homeTeam is not null && awayTeam is not null 
+                && favorite is not null && underdog is not null)
+            {
+                basicGame.HomeTeamName = homeTeam.TeamName;
+                basicGame.AwayTeamName = awayTeam.TeamName;
+                basicGame.FavoriteTeamName = favorite.TeamName;
+                basicGame.UnderdogTeamName = underdog.TeamName;
+                basicGame.PointSpread = currentGame.PointSpread;
+            }
         }
     }
 
@@ -412,47 +420,50 @@
     /// <returns></returns>
     private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
     {
-        if (DateTime.Now < currentGame.DateOfGame)
+        if(currentGame is not null)
         {
-            if (amountToBet != 0)
+            if (DateTime.Now < currentGame.DateOfGame)
             {
-                BetModel bet = new();
-
-                bet.BetAmount = amountToBet;
-                bet.BetPayout = 
-                    (decimal)((double)amountToBet - (double)amountToBet * VIG);
-                bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = loggedInUser.Id;
-                bet.GameId = gameId;
-                bet.BetStatus = BetStatus.IN_PROGRESS;
-                bet.PayoutStatus = PayoutStatus.UNPAID;
-
-                loggedInUser.AccountBalance -= bet.BetAmount;
-                houseAccount.AccountBalance += bet.BetAmount;
-
-                try
+                if (amountToBet != 0)
                 {
-                    // Tranaction method transfers funds from user account
-                    // to house account and inserts bet into the database
-                    await transactions.CreateBetTransaction(loggedInUser, houseAccount, bet);
-                    //await betData.InsertBet(bet);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-                }
-                
+                    BetModel bet = new();
 
-                wagerPlaced = true;
-                betAmount = Convert.ToDecimal((0).ToString("#.00"));
+                    bet.BetAmount = amountToBet;
+                    bet.BetPayout = 
+                        (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                    bet.ChosenWinnerId = teamToWin.Id;
+                    bet.BettorId = loggedInUser.Id;
+                    bet.GameId = gameId;
+                    bet.BetStatus = BetStatus.IN_PROGRESS;
+                    bet.PayoutStatus = PayoutStatus.UNPAID;
+
+                    loggedInUser.AccountBalance -= bet.BetAmount;
+                    houseAccount.AccountBalance += bet.BetAmount;
+
+                    try
+                    {
+                        // Tranaction method transfers funds from user account
+                        // to house account and inserts bet into the database
+                        await transactions.CreateBetTransaction(
+                            loggedInUser, houseAccount, bet);
+                        //await betData.InsertBet(bet);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error: {ex.Message}");
+                    }
+
+                    wagerPlaced = true;
+                    betAmount = Convert.ToDecimal((0).ToString("#.00"));
+                }
+
+                else
+                    betAmountGood = false;
             }
 
             else
-                betAmountGood = false;
+                gameNotStarted = false;
         }
-
-        else
-            gameNotStarted = false;
     }
 
     /// <summary>
@@ -463,16 +474,19 @@
     /// <returns></returns>
     private async Task ChooseWinner(int teamId)
     {
-        if(teamId == currentGame.FavoriteId)
+        if(currentGame is not null)
         {
-            teamToWin = await teamData.GetTeam(currentGame.FavoriteId);
-            winnerChosen = true;
-        }
+            if(teamId == currentGame.FavoriteId)
+            {
+                teamToWin = await teamData.GetTeam(currentGame.FavoriteId);
+                winnerChosen = true;
+            }
 
-        else if(teamId == currentGame.UnderdogId)
-        {
-            teamToWin = await teamData.GetTeam(currentGame.UnderdogId);
-            winnerChosen = true;
+            else if(teamId == currentGame.UnderdogId)
+            {
+                teamToWin = await teamData.GetTeam(currentGame.UnderdogId);
+                winnerChosen = true;
+            }
         }
     }
 
