@@ -1,4 +1,4 @@
-﻿@page "/create-bet/{GameId}"
+﻿@page "/CreateBet/{GameId}"
 @attribute [Authorize]
 @using BetBookUI.Helpers
 @using Syncfusion.Blazor.Inputs
@@ -9,7 +9,7 @@
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
-@inject ITranactions transactions
+@inject IConfiguration config
 
 <PageTitle>CreateBet</PageTitle>
 
@@ -321,8 +321,9 @@
                 {
                     // Transaction method transfers funds from user account
                     // to house account and inserts bet into the database
-                    await transactions.CreateBetTransaction(
-                        loggedInUser, houseAccount, bet);
+                    await TransactionHelpers.CreateBetTransaction(
+                        loggedInUser, houseAccount, bet, config, 
+                            userData, houseData, betData);
                 }
                 catch (Exception ex)
                 {

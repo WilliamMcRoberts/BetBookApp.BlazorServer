@@ -1,4 +1,4 @@
-﻿@page "/profile"
+﻿@page "/Profile"
 @attribute [Authorize]
 @using BetBookData.Models
 @using BetBookData.DataLogic
@@ -9,7 +9,7 @@
 @inject IUserData userData
 @inject IGameData gameData
 @inject ITeamData teamData
-@inject ITranactions transactions
+@inject IConfiguration config
 
 <PageTitle>Profile</PageTitle>
 
@@ -166,6 +166,8 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
+        houseAccount = await houseData.GetHouseAccount();
+
         await RefreshUserAccountBalance();
 
         await FilterBetsAndPopulateLists(loggedInUser.Id);
@@ -175,8 +177,6 @@
 
         // Total of all unpaid push bets
         totalPendingRefund = CalculateTotalPendingRefund();
-
-        houseAccount = await houseData.GetHouseAccount();
 
         await PopulateBasicBets();
     }
@@ -263,9 +263,9 @@
         {
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
-            await transactions.PayoutBetsTransaction(loggedInUser, 
-                                                     houseAccount, 
-                                                     bettorWinningBetsUnpaid);
+            await TransactionHelpers.PayoutBetsTransaction(
+                loggedInUser, houseAccount, bettorWinningBetsUnpaid, 
+                config, userData, houseData, betData);
         }
         catch (Exception ex)
         {
@@ -292,9 +292,9 @@
         {
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
-            await transactions.PayoutBetsTransaction(loggedInUser, 
-                                                     houseAccount,
-                                                     bettorPushBetsUnpaid);
+            await TransactionHelpers.PayoutBetsTransaction(
+                loggedInUser, houseAccount,bettorPushBetsUnpaid,
+                config, userData, houseData, betData);
         }
         catch (Exception ex)
         {
@@ -323,9 +323,7 @@
         decimal total = 0;
 
         foreach(BetModel bet in bettorPushBetsUnpaid)
-        {
             total += bet.BetPayout;
-        }
 
         total = Convert.ToDecimal((total).ToString("#.00"));
 
@@ -348,9 +346,7 @@
         decimal totalPayout = 0;
 
         foreach(BetModel bet in bettorWinningBetsUnpaid)
-        {
             total += bet.BetPayout;
-        }
 
         totalPayout = Convert.ToDecimal((((decimal)VIG_RECOUP * total) + 
                                           (total * 2)).ToString("#.00"));
@@ -402,5 +398,4 @@
             Convert.ToDecimal((loggedInUser.AccountBalance)
                    .ToString("#.00"));
     }
-
 }

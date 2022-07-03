@@ -1,4 +1,4 @@
-﻿@page "/admin-scores-input"
+﻿@page "/AdminScoresInput"
 @attribute [Authorize(Policy = "Admin")]
 @using Syncfusion.Blazor.Calendars
 @inject ITeamData teamData
@@ -204,53 +204,60 @@
     /// <returns></returns>
     private async Task UpdateTeamRecords(double favoriteScore, double underdogScore)
     {
-        TeamModel? actualWinningTeam = new();
-        TeamModel? actualLosingTeam = new();
-
-        if (favoriteScore > underdogScore)
+        if(CurrentFavorite is not null && CurrentUnderdog is not null)
         {
-            actualWinningTeam = CurrentFavorite;
-            actualLosingTeam = CurrentUnderdog;
-        }
+            TeamModel? actualWinningTeam = new();
+            TeamModel? actualLosingTeam = new();
 
-        else if (favoriteScore < underdogScore)
-        {
-            actualWinningTeam = CurrentUnderdog;
-            actualLosingTeam = CurrentFavorite;
-        }
-
-        else if (favoriteScore == underdogScore) 
-            actualWinningTeam = null;
-
-        // If game is a draw
-        if(actualWinningTeam is null)
-        {
-            TeamRecordModel? teamFavoriteRecord = await recordData.GetTeamRecord(CurrentFavorite.Id);
-            TeamRecordModel? teamUnderdogRecord = await recordData.GetTeamRecord(CurrentUnderdog.Id);
-
-            if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+            if (favoriteScore > underdogScore)
             {
-                teamFavoriteRecord.Draws += $"{CurrentUnderdog.TeamName}|";
-                teamUnderdogRecord.Draws += $"{CurrentFavorite.TeamName}|";
-
-                await recordData.UpdateTeamRecord(teamFavoriteRecord);
-                await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                actualWinningTeam = CurrentFavorite;
+                actualLosingTeam = CurrentUnderdog;
             }
-        }
 
-        // If game is not a draw
-        else
-        {
-            TeamRecordModel? winnerTeamRecord = await recordData.GetTeamRecord(actualWinningTeam.Id);
-            TeamRecordModel? loserTeamRecord = await recordData.GetTeamRecord(actualLosingTeam.Id);
-
-            if(winnerTeamRecord is not null && loserTeamRecord is not null)
+            else if (favoriteScore < underdogScore)
             {
-                winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
-                loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
+                actualWinningTeam = CurrentUnderdog;
+                actualLosingTeam = CurrentFavorite;
+            }
 
-                await recordData.UpdateTeamRecord(winnerTeamRecord);
-                await recordData.UpdateTeamRecord(loserTeamRecord);
+            else if (favoriteScore == underdogScore) 
+                actualWinningTeam = null;
+
+            // If game is a draw
+            if(actualWinningTeam is null)
+            {
+                TeamRecordModel? teamFavoriteRecord = 
+                    await recordData.GetTeamRecord(CurrentFavorite.Id);
+                TeamRecordModel? teamUnderdogRecord = 
+                    await recordData.GetTeamRecord(CurrentUnderdog.Id);
+
+                if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+                {
+                    teamFavoriteRecord.Draws += $"{CurrentUnderdog.TeamName}|";
+                    teamUnderdogRecord.Draws += $"{CurrentFavorite.TeamName}|";
+
+                    await recordData.UpdateTeamRecord(teamFavoriteRecord);
+                    await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                }
+            }
+
+            // If game is not a draw
+            else
+            {
+                TeamRecordModel? winnerTeamRecord = 
+                    await recordData.GetTeamRecord(actualWinningTeam.Id);
+                TeamRecordModel? loserTeamRecord = 
+                    await recordData.GetTeamRecord(actualLosingTeam.Id);
+
+                if(winnerTeamRecord is not null && loserTeamRecord is not null)
+                {
+                    winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
+                    loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
+
+                    await recordData.UpdateTeamRecord(winnerTeamRecord);
+                    await recordData.UpdateTeamRecord(loserTeamRecord);
+                }
             }
         }
     }
@@ -270,12 +277,15 @@
     /// <returns name="winner">
     /// TeamModel representing the winner of the current game
     /// </returns>
-    private TeamModel CalculateWinningTeam(GameModel game, double favoriteScore, double underdogScore)
+    private TeamModel CalculateWinningTeam(
+        GameModel game, double favoriteScore, double underdogScore)
     {
         TeamModel? winner = new();
 
-        winner = (favoriteScore == underdogScore) ? null :
-                 (favoriteScore > underdogScore) ? CurrentFavorite : CurrentUnderdog;
+        winner = 
+            (favoriteScore == underdogScore) ? null : 
+            (favoriteScore > underdogScore) ? CurrentFavorite : 
+            CurrentUnderdog;
 
         return winner;
     }
