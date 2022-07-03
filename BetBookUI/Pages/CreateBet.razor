@@ -1,4 +1,4 @@
-﻿@page "/CreateBet/{GameId}"
+﻿@page "/CreateBet/{gameId:int}"
 @attribute [Authorize]
 @using BetBookUI.Helpers
 @using Syncfusion.Blazor.Inputs
@@ -207,12 +207,9 @@
 
 @code {
 
-    // Game id parameter from user selected game
+    // Game id from selected game
     [Parameter]
-    public string GameId { get; set; }
-
-    // Actual game id
-    private int gameId;
+    public int gameId { get; set; }
 
     // Current game being viewed
     private GameModel currentGame;
@@ -261,8 +258,6 @@
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        gameId = int.Parse(GameId);
 
         houseAccount = await houseData.GetHouseAccount();
 
