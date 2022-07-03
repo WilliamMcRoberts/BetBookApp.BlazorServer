@@ -106,7 +106,8 @@
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();
 
-        basicGamesAvailable = await PopulationHelpers.PopulateBasicGameModelListFromGameList(
+        basicGamesAvailable = 
+            await PopulationHelpers.PopulateBasicGameModelListFromGameList(
             gamesAvailable, gameData, teamData);
 
         teamRecords = await PopulationHelpers.PopulateTeamRecordsArrayFromBasicGameList(
@@ -176,9 +177,7 @@
                 }
 
                 else
-                {
                     await userData.UpdateUser(loggedInUser);
-                }
             }
         }
     }

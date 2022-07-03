@@ -262,9 +262,9 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        houseAccount = await houseData.GetHouseAccount();
-
         gameId = int.Parse(GameId);
+
+        houseAccount = await houseData.GetHouseAccount();
 
         currentGame = await gameData.GetGame(gameId);
 
@@ -276,8 +276,11 @@
                 currentGame, recordData);
         }
 
-        teamStats = PopulationHelpers.PopulateTeamStatsFromRecordLists(
+        if(gameTeamRecordsLists is not null)
+        {
+            teamStats = PopulationHelpers.PopulateTeamStatsFromRecordLists(
             gameTeamRecordsLists);
+        }
     }
 
     /// <summary>
@@ -316,11 +319,10 @@
 
                 try
                 {
-                    // Tranaction method transfers funds from user account
+                    // Transaction method transfers funds from user account
                     // to house account and inserts bet into the database
                     await transactions.CreateBetTransaction(
                         loggedInUser, houseAccount, bet);
-                    //await betData.InsertBet(bet);
                 }
                 catch (Exception ex)
                 {
