@@ -176,6 +176,10 @@ ul {
     display: flex;
 }
 
+.stat {
+    margin: 3em .25em;
+}
+
 .dash {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -193,8 +197,6 @@ ul {
     border-radius: 15px;
     width: 50%;
 }
-
-
 
 .team-item {
     padding: .25em;
