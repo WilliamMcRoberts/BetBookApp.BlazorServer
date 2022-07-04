@@ -1,0 +1,66 @@
+﻿@using BetBookUI.Helpers
+@using Syncfusion.Blazor.Inputs
+@inject AuthenticationStateProvider authProvider
+@inject IGameData gameData
+@inject ITeamData teamData
+@inject ITeamRecordData recordData
+
+<div class="game-info-container">
+        <h1 style="margin-top: .5em;" class="title">Game Details</h1>
+        <div style="margin-bottom:1em;">
+            <ul class="game-list">
+                <li class="team-item">@BasicCurrentGame.AwayTeamName at @BasicCurrentGame.HomeTeamName || @BasicCurrentGame.FavoriteTeamName - @BasicCurrentGame.PointSpread points</li>
+            </ul>
+            <br />
+            <div class="records">
+                <div class="fav-records">
+                    <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@BasicCurrentGame.FavoriteTeamName</label>
+                    <Stat GameTeamRecordsListIndex="0" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Wins"/>
+                    <br />
+                    <Stat GameTeamRecordsListIndex="1" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Losses"/>
+                    <br />
+                    <Stat GameTeamRecordsListIndex="2" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Draws"/>
+                </div>
+                <div class="und-records">
+                    <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@BasicCurrentGame.UnderdogTeamName</label>
+                    <Stat GameTeamRecordsListIndex="3" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Wins"/>
+                    <br />
+                    <Stat GameTeamRecordsListIndex="4" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Losses"/>
+                    <br />
+                    <Stat GameTeamRecordsListIndex="5" 
+                          GameTeamRecordsLists="GameTeamRecordsLists" 
+                          TeamStats="TeamStats" 
+                          StatName="Draws"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    // Display info for current game being viewed
+    [Parameter]
+    public BasicGameModel BasicCurrentGame { get; set; } = new();
+
+    // Stats of the teams in the game
+    [Parameter]
+    public int[] TeamStats { get; set; } = new int[6];
+
+    [Parameter]
+    // List of a list of team records in current game
+    public List<List<string>> GameTeamRecordsLists { get; set; } = new();
+}

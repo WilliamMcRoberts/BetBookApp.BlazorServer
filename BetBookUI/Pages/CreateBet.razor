@@ -2,207 +2,29 @@
 @attribute [Authorize]
 @using BetBookUI.Helpers
 @using Syncfusion.Blazor.Inputs
+@using BetBookUI.Components
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
-@inject IBetData betData
 @inject IGameData gameData
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
-@inject IConfiguration config
 
 <PageTitle>CreateBet</PageTitle>
 
-@************************************* Demo Display **********************************************@
-
 <div class="game-wager-container">
-    <div class="game-info-container">
-        <h1 style="margin-top: .5em;" class="title">Game Details</h1>
-        <div style="margin-bottom:1em;">
-            <ul class="game-list">
-                <li class="team-item">@basicCurrentGame.AwayTeamName at @basicCurrentGame.HomeTeamName || @basicCurrentGame.FavoriteTeamName - @basicCurrentGame.PointSpread points</li>
-            </ul>
-            <br />
-            <div class="records">
-                <div class="fav-records">
-                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.FavoriteTeamName</label>
-                <div class="rec-sec">
-                        <label style="text-align: center;">Wins: @teamStats[0]</label>
-                        <div class="team">
-                            @if(teamStats[0] != 0)
-                            {
-                                @foreach(var win in gameTeamRecordsLists[0])
-                                {
-                                    <h6>@win| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-                <br />
-                <div class="rec-sec">
-                        <label style="text-align: center;">Losses: @teamStats[1]</label>
-                        <div class="team">
-                            @if(teamStats[1] != 0)
-                            {
-                                @foreach(var loss in gameTeamRecordsLists[1])
-                                {
-                                    <h6>@loss| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-                <br />
-                <div class="rec-sec">
-                        <label style="text-align: center;">Draws: @teamStats[2]</label>
-                        <div class="team">
-                            @if(teamStats[2] != 0)
-                            {
-                                @foreach(var draw in gameTeamRecordsLists[2])
-                                {
-                                    <h6>@draw| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-            </div>
-            <div class="und-records">
-                <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@basicCurrentGame.UnderdogTeamName</label>
-                <div class="rec-sec">
-                        <label style="text-align: center;">Wins: @teamStats[3]</label>
-                        <div class="team">
-                            @if(teamStats[3] != 0)
-                            {
-                                @foreach(var win in gameTeamRecordsLists[3])
-                                {
-                                    <h6>@win| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-                <br />
-                <div class="rec-sec">
-                        <label style="text-align: center;">Losses: @teamStats[4]</label>
-                        <div class="team">
-                            @if(teamStats[4] != 0)
-                            {
-                                @foreach(var loss in gameTeamRecordsLists[4])
-                                {
-                                    <h6>@loss| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-                <br />
-                <div class="rec-sec">
-                        <label style="text-align: center;">Draws: @teamStats[5]</label>
-                        <div class="team">
-                            @if(teamStats[5] != 0)
-                            {
-                                @foreach(var draw in gameTeamRecordsLists[5])
-                                {
-                                    <h6>@draw| |</h6>
-                                }
-                            }
-                            else
-                            {
-                                 <h6>None</h6>   
-                            }
-                        </div>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-    <div class="wager-form-container">
-    <h1 style="margin-top: .5em;" class="title">Create A Wager</h1>
-    @if(basicCurrentGame is not null)
-{
-        @if(wagerPlaced == false)
-        {
-            <div>
-                @if(betAmountGood == false)
-                {
-                    <div style="color:red;text-align:center;">*BET AMOUNT MUST BE MORE THAN ZERO*</div>
-                }
-                    else if(gameNotStarted == false)
-                    {
-                        <div style="color:red;text-align:center;">*GAME HAS ALREADY STARTED*</div>
-                    }
-                <div class="wager-box">
-                    <label style="text-align: center;">Wager Amount</label>
-                    <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
-                </div>
-            </div>
-        }
-        @if (winnerChosen == false)
-        {
-            <div class="review">
-                <p>#1 Enter a wager amount</p>
-                <p>#2 Choose a winner</p>
-                <p>#3 Click "Submit Wager"</p>
-            </div>
-            <div class="winner-btn-container">
-                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                    @onclick="(() => ChooseWinner(currentGame.FavoriteId))">
-                        Choose @basicCurrentGame.FavoriteTeamName - @basicCurrentGame.PointSpread</button>
-                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                    @onclick="(() => ChooseWinner(currentGame.UnderdogId))">
-                        Choose @basicCurrentGame.UnderdogTeamName + @basicCurrentGame.PointSpread</button>
-            </div>
-        }
-        else if(winnerChosen == true && wagerPlaced == false)
-        {
-            <div class="review">
-                <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
-                @if(teamToWin is not null)
-                {
-                        @if(teamToWin.TeamName == basicCurrentGame.FavoriteTeamName)
-                        {
-                            <p>@teamToWin.TeamName - @basicCurrentGame.PointSpread points</p>
-                        }
-                        else
-                        {
-                            <p>@teamToWin.TeamName + @basicCurrentGame.PointSpread points</p>
-                        }
-                    <p>For $@betAmount</p>
-                    <div style="margin-top:3.4em;" class="undo-btn-container">
-                        <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" @onclick="UndoWinnerSelection">Undo @teamToWin.TeamName As Winner</button>
-                    </div>
-                }
-            </div>
-        }
-        else if(winnerChosen == true && wagerPlaced == true)
-        {
-            <p style="text-align:center;">Good luck on your new wager! Click "Home" to browse more games.</p>
-        }
-}
-    @if(wagerPlaced == false)
-    {
-        <div style="padding: 2em .25em;text-align:center;">
-            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PlaceWager(betAmount, teamToWin))">Submit Wager</button>
-        </div>
-    }
-    </div>
+
+    <GameDetails BasicCurrentGame="basicCurrentGame" 
+                 TeamStats="teamStats" 
+                 GameTeamRecordsLists="gameTeamRecordsLists"/>
+
+    <CreateWager BetAmount="betAmount" 
+                 CurrentGame="currentGame"
+                 BasicCurrentGame="basicCurrentGame" 
+                 TeamToWin="teamToWin" 
+                 GameId="gameId" 
+                 HouseAccount="houseAccount"
+                 LoggedInUser="loggedInUser"/>
 </div>
 
 @code {
@@ -232,24 +54,8 @@
     // Chosen winner of game
     private TeamModel? teamToWin;
 
-    // Boolean sets to true when a winner is chosen
-    private bool winnerChosen = false;
-
     // Account balance of the house
     private HouseAccountModel houseAccount;
-
-    // Boolean to check if wager has been placed
-    private bool wagerPlaced = false;
-
-    // Boolean to check if bet amount is good
-    private bool betAmountGood = true;
-
-    // 10% vigorish for all bets
-    private double VIG = .1;
-
-    // bool to check if game has started
-    private bool gameNotStarted = true;
-
 
     /// <summary>
     /// Async initialization method
@@ -276,104 +82,5 @@
             teamStats = PopulationHelpers.PopulateTeamStatsFromRecordLists(
             gameTeamRecordsLists);
         }
-    }
-
-    /// <summary>
-    /// Async method to update bet info, insert a new bet
-    /// into the database, update user account balance, and
-    /// update the house account balance
-    /// </summary>
-    /// <param name="amountToBet">
-    /// decimal representing the amount of money 
-    /// the user is wagering on the bet
-    /// </param>
-    /// <param name="teamToWin">
-    /// TeamModel representing the team that the user has chosen
-    /// to be the winner of the game
-    /// </param>
-    /// <returns></returns>
-    private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
-    {
-        if (DateTime.Now < currentGame?.DateOfGame)
-        {
-            if (amountToBet != 0)
-            {
-                BetModel bet = new();
-
-                bet.BetAmount = amountToBet;
-                bet.BetPayout = 
-                    (decimal)((double)amountToBet - (double)amountToBet * VIG);
-                bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = loggedInUser.Id;
-                bet.GameId = gameId;
-                bet.BetStatus = BetStatus.IN_PROGRESS;
-                bet.PayoutStatus = PayoutStatus.UNPAID;
-
-                loggedInUser.AccountBalance -= bet.BetAmount;
-                houseAccount.AccountBalance += bet.BetAmount;
-
-                try
-                {
-                    // Transaction method transfers funds from user account
-                    // to house account and inserts bet into the database
-                    await TransactionHelpers.CreateBetTransaction(
-                        loggedInUser, houseAccount, bet, config, 
-                            userData, houseData, betData);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-                }
-
-                wagerPlaced = true;
-                betAmount = Convert.ToDecimal((0).ToString("#.00"));
-            }
-
-            else
-                betAmountGood = false;
-        }
-
-        else
-            gameNotStarted = false;
-    }
-
-    /// <summary>
-    /// Async method to select chosen winner of game
-    /// and grab that team from the database
-    /// </summary>
-    /// <param name="teamId">int representing the Id of the team being chosen</param>
-    /// <returns></returns>
-    private async Task ChooseWinner(int teamId)
-    {
-        if(teamId == currentGame?.FavoriteId)
-        {
-            teamToWin = await teamData.GetTeam(currentGame.FavoriteId);
-            winnerChosen = true;
-        }
-
-        else if(teamId == currentGame?.UnderdogId)
-        {
-            teamToWin = await teamData.GetTeam(currentGame.UnderdogId);
-            winnerChosen = true;
-        }
-    }
-
-    /// <summary>
-    /// Syncfusion method for numeric text box on value change
-    /// </summary>
-    /// <param name="args"></param>
-    public void OnChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<decimal> args)
-    {
-        betAmount = (decimal)args.Value;
-        StateHasChanged();
-    }
-
-    /// <summary>
-    /// Method reverts a winner selection
-    /// </summary>
-    private void UndoWinnerSelection()
-    {
-        teamToWin = null;
-        winnerChosen = false;
     }
 }

@@ -113,7 +113,7 @@
         teamRecords = await PopulationHelpers.PopulateTeamRecordsArrayFromBasicGameList(
             basicGamesAvailable, gameData, teamData, recordData);
 
-        currentWeek = GetCurrentWeek();
+        currentWeek = GetWeek(DateTime.Now);
     }
 
     /// <summary>
@@ -189,28 +189,28 @@
     /// <returns>
     /// int represents the current week
     /// </returns>
-    private int GetCurrentWeek()
+    private int GetWeek(DateTime dateTime)
     {
         double weekInTicks = 604800;
         int currentWeek = 0;
 
-        if(currentDate > preSeasonStartDate && currentDate < regularSeasonStartDate)
+        if(dateTime > preSeasonStartDate && dateTime < regularSeasonStartDate)
         {
-            double currentWeekInTicks = ((currentDate - preSeasonStartDate).TotalDays / 7) * weekInTicks;
+            double currentWeekInTicks = ((dateTime - preSeasonStartDate).TotalDays / 7) * weekInTicks;
             currentWeek = (int)(currentWeekInTicks / weekInTicks);
             currentWeek += 1;
         }
 
-        else if(currentDate > regularSeasonStartDate && currentDate < postSeasonStartDate)
+        else if(dateTime > regularSeasonStartDate && dateTime < postSeasonStartDate)
         {
-            double currentWeekInTicks = ((currentDate - regularSeasonStartDate).TotalDays / 7) * weekInTicks;
+            double currentWeekInTicks = ((dateTime - regularSeasonStartDate).TotalDays / 7) * weekInTicks;
             currentWeek = (int)(currentWeekInTicks / weekInTicks);
             currentWeek += 1;
         }
 
-        else if(currentDate > postSeasonStartDate && currentDate < superBowlDay)
+        else if(dateTime > postSeasonStartDate && dateTime < superBowlDay)
         {
-            double currentWeekInTicks = ((currentDate - postSeasonStartDate).TotalDays / 7) * weekInTicks;
+            double currentWeekInTicks = ((dateTime - postSeasonStartDate).TotalDays / 7) * weekInTicks;
             currentWeek = (int)(currentWeekInTicks / weekInTicks);
             currentWeek += 1;
         }

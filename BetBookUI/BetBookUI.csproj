@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\**" />
-    <Content Remove="Components\**" />
-    <EmbeddedResource Remove="Components\**" />
-    <None Remove="Components\**" />
-  </ItemGroup>
-
-  <ItemGroup>
       <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />

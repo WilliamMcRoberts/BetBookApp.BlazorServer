@@ -187,66 +187,17 @@
     /// <returns></returns>
     private async Task PopulateBasicBets()
     {
-        foreach(BetModel bet in bettorInProgressBets)
-        {
-            BasicBetModel bb = new();
+        bettorInProgressBasicBets = 
+            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
+                bettorInProgressBets, gameData, teamData);
 
-            TeamModel? chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
-            GameModel? gameWagered = await gameData.GetGame(bet.GameId);
+        bettorWinningBetsUnpaidBasicBets = 
+            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
+                bettorWinningBetsUnpaid, gameData, teamData);
 
-            if(chosenTeam is not null && gameWagered is not null)
-            {
-                bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-                bb.FinalWinnerTeamName = "Game Not Finished";
-                bb.Spread = gameWagered.PointSpread;
-                bb.PayoutAmount = 
-                    Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                           .ToString("#.00"));
-
-                bettorInProgressBasicBets.Add(bb);
-            }
-        }
-
-        foreach(BetModel bet in bettorWinningBetsUnpaid)
-        {
-            BasicBetModel bb = new();
-
-            TeamModel? chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
-            GameModel? gameWagered = await gameData.GetGame(bet.GameId);
-            TeamModel? finalWinner = await teamData.GetTeam(bet.FinalWinnerId);
-
-            if(chosenTeam is not null && 
-                gameWagered is not null && finalWinner is not null)
-            {
-                bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-                bb.FinalWinnerTeamName = finalWinner.TeamName;
-                bb.Spread = gameWagered.PointSpread;
-                bb.PayoutAmount = 
-                Convert.ToDecimal((((decimal)VIG_RECOUP) + (bet.BetPayout * 2))
-                       .ToString("#.00"));
-
-                bettorWinningBetsUnpaidBasicBets.Add(bb);
-            }
-        }
-
-        foreach(BetModel bet in bettorPushBetsUnpaid)
-        {
-            BasicBetModel bb = new();
-
-            TeamModel? chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
-            GameModel? gameWagered = await gameData.GetGame(bet.GameId);
-
-            if(chosenTeam is not null && gameWagered is not null)
-            {
-                bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-                bb.FinalWinnerTeamName = "Push";
-                bb.Spread = gameWagered.PointSpread;
-                bb.PayoutAmount = Convert.ToDecimal((((decimal)VIG_RECOUP) + 
-                                      (bet.BetPayout * 2)).ToString("#.00"));
-
-                bettorPushBetsUnpaidBasicBets.Add(bb);
-            }
-        }
+        bettorPushBetsUnpaidBasicBets = 
+            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
+                bettorPushBetsUnpaid, gameData, teamData);
     }
 
     /// <summary>

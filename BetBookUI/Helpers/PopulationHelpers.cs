@@ -98,7 +98,8 @@ public static class PopulationHelpers
     /// </summary>
     /// <param name="game">GameModel representing the current game</param>
     /// <returns></returns>
-    public static async Task<BasicGameModel> PopulateBasicGameModelFromGame(GameModel game, ITeamData teamData)
+    public static async Task<BasicGameModel> PopulateBasicGameModelFromGame(
+        GameModel game, ITeamData teamData)
     {
         TeamModel? homeTeam = await teamData.GetTeam(game.HomeTeamId);
         TeamModel? awayTeam = await teamData.GetTeam(game.AwayTeamId);
@@ -128,7 +129,8 @@ public static class PopulationHelpers
     /// List<List<string>> Represents list of records lists from current game
     /// </param>
     /// <returns>List<List<string>> Represents a list of records lists</returns>
-    public static async Task<List<List<string>>> PopulateRecordsListsFromGame(GameModel game, ITeamRecordData recordData)
+    public static async Task<List<List<string>>> PopulateRecordsListsFromGame(
+        GameModel game, ITeamRecordData recordData)
     {
         TeamRecordModel? favRecord =
             await recordData.GetTeamRecord(game.FavoriteId);
@@ -184,7 +186,8 @@ public static class PopulationHelpers
     /// sort into proper team stats
     /// </param>
     /// <returns>int[] Represents the stats of both teams in current game</returns>
-    public static int[] PopulateTeamStatsFromRecordLists(List<List<string>> recordsLists)
+    public static int[] PopulateTeamStatsFromRecordLists(
+        List<List<string>> recordsLists)
     {
         int[] stats = new int[6];
 
@@ -196,5 +199,75 @@ public static class PopulationHelpers
         stats[5] = recordsLists[5].Count;
 
         return stats;
+    }
+
+    /// <summary>
+    /// Async static method populates a list of basic bets from a list of bets
+    /// </summary>
+    /// <param name="bets">List<BetModel></param>
+    /// <param name="gameData">IGameData</param>
+    /// <param name="teamData">ITeamData</param>
+    /// <returns>List<BasicBetModel></returns>
+    public static async Task<List<BasicBetModel>> PopulateBasicBetsListFromBetsList(
+        List<BetModel> bets, IGameData gameData, ITeamData teamData)
+    {
+        List<BasicBetModel> basicBetsList = new();
+
+        foreach (BetModel bet in bets)
+        {
+            BasicBetModel bb = new();
+            
+            TeamModel? chosenTeam = await teamData.GetTeam(bet.ChosenWinnerId);
+            GameModel? gameWagered = await gameData.GetGame(bet.GameId);
+
+            if (chosenTeam is not null && gameWagered is not null)
+            {
+                bb.ChosenWinnerTeamName = chosenTeam.TeamName;
+                bb.FinalWinnerTeamName = "Game Not Finished";
+                bb.Spread = gameWagered.PointSpread;
+                bb.PayoutAmount =
+                    Convert.ToDecimal((
+                        bet.BetAmount + bet.BetPayout).ToString("#.00"));
+                basicBetsList.Add(bb);
+            }
+        }
+
+        return basicBetsList;
+    }
+
+    /// <summary>
+    /// Async static method to populate basic game model
+    /// for current game being updated
+    /// </summary>
+    /// <param name="gameId">int Id of current game</param>
+    /// <returns></returns>
+    public static async Task<BasicGameModel> PopulateBasicGameModelFromGameId(
+        int gameId, IGameData gameData, ITeamData teamData)
+    {
+        GameModel currentGame = new();
+        BasicGameModel basicGame = new();
+
+        currentGame = await gameData.GetGame(gameId);
+
+        if (currentGame is not null)
+        {
+            TeamModel? currentHomeTeam = new();
+            TeamModel? currentAwayTeam = new();
+            TeamModel? currentFavoriteTeam = new();
+            TeamModel? currentUnderdogTeam = new();
+
+            currentHomeTeam = await teamData.GetTeam(currentGame.HomeTeamId);
+            currentAwayTeam = await teamData.GetTeam(currentGame.AwayTeamId);
+            currentFavoriteTeam = await teamData.GetTeam(currentGame.FavoriteId);
+            currentUnderdogTeam = await teamData.GetTeam(currentGame.UnderdogId);
+
+            basicGame.HomeTeamName = currentHomeTeam.TeamName;
+            basicGame.AwayTeamName = currentAwayTeam.TeamName;
+            basicGame.FavoriteTeamName = currentFavoriteTeam.TeamName;
+            basicGame.UnderdogTeamName = currentUnderdogTeam.TeamName;
+            basicGame.PointSpread = currentGame.PointSpread;
+        }
+
+        return basicGame;
     }
 }

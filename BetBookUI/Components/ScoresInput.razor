@@ -1,0 +1,289 @@
+﻿@using Syncfusion.Blazor.Calendars
+@using BetBookUI.Models
+@using BetBookUI.Helpers
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject ITeamRecordData recordData
+@inject IBetData betData
+
+
+<div class="input">
+    <div class="winner-input">
+            <h1 style="margin-top: .5em;" class="title">Update Scores</h1>
+        <div class="game">
+            @if (scoresAdded)
+            {
+                <div style="margin: 4em 1em;">
+                    <h1>Winners have been successfully added!</h1>
+                    <h1>You may add more game winners.</h1>
+                </div>
+            }
+            else
+            {
+                <ul class="game-info">
+                    <li class="team-item">Home Team || @basicGame.HomeTeamName</li>
+                    <li class="team-item">Away Team || @basicGame.AwayTeamName</li>
+                    <li class="team-item">Favorite || @basicGame.FavoriteTeamName</li>
+                    <li class="team-item">Underdog || @basicGame.UnderdogTeamName</li>
+                    <li class="team-item">Point Spread || @basicGame.PointSpread</li>
+                </ul>
+            }
+            <br>
+        </div>
+        @if(statusBad == true)
+        {
+            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">*YOU CANNOT ADD SCORES TO A GAME WITH A FINISHED STATUS*</div>
+        }
+        else if(noGame == true)
+        {
+            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">*THERE IS NO GAME WITH THAT GAME ID, TRY AGAIN*</div>
+        }
+        else
+        {
+            <div style="text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;">ENTER A GAME ID TO SELECT A GAME</div>
+        }
+        <div class="game-id-box">
+            <EditForm Model="@addScores" OnValidSubmit="AddScores">
+                <DataAnnotationsValidator />
+                <ValidationSummary/>
+                <div style="display: flex;justify-content: space-between;">
+                    <div class="scores-box">
+                        <label>Game Id</label>
+                        <input type="number" @bind-value="@addScores.GameId" @bind-value:event="oninput"/>
+                    </div>
+                    <div>
+                        <button type="button" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PopulateBasicGame(addScores.GameId))">Get Game</button>
+                    </div>
+                </div>
+                <div style="margin-top: 2em;margin-bottom:2em;display: flex;justify-content: space-between;">
+                    <div class="scores-box">
+                    <label>Favorite Score</label>
+                    <input type="number" @bind-value="@addScores.FavoriteTeamScore" @bind-value:event="oninput"/>
+                    </div>
+                    <div style="margin: 0 2em;">
+                        <button type="submit" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">Submit Scores</button>
+                    </div>
+                    <div class="scores-box">
+                        <label>Underdog Score</label>
+                        <input type="number" @bind-value="@addScores.UnderdogTeamScore" @bind-value:event="oninput"/>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    // Id of game
+    private int GameId;
+
+    // Basic game of selected game
+    private BasicGameModel basicGame  = new();
+
+    // Current game being updated
+    private GameModel currentGame  = new();
+
+    // Boolean to check if winners were added
+    private bool scoresAdded = false;
+
+    // Boolean to check if current game is null
+    private bool noGame = false;
+
+    // Boolean to check if game status is finished
+    private bool statusBad = false;
+
+    // Model
+    AddScoresModel addScores = new(); 
+
+    /// <summary>
+    /// Async method updates the scores of the game,
+    /// calls the CalculateWinningTeam() method,
+    /// adds winning team to database, and calls the
+    /// UpdateTeamRecords() method
+    /// </summary>
+    /// <returns></returns>
+    private async Task AddScores()
+    {
+        if (currentGame.Id != 0 && currentGame.GameStatus != GameStatus.FINISHED)
+        {
+            currentGame.FavoriteFinalScore = addScores.FavoriteTeamScore;
+            currentGame.UnderdogFinalScore = addScores.UnderdogTeamScore;
+            currentGame.GameStatus = GameStatus.FINISHED;
+
+            await gameData.UpdateGame(currentGame);
+
+            TeamModel? gameWinner =
+                await CalculationHelpers.CalculateWinningTeam(
+                    currentGame, addScores.FavoriteTeamScore,
+                        addScores.UnderdogTeamScore, teamData);
+
+            if (gameWinner is not null)
+                await gameData.AddGameWinner(currentGame, gameWinner);
+
+            await UpdateBetWinners(
+                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
+
+            await UpdateTeamRecords(
+                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
+
+            scoresAdded = true;
+            noGame = false;
+            addScores = new();
+        }
+
+        else
+            statusBad = true;
+    }
+
+    /// <summary>
+    /// Async method updates final winner and bet status 
+    /// for all bets that were placed on current game
+    /// </summary>
+    /// <param name="favoriteScore">
+    /// double represents the favorite team score
+    /// </param>
+    /// <param name="underdogScore">
+    /// double represents the underdog team score
+    /// </param>
+    /// <returns></returns>
+    private async Task UpdateBetWinners(double favoriteScore, double underdogScore)
+    {
+        TeamModel? winningTeamForBets = 
+            await CalculationHelpers.CalculateWinningTeamForBet(
+                currentGame, favoriteScore, underdogScore, teamData);
+
+        List<BetModel> betsOnCurrentGame = 
+           (List<BetModel>) await betData.GetAllBetsOnGame(currentGame.Id);
+
+        if(winningTeamForBets is not null)
+        {
+            foreach(BetModel bet in betsOnCurrentGame)
+            {
+                bet.FinalWinnerId = winningTeamForBets.Id;
+
+                if(winningTeamForBets.Id == bet.ChosenWinnerId)
+                    bet.BetStatus = BetStatus.WINNER;
+
+                else
+                    bet.BetStatus = BetStatus.LOSER;
+
+                await betData.UpdateBet(bet);
+            }
+        }
+
+        else
+        {
+            foreach(BetModel bet in betsOnCurrentGame)
+            {
+                bet.BetStatus = BetStatus.PUSH;
+                bet.FinalWinnerId = 0;
+
+                await betData.UpdateBet(bet);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Async method updates team records of
+    /// the actual winning  team and actual losing team
+    /// </summary>
+    /// <param name="favoriteScore">
+    /// int representing the favorite team score of the current game
+    /// </param>
+    /// <param name="underdogScore">
+    /// int representing the underdog team score of the current game
+    /// </param>
+    /// <returns></returns>
+    private async Task UpdateTeamRecords(
+        double favoriteScore, double underdogScore)
+    {
+        TeamModel? currentFavoriteTeam = new();
+        TeamModel? currentUnderdogTeam = new();
+
+        currentFavoriteTeam = await teamData.GetTeam(currentGame.FavoriteId);
+        currentUnderdogTeam = await teamData.GetTeam(currentGame.UnderdogId);
+
+        if(currentFavoriteTeam is not null && currentUnderdogTeam is not null)
+        {
+            TeamModel? actualWinningTeam = new();
+            TeamModel? actualLosingTeam = new();
+
+            if (favoriteScore > underdogScore)
+            {
+                actualWinningTeam = currentFavoriteTeam;
+                actualLosingTeam = currentUnderdogTeam;
+            }
+
+            else if (favoriteScore < underdogScore)
+            {
+                actualWinningTeam = currentUnderdogTeam;
+                actualLosingTeam = currentFavoriteTeam;
+            }
+
+            else if (favoriteScore == underdogScore) 
+                actualWinningTeam = null;
+
+            // If game is a draw
+            if(actualWinningTeam is null)
+            {
+                TeamRecordModel? teamFavoriteRecord = 
+                    await recordData.GetTeamRecord(currentFavoriteTeam.Id);
+                TeamRecordModel? teamUnderdogRecord = 
+                    await recordData.GetTeamRecord(currentUnderdogTeam.Id);
+
+                if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+                {
+                    teamFavoriteRecord.Draws += $"{currentUnderdogTeam.TeamName}|";
+                    teamUnderdogRecord.Draws += $"{currentFavoriteTeam.TeamName}|";
+
+                    await recordData.UpdateTeamRecord(teamFavoriteRecord);
+                    await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                }
+            }
+
+            // If game is not a draw
+            else
+            {
+                TeamRecordModel? winnerTeamRecord = 
+                    await recordData.GetTeamRecord(actualWinningTeam.Id);
+                TeamRecordModel? loserTeamRecord = 
+                    await recordData.GetTeamRecord(actualLosingTeam.Id);
+
+                if(winnerTeamRecord is not null && loserTeamRecord is not null)
+                {
+                    winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
+                    loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
+
+                    await recordData.UpdateTeamRecord(winnerTeamRecord);
+                    await recordData.UpdateTeamRecord(loserTeamRecord);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Async method calls the PopulateBasicGameModelFromGameId() 
+    /// population helper method
+    /// </summary>
+    /// <param name="gameId">
+    /// int represents the game id of the game being used to populate basic game 
+    /// </param>
+    /// <returns></returns>
+    private async Task PopulateBasicGame(int gameId)
+    {
+        statusBad = false;
+
+        currentGame = await gameData.GetGame(gameId);
+
+        if (gameId != 0)
+        {
+            scoresAdded = false;
+            basicGame = await PopulationHelpers.PopulateBasicGameModelFromGameId(
+                gameId, gameData, teamData);
+        }
+
+        else
+            noGame = true; 
+    }
+}

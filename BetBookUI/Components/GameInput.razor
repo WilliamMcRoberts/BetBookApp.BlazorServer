@@ -1,0 +1,148 @@
+﻿@using Syncfusion.Blazor.Calendars
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject ITeamRecordData recordData
+@using BetBookUI.Models
+
+@************************** Demo Display *********************************@
+
+<div class="input">
+    <div class="game-input">
+        <div class="input-label-container">
+            <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Game Input</h1>
+            <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">FILL OUT THE FORM TO CREATE A GAME</div>
+        </div>
+        <EditForm Model="createGame" OnValidSubmit="InsertGame">
+            <DataAnnotationsValidator />
+            <ValidationSummary/>
+            <div class="input-box">
+                <label>Game Stadium</label>
+                <SfTextBox  Input="@((args) => createGame.Stadium = args.Value)" @bind-Value="@createGame.Stadium" ></SfTextBox>  
+            </div>
+            <div class="input-box">
+                <label>Date Of Game</label>
+                <SfDateTimePicker Placeholder="Choose a Date" Min='DateTime.Now' TValue="DateTime"> 
+                    <DateTimePickerEvents TValue="DateTime" ValueChange="DateChangeHandler"></DateTimePickerEvents>
+                </SfDateTimePicker>
+            </div>
+            <div class="input-box">
+                <label>Home Team Id</label>
+                <input type="number" @bind-value="@createGame.HomeTeamId" @bind-value:event="oninput"/>
+            </div>
+            <div>
+                 <button type="submit" style="float:right;margin-right:6em;" class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase">Insert Game</button>
+            </div>
+            <div class="input-box">
+                <label>Away Team Id</label>
+                <input type="number" @bind-value="@createGame.AwayTeamId" @bind-value:event="oninput"/>
+            </div>
+            <div class="input-box">
+                <label>Favorite Id</label>
+                <input type="number" @bind-value="@createGame.FavoriteId" @bind-value:event="oninput"/>
+            </div>
+            <div class="input-box">
+                <label>Underdog Id</label>
+                <input type="number" @bind-value="@createGame.UnderdogId" @bind-value:event="oninput"/>
+            </div>
+            <div style="margin-bottom: 2em;" class="input-box">
+                <label>Point Spread</label>
+                <input type="number" @bind-value="@createGame.PointSpread" @bind-value:event="oninput"/>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    // Model
+    CreateGameModel createGame = new();
+
+    /// <summary>
+    /// Async method for admin to insert a game into 
+    /// the database
+    /// </summary>
+    /// <returns></returns>
+    private async Task InsertGame()
+    {
+        GameModel game = new();
+
+        game.HomeTeamId = createGame.HomeTeamId;
+        game.AwayTeamId = createGame.AwayTeamId;
+        game.FavoriteId = createGame.FavoriteId;
+        game.UnderdogId = createGame.UnderdogId;
+        game.Stadium = createGame.Stadium;
+        game.DateOfGame = createGame.DateOfGame;
+        game.Season = GetSeason(game.DateOfGame);
+        game.Week = GetWeek(createGame.DateOfGame, game.Season);
+
+        await gameData.InsertGame(game);
+
+        createGame = new();
+    }
+
+    /// <summary>
+    /// Method calculates and returns current week in current season 
+    /// (PRE, REG, POST)
+    /// </summary>
+    /// <returns>
+    /// int represents the current week
+    /// </returns>
+    private int GetWeek(DateTime dateTime, SeasonType season)
+    {
+        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+
+        int currentWeek = 0;
+
+        if (season == SeasonType.PRE)
+        {
+            TimeSpan span = dateTime - preSeasonStartDate;
+            currentWeek = span.Days / 7;
+        }
+
+        else if (season == SeasonType.REG)
+        {
+            TimeSpan span = dateTime - regularSeasonStartDate;
+            currentWeek = span.Days / 7;
+        }
+
+        else if (season == SeasonType.POST)
+        {
+            TimeSpan span = dateTime - postSeasonStartDate;
+            currentWeek = span.Days / 7;
+        }
+
+        return currentWeek;
+    }
+
+    private SeasonType GetSeason(DateTime dateTime)
+    {
+        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+        DateTime superBowlDay = new DateTime(2023, 2, 5);
+
+        SeasonType result = new();
+
+        if (dateTime > preSeasonStartDate && dateTime < regularSeasonStartDate)
+            result = SeasonType.PRE;
+        else if (dateTime > regularSeasonStartDate && dateTime < postSeasonStartDate)
+            result = SeasonType.REG;
+        else if (dateTime > postSeasonStartDate && dateTime < superBowlDay)
+            result = SeasonType.POST;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Method for value change for date of game
+    /// </summary>
+    /// <param name="args">DateTime representing date of game</param>
+    private void DateChangeHandler(ChangedEventArgs<DateTime> args)
+    {
+        createGame.DateOfGame = args.Value;
+        StateHasChanged();
+    }
+
+}
