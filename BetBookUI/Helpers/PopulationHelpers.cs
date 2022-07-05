@@ -8,7 +8,7 @@ public static class PopulationHelpers
     /// <param name="games">List<GameModel> represents a list of games to use for populating basic game list</param>
     /// <returns></returns>
     public static async Task<List<BasicGameModel>> PopulateBasicGameModelListFromGameList(
-                List<GameModel> games, IGameData gameData, ITeamData teamData)
+                this List<GameModel> games, IGameData gameData, ITeamData teamData)
     {
         List<BasicGameModel> basicGames = new();
 
@@ -56,8 +56,8 @@ public static class PopulationHelpers
     /// </param>
     /// <returns>TeamRecordModel[] array of team records</returns>
     public static async Task<TeamRecordModel[]> PopulateTeamRecordsArrayFromBasicGameList(
-            List<BasicGameModel> basicGames, IGameData gameData, 
-            ITeamData teamData, ITeamRecordData recordData)
+        this List<BasicGameModel> basicGames, IGameData gameData, ITeamData teamData, 
+            ITeamRecordData recordData)
     {
         TeamRecordModel[] teamRecords = new TeamRecordModel[32];
         int index = 0;
@@ -99,7 +99,7 @@ public static class PopulationHelpers
     /// <param name="game">GameModel representing the current game</param>
     /// <returns></returns>
     public static async Task<BasicGameModel> PopulateBasicGameModelFromGame(
-        GameModel game, ITeamData teamData)
+        this GameModel game, ITeamData teamData)
     {
         TeamModel? homeTeam = await teamData.GetTeam(game.HomeTeamId);
         TeamModel? awayTeam = await teamData.GetTeam(game.AwayTeamId);
@@ -130,7 +130,7 @@ public static class PopulationHelpers
     /// </param>
     /// <returns>List<List<string>> Represents a list of records lists</returns>
     public static async Task<List<List<string>>> PopulateRecordsListsFromGame(
-        GameModel game, ITeamRecordData recordData)
+        this GameModel game, ITeamRecordData recordData)
     {
         TeamRecordModel? favRecord =
             await recordData.GetTeamRecord(game.FavoriteId);
@@ -187,7 +187,7 @@ public static class PopulationHelpers
     /// </param>
     /// <returns>int[] Represents the stats of both teams in current game</returns>
     public static int[] PopulateTeamStatsFromRecordLists(
-        List<List<string>> recordsLists)
+        this List<List<string>> recordsLists)
     {
         int[] stats = new int[6];
 
@@ -209,7 +209,7 @@ public static class PopulationHelpers
     /// <param name="teamData">ITeamData</param>
     /// <returns>List<BasicBetModel></returns>
     public static async Task<List<BasicBetModel>> PopulateBasicBetsListFromBetsList(
-        List<BetModel> bets, IGameData gameData, ITeamData teamData)
+        this List<BetModel> bets, IGameData gameData, ITeamData teamData)
     {
         List<BasicBetModel> basicBetsList = new();
 
@@ -233,41 +233,5 @@ public static class PopulationHelpers
         }
 
         return basicBetsList;
-    }
-
-    /// <summary>
-    /// Async static method to populate basic game model
-    /// for current game being updated
-    /// </summary>
-    /// <param name="gameId">int Id of current game</param>
-    /// <returns></returns>
-    public static async Task<BasicGameModel> PopulateBasicGameModelFromGameId(
-        int gameId, IGameData gameData, ITeamData teamData)
-    {
-        GameModel currentGame = new();
-        BasicGameModel basicGame = new();
-
-        currentGame = await gameData.GetGame(gameId);
-
-        if (currentGame is not null)
-        {
-            TeamModel? currentHomeTeam = new();
-            TeamModel? currentAwayTeam = new();
-            TeamModel? currentFavoriteTeam = new();
-            TeamModel? currentUnderdogTeam = new();
-
-            currentHomeTeam = await teamData.GetTeam(currentGame.HomeTeamId);
-            currentAwayTeam = await teamData.GetTeam(currentGame.AwayTeamId);
-            currentFavoriteTeam = await teamData.GetTeam(currentGame.FavoriteId);
-            currentUnderdogTeam = await teamData.GetTeam(currentGame.UnderdogId);
-
-            basicGame.HomeTeamName = currentHomeTeam.TeamName;
-            basicGame.AwayTeamName = currentAwayTeam.TeamName;
-            basicGame.FavoriteTeamName = currentFavoriteTeam.TeamName;
-            basicGame.UnderdogTeamName = currentUnderdogTeam.TeamName;
-            basicGame.PointSpread = currentGame.PointSpread;
-        }
-
-        return basicGame;
     }
 }

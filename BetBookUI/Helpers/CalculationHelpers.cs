@@ -67,4 +67,67 @@ public static class CalculationHelpers
 
         return winner;
     }
+
+    /// <summary>
+    /// Method calculates and returns current week in current season 
+    /// (PRE, REG, POST)
+    /// </summary>
+    /// <returns>
+    /// int represents the current week
+    /// </returns>
+    public static int CalculateWeek(DateTime dateTime, SeasonType season)
+    {
+        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+
+        int week = 0;
+
+        if (season == SeasonType.PRE)
+        {
+            TimeSpan span = dateTime - preSeasonStartDate;
+            week = span.Days / 7;
+        }
+
+        else if (season == SeasonType.REG)
+        {
+            TimeSpan span = dateTime - regularSeasonStartDate;
+            week = span.Days / 7;
+        }
+
+        else if (season == SeasonType.POST)
+        {
+            TimeSpan span = dateTime - postSeasonStartDate;
+            week = span.Days / 7;
+        }
+
+        if(week < 0)
+            return 0;
+
+        return week;
+    }
+
+    /// <summary>
+    /// Method calculates the season of provided DateTime 
+    /// </summary>
+    /// <param name="dateTime">DateTime represents date to calculate</param>
+    /// <returns>SeasonType represents the type of season</returns>
+    public static SeasonType CalculateSeason(DateTime dateTime)
+    {
+        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
+        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
+        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
+        DateTime superBowlDay = new DateTime(2023, 2, 5);
+
+        SeasonType result = new();
+
+        if (dateTime > preSeasonStartDate && dateTime < regularSeasonStartDate)
+            result = SeasonType.PRE;
+        else if (dateTime > regularSeasonStartDate && dateTime < postSeasonStartDate)
+            result = SeasonType.REG;
+        else if (dateTime > postSeasonStartDate && dateTime < superBowlDay)
+            result = SeasonType.POST;
+
+        return result;
+    }
 }

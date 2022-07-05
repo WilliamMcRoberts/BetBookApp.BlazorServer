@@ -27,7 +27,7 @@
                     }
                 <div class="wager-box">
                     <label style="text-align: center;">Wager Amount</label>
-                    <input type="number" @bind-value="@BetAmount" @bind-value:event="oninput"/>
+                    <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                 </div>
             </div>
         }
@@ -51,19 +51,19 @@
         {
             <div class="review">
                 <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
-                @if(TeamToWin is not null)
+                @if(teamToWin is not null)
                 {
-                        @if(TeamToWin.TeamName == BasicCurrentGame.FavoriteTeamName)
+                        @if(teamToWin.TeamName == BasicCurrentGame.FavoriteTeamName)
                         {
-                            <p>@TeamToWin.TeamName - @BasicCurrentGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName - @BasicCurrentGame.PointSpread points</p>
                         }
                         else
                         {
-                            <p>@TeamToWin.TeamName + @BasicCurrentGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName + @BasicCurrentGame.PointSpread points</p>
                         }
-                    <p>For $@BetAmount</p>
+                    <p>For $@betAmount</p>
                     <div style="margin-top:3.4em;" class="undo-btn-container">
-                        <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" @onclick="UndoWinnerSelection">Undo @TeamToWin.TeamName As Winner</button>
+                        <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" @onclick="UndoWinnerSelection">Undo @teamToWin.TeamName As Winner</button>
                     </div>
                 }
             </div>
@@ -76,7 +76,7 @@
     @if(wagerPlaced == false)
     {
         <div style="padding: 2em .25em;text-align:center;">
-            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PlaceWager(BetAmount, TeamToWin))">Submit Wager</button>
+            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PlaceWager(betAmount, teamToWin))">Submit Wager</button>
         </div>
     }
     </div>
@@ -86,6 +86,9 @@
 
     // Account balance of the house
     private HouseAccountModel houseAccount;
+
+    // logged in user
+    private UserModel loggedInUser;
 
     // Boolean to check if wager has been placed
     private bool wagerPlaced = false;
@@ -103,8 +106,10 @@
     private double VIG = .1;
 
     // Amount to bet
-    [Parameter]
-    public decimal BetAmount { get; set; }
+    private decimal betAmount;
+
+    // Chosen winner of game
+    private TeamModel? teamToWin;
 
     // Current game being viewed
     [Parameter]
@@ -113,16 +118,6 @@
     // Display info for current game being viewed
     [Parameter]
     public BasicGameModel BasicCurrentGame { get; set; } = new();
-
-    // Chosen winner of game
-    [Parameter]
-    public TeamModel? TeamToWin { get; set; } = new();
-
-    [Parameter]
-    public int GameId { get; set; }
-
-    [Parameter]
-    public UserModel LoggedInUser { get; set; } = new();
 
     // Account balance of the house
     [Parameter]
@@ -151,24 +146,29 @@
             {
                 BetModel bet = new();
 
+                HouseAccountModel houseAccount = 
+                    await houseData.GetHouseAccount();
+
+                UserModel loggedInUser = 
+                    await authProvider.GetUserFromAuth(userData);
+
                 bet.BetAmount = amountToBet;
                 bet.BetPayout = 
                     (decimal)((double)amountToBet - (double)amountToBet * VIG);
                 bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = LoggedInUser.Id;
-                bet.GameId = GameId;
+                bet.BettorId = loggedInUser.Id;
+                bet.GameId = CurrentGame.Id;
                 bet.BetStatus = BetStatus.IN_PROGRESS;
                 bet.PayoutStatus = PayoutStatus.UNPAID;
 
-                LoggedInUser.AccountBalance -= bet.BetAmount;
-                HouseAccount.AccountBalance += bet.BetAmount;
+                loggedInUser.AccountBalance -= bet.BetAmount;
+                houseAccount.AccountBalance += bet.BetAmount;
 
                 try
                 {
                     // Transaction method transfers funds from user account
                     // to house account and inserts bet into the database
-                    await TransactionHelpers.CreateBetTransaction(
-                        LoggedInUser, HouseAccount, bet, config, 
+                    await loggedInUser.CreateBetTransaction(HouseAccount, bet, config, 
                             userData, houseData, betData);
                 }
                 catch (Exception ex)
@@ -177,7 +177,7 @@
                 }
 
                 wagerPlaced = true;
-                BetAmount = Convert.ToDecimal((0).ToString("#.00"));
+                betAmount = Convert.ToDecimal((0).ToString("#.00"));
             }
 
             else
@@ -198,13 +198,13 @@
     {
         if(teamId == CurrentGame?.FavoriteId)
         {
-            TeamToWin = await teamData.GetTeam(CurrentGame.FavoriteId);
+            teamToWin = await teamData.GetTeam(CurrentGame.FavoriteId);
             winnerChosen = true;
         }
 
         else if(teamId == CurrentGame?.UnderdogId)
         {
-            TeamToWin = await teamData.GetTeam(CurrentGame.UnderdogId);
+            teamToWin = await teamData.GetTeam(CurrentGame.UnderdogId);
             winnerChosen = true;
         }
     }
@@ -215,7 +215,7 @@
     /// <param name="args"></param>
     public void OnChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<decimal> args)
     {
-        BetAmount = (decimal)args.Value;
+        betAmount = (decimal)args.Value;
         StateHasChanged();
     }
 
@@ -224,7 +224,7 @@
     /// </summary>
     private void UndoWinnerSelection()
     {
-        TeamToWin = null;
+        teamToWin = null;
         winnerChosen = false;
     }
 }

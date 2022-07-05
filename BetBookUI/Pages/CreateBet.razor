@@ -1,13 +1,9 @@
 ﻿@page "/CreateBet/{gameId:int}"
 @attribute [Authorize]
 @using BetBookUI.Helpers
-@using Syncfusion.Blazor.Inputs
 @using BetBookUI.Components
-@inject AuthenticationStateProvider authProvider
-@inject IUserData userData
 @inject IGameData gameData
 @inject ITeamData teamData
-@inject IHouseAccountData houseData
 @inject ITeamRecordData recordData
 
 <PageTitle>CreateBet</PageTitle>
@@ -18,13 +14,8 @@
                  TeamStats="teamStats" 
                  GameTeamRecordsLists="gameTeamRecordsLists"/>
 
-    <CreateWager BetAmount="betAmount" 
-                 CurrentGame="currentGame"
-                 BasicCurrentGame="basicCurrentGame" 
-                 TeamToWin="teamToWin" 
-                 GameId="gameId" 
-                 HouseAccount="houseAccount"
-                 LoggedInUser="loggedInUser"/>
+    <CreateWager CurrentGame="currentGame"
+                 BasicCurrentGame="basicCurrentGame" />
 </div>
 
 @code {
@@ -45,17 +36,6 @@
     // Stats of the teams in the game
     int[] teamStats = new int[6];
 
-    // Current logged in user
-    private UserModel loggedInUser;
-
-    // Amount to bet
-    public decimal betAmount;
-
-    // Chosen winner of game
-    private TeamModel? teamToWin;
-
-    // Account balance of the house
-    private HouseAccountModel houseAccount;
 
     /// <summary>
     /// Async initialization method
@@ -63,24 +43,19 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        houseAccount = await houseData.GetHouseAccount();
-
         currentGame = await gameData.GetGame(gameId);
 
         if(currentGame is not null)
         {
-            basicCurrentGame = await PopulationHelpers.PopulateBasicGameModelFromGame(
-                currentGame, teamData);
-            gameTeamRecordsLists =  await PopulationHelpers.PopulateRecordsListsFromGame(
-                currentGame, recordData);
+            basicCurrentGame = 
+                await currentGame.PopulateBasicGameModelFromGame(teamData);
+            gameTeamRecordsLists =  
+                await currentGame.PopulateRecordsListsFromGame(recordData);
         }
 
         if(gameTeamRecordsLists is not null)
         {
-            teamStats = PopulationHelpers.PopulateTeamStatsFromRecordLists(
-            gameTeamRecordsLists);
+            teamStats = gameTeamRecordsLists.PopulateTeamStatsFromRecordLists();
         }
     }
 }

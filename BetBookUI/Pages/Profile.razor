@@ -16,7 +16,6 @@
 @*********************************** Demo Display ******************************************@
 
 <div class="user">
-    
     <div class="label-container">
         @if(loggedInUser is not null)
         {
@@ -109,6 +108,7 @@
     </div>
 </div>
 
+
 @code {
 
     /*************************************************************
@@ -188,16 +188,16 @@
     private async Task PopulateBasicBets()
     {
         bettorInProgressBasicBets = 
-            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
-                bettorInProgressBets, gameData, teamData);
+            await bettorInProgressBets.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
 
         bettorWinningBetsUnpaidBasicBets = 
-            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
-                bettorWinningBetsUnpaid, gameData, teamData);
+            await bettorWinningBetsUnpaid.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
 
         bettorPushBetsUnpaidBasicBets = 
-            await PopulationHelpers.PopulateBasicBetsListFromBetsList(
-                bettorPushBetsUnpaid, gameData, teamData);
+            await bettorPushBetsUnpaid.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
     }
 
     /// <summary>
@@ -214,9 +214,9 @@
         {
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
-            await TransactionHelpers.PayoutBetsTransaction(
-                loggedInUser, houseAccount, bettorWinningBetsUnpaid, 
-                config, userData, houseData, betData);
+            await loggedInUser.PayoutBetsTransaction(
+                houseAccount, bettorWinningBetsUnpaid, config, 
+                    userData, houseData, betData);
         }
         catch (Exception ex)
         {
@@ -243,9 +243,9 @@
         {
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
-            await TransactionHelpers.PayoutBetsTransaction(
-                loggedInUser, houseAccount,bettorPushBetsUnpaid,
-                config, userData, houseData, betData);
+            await loggedInUser.PayoutBetsTransaction(
+                houseAccount, bettorPushBetsUnpaid,config, 
+                    userData, houseData, betData);
         }
         catch (Exception ex)
         {

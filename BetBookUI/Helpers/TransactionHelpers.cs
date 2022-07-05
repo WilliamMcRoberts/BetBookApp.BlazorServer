@@ -18,7 +18,7 @@ public static class TransactionHelpers
     /// <param name="betData">IBetData</param>
     /// <returns></returns>
     public static async Task CreateBetTransaction(
-        UserModel user, HouseAccountModel houseAccount, 
+       this UserModel user, HouseAccountModel houseAccount, 
         BetModel bet, IConfiguration config, IUserData userData, 
         IHouseAccountData houseData, IBetData betData)
     {
@@ -63,7 +63,7 @@ public static class TransactionHelpers
     /// <param name="betData">IBetData</param>
     /// <returns></returns>
     public static async Task PayoutBetsTransaction(
-        UserModel user, HouseAccountModel houseAccount, 
+        this UserModel user, HouseAccountModel houseAccount, 
         List<BetModel> bettorBetsUnpaid, IConfiguration config, 
         IUserData userData,IHouseAccountData houseData, IBetData betData)
     {

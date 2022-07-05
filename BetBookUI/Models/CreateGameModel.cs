@@ -4,21 +4,21 @@ namespace BetBookUI.Models;
 
 public class CreateGameModel
 {
-    // Home team of the game
+    // Home team Id
     [Required]
     [Range(1, 32, ErrorMessage = "Home Team Id must be in the range of 1 - 32")]
     public int HomeTeamId { get; set; }
-
+    // Away team Id 
     [Required]
     [Range(1, 32, ErrorMessage = "Away Team Id must be in the range of 1 - 32")]
     public int AwayTeamId { get; set; }
 
-    // Team that is declared the favorite
+    // Id of team that is declared the favorite
     [Required]
     [Range(1, 32, ErrorMessage = "Favorite Team Id must be in the range of 1 - 32")]
     public int FavoriteId { get; set; }
 
-    // Team that is declared the underdog
+    // Id of team that is declared the underdog
     [Required]
     [Range(1, 32, ErrorMessage = "Underdog Team Id must be in the range of 1 - 32")]
     public int UnderdogId { get; set; }

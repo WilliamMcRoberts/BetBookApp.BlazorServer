@@ -6,7 +6,6 @@
 @inject ITeamRecordData recordData
 @inject IBetData betData
 
-
 <div class="input">
     <div class="winner-input">
             <h1 style="margin-top: .5em;" class="title">Update Scores</h1>
@@ -75,14 +74,11 @@
 
 @code {
 
-    // Id of game
-    private int GameId;
-
     // Basic game of selected game
     private BasicGameModel basicGame  = new();
 
     // Current game being updated
-    private GameModel currentGame  = new();
+    private GameModel? currentGame  = new();
 
     // Boolean to check if winners were added
     private bool scoresAdded = false;
@@ -105,7 +101,8 @@
     /// <returns></returns>
     private async Task AddScores()
     {
-        if (currentGame.Id != 0 && currentGame.GameStatus != GameStatus.FINISHED)
+        if (currentGame is not null && currentGame.Id != 0 
+                && currentGame.GameStatus != GameStatus.FINISHED)
         {
             currentGame.FavoriteFinalScore = addScores.FavoriteTeamScore;
             currentGame.UnderdogFinalScore = addScores.UnderdogTeamScore;
@@ -149,12 +146,19 @@
     /// <returns></returns>
     private async Task UpdateBetWinners(double favoriteScore, double underdogScore)
     {
-        TeamModel? winningTeamForBets = 
-            await CalculationHelpers.CalculateWinningTeamForBet(
-                currentGame, favoriteScore, underdogScore, teamData);
+        TeamModel? winningTeamForBets = new();
+        List<BetModel> betsOnCurrentGame = new();
 
-        List<BetModel> betsOnCurrentGame = 
-           (List<BetModel>) await betData.GetAllBetsOnGame(currentGame.Id);
+        if(currentGame is not null)
+        {
+            winningTeamForBets = 
+                await CalculationHelpers.CalculateWinningTeamForBet(
+                    currentGame, favoriteScore, underdogScore, teamData);
+
+            betsOnCurrentGame = 
+                (List<BetModel>) await betData.GetAllBetsOnGame(
+                    currentGame.Id);
+        }
 
         if(winningTeamForBets is not null)
         {
@@ -198,65 +202,67 @@
     private async Task UpdateTeamRecords(
         double favoriteScore, double underdogScore)
     {
-        TeamModel? currentFavoriteTeam = new();
-        TeamModel? currentUnderdogTeam = new();
-
-        currentFavoriteTeam = await teamData.GetTeam(currentGame.FavoriteId);
-        currentUnderdogTeam = await teamData.GetTeam(currentGame.UnderdogId);
-
-        if(currentFavoriteTeam is not null && currentUnderdogTeam is not null)
+        if(currentGame is not null)
         {
-            TeamModel? actualWinningTeam = new();
-            TeamModel? actualLosingTeam = new();
+            TeamModel? currentFavoriteTeam = 
+                await teamData.GetTeam(currentGame.FavoriteId);
+            TeamModel? currentUnderdogTeam = 
+                await teamData.GetTeam(currentGame.UnderdogId);
 
-            if (favoriteScore > underdogScore)
+            if(currentFavoriteTeam is not null && currentUnderdogTeam is not null)
             {
-                actualWinningTeam = currentFavoriteTeam;
-                actualLosingTeam = currentUnderdogTeam;
-            }
+                TeamModel? actualWinningTeam = new();
+                TeamModel? actualLosingTeam = new();
 
-            else if (favoriteScore < underdogScore)
-            {
-                actualWinningTeam = currentUnderdogTeam;
-                actualLosingTeam = currentFavoriteTeam;
-            }
-
-            else if (favoriteScore == underdogScore) 
-                actualWinningTeam = null;
-
-            // If game is a draw
-            if(actualWinningTeam is null)
-            {
-                TeamRecordModel? teamFavoriteRecord = 
-                    await recordData.GetTeamRecord(currentFavoriteTeam.Id);
-                TeamRecordModel? teamUnderdogRecord = 
-                    await recordData.GetTeamRecord(currentUnderdogTeam.Id);
-
-                if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+                if (favoriteScore > underdogScore)
                 {
-                    teamFavoriteRecord.Draws += $"{currentUnderdogTeam.TeamName}|";
-                    teamUnderdogRecord.Draws += $"{currentFavoriteTeam.TeamName}|";
-
-                    await recordData.UpdateTeamRecord(teamFavoriteRecord);
-                    await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                    actualWinningTeam = currentFavoriteTeam;
+                    actualLosingTeam = currentUnderdogTeam;
                 }
-            }
 
-            // If game is not a draw
-            else
-            {
-                TeamRecordModel? winnerTeamRecord = 
-                    await recordData.GetTeamRecord(actualWinningTeam.Id);
-                TeamRecordModel? loserTeamRecord = 
-                    await recordData.GetTeamRecord(actualLosingTeam.Id);
-
-                if(winnerTeamRecord is not null && loserTeamRecord is not null)
+                else if (favoriteScore < underdogScore)
                 {
-                    winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
-                    loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
+                    actualWinningTeam = currentUnderdogTeam;
+                    actualLosingTeam = currentFavoriteTeam;
+                }
 
-                    await recordData.UpdateTeamRecord(winnerTeamRecord);
-                    await recordData.UpdateTeamRecord(loserTeamRecord);
+                else if (favoriteScore == underdogScore) 
+                    actualWinningTeam = null;
+
+                // If game is a draw
+                if(actualWinningTeam is null)
+                {
+                    TeamRecordModel? teamFavoriteRecord = 
+                        await recordData.GetTeamRecord(currentFavoriteTeam.Id);
+                    TeamRecordModel? teamUnderdogRecord = 
+                        await recordData.GetTeamRecord(currentUnderdogTeam.Id);
+
+                    if(teamFavoriteRecord is not null && teamUnderdogRecord is not null)
+                    {
+                        teamFavoriteRecord.Draws += $"{currentUnderdogTeam.TeamName}|";
+                        teamUnderdogRecord.Draws += $"{currentFavoriteTeam.TeamName}|";
+
+                        await recordData.UpdateTeamRecord(teamFavoriteRecord);
+                        await recordData.UpdateTeamRecord(teamUnderdogRecord);
+                    }
+                }
+
+                // If game is not a draw
+                else
+                {
+                    TeamRecordModel? winnerTeamRecord = 
+                        await recordData.GetTeamRecord(actualWinningTeam.Id);
+                    TeamRecordModel? loserTeamRecord = 
+                        await recordData.GetTeamRecord(actualLosingTeam.Id);
+
+                    if(winnerTeamRecord is not null && loserTeamRecord is not null)
+                    {
+                        winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
+                        loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
+
+                        await recordData.UpdateTeamRecord(winnerTeamRecord);
+                        await recordData.UpdateTeamRecord(loserTeamRecord);
+                    }
                 }
             }
         }
@@ -276,11 +282,12 @@
 
         currentGame = await gameData.GetGame(gameId);
 
-        if (gameId != 0)
+        if (currentGame is not null)
         {
             scoresAdded = false;
-            basicGame = await PopulationHelpers.PopulateBasicGameModelFromGameId(
-                gameId, gameData, teamData);
+
+            basicGame = 
+                await currentGame.PopulateBasicGameModelFromGame(teamData);
         }
 
         else
