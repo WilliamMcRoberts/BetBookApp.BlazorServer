@@ -14,7 +14,7 @@ ADMIN GAME INPUT PAGE
 ![newGameInput](https://user-images.githubusercontent.com/95720340/177120612-1a877502-eaa1-4b3f-aaf8-d2db32652b4a.png)
 
 ADMIN SCORES UPDATE PAGE
-![newScoresInput](https://user-images.githubusercontent.com/95720340/177120272-f8b65b0a-d211-49fa-988b-8156d060569b.png)
+![scoresInput](https://user-images.githubusercontent.com/95720340/177409450-efcf9eef-481f-42ab-86b9-eefd4382a4dc.png)
 
 
 
