@@ -1,14 +1,19 @@
 ﻿using BetBookUI;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Rewrite;
 using Syncfusion.Blazor;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+var secret = builder.Configuration["GoogleRecaptchaV3:Secret"];
 builder.Services.AddSyncfusionBlazor();
 
 builder.ConfigureServices();
 
 var app = builder.Build();
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjMxMzkzQDMyMzAyZTMxMmUzMGtiT3piKzNBRXQzM2RsM1VXSjFnR2t1bDh3M3dGaGZkVTRRcmthYVFxbHc9");
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
+    builder.Configuration.GetValue<string>("Syncfusion:Key"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
