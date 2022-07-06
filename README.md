@@ -1,5 +1,5 @@
 # BetBookApp
-.NET 6 Blazor Server Application using a SQL Server DB, Dapper for data access with dependency injection and Azure AD B2C for authentication. This app allows users with an account to receive 10,000 BetBucks to place wagers on games in the upcoming 2022-2023 NFL Season. Users can place wagers on "parley" style bets up to five games with appropriate payouts or bet on single games. Point spreads only in the first version. Moneyline and over unders will be future features.
+.NET 6 Blazor Server Application using a SQL Server DB, Dapper object mapping and Azure AD B2C for authentication. This app allows users with an account to receive 10,000 BetBucks to place wagers on games in the upcoming 2022-2023 NFL Season. Users can place wagers on "parley" style bets up to five games with appropriate payouts or bet on single games. Point spreads only in the first version. Moneyline and over unders will be future features.
 
 BROWSE GAMES HOME PAGE
 ![browse](https://user-images.githubusercontent.com/95720340/177406152-4628f61d-4bae-419a-b1af-6c7a2d68f9e1.png)
