@@ -81,7 +81,10 @@
     @if(wagerPlaced == false)
     {
         <div style="padding: 2em .25em;text-align:center;">
-            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PlaceWager(betAmount, teamToWin))">Submit Wager</button>
+            <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase"
+                @onclick="(() => PlaceWager(betAmount, teamToWin))">
+                Submit Wager
+        </button>
         </div>
     }
     </div>
@@ -123,10 +126,6 @@
     // Display info for current game being viewed
     [Parameter]
     public BasicGameModel BasicCurrentGame { get; set; } = new();
-
-    // Account balance of the house
-    [Parameter]
-    public HouseAccountModel HouseAccount { get; set; } = new();
 
 
      /// <summary>
@@ -174,7 +173,7 @@
                     // Transaction method transfers funds from user account
                     // to house account and inserts bet into the database
                     await loggedInUser.CreateBetTransaction(
-                        HouseAccount, bet, config, userData, houseData, betData);
+                        houseAccount, bet, config, userData, houseData, betData);
                 }
                 catch (Exception ex)
                 {

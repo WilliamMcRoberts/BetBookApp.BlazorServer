@@ -73,6 +73,7 @@
         game.UnderdogId = createGame.UnderdogId;
         game.Stadium = createGame.Stadium;
         game.DateOfGame = createGame.DateOfGame;
+        game.PointSpread = createGame.PointSpread;
         game.Season = game.DateOfGame.CalculateSeason();
         game.Week = game.Season.CalculateWeek(createGame.DateOfGame);
 

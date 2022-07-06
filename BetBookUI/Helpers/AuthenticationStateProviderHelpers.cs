@@ -46,7 +46,7 @@ public static class AuthenticationStateProviderHelpers
 
         if (string.IsNullOrWhiteSpace(objectIdentifier) == false)
         {
-            loggedInUser = loggedInUser ?? new();
+            loggedInUser ??= new();
 
             string? firstName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("givenname"))?.Value;

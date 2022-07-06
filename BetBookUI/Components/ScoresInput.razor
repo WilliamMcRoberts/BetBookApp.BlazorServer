@@ -31,15 +31,21 @@
         </div>
         @if(statusBad == true)
         {
-            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">*YOU CANNOT ADD SCORES TO A GAME WITH A FINISHED STATUS*</div>
+            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">
+                *YOU CANNOT ADD SCORES TO A GAME WITH A FINISHED STATUS*
+            </div>
         }
         else if(noGame == true)
         {
-            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">*THERE IS NO GAME WITH THAT GAME ID, TRY AGAIN*</div>
+            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">
+                *THERE IS NO GAME WITH THAT GAME ID, TRY AGAIN*
+            </div>
         }
         else
         {
-            <div style="text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;">ENTER A GAME ID TO SELECT A GAME</div>
+            <div style="text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;">
+                ENTER A GAME ID TO SELECT A GAME
+            </div>
         }
         <div class="game-id-box">
             <EditForm Model="@addScores" OnValidSubmit="AddScores">
@@ -48,23 +54,34 @@
                 <div style="display: flex;justify-content: space-between;">
                     <div class="scores-box">
                         <label>Game Id</label>
-                        <input type="number" @bind-value="@addScores.GameId" @bind-value:event="oninput"/>
+                        <input type="number" 
+                            @bind-value="@addScores.GameId" 
+                            @bind-value:event="oninput"/>
                     </div>
                     <div>
-                        <button type="button" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase" @onclick="(() => PopulateBasicGame(addScores.GameId))">Get Game</button>
+                        <button type="button" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            @onclick="(() => PopulateBasicGame(addScores.GameId))">
+                            Get Game
+                        </button>
                     </div>
                 </div>
                 <div style="margin-top: 2em;margin-bottom:2em;display: flex;justify-content: space-between;">
                     <div class="scores-box">
                     <label>Favorite Score</label>
-                    <input type="number" @bind-value="@addScores.FavoriteTeamScore" @bind-value:event="oninput"/>
+                    <input type="number" 
+                        @bind-value="@addScores.FavoriteTeamScore" 
+                        @bind-value:event="oninput"/>
                     </div>
                     <div style="margin: 0 2em;">
-                        <button type="submit" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">Submit Scores</button>
+                        <button type="submit" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+                            Submit Scores
+                        </button>
                     </div>
                     <div class="scores-box">
                         <label>Underdog Score</label>
-                        <input type="number" @bind-value="@addScores.UnderdogTeamScore" @bind-value:event="oninput"/>
+                        <input type="number" 
+                            @bind-value="@addScores.UnderdogTeamScore" 
+                            @bind-value:event="oninput"/>
                     </div>
                 </div>
             </EditForm>

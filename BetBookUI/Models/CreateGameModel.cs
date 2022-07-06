@@ -30,7 +30,7 @@ public class CreateGameModel
 
     // The point spread of the game
     [Required]
-    [Range(0, 50, ErrorMessage = "Point Spread is required")]
+    [Range(0, 30, ErrorMessage = "Point Spread is required")]
     public double PointSpread { get; set; }
 
     // Date of the game

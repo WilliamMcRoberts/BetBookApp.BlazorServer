@@ -9,10 +9,10 @@ public class AddScoresModel
     public int GameId { get; set; }
 
     [Required]
-    [Range(0, int.MaxValue, ErrorMessage = "Score cannot be less than zero")]
+    [Range(0, 70, ErrorMessage = "Score cannot be less than zero")]
     public int FavoriteTeamScore { get; set; }
 
     [Required]
-    [Range(0,int.MaxValue, ErrorMessage = "Score cannot be less than zero")]
+    [Range(0, 70, ErrorMessage = "Score cannot be less than zero")]
     public int UnderdogTeamScore { get; set; }
 }

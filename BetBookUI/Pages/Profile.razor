@@ -112,29 +112,27 @@
      *              TODO - Add parley option feature            *
      * **********************************************************/
 
-    // List of winning bets with status "WINNER" and payment status 
+    // List of winning bets with status "WINNER" and payout status 
     // of "UNPAID" created by user
     private List<BetModel> bettorWinningBetsUnpaid = new();
 
-    // List of winning bets created by current user
+    // List of created by current user with the bets status of "WINNER"
     private List<BetModel> bettorWinningBets = new();
 
-    // List of all bettor bets
-    private List<BetModel> bettorBets = new();
-
     // List of all bettor bets with bet status of "PUSH"
+    // and payout status of "UNPAID"
     private List<BetModel> bettorPushBetsUnpaid = new();
 
     // List of all bettor bets with bet status of "IN_PROGRESS"
     private List<BetModel> bettorInProgressBets = new();
 
-    // List of in progress basic bets
+    // List of basic bets with bet status of "IN_PROGRESS"
     private List<BasicBetModel> bettorInProgressBasicBets = new();
 
-    // List of winning bets unpaid basic bets
+    // List of basic bets of bets with bet status of "WINNER"
     private List<BasicBetModel> bettorWinningBetsUnpaidBasicBets = new();
 
-    // List of push bets unpaid basic bets
+    // List of basic bets of bets with bet status of "PUSH"
     private List<BasicBetModel> bettorPushBetsUnpaidBasicBets = new();
 
     // Total payout of all bets to be payed out
@@ -169,20 +167,20 @@
 
         await FilterBetsAndPopulateLists(loggedInUser.Id);
 
-        // Total of all unpaid winning bets
+        // Total payout of all unpaid winning bets
         totalPendingPayout = CalculateTotalPendingPayout();
 
-        // Total of all unpaid push bets
+        // Total retfund of all unpaid push bets
         totalPendingRefund = CalculateTotalPendingRefund();
 
-        await PopulateBasicBets();
+        await PopulateBasicBetLists();
     }
 
     /// <summary>
     /// Async method populates all basic bet models for display
     /// </summary>
     /// <returns></returns>
-    private async Task PopulateBasicBets()
+    private async Task PopulateBasicBetLists()
     {
         bettorInProgressBasicBets = 
             await bettorInProgressBets.PopulateBasicBetsListFromBetsList(
@@ -294,10 +292,9 @@
         decimal totalPayout = 0;
 
         foreach(BetModel bet in bettorWinningBetsUnpaid)
-            total += bet.BetPayout;
+            total += (bet.BetPayout + bet.BetAmount);
 
-        totalPayout = Convert.ToDecimal((((decimal)VIG_RECOUP * total) + 
-                                          (total * 2)).ToString("#.00"));
+        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
 
         return totalPayout;
     }
@@ -309,7 +306,7 @@
     /// <returns></returns>
     private async Task FilterBetsAndPopulateLists(int userId)
     {
-        bettorBets = 
+        List<BetModel> bettorBets = 
             (List<BetModel>) await betData.GetAllBettorBets(userId);
 
         bettorWinningBets = bettorBets.Where(b =>
@@ -333,8 +330,7 @@
     private async Task RefreshUserAccountBalance()
     {
         loggedInUser = await userData.GetUser(loggedInUser.Id);
-        userAccountBalance = 
-            Convert.ToDecimal((loggedInUser.AccountBalance)
-                   .ToString("#.00"));
+        userAccountBalance = Convert.ToDecimal(
+            (loggedInUser.AccountBalance).ToString("#.00"));
     }
 }
