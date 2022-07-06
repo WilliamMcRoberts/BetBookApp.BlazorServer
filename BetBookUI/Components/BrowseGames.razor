@@ -11,7 +11,14 @@
 
 <div class="games">
     <div class="week-title">
-        <h1 style="margin-left: 8em;" class="title">@gamesAvailable.Count Available Games</h1>
+        @if(gamesAvailable.Count != 1)
+        {
+            <h1 style="margin-left: 8em;" class="title">@gamesAvailable.Count Available Games</h1>
+        }
+        else
+        {
+            <h1 style="margin-left: 8em;" class="title">@gamesAvailable.Count Available Game</h1>
+        }
         <h1 style="margin-right: 8em;" class="title">@currentSeason Season Week @currentWeek</h1>
     </div>
     @if(basicGamesAvailable is not null)
@@ -99,9 +106,9 @@
             await basicGamesAvailable.PopulateTeamRecordsArrayFromBasicGameList(
                 gameData, teamData, recordData);
 
-        currentSeason = CalculationHelpers.CalculateSeason(DateTime.Now);
+        currentSeason = DateTime.Now.CalculateSeason();
 
-        currentWeek = CalculationHelpers.CalculateWeek(DateTime.Now, currentSeason);
+        currentWeek = currentSeason.CalculateWeek(DateTime.Now);
 
     }
 

@@ -18,7 +18,7 @@ public static class CalculationHelpers
     /// TeamModel representing the winner of the current game
     /// </returns>
     public static async Task<TeamModel> CalculateWinningTeam(
-        GameModel game, double favoriteScore, double underdogScore, 
+        this GameModel game, double favoriteScore, double underdogScore, 
             ITeamData teamData)
     {
         TeamModel? winner = new();
@@ -50,7 +50,7 @@ public static class CalculationHelpers
     /// winner of the game after factoring in the point spread
     /// </returns>
     public static async Task<TeamModel> CalculateWinningTeamForBet(
-        GameModel game, double favoriteScore, double underdogScore, 
+        this GameModel game, double favoriteScore, double underdogScore, 
             ITeamData teamData)
     {
         double pointSpread = game.PointSpread;
@@ -75,7 +75,7 @@ public static class CalculationHelpers
     /// <returns>
     /// int represents the current week
     /// </returns>
-    public static int CalculateWeek(DateTime dateTime, SeasonType season)
+    public static int CalculateWeek(this SeasonType season, DateTime dateTime)
     {
         DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
         DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
@@ -112,7 +112,7 @@ public static class CalculationHelpers
     /// </summary>
     /// <param name="dateTime">DateTime represents date to calculate</param>
     /// <returns>SeasonType represents the type of season</returns>
-    public static SeasonType CalculateSeason(DateTime dateTime)
+    public static SeasonType CalculateSeason(this DateTime dateTime)
     {
         DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
         DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);

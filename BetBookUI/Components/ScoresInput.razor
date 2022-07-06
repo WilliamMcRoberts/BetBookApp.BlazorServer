@@ -111,8 +111,7 @@
             await gameData.UpdateGame(currentGame);
 
             TeamModel? gameWinner =
-                await CalculationHelpers.CalculateWinningTeam(
-                    currentGame, addScores.FavoriteTeamScore,
+                await currentGame.CalculateWinningTeam(addScores.FavoriteTeamScore,
                         addScores.UnderdogTeamScore, teamData);
 
             if (gameWinner is not null)
@@ -152,8 +151,8 @@
         if(currentGame is not null)
         {
             winningTeamForBets = 
-                await CalculationHelpers.CalculateWinningTeamForBet(
-                    currentGame, favoriteScore, underdogScore, teamData);
+                await currentGame.CalculateWinningTeamForBet(
+                    favoriteScore, underdogScore, teamData);
 
             betsOnCurrentGame = 
                 (List<BetModel>) await betData.GetAllBetsOnGame(

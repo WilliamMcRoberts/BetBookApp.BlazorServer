@@ -73,10 +73,8 @@
         game.UnderdogId = createGame.UnderdogId;
         game.Stadium = createGame.Stadium;
         game.DateOfGame = createGame.DateOfGame;
-        game.Season = CalculationHelpers.CalculateSeason(
-            game.DateOfGame);
-        game.Week = CalculationHelpers.CalculateWeek(
-            createGame.DateOfGame, game.Season);
+        game.Season = game.DateOfGame.CalculateSeason();
+        game.Week = game.Season.CalculateWeek(createGame.DateOfGame);
 
         await gameData.InsertGame(game);
 

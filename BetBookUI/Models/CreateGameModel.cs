@@ -33,8 +33,6 @@ public class CreateGameModel
     [Range(0, 50, ErrorMessage = "Point Spread is required")]
     public double PointSpread { get; set; }
 
-    public int Week { get; set; }
-
     // Date of the game
     [Required]
     public DateTime DateOfGame { get; set; }
