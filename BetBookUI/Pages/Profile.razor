@@ -26,15 +26,12 @@
     <div class="item">
         <p>Pending Payout: $@totalPendingPayout</p>
     </div>
-
     <div class="item">
         <p>Pending Refund: $@totalPendingRefund</p>
     </div>
-
     <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
         <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
     </div>
-
     <div style="text-align: center;margin-bottom: 1em;">
         <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundPushBets">Refund My Push Bets</button>
     </div>
@@ -225,7 +222,7 @@
 
         await RefreshUserAccountBalance();
 
-        ClearBetList(bettorWinningBetsUnpaid);
+        bettorWinningBetsUnpaid.Clear();
 
         totalPendingPayout = CalculateTotalPendingPayout();
     }
@@ -254,7 +251,7 @@
 
         await RefreshUserAccountBalance();
 
-        ClearBetList(bettorPushBetsUnpaid);
+        bettorPushBetsUnpaid.Clear();
 
         totalPendingRefund = CalculateTotalPendingRefund();
     }
@@ -328,15 +325,6 @@
         bettorInProgressBets = bettorBets.Where(b =>
             b.BetStatus == BetStatus.IN_PROGRESS).ToList();
     } 
-
-    /// <summary>
-    /// Method clears a list passed as a parameter
-    /// </summary>
-    /// <param name="list">List<BetModel> represents a list to clear</param>
-    private void ClearBetList(List<BetModel> list)
-    {
-        list.Clear();
-    }
 
     /// <summary>
     /// Async method retieves most recent user account balance
