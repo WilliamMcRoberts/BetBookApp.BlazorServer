@@ -1,8 +1,8 @@
-﻿using BetBookData.DataLogic.Interfaces;
-using BetBookData.DbAccess;
+﻿using BetBookData.Interfaces;
+using BetBookDataAccess.DbAccess;
 using BetBookData.Models;
 
-namespace BetBookData.DataLogic;
+namespace BetBookData.Data;
 
 public class BetData : IBetData
 {
@@ -64,61 +64,6 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    /// Async method calls spBets_GetAllInProgressByBettor stored procedure  
-    /// which retrieves all bets with status "IN_PROGRESS" by bettor
-    /// </summary>
-    /// <param name="id">int id of the bettor that created the bets being retrieved</param>
-    /// <returns>
-    /// IEnumerable of BetModel representing all bets created by bettor withthe bet status of "IN_PROGRESS"
-    /// </returns>
-    public async Task<IEnumerable<BetModel>> GetAllBettorInProgressBets(int bettorId)
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllInProgressByBettor", new
-            {
-                BettorId = bettorId
-            });
-    }
-
-    /// <summary>
-    /// Async method calls spBets_GetAllWinnersByBettor stored procedure which retrieves 
-    /// all bets that have a status of "WINNER" made by bettor
-    /// </summary>
-    /// <param name="id">int id of the bettor that created the bets being retrieved</param>
-    /// <returns>
-    /// IEnumerable of BetModel representing all bets created by bettor with
-    /// the bet status of "WINNER"
-    /// </returns>
-    public async Task<IEnumerable<BetModel>> GetAllBettorWinningBets(int bettorId)
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllWinnersByBettor", new
-            {
-                BettorId = bettorId
-            });
-    }
-
-    /// <summary>
-    /// Async method calls spBets_GetAllLosersByBettor stored procedure which retrieves 
-    /// all bets that have a status of "LOSER" made by bettor
-    /// </summary>
-    /// <param name="id">
-    /// int id of the bettor that created the bets being retrieved 
-    /// </param>
-    /// <returns>
-    /// IEnumerable of BetModel representing all bets created by bettor with
-    /// the bet status of "LOSER"
-    /// </returns>
-    public async Task<IEnumerable<BetModel>> GetAllBettorLosingBets(int bettorId)
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllLosersByBettor", new
-            {
-                BettorId = bettorId
-            });
-    }
-
-    /// <summary>
     /// Async method calls spBets_GetAllByGame stored procedure which retrieves 
     /// all bets placed on a certain game
     /// </summary>
@@ -170,7 +115,7 @@ public class BetData : IBetData
         string betStatus = bet.BetStatus.ToString();
         string payoutStatus = bet.PayoutStatus.ToString();
 
-        if(bet.FinalWinnerId != 0)
+        if (bet.FinalWinnerId != 0)
         {
             await _db.SaveData("dbo.spBets_Update", new
             {
@@ -200,7 +145,7 @@ public class BetData : IBetData
                 payoutStatus
             });
         }
-        
+
     }
 
     /// <summary>

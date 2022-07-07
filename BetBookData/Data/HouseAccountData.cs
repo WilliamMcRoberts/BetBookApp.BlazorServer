@@ -1,10 +1,10 @@
 ﻿using System.Data;
-using BetBookData.DataLogic.Interfaces;
-using BetBookData.DbAccess;
+using BetBookData.Interfaces;
+using BetBookDataAccess.DbAccess;
 using BetBookData.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace BetBookData.DataLogic;
+namespace BetBookData.Data;
 
 public class HouseAccountData : IHouseAccountData
 {

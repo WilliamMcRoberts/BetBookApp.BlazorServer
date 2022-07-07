@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using System.Data;
-using BetBookData.DbAccess;
-using BetBookData.DataLogic.Interfaces;
+using BetBookDataAccess.DbAccess;
+using BetBookData.Interfaces;
 
-namespace BetBookData.DataLogic;
+namespace BetBookData.Data;
 
 public class TeamData : ITeamData
 {

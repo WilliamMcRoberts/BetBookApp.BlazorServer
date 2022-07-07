@@ -1,6 +1,6 @@
 ﻿using BetBookData.Models;
 
-namespace BetBookData.DataLogic.Interfaces;
+namespace BetBookData.Interfaces;
 
 /// <summary>
 /// GameData interface

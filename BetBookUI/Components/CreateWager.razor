@@ -1,5 +1,6 @@
 ﻿@using BetBookUI.Helpers
 @using Syncfusion.Blazor.Inputs
+@using BetBookUI.Models
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
 @inject IBetData betData
@@ -35,6 +36,7 @@
                 </div>
             </div>
         }
+        
         @if (winnerChosen == false)
         {
             <div class="review">
@@ -153,6 +155,7 @@
         {
             if (amountToBet != 0)
             {
+                
                 BetModel bet = new();
 
                 HouseAccountModel? houseAccount = 

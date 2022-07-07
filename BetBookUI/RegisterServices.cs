@@ -34,7 +34,7 @@ public static class RegisterServices
         builder.Services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
         builder.Services.AddMemoryCache();
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
-        builder.Services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
+        builder.Services.AddSyncfusionBlazor();
 
 
         /*********************** Data access / Db access *************************/

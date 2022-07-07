@@ -2,7 +2,7 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace BetBookData.DbAccess;
+namespace BetBookDataAccess.DbAccess;
 public class SqlConnection : ISqlConnection
 {
     private readonly IConfiguration _config;
@@ -43,7 +43,6 @@ public class SqlConnection : ISqlConnection
 
         return await connection.QueryAsync<T>(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-
     }
 
     /// <summary>

@@ -1,8 +1,8 @@
 ﻿
-using BetBookData.DbAccess;
+using BetBookDataAccess.DbAccess;
 using BetBookData.Models;
 
-namespace BetBookData.DataLogic;
+namespace BetBookData.Data;
 public class ParleyBetData
 {
     private readonly ISqlConnection _db;

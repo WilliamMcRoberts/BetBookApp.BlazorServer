@@ -1,8 +1,8 @@
-﻿using BetBookData.DataLogic.Interfaces;
-using BetBookData.DbAccess;
+﻿using BetBookData.Interfaces;
+using BetBookDataAccess.DbAccess;
 using BetBookData.Models;
 
-namespace BetBookData.DataLogic;
+namespace BetBookData.Data;
 public class TeamRecordData : ITeamRecordData
 {
     private readonly ISqlConnection _db;
