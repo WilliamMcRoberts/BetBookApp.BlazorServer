@@ -1,6 +1,76 @@
 ﻿@page "/"
+@using BetBookUI.Helpers
+@inject NavigationManager navManager
 @using BetBookUI.Components
+@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject ITeamRecordData recordData
 
 <PageTitle>Index</PageTitle>
 
-<BrowseGames />
+@******************************  Demo Display  ********************************@
+
+<div class="games-page">
+    <div class="week-title">
+        @if(basicGamesAvailable.Count != 1)
+        {
+            <h1 style="margin-left: 8em;" class="title">@basicGamesAvailable.Count Available Games</h1>
+        }
+        else
+        {
+            <h1 style="margin-left: 8em;" class="title">@basicGamesAvailable.Count Available Game</h1>
+        }
+        <h1 style="margin-right: 8em;" class="title">@currentSeason Season Week @currentWeek</h1>
+    </div>
+    <div class="games">
+        <GameDisplay BasicGameList="basicGamesAvailable" 
+                     RecordsArray="teamRecords" 
+                     User="loggedInUser"/>
+    </div>
+</div>
+
+@code {
+    // Current logged in user
+    public UserModel? loggedInUser;
+
+    // List of basic game models for displaying game info for the current week
+    public List<BasicGameModel> basicGamesAvailable = new();
+
+    // Array of team record models for available games
+    public TeamRecordModel[] teamRecords = new TeamRecordModel[32];
+
+    // Current week of season
+    public int currentWeek;
+
+    // Current season type
+    public SeasonType currentSeason;
+
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        await authProvider.LoadAndVerifyUser(loggedInUser, userData);
+
+        List<GameModel> gamesAvailable = 
+            (List<GameModel>) await gameData.GetAllNotStartedGames();
+
+        basicGamesAvailable = 
+            await gamesAvailable.PopulateBasicGameModelListFromGameList(
+                gameData, teamData);
+
+        teamRecords = 
+            await basicGamesAvailable.PopulateTeamRecordsArrayFromBasicGameList(
+                gameData, teamData, recordData);
+
+        currentSeason = DateTime.Now.CalculateSeason();
+
+        currentWeek = currentSeason.CalculateWeek(DateTime.Now);
+
+    }
+}

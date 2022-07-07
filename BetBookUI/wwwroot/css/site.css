@@ -268,7 +268,8 @@ ul {
     border-radius: 15px;
     border: 4px solid green;
 }
-.user {
+
+.user-profile {
     width: 50%;
     background: #98FB98; /*Pale Green*/
     border-radius: 15px;
@@ -322,7 +323,6 @@ ul {
 .rec-sec {
     margin-bottom: 1em;
 }
-
 
 .divider {
     border-bottom: 2px solid green;

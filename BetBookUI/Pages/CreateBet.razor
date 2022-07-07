@@ -2,9 +2,11 @@
 @attribute [Authorize]
 @using BetBookUI.Helpers
 @using BetBookUI.Components
+@inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
 @inject ITeamData teamData
 @inject ITeamRecordData recordData
+@inject IUserData userData
 
 <PageTitle>CreateBet</PageTitle>
 
@@ -15,7 +17,9 @@
                  GameTeamRecordsLists="gameTeamRecordsLists"/>
 
     <CreateWager CurrentGame="currentGame"
-                 BasicCurrentGame="basicCurrentGame" />
+                 BasicCurrentGame="basicCurrentGame"
+                 LoggedInUser="loggedInUser"
+                 UserAccountBalance="userAccountBalance"/>
 </div>
 
 @code {
@@ -25,7 +29,7 @@
     public int gameId { get; set; }
 
     // Current game being viewed
-    private GameModel currentGame;
+    private GameModel? currentGame;
 
     // Display info for current game being viewed
     private BasicGameModel basicCurrentGame = new();
@@ -36,6 +40,12 @@
     // Stats of the teams in the game
     int[] teamStats = new int[6];
 
+    // Current logged in user
+    private UserModel? loggedInUser;
+
+    // Account balance of current logged in user
+    private decimal userAccountBalance;
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -43,6 +53,12 @@
     protected async override Task OnInitializedAsync()
     {
         currentGame = await gameData.GetGame(gameId);
+
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        userAccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        
 
         if(currentGame is not null)
         {

@@ -25,7 +25,7 @@ public static class AuthenticationStateProviderHelpers
         this AuthenticationStateProvider provider, IUserData userData)
     {
         var authState = await provider.GetAuthenticationStateAsync();
-        string objectId = authState.User.Claims.FirstOrDefault(
+        string? objectId = authState.User.Claims.FirstOrDefault(
             c => c.Type.Contains("objectidentifier"))?.Value;
 
         return await userData.GetUserFromAuthentication(objectId);

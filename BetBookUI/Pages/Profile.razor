@@ -1,110 +1,38 @@
 ﻿@page "/Profile"
 @attribute [Authorize]
-@using BetBookData.Models
 @using BetBookData.DataLogic
 @using BetBookUI.Helpers
+@using BetBookUI.Components
 @inject AuthenticationStateProvider authProvider
 @inject IHouseAccountData houseData
 @inject IBetData betData
 @inject IUserData userData
 @inject IGameData gameData
 @inject ITeamData teamData
-@inject IConfiguration config
 
 <PageTitle>Profile</PageTitle>
 
 @*********************************** Demo Display ******************************************@
 
-<div class="user">
-    <div class="label-container">
-        @if(loggedInUser is not null)
-        {
-            <h3 class="profile-label">Hi, @loggedInUser.DisplayName!</h3>
-            <h3 class="bal-label">Balance $@userAccountBalance</h3>
-        }
+<div class="user-profile">
+    <div class="payout-section">
+        <Payouts BettorWinningBetsUnpaid="bettorWinningBetsUnpaid" 
+                 BettorPushBetsUnpaid="bettorPushBetsUnpaid"
+                 TotalPendingPayout="totalPendingPayout"
+                 TotalPendingRefund="totalPendingRefund"/>
     </div>
-    <div class="item">
-        <p>Pending Payout: $@totalPendingPayout</p>
-    </div>
-    <div class="item">
-        <p>Pending Refund: $@totalPendingRefund</p>
-    </div>
-    <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
-        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
-    </div>
-    <div style="text-align: center;margin-bottom: 1em;">
-        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundPushBets">Refund My Push Bets</button>
-    </div>
-    <div class="divider">
-    </div>
+    <div class="divider"></div>
     <div class="bets">
-        <label style="margin-left: 5.25em;">Open Bets</label>
-        @if(bettorInProgressBets.Count != 0)
-        {
-            @foreach(BasicBetModel bet in bettorInProgressBasicBets)
-            {
-                <div class="bet">
-                    <ul>
-                        <li>Chosen Winner || @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
-                        <li>Wager Amount || @bet.PayoutAmount</li>
-                        <li>Point Spread || @bet.Spread</li>
-                    </ul>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="bet">
-                <p style="margin: 1em 0;">NONE</p>
-            </div>
-            
-        }
-        <label style="margin-left: 5.25em;">Winning Unpaid Bets</label>
-        @if(bettorWinningBetsUnpaid.Count != 0)
-        {
-            @foreach(BasicBetModel bet in bettorWinningBetsUnpaidBasicBets)
-            {
-                <div class="bet">
-                    <ul>
-                        <li>Winner Chosen || @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
-                        <li>Wager Amount || @bet.PayoutAmount</li>
-                        <li>Point Spread || @bet.Spread</li>
-                    </ul>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="bet">
-                <p style="margin: 1em 0;">NONE</p>
-            </div>
-        }
-        <label style="margin-left: 5.25em;">Push Bets Not Yet Refunded</label>
-        @if(bettorPushBetsUnpaid.Count != 0)
-        {
-            @foreach(BasicBetModel bet in bettorPushBetsUnpaidBasicBets)
-            {
-                <div class="bet">
-                    <ul>
-                        <li>Winner Chosen || @bet.ChosenWinnerTeamName</li>
-                        <li>Final Winner || @bet.FinalWinnerTeamName</li>
-                        <li>Wager Amount || @bet.PayoutAmount</li>
-                        <li>Point Spread || @bet.Spread</li>
-                    </ul>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="bet">
-                <p style="margin: 1em 0;">NONE</p>
-            </div>
-        }
+        <BetLists BasicBets="bettorInProgressBasicBets" 
+                  BetType="Open"/>
+
+        <BetLists BasicBets="bettorWinningBetsUnpaidBasicBets" 
+                  BetType="Winning Unpaid"/>
+
+        <BetLists BasicBets="bettorPushBetsUnpaidBasicBets" 
+                  BetType="Unpaid Push"/>
     </div>
 </div>
-
 
 @code {
 
@@ -138,20 +66,11 @@
     // Total payout of all bets to be payed out
     private decimal totalPendingPayout;
 
-    // House account
-    private HouseAccountModel houseAccount;
-
-    // Current logged in user
-    private UserModel loggedInUser;
-
-    // Vig recoup
-    private double VIG_RECOUP = .1;
-
-    // User account balance
-    private decimal userAccountBalance;
-
     // Total pending refund from pushed bets
     private decimal totalPendingRefund;
+
+    // Current logged in user
+    private UserModel? loggedInUser;
 
     /// <summary>
     /// Async initialization method
@@ -161,150 +80,24 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        houseAccount = await houseData.GetHouseAccount();
-
-        await RefreshUserAccountBalance();
-
-        await FilterBetsAndPopulateLists(loggedInUser.Id);
+        await FilterBetsAndPopulateBetLists(loggedInUser.Id);
 
         // Total payout of all unpaid winning bets
-        totalPendingPayout = CalculateTotalPendingPayout();
+        totalPendingPayout = 
+            bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
 
         // Total retfund of all unpaid push bets
-        totalPendingRefund = CalculateTotalPendingRefund();
-
-        await PopulateBasicBetLists();
-    }
-
-    /// <summary>
-    /// Async method populates all basic bet models for display
-    /// </summary>
-    /// <returns></returns>
-    private async Task PopulateBasicBetLists()
-    {
-        bettorInProgressBasicBets = 
-            await bettorInProgressBets.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-
-        bettorWinningBetsUnpaidBasicBets = 
-            await bettorWinningBetsUnpaid.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-
-        bettorPushBetsUnpaidBasicBets = 
-            await bettorPushBetsUnpaid.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-    }
-
-    /// <summary>
-    /// Async method pays the user all unpaid 
-    /// payouts
-    /// </summary>
-    /// <returns></returns>
-    private async Task PayoutUnpaidBets()
-    {
-        houseAccount.AccountBalance -= totalPendingPayout;
-        loggedInUser.AccountBalance += totalPendingPayout;
-
-        try
-        {
-            // Transaction method updates bet statuses, transfers
-            // funds from house account to user account
-            await loggedInUser.PayoutBetsTransaction(
-                houseAccount, bettorWinningBetsUnpaid, config, 
-                    userData, houseData, betData);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-
-        await RefreshUserAccountBalance();
-
-        bettorWinningBetsUnpaid.Clear();
-
-        totalPendingPayout = CalculateTotalPendingPayout();
-    }
-
-    /// <summary>
-    /// Async method refunds all unpaid push bets
-    /// </summary>
-    /// <returns></returns>
-    private async Task RefundPushBets()
-    {
-        houseAccount.AccountBalance -= totalPendingRefund;
-        loggedInUser.AccountBalance += totalPendingRefund;
-
-        try
-        {
-            // Transaction method updates bet statuses, transfers
-            // funds from house account to user account
-            await loggedInUser.PayoutBetsTransaction(
-                houseAccount, bettorPushBetsUnpaid,config, 
-                    userData, houseData, betData);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-
-        await RefreshUserAccountBalance();
-
-        bettorPushBetsUnpaid.Clear();
-
-        totalPendingRefund = CalculateTotalPendingRefund();
-    }
-
-    /// <summary>
-    /// Method calculates and returns the total pending 
-    /// refund for all push bets made by current user
-    /// </summary>
-    /// <returns>
-    /// decimal represents total pending refund for current user
-    /// </returns>
-    private decimal CalculateTotalPendingRefund()
-    {
-        if (bettorPushBetsUnpaid.Count == 0) 
-            return 0;
-
-        decimal total = 0;
-
-        foreach(BetModel bet in bettorPushBetsUnpaid)
-            total += bet.BetPayout;
-
-        total = Convert.ToDecimal((total).ToString("#.00"));
-
-        return total;
-    }
-
-    /// <summary>
-    /// Method calculates and returns the total pending
-    /// payout for all winning bets made by current user
-    /// </summary>
-    /// <returns>
-    /// decimal represents the pending payout for current user
-    /// </returns>
-    private decimal CalculateTotalPendingPayout()
-    {
-        if (bettorWinningBetsUnpaid.Count == 0)
-            return 0;
-
-        decimal total = 0;
-        decimal totalPayout = 0;
-
-        foreach(BetModel bet in bettorWinningBetsUnpaid)
-            total += (bet.BetPayout + bet.BetAmount);
-
-        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
-
-        return totalPayout;
+        totalPendingRefund = 
+            bettorPushBetsUnpaid.CalculateTotalPendingRefund();
     }
 
     /// <summary>
     /// Async method filters user bets and populates all bet lists
+    /// and all basic bets lists
     /// </summary>
     /// <param name="userId">int represents id of current user</param>
     /// <returns></returns>
-    private async Task FilterBetsAndPopulateLists(int userId)
+    private async Task FilterBetsAndPopulateBetLists(int userId)
     {
         List<BetModel> bettorBets = 
             (List<BetModel>) await betData.GetAllBettorBets(userId);
@@ -321,16 +114,17 @@
 
         bettorInProgressBets = bettorBets.Where(b =>
             b.BetStatus == BetStatus.IN_PROGRESS).ToList();
-    } 
 
-    /// <summary>
-    /// Async method retieves most recent user account balance
-    /// </summary>
-    /// <returns></returns>
-    private async Task RefreshUserAccountBalance()
-    {
-        loggedInUser = await userData.GetUser(loggedInUser.Id);
-        userAccountBalance = Convert.ToDecimal(
-            (loggedInUser.AccountBalance).ToString("#.00"));
-    }
+        bettorInProgressBasicBets = 
+            await bettorInProgressBets.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
+
+        bettorWinningBetsUnpaidBasicBets = 
+            await bettorWinningBetsUnpaid.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
+
+        bettorPushBetsUnpaidBasicBets = 
+            await bettorPushBetsUnpaid.PopulateBasicBetsListFromBetsList(
+                gameData, teamData);
+    } 
 }

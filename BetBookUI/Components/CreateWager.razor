@@ -21,11 +21,15 @@
                 {
                     <div style="color:red;text-align:center;">*BET AMOUNT MUST BE MORE THAN ZERO*</div>
                 }
-                    else if(gameNotStarted == false)
-                    {
-                        <div style="color:red;text-align:center;">*GAME HAS ALREADY STARTED*</div>
-                    }
+                else if(gameNotStarted == false)
+                {
+                    <div style="color:red;text-align:center;">*GAME HAS ALREADY STARTED*</div>
+                }
+                <div style="text-align:center;padding-top:1em;">
+                    <label>Account Balance: $@UserAccountBalance</label>
+                </div>
                 <div class="wager-box">
+                    
                     <label style="text-align: center;">Wager Amount</label>
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                 </div>
@@ -82,21 +86,14 @@
     {
         <div style="padding: 2em .25em;text-align:center;">
             <button class="mt-4 mb-4 site-btn btn site-btn-light btn-sm text-uppercase"
-                @onclick="(() => PlaceWager(betAmount, teamToWin))">
+                @onclick="(() => PlaceWager(betAmount, teamToWin!))">
                 Submit Wager
         </button>
         </div>
     }
     </div>
 
-
 @code {
-
-    // Account balance of the house
-    private HouseAccountModel houseAccount;
-
-    // logged in user
-    private UserModel loggedInUser;
 
     // Boolean to check if wager has been placed
     private bool wagerPlaced = false;
@@ -127,8 +124,16 @@
     [Parameter]
     public BasicGameModel BasicCurrentGame { get; set; } = new();
 
+    // Current logged in user
+    [Parameter]
+    public UserModel LoggedInUser { get; set; } = new();
 
-     /// <summary>
+    // Account balance of current logged in user
+    [Parameter]
+    public decimal UserAccountBalance { get; set; }
+
+
+    /// <summary>
     /// Async method to update bet info, insert a new bet
     /// into the database, update user account balance, and
     /// update the house account balance
@@ -150,29 +155,26 @@
             {
                 BetModel bet = new();
 
-                HouseAccountModel houseAccount = 
+                HouseAccountModel? houseAccount = 
                     await houseData.GetHouseAccount();
-
-                UserModel loggedInUser = 
-                    await authProvider.GetUserFromAuth(userData);
 
                 bet.BetAmount = amountToBet;
                 bet.BetPayout = 
                     (decimal)((double)amountToBet - (double)amountToBet * VIG);
                 bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = loggedInUser.Id;
+                bet.BettorId = LoggedInUser.Id;
                 bet.GameId = CurrentGame.Id;
                 bet.BetStatus = BetStatus.IN_PROGRESS;
                 bet.PayoutStatus = PayoutStatus.UNPAID;
 
-                loggedInUser.AccountBalance -= bet.BetAmount;
-                houseAccount.AccountBalance += bet.BetAmount;
+                LoggedInUser.AccountBalance -= bet.BetAmount;
+                houseAccount!.AccountBalance += bet.BetAmount;
 
                 try
                 {
                     // Transaction method transfers funds from user account
                     // to house account and inserts bet into the database
-                    await loggedInUser.CreateBetTransaction(
+                    await LoggedInUser.CreateBetTransaction(
                         houseAccount, bet, config, userData, houseData, betData);
                 }
                 catch (Exception ex)
@@ -181,7 +183,6 @@
                 }
 
                 wagerPlaced = true;
-                betAmount = Convert.ToDecimal((0).ToString("#.00"));
             }
 
             else

@@ -23,13 +23,10 @@
      * ************************************************************/
 
     // Current logged in user
-    private UserModel loggedInUser;
+    private UserModel? loggedInUser;
 
     // List of games being included in parley bet
     private List<GameModel> chosenGames = new();
-
-    // Account balance of the house
-    private HouseAccountModel houseAccount;
 
     // List of basic game models of games available
     private List<BasicGameModel> basicGamesAvailable = new();
@@ -54,8 +51,6 @@
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        houseAccount = await houseData.GetHouseAccount();
 
         gamesAvailable = 
             (List<GameModel>) await gameData.GetAllNotStartedGames();

@@ -1,0 +1,35 @@
+﻿
+<div>
+    <label style="margin-left: 5.25em;">@BetType Bets</label>
+    @if(BasicBets.Count != 0)
+    {
+        @foreach(BasicBetModel bet in BasicBets)
+        {
+            <div class="bet">
+                <ul>
+                    <li>Chosen Winner || @bet.ChosenWinnerTeamName</li>
+                    <li>Final Winner || @bet.FinalWinnerTeamName</li>
+                    <li>Wager Amount || @bet.PayoutAmount</li>
+                    <li>Point Spread || @bet.Spread</li>
+                </ul>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="bet">
+            <p style="margin: 1em 0;">NONE</p>
+        </div>
+    }
+</div>
+
+@code {
+   
+    // List of basic bets to present
+    [Parameter]
+    public List<BasicBetModel> BasicBets { get; set; } = new();
+
+    // Type of bets being presented
+    [Parameter]
+    public string BetType { get; set; } = "";
+}

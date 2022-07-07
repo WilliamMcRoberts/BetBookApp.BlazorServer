@@ -130,4 +130,49 @@ public static class CalculationHelpers
 
         return result;
     }
+
+    /// <summary>
+    /// Method calculates and returns the total pending 
+    /// refund for all push bets made by current user
+    /// </summary>
+    /// <returns>
+    /// decimal represents total pending refund for current user
+    /// </returns>
+    public static decimal CalculateTotalPendingRefund(this List<BetModel> pushBets)
+    {
+        if (pushBets.Count == 0)
+            return 0;
+
+        decimal total = 0;
+
+        foreach (BetModel bet in pushBets)
+            total += bet.BetPayout;
+
+        total = Convert.ToDecimal((total).ToString("#.00"));
+
+        return total;
+    }
+
+    /// <summary>
+    /// Method calculates and returns the total pending
+    /// payout for all winning bets made by current user
+    /// </summary>
+    /// <returns>
+    /// decimal represents the pending payout for current user
+    /// </returns>
+    public static decimal CalculateTotalPendingPayout(this List<BetModel> winningBets)
+    {
+        if (winningBets.Count == 0)
+            return 0;
+
+        decimal total = 0;
+        decimal totalPayout = 0;
+
+        foreach (BetModel bet in winningBets)
+            total += (bet.BetPayout + bet.BetAmount);
+
+        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
+
+        return totalPayout;
+    }
 }
