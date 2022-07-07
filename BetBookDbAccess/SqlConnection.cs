@@ -2,7 +2,7 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace BetBookDataAccess.DbAccess;
+namespace BetBookDbAccess;
 public class SqlConnection : ISqlConnection
 {
     private readonly IConfiguration _config;
@@ -68,4 +68,23 @@ public class SqlConnection : ISqlConnection
         await connection.ExecuteAsync(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
+
+    /// <summary>
+    /// Async method to save a team to the database and return the team id
+    /// </summary>
+    /// <param name="p">DynamicParameters</param>
+    /// <returns></returns>
+    public async Task<int> SaveTeam(DynamicParameters p)
+    {
+        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
+            _config.GetConnectionString("BetBookDB"));
+
+        await connection.ExecuteAsync("dbo.spTeams_Insert", p,
+            commandType: CommandType.StoredProcedure);
+
+        int teamId = p.Get<int>("@Id");
+
+        return teamId;
+    }
+
 }

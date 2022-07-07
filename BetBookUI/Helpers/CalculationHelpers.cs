@@ -5,23 +5,16 @@ public static class CalculationHelpers
     /// <summary>
     /// Method calculates and returns winning team of current game
     /// </summary>
-    /// <param name="game">
-    /// GameModel representing the current game
-    /// </param>
-    /// <param name="favoriteScore">
-    /// int representing the favorite team score of the current game
-    /// </param>
-    /// <param name="underdogScore">
-    /// int representing the underdog team score of the current game
-    /// </param>
-    /// <returns name="winner">
-    /// TeamModel representing the winner of the current game
-    /// </returns>
+    /// <param name="game"></param>
+    /// <param name="favoriteScore"></param>
+    /// <param name="underdogScore"></param>
+    /// <param name="teamData"></param>
+    /// <returns>TeamModel</returns>
     public static async Task<TeamModel> CalculateWinningTeam(
         this GameModel game, double favoriteScore, double underdogScore, 
             ITeamData teamData)
     {
-        TeamModel? winner = new();
+        TeamModel? winner;
 
         TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
         TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
@@ -30,25 +23,18 @@ public static class CalculationHelpers
             (favoriteScore > underdogScore) ? favorite :
                 underdog;
 
-        return winner;
+        return winner!;
     }
 
     /// <summary>
     /// Method calculates and returns the winning team
     /// after factoring in the point spread
     /// </summary>
-    /// <param name="game">
-    /// GameModel representing the current game
-    /// </param>
-    /// <param name="favoriteScore">
-    /// int representing the favorite team score
-    /// </param>
-    /// <param name="underdogScore">
-    /// int representing the underdog team score
-    /// </param>
-    /// <returns name="winner">
-    /// winner of the game after factoring in the point spread
-    /// </returns>
+    /// <param name="game"></param>
+    /// <param name="favoriteScore"></param>
+    /// <param name="underdogScore"></param>
+    /// <param name="teamData"></param>
+    /// <returns>TeamModel</returns>
     public static async Task<TeamModel> CalculateWinningTeamForBet(
         this GameModel game, double favoriteScore, double underdogScore, 
             ITeamData teamData)
@@ -59,22 +45,21 @@ public static class CalculationHelpers
         TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
         TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
 
-        TeamModel? winner = new();
+        TeamModel? winner;
 
         winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
             (favoriteScoreMinusPointSpread > underdogScore) ? favorite :
                 underdog;
 
-        return winner;
+        return winner!;
     }
 
     /// <summary>
-    /// Method calculates and returns current week in current season 
-    /// (PRE, REG, POST)
+    /// Method calculates and returns week of season given a certain date
     /// </summary>
-    /// <returns>
-    /// int represents the current week
-    /// </returns>
+    /// <param name="season"></param>
+    /// <param name="dateTime"></param>
+    /// <returns></returns>
     public static int CalculateWeek(this SeasonType season, DateTime dateTime)
     {
         DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
@@ -135,9 +120,8 @@ public static class CalculationHelpers
     /// Method calculates and returns the total pending 
     /// refund for all push bets made by current user
     /// </summary>
-    /// <returns>
-    /// decimal represents total pending refund for current user
-    /// </returns>
+    /// <param name="pushBets"></param>
+    /// <returns>decimal</returns>
     public static decimal CalculateTotalPendingRefund(this List<BetModel> pushBets)
     {
         if (pushBets.Count == 0)
@@ -157,16 +141,15 @@ public static class CalculationHelpers
     /// Method calculates and returns the total pending
     /// payout for all winning bets made by current user
     /// </summary>
-    /// <returns>
-    /// decimal represents the pending payout for current user
-    /// </returns>
+    /// <param name="winningBets"></param>
+    /// <returns>decimal</returns>
     public static decimal CalculateTotalPendingPayout(this List<BetModel> winningBets)
     {
         if (winningBets.Count == 0)
             return 0;
 
         decimal total = 0;
-        decimal totalPayout = 0;
+        decimal totalPayout;
 
         foreach (BetModel bet in winningBets)
             total += (bet.BetPayout + bet.BetAmount);

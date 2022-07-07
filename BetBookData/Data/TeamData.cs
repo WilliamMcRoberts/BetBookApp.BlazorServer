@@ -1,9 +1,9 @@
 ﻿using BetBookData.Models;
 using Microsoft.Extensions.Configuration;
-using Dapper;
 using System.Data;
-using BetBookDataAccess.DbAccess;
+using BetBookDbAccess;
 using BetBookData.Interfaces;
+using Dapper;
 
 namespace BetBookData.Data;
 
@@ -70,9 +70,6 @@ public class TeamData : ITeamData
     /// </returns>
     public async Task<int> InsertTeam(TeamModel team)
     {
-        using IDbConnection connection = new System.Data.SqlClient
-            .SqlConnection(_config.GetConnectionString("BetBookDB"));
-
         var p = new DynamicParameters();
 
         p.Add("@TeamName", team.TeamName);
@@ -84,10 +81,7 @@ public class TeamData : ITeamData
         p.Add("@Id", 0, dbType: DbType.Int32,
             direction: ParameterDirection.Output);
 
-        await connection.ExecuteAsync("dbo.spTeams_Insert", p, 
-            commandType: CommandType.StoredProcedure);
-
-        team.Id = p.Get<int>("@Id");
+        team.Id = await _db.SaveTeam(p);
 
         return team.Id;
     }

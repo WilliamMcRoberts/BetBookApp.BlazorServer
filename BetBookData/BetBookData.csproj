@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BetBookDataAccess\BetBookDataAccess.csproj" />
+    <ProjectReference Include="..\BetBookDbAccess\BetBookDbAccess.csproj" />
   </ItemGroup>
 
 </Project>
