@@ -1,6 +1,9 @@
 ﻿using System.Data;
+using BetBookData.Interfaces;
+using BetBookData.Models;
+using Microsoft.Extensions.Configuration;
 
-namespace BetBookUI.Helpers;
+namespace BetBookData.Helpers;
 
 public static class TransactionHelpers
 {
@@ -22,27 +25,28 @@ public static class TransactionHelpers
         BetModel bet, IConfiguration config, IUserData userData, 
         IHouseAccountData houseData, IBetData betData)
     {
-        using (IDbConnection connection = new System.Data.SqlClient
-                    .SqlConnection(config.GetConnectionString("BetBookDB")))
+        using IDbConnection connection = new System.Data.SqlClient
+                    .SqlConnection(config.GetConnectionString("BetBookDB"));
+
+        connection.Open();
+
+        using var trans = connection.BeginTransaction();
+
+        try
         {
-            connection.Open();
-            using (var trans = connection.BeginTransaction())
-            {
-                try
-                {
-                    await userData.UpdateUserAccountBalance(user);
-                    await houseData.UpdateHouseAccount(houseAccount);
-                    await betData.InsertBet(bet);
+            await userData.UpdateUserAccountBalance(user);
+            await houseData.UpdateHouseAccount(houseAccount);
+            await betData.InsertBet(bet);
 
-                    trans.Commit();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
+            trans.Commit();
 
-                    trans.Rollback();
-                }
-            }
+        }
+
+        catch (Exception ex)
+        {
+            trans.Rollback();
+
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -67,33 +71,33 @@ public static class TransactionHelpers
         List<BetModel> bettorBetsUnpaid, IConfiguration config, 
         IUserData userData,IHouseAccountData houseData, IBetData betData)
     {
-        using (IDbConnection connection = new System.Data.SqlClient
-                    .SqlConnection(config.GetConnectionString("BetBookDB")))
+        using IDbConnection connection = new System.Data.SqlClient
+                    .SqlConnection(config.GetConnectionString("BetBookDB"));
+
+        connection.Open();
+
+        using var trans = connection.BeginTransaction();
+
+        try
         {
-            connection.Open();
-            using (var trans = connection.BeginTransaction())
+            foreach (BetModel bet in bettorBetsUnpaid)
             {
-                try
-                {
-                    foreach (BetModel bet in bettorBetsUnpaid)
-                    {
-                        bet.PayoutStatus = PayoutStatus.PAID;
+                bet.PayoutStatus = PayoutStatus.PAID;
 
-                        await betData.UpdateBet(bet);
-                    }
-
-                    await houseData.UpdateHouseAccount(houseAccount);
-                    await userData.UpdateUserAccountBalance(user);
-
-                    trans.Commit();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-
-                    trans.Rollback();
-                }
+                await betData.UpdateBet(bet);
             }
+
+            await houseData.UpdateHouseAccount(houseAccount);
+            await userData.UpdateUserAccountBalance(user);
+
+            trans.Commit();
+        }
+
+        catch (Exception ex)
+        {
+            trans.Rollback();
+
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }

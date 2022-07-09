@@ -1,6 +1,4 @@
-﻿@using BetBookUI.Helpers
-@using Syncfusion.Blazor.Inputs
-@using BetBookUI.Models
+﻿
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
 @inject IBetData betData
@@ -173,17 +171,10 @@
                 LoggedInUser.AccountBalance -= bet.BetAmount;
                 houseAccount!.AccountBalance += bet.BetAmount;
 
-                try
-                {
-                    // Transaction method transfers funds from user account
-                    // to house account and inserts bet into the database
-                    await LoggedInUser.CreateBetTransaction(
-                        houseAccount, bet, config, userData, houseData, betData);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-                }
+                // Transaction method transfers funds from user account
+                // to house account and inserts bet into the database
+                await LoggedInUser.CreateBetTransaction(
+                    houseAccount, bet, config, userData, houseData, betData);
 
                 wagerPlaced = true;
             }
@@ -218,6 +209,15 @@
     }
 
     /// <summary>
+    /// Method reverts a winner selection
+    /// </summary>
+    private void UndoWinnerSelection()
+    {
+        teamToWin = null;
+        winnerChosen = false;
+    }
+
+    /// <summary>
     /// Syncfusion method for numeric text box on value change
     /// </summary>
     /// <param name="args"></param>
@@ -225,14 +225,5 @@
     {
         betAmount = (decimal)args.Value;
         StateHasChanged();
-    }
-
-    /// <summary>
-    /// Method reverts a winner selection
-    /// </summary>
-    private void UndoWinnerSelection()
-    {
-        teamToWin = null;
-        winnerChosen = false;
     }
 }

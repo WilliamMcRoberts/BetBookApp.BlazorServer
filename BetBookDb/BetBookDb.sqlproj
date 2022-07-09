@@ -123,6 +123,7 @@
     <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_GetAllByBettor.sql" />
     <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Update.sql" />
     <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_UpdateDraw.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

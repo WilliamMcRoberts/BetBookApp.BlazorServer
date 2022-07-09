@@ -1,8 +1,5 @@
 ﻿@page "/Profile"
 @attribute [Authorize]
-@using BetBookData.Data
-@using BetBookUI.Helpers
-@using BetBookUI.Components
 @inject AuthenticationStateProvider authProvider
 @inject IHouseAccountData houseData
 @inject IBetData betData
@@ -99,8 +96,10 @@
     /// <returns></returns>
     private async Task FilterBetsAndPopulateBetLists(int userId)
     {
-        List<BetModel> bettorBets = 
-            (List<BetModel>) await betData.GetAllBettorBets(userId);
+        IEnumerable<BetModel> bets = await betData.GetBets();
+
+        List<BetModel> bettorBets = bets.Where(b => 
+            b.BettorId == userId).ToList();
 
         bettorWinningBets = bettorBets.Where(b =>
             b.BetStatus == BetStatus.WINNER).ToList();

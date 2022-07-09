@@ -1,7 +1,5 @@
 ﻿@page "/create-parley-bet"
 @attribute [Authorize]
-@using Syncfusion.Blazor.Inputs
-@using BetBookUI.Helpers
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
 @inject IBetData betData
@@ -52,8 +50,10 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        gamesAvailable = 
-            (List<GameModel>) await gameData.GetAllNotStartedGames();
+        IEnumerable<GameModel> games = await gameData.GetGames();
+
+        List<GameModel> gamesAvailable = games.Where(g => 
+            g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
         basicGamesAvailable = await PopulationHelpers.PopulateBasicGameModelListFromGameList(
             gamesAvailable, gameData, teamData);

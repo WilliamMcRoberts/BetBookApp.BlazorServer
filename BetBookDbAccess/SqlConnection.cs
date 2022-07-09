@@ -38,8 +38,9 @@ public class SqlConnection : ISqlConnection
     public async Task<IEnumerable<T>> LoadData<T, U>(
         string storedProcedure, U parameters, string connectionId = "BetBookDB")
     {
-        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
-            _config.GetConnectionString(connectionId));
+        using IDbConnection connection = 
+            new System.Data.SqlClient.SqlConnection(
+                _config.GetConnectionString(connectionId));
 
         return await connection.QueryAsync<T>(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
@@ -62,29 +63,11 @@ public class SqlConnection : ISqlConnection
     public async Task SaveData<T>(
         string storedProcedure, T parameters, string connectionId = "BetBookDB")
     {
-        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
-            _config.GetConnectionString(connectionId));
+        using IDbConnection connection = 
+            new System.Data.SqlClient.SqlConnection(
+                _config.GetConnectionString(connectionId));
 
         await connection.ExecuteAsync(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
-
-    /// <summary>
-    /// Async method to save a team to the database and return the team id
-    /// </summary>
-    /// <param name="p">DynamicParameters</param>
-    /// <returns></returns>
-    public async Task<int> SaveTeam(DynamicParameters p)
-    {
-        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
-            _config.GetConnectionString("BetBookDB"));
-
-        await connection.ExecuteAsync("dbo.spTeams_Insert", p,
-            commandType: CommandType.StoredProcedure);
-
-        int teamId = p.Get<int>("@Id");
-
-        return teamId;
-    }
-
 }

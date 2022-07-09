@@ -70,18 +70,15 @@ public class TeamData : ITeamData
     /// </returns>
     public async Task<int> InsertTeam(TeamModel team)
     {
-        var p = new DynamicParameters();
-
-        p.Add("@TeamName", team.TeamName);
-        p.Add("@City", team.City);
-        p.Add("@Stadium", team.Stadium);
-        p.Add("@WinCount", team.WinCount);
-        p.Add("@LossCount", team.LossCount);
-        p.Add("@DrawCount", team.Drawcount);
-        p.Add("@Id", 0, dbType: DbType.Int32,
-            direction: ParameterDirection.Output);
-
-        team.Id = await _db.SaveTeam(p);
+        await _db.SaveData("dbo.spGames_Insert", new
+        {
+            team.TeamName,
+            team.City,
+            team.Stadium,
+            team.WinCount,
+            team.LossCount,
+            team.Drawcount,
+        });
 
         return team.Id;
     }

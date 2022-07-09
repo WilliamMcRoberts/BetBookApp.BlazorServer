@@ -1,4 +1,7 @@
-﻿namespace BetBookUI.Helpers;
+﻿using BetBookData.Interfaces;
+using BetBookData.Models;
+
+namespace BetBookData.Helpers;
 
 public static class CalculationHelpers
 {
@@ -89,7 +92,7 @@ public static class CalculationHelpers
         if(week < 0)
             return 0;
 
-        return week;
+        return week + 1;
     }
 
     /// <summary>

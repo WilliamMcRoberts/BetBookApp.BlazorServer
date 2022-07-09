@@ -1,12 +1,11 @@
 ﻿@page "/"
-@using BetBookUI.Helpers
 @inject NavigationManager navManager
-@using BetBookUI.Components
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
+
 
 <PageTitle>Index</PageTitle>
 
@@ -30,6 +29,7 @@
                      User="loggedInUser"/>
     </div>
 </div>
+
 
 @code {
     // Current logged in user
@@ -57,8 +57,10 @@
 
         await authProvider.LoadAndVerifyUser(loggedInUser, userData);
 
-        List<GameModel> gamesAvailable = 
-            (List<GameModel>) await gameData.GetAllNotStartedGames();
+        IEnumerable<GameModel> games = await gameData.GetGames();
+
+        List<GameModel> gamesAvailable = games.Where(g => 
+            g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
         basicGamesAvailable = 
             await gamesAvailable.PopulateBasicGameModelListFromGameList(

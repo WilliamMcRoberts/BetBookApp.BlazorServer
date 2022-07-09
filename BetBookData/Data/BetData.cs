@@ -47,41 +47,6 @@ public class BetData : IBetData
     }
 
     /// <summary>
-    /// Async method calls spBets_GetAllByBettor stored procedure which retrieves 
-    /// all bets ever made by bettor
-    /// </summary>
-    /// <param name="id">
-    /// int represents the id of the bettor that is the creater of the bets being retrieved from the database
-    /// </param>
-    /// <returns>IEnumerable of BetModel representing all bets created by bettor</returns>
-    public async Task<IEnumerable<BetModel>> GetAllBettorBets(int bettorId)
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllByBettor", new
-            {
-                BettorId = bettorId
-            });
-    }
-
-    /// <summary>
-    /// Async method calls spBets_GetAllByGame stored procedure which retrieves 
-    /// all bets placed on a certain game
-    /// </summary>
-    /// <param name="gameId">int id of the bettor that created the bets being retrieved </param>
-    /// <returns>
-    /// IEnumerable of BetModel representing all bets that were placed
-    /// on a certain game
-    /// </returns>
-    public async Task<IEnumerable<BetModel>> GetAllBetsOnGame(int gameId)
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-            "dbo.spBets_GetAllByGame", new
-            {
-                GameId = gameId
-            });
-    }
-
-    /// <summary>
     /// Async method calls the spBets_Insert stored procedure to insert one bet 
     /// entry into the database
     /// </summary>
@@ -154,12 +119,12 @@ public class BetData : IBetData
     /// </summary>
     /// <param name="id">int represents the id of the bet to be deleted from the database</param>
     /// <returns></returns>
-    public async Task DeleteBet(int bettorId)
+    public async Task DeleteBet(int id)
     {
         await _db.SaveData(
         "dbo.spBets_Delete", new
         {
-            BettorId = bettorId
+            Id = id
         });
     }
 }

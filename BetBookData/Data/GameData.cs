@@ -1,12 +1,12 @@
 ﻿using BetBookData.Interfaces;
 using BetBookDbAccess;
 using BetBookData.Models;
+using BetBookData.Helpers;
 
 namespace BetBookData.Data;
 
 public class GameData : IGameData
 {
-
     private readonly ISqlConnection _db;
 
     /// <summary>
@@ -29,62 +29,6 @@ public class GameData : IGameData
     {
         return await _db.LoadData<GameModel, dynamic>(
         "dbo.spGames_GetAll", new { });
-    }
-
-    /// <summary>
-    /// Async method calls the spGames_GetAllByWeek stored procedure to retrieve 
-    /// all games in the database by a certain week
-    /// </summary>
-    /// <param name="weekNumber">int represents a week in the NFL season</param>
-    /// <returns>
-    /// IEnumerable of GameModel represents all games in a specified week
-    /// </returns>
-    public async Task<IEnumerable<GameModel>> GetGamesByWeek(int weekNumber)
-    {
-        return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllByWeek", new
-        {
-            WeekNumber = weekNumber
-        });
-    }
-
-    /// <summary>
-    /// Async method calls the spGames_GetAllFinished stored procedure to retrieve 
-    /// all games that have a "FINISHED" status
-    /// </summary>
-    /// <returns>
-    /// IEnumerable of GameModel represents all games with game status "FINISHED"
-    /// </returns>
-    public async Task<IEnumerable<GameModel>> GetAllFinishedGames()
-    {
-        return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllFinished", new { });
-    }
-
-    /// <summary>
-    /// Async method calls the spGames_GetAllInProgress stored procedure to retrieve 
-    /// all games that have an "IN_PROGRESS" status
-    /// </summary>
-    /// <returns>
-    /// IEnumerable of GameModel represents all games with game status "IN_PROGRESS"
-    /// </returns>
-    public async Task<IEnumerable<GameModel>> GetAllInProgressGames()
-    {
-        return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllInProgress", new { });
-    }
-
-    /// <summary>
-    /// Async method calls the spGames_GetAllNotStarted stored procedure to retrieve 
-    /// all games that have a "NOT_STARTED" status
-    /// </summary>
-    /// <returns>
-    /// IEnumerable of GameModel represents all games with game status "NOT_STARTED"
-    /// </returns>
-    public async Task<IEnumerable<GameModel>> GetAllNotStartedGames()
-    {
-        return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAllNotStarted", new { });
     }
 
     /// <summary>
@@ -114,8 +58,8 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
-        int weekNumber = game.Week;
-        string seasonType = game.Season.ToString();
+        int weekNumber = game.Season.CalculateWeek(game.DateOfGame);
+        string seasonType = game.DateOfGame.CalculateSeason().ToString();
         string gameStatus = game.GameStatus.ToString();
 
         await _db.SaveData("dbo.spGames_Insert", new
@@ -143,38 +87,44 @@ public class GameData : IGameData
         string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
 
-        await _db.SaveData("dbo.spGames_Update", new
+        if(game.GameWinnerId == 0)
         {
-            game.Id,
-            game.HomeTeamId,
-            game.AwayTeamId,
-            game.FavoriteId,
-            game.UnderdogId,
-            game.Stadium,
-            game.PointSpread,
-            game.FavoriteFinalScore,
-            game.UnderdogFinalScore,
-            seasonType,
-            game.DateOfGame,
-            gameStatus
-        });
-    }
+            await _db.SaveData("dbo.spGames_UpdateDraw", new
+            {
+                game.Id,
+                game.HomeTeamId,
+                game.AwayTeamId,
+                game.FavoriteId,
+                game.UnderdogId,
+                game.Stadium,
+                game.PointSpread,
+                game.FavoriteFinalScore,
+                game.UnderdogFinalScore,
+                seasonType,
+                game.DateOfGame,
+                gameStatus
+            });
+        }
 
-    /// <summary>
-    /// Async method calls the spGames_AddWinner stored procedure to declare the 
-    /// winner of a game
-    /// </summary>
-    /// <param name="game">GameModel represents a game to update with the winner</param>
-    /// <returns></returns>
-    public async Task AddGameWinner(GameModel game, TeamModel team)
-    {
-        int gameWinnerId = team.Id;
-
-        await _db.SaveData("dbo.spGames_AddWinner", new
+        else
         {
-            game.Id,
-            gameWinnerId
-        });
+            await _db.SaveData("dbo.spGames_Update", new
+            {
+                game.Id,
+                game.HomeTeamId,
+                game.AwayTeamId,
+                game.FavoriteId,
+                game.UnderdogId,
+                game.Stadium,
+                game.PointSpread,
+                game.FavoriteFinalScore,
+                game.UnderdogFinalScore,
+                game.GameWinnerId,
+                seasonType,
+                game.DateOfGame,
+                gameStatus
+            });
+        }
     }
 
     /// <summary>

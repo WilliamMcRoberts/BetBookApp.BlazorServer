@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager navManager
+@inject IGameData gameData
 
 @if(BasicGameList is not null)
 {
@@ -19,11 +20,15 @@
                 <ul class="game-info">
                     <li class="team-item">@bg.AwayTeamName at @bg.HomeTeamName || @bg.FavoriteTeamName - @bg.PointSpread points</li>
                 </ul>
-                <button @onclick="(() => CreateBet(bg.GameId))" 
-                    style="margin-bottom: 2em;" 
-                    class="site-btn btn site-btn-light btn-sm text-uppercase">
-                    Place A Wager On This Game
-                </button>
+                <div class="bet-selection">
+                    <div>
+                        <button @onclick="(() => CreateBet(bg.GameId))" 
+                            style="margin-bottom: 2em;" 
+                            class="site-btn btn site-btn-light btn-sm text-uppercase">
+                            Place A Wager On Game
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="home-team">
                 <label class="local">Home</label>
@@ -45,12 +50,15 @@ else
 
 
 @code {
+
     [Parameter]
     public UserModel User { get; set; } = new();
     [Parameter]
     public List<BasicGameModel> BasicGameList { get; set; } = new();
     [Parameter]
     public TeamRecordModel[] RecordsArray { get; set; } = new TeamRecordModel[32];
+
+
 
     /// <summary>
     /// Selects a game to place a wager on and navigates to
@@ -66,4 +74,5 @@ else
         else
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
+
 }

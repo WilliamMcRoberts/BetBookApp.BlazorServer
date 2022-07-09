@@ -19,4 +19,6 @@ public class BasicGameModel
 
     // Point spread of the game
     public double PointSpread { get; set; }
+
+    public bool isParley { get; set; }
 }

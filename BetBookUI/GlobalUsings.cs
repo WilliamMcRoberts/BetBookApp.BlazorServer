@@ -4,3 +4,8 @@ global using BetBookData.Models;
 global using BetBookDbAccess;
 global using BetBookData.Data;
 global using Syncfusion.Blazor.Calendars;
+global using BetBookUI.Models;
+global using BetBookData.Helpers;
+global using BetBookUI.Helpers;
+global using BetBookUI.Components;
+global using Syncfusion.Blazor.Inputs;

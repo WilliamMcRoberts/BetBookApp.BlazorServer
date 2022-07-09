@@ -1,4 +1,7 @@
-﻿namespace BetBookUI.Helpers;
+﻿using BetBookData.Interfaces;
+using BetBookData.Models;
+
+namespace BetBookData.Helpers;
 
 public static class PopulationHelpers
 {

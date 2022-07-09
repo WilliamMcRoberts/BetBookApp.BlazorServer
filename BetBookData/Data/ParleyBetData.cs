@@ -40,22 +40,7 @@ public class ParleyBetData
         return result.FirstOrDefault();
     }
 
-    /// <summary>
-    /// Async method calls spParleyBets_GetAllByBettor stored procedure which retrieves 
-    /// all parley bets ever made by bettor
-    /// </summary>
-    /// <param name="bettorId">
-    /// int represents the id of the bettor that is the creater of the parley bets being retrieved from the database
-    /// </param>
-    /// <returns>IEnumerable of ParleyBetModel representing all parley bets created by bettor</returns>
-    public async Task<IEnumerable<ParleyBetModel>> GetAllBettorParleyBets(int bettorId)
-    {
-        return await _db.LoadData<ParleyBetModel, dynamic>(
-            "dbo.spParleyBets_GetAllByBettor", new
-            {
-                BettorId = bettorId
-            });
-    }
+
 
     /// <summary>
     /// Async method calls the spParleyBets_Insert stored procedure to insert one parley bet 
@@ -108,6 +93,21 @@ public class ParleyBetData
             parleyBet.BetPayout,
             parleyBetStatus,
             parleyPayoutStatus
+        });
+    }
+
+    /// <summary>
+    /// Async method calls the spBets_Delete stored procedure which deletes one bet
+    /// entry in the database
+    /// </summary>
+    /// <param name="id">int represents the id of the bet to be deleted from the database</param>
+    /// <returns></returns>
+    public async Task DeleteParleyBet(int id)
+    {
+        await _db.SaveData(
+        "dbo.spBets_Delete", new
+        {
+            Id = id
         });
     }
 }

@@ -1,7 +1,4 @@
-﻿@using Syncfusion.Blazor.Calendars
-@using BetBookUI.Models
-@using BetBookUI.Helpers
-@inject ITeamData teamData
+﻿@inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
 @inject IBetData betData
@@ -48,7 +45,7 @@
             </div>
         }
         <div class="game-id-box">
-            <EditForm Model="@addScores" OnValidSubmit="AddScores">
+            <EditForm Model="@addScores" OnValidSubmit="UpdateScoresBetsRecords">
                 <DataAnnotationsValidator />
                 <ValidationSummary/>
                 <div style="display: flex;justify-content: space-between;">
@@ -110,10 +107,22 @@
     AddScoresModel addScores = new(); 
 
     /// <summary>
-    /// Async method updates the scores of the game,
-    /// calls the CalculateWinningTeam() method,
-    /// adds winning team to database, and calls the
-    /// UpdateTeamRecords() method
+    /// Async method calls AddScores(), UpdateBetWinners(), and UpdateTeamRecords() methods
+    /// </summary>
+    /// <returns></returns>
+    private async Task UpdateScoresBetsRecords()
+    {
+        await AddScores();
+
+        await UpdateBetWinners(
+                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
+
+        await UpdateTeamRecords(
+                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
+    }
+
+    /// <summary>
+    /// Async method updates game with scores and statuses
     /// </summary>
     /// <returns></returns>
     private async Task AddScores()
@@ -125,20 +134,14 @@
             currentGame.UnderdogFinalScore = addScores.UnderdogTeamScore;
             currentGame.GameStatus = GameStatus.FINISHED;
 
-            await gameData.UpdateGame(currentGame);
-
             TeamModel? gameWinner =
                 await currentGame.CalculateWinningTeam(addScores.FavoriteTeamScore,
                         addScores.UnderdogTeamScore, teamData);
 
             if (gameWinner is not null)
-                await gameData.AddGameWinner(currentGame, gameWinner);
+                currentGame.GameWinnerId = gameWinner.Id;
 
-            await UpdateBetWinners(
-                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
-
-            await UpdateTeamRecords(
-                addScores.FavoriteTeamScore, addScores.UnderdogTeamScore);
+            await gameData.UpdateGame(currentGame);
 
             scoresAdded = true;
             noGame = false;
@@ -162,44 +165,44 @@
     /// <returns></returns>
     private async Task UpdateBetWinners(double favoriteScore, double underdogScore)
     {
-        TeamModel? winningTeamForBets = new();
-        List<BetModel> betsOnCurrentGame = new();
-
         if(currentGame is not null)
         {
-            winningTeamForBets = 
+            IEnumerable<BetModel> bets = await betData.GetBets();
+
+            List<BetModel> betsOnCurrentGame = bets.Where(b =>
+                b.GameId == currentGame.Id).ToList();
+
+            TeamModel? winningTeamForBets = 
                 await currentGame.CalculateWinningTeamForBet(
                     favoriteScore, underdogScore, teamData);
-
-            betsOnCurrentGame = 
-                (List<BetModel>) await betData.GetAllBetsOnGame(
-                    currentGame.Id);
-        }
-
-        if(winningTeamForBets is not null)
-        {
-            foreach(BetModel bet in betsOnCurrentGame)
+            
+            // Bets are winners or losers
+            if(winningTeamForBets is not null)
             {
-                bet.FinalWinnerId = winningTeamForBets.Id;
+                foreach(BetModel bet in betsOnCurrentGame)
+                {
+                    bet.FinalWinnerId = winningTeamForBets.Id;
 
-                if(winningTeamForBets.Id == bet.ChosenWinnerId)
-                    bet.BetStatus = BetStatus.WINNER;
+                    if(winningTeamForBets.Id == bet.ChosenWinnerId)
+                        bet.BetStatus = BetStatus.WINNER;
 
-                else
-                    bet.BetStatus = BetStatus.LOSER;
+                    else
+                        bet.BetStatus = BetStatus.LOSER;
 
-                await betData.UpdateBet(bet);
+                    await betData.UpdateBet(bet);
+                }
             }
-        }
 
-        else
-        {
-            foreach(BetModel bet in betsOnCurrentGame)
+            // Bets are a push
+            else
             {
-                bet.BetStatus = BetStatus.PUSH;
-                bet.FinalWinnerId = 0;
+                foreach(BetModel bet in betsOnCurrentGame)
+                {
+                    bet.BetStatus = BetStatus.PUSH;
+                    bet.FinalWinnerId = 0;
 
-                await betData.UpdateBet(bet);
+                    await betData.UpdateBet(bet);
+                }
             }
         }
     }

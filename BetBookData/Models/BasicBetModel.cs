@@ -13,4 +13,6 @@ public class BasicBetModel
 
     // Bet payout amount
     public decimal PayoutAmount { get; set; }
+
+    
 }

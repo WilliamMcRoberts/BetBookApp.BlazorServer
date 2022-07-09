@@ -1,4 +1,4 @@
-﻿@using BetBookUI.Helpers
+﻿
 @inject IUserData userData
 @inject IConfiguration config
 @inject IHouseAccountData houseData
@@ -22,10 +22,10 @@
         <p>Pending Refund: $@TotalPendingRefund</p>
     </div>
     <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
-        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidBets">Collect My Winnings</button>
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningBets">Collect My Winnings</button>
     </div>
     <div style="text-align: center;margin-bottom: 1em;">
-        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundPushBets">Refund My Push Bets</button>
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundUnpaidPushBets">Refund My Push Bets</button>
     </div>
 </div>
 
@@ -64,31 +64,21 @@
     /// payouts
     /// </summary>
     /// <returns></returns>
-    private async Task PayoutUnpaidBets()
+    private async Task PayoutUnpaidWinningBets()
     {
         HouseAccountModel? houseAccount = 
             await houseData.GetHouseAccount();
 
-        loggedInUser = 
-            await authProvider.GetUserFromAuth(userData);
-
-        if(houseAccount is not null)
+        if(houseAccount is not null && loggedInUser is not null)
         {
             houseAccount.AccountBalance -= TotalPendingPayout;
             loggedInUser.AccountBalance += TotalPendingPayout;
 
-            try
-            {
-                // Transaction method updates bet statuses, transfers
-                // funds from house account to user account
-                await loggedInUser.PayoutBetsTransaction(
-                    houseAccount, BettorWinningBetsUnpaid, config, 
-                        userData, houseData, betData);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            // Transaction method updates bet statuses, transfers
+            // funds from house account to user account
+            await loggedInUser.PayoutBetsTransaction(
+                houseAccount, BettorWinningBetsUnpaid, config, 
+                    userData, houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
 
@@ -103,31 +93,21 @@
     /// Async method refunds all unpaid push bets
     /// </summary>
     /// <returns></returns>
-    private async Task RefundPushBets()
+    private async Task RefundUnpaidPushBets()
     {
         HouseAccountModel? houseAccount = 
             await houseData.GetHouseAccount();
 
-        loggedInUser = 
-            await authProvider.GetUserFromAuth(userData);
-
-        if(houseAccount is not null)
+        if(houseAccount is not null && loggedInUser is not null)
         {
             houseAccount.AccountBalance -= TotalPendingRefund;
             loggedInUser.AccountBalance += TotalPendingRefund;
 
-            try
-            {
-                // Transaction method updates bet statuses, transfers
-                // funds from house account to user account
-                await loggedInUser.PayoutBetsTransaction(
-                    houseAccount, BettorPushBetsUnpaid, config, 
-                        userData, houseData, betData);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            // Transaction method updates bet statuses, transfers
+            // funds from house account to user account
+            await loggedInUser.PayoutBetsTransaction(
+                houseAccount, BettorPushBetsUnpaid, config, 
+                    userData, houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
 

@@ -1,9 +1,8 @@
-﻿@using Syncfusion.Blazor.Calendars
-@inject ITeamData teamData
+﻿@inject ITeamData teamData
 @inject IGameData gameData
 @inject ITeamRecordData recordData
-@using BetBookUI.Models
-@using BetBookUI.Helpers
+
+
 
 @************************** Demo Display *********************************@
 
@@ -74,8 +73,6 @@
         game.Stadium = createGame.Stadium;
         game.DateOfGame = createGame.DateOfGame;
         game.PointSpread = createGame.PointSpread;
-        game.Season = game.DateOfGame.CalculateSeason();
-        game.Week = game.Season.CalculateWeek(createGame.DateOfGame);
 
         await gameData.InsertGame(game);
 
