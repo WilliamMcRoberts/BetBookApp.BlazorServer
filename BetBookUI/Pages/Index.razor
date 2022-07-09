@@ -15,13 +15,13 @@
     <div class="week-title">
         @if(basicGamesAvailable.Count != 1)
         {
-            <h1 style="margin-left: 8em;" class="title">@basicGamesAvailable.Count Available Games</h1>
+            <h1 style="margin-left: 8em;">@basicGamesAvailable.Count Available Games</h1>
         }
         else
         {
-            <h1 style="margin-left: 8em;" class="title">@basicGamesAvailable.Count Available Game</h1>
+            <h1 style="margin-right: 8em;">@basicGamesAvailable.Count Available Game</h1>
         }
-        <h1 style="margin-right: 8em;" class="title">@currentSeason Season Week @currentWeek</h1>
+        <h1 style="margin-right: 8em;">@currentSeason Season Week @currentWeek</h1>
     </div>
     <div class="games">
         <GameDisplay BasicGameList="basicGamesAvailable" 

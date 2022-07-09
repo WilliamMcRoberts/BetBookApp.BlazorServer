@@ -9,7 +9,7 @@
         <div class="game-container">
             <div class="away-team">
                 <label class="local">Away</label>
-                <p style="margin-top: .5em;">@bg.AwayTeamName</p>
+                <p class="mt-2">@bg.AwayTeamName</p>
                 <div class="basic-record">
                     <p>@RecordsArray[index].Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
                     <p>@RecordsArray[index].Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
@@ -23,8 +23,7 @@
                 <div class="bet-selection">
                     <div>
                         <button @onclick="(() => CreateBet(bg.GameId))" 
-                            style="margin-bottom: 2em;" 
-                            class="site-btn btn site-btn-light btn-sm text-uppercase">
+                            class="mb-2 site-btn btn site-btn-light btn-sm text-uppercase">
                             Place A Wager On Game
                         </button>
                     </div>
@@ -32,7 +31,7 @@
             </div>
             <div class="home-team">
                 <label class="local">Home</label>
-                <p style="margin-top: .5em;">@bg.HomeTeamName</p>
+                <p class="mt-2">@bg.HomeTeamName</p>
                 <div class="basic-record">
                     <p>@RecordsArray[index + 1].Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
                     <p>@RecordsArray[index + 1].Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
