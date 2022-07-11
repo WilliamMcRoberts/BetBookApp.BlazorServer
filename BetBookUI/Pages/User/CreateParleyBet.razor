@@ -1,4 +1,4 @@
-﻿@page "/create-parley-bet"
+﻿@page "/CreateParleyBet"
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
@@ -6,41 +6,148 @@
 @inject IGameData gameData
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
-@inject ITeamRecordData recordData
+@inject IParleyBetData parleyData
+@inject IConfiguration config
 
 <PageTitle>CreateParleyBet</PageTitle>
 
+<div class="parley-bet-game-list-section">
+    <div class="available-game-list-container">
+        <div class="input-label-container">
+            <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Available Games</h1>
+            @if(basicGamesChosen.Count >= 5)
+            {
+                <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">GAME LIMIT MAX</div>
+            }
+            else
+            {
+                <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">CHOOSE UP TO 5 GAMES</div>
+            }
+        </div>
+        <ul>
+            @foreach(BasicGameModel basicGame in basicGamesAvailable)
+            {
+                <li class="parley-game-item" @onclick="() => SelectGame(basicGame)">
+                    <label>@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</label>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="chosen-game-list-container"> 
+        @if(wagerSubmitted == false)
+        {
+            <div class="input-label-container">
+                <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Games Chosen</h1>
+                <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
+            </div>
+            <ul>
+                @foreach(BasicGameModel basicGame in basicGamesChosen)
+                {
+                    <li class="parley-game-item" style="text-align:center;" >
+                        <h3>@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread</h3>
+                        @if(chosenGamesAndWinners.ContainsValue(basicGame.FavoriteTeamName))
+                        {
+                            <div>
+                                <label style="margin-right: .5em;">You've chosen @basicGame.FavoriteTeamName - @basicGame.PointSpread points over @basicGame.UnderdogTeamName</label>
+                                <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                    @onclick="() => UndoWinnerSelection(basicGame)">
+                                    Undo @basicGame.FavoriteTeamName
+                                </button>
+                            </div>
+                        }
+                        else if (chosenGamesAndWinners.ContainsValue(basicGame.UnderdogTeamName))
+                        {
+                            <div>
+                                <label style="margin-right: .5em;">You've chosen @basicGame.UnderdogTeamName + @basicGame.PointSpread points over @basicGame.FavoriteTeamName</label>
+                                <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                    @onclick="() => UndoWinnerSelection(basicGame)">
+                                    Undo @basicGame.UnderdogTeamName
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => ChooseWinnerForGame(basicGame, basicGame.FavoriteTeamName))">
+                                Choose @basicGame.FavoriteTeamName - @basicGame.PointSpread
+                            </button>
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => UnselectGame(basicGame))">
+                                Remove Game
+                            </button>
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => ChooseWinnerForGame(basicGame, basicGame.UnderdogTeamName))">
+                                Choose @basicGame.UnderdogTeamName + @basicGame.PointSpread
+                            </button>
+                        }
+                    </li>
+                }
+            </ul>
+            <div class="bet-details">
+                @if(loggedInUser is not null)
+                {
+                    <div style="text-align:center;padding-top:1em;">
+                        <label>Account Balance: $@loggedInUser.AccountBalance</label>
+                    </div>
+                }
+            
+                <div class="wager-box">
+                    
+                    <label style="text-align: center;">Wager Amount</label>
+                    <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
+                </div>
+                <div class="review">
+                    <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
+                        <p>Your @chosenGamesAndWinners.Count game parley bet for $@betAmount is ready.</p>
+                        <p>If everything looks good click "Submit Wager"</p>
+                        <div style="margin-top:3.4em;" class="undo-btn-container">
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="SubmitWager">
+                                Submit Wager
+                            </button>  
+                        </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <h3 style="text-align:center;margin-top:4em;">Good luck on your new wager! Click "Home" to browse more games or refresh the page to place another parley bet.</h3>
+        }
+    </div>
+</div>
+
+
 @code {
-
-    /**************************************************************
-     *                TODO - Test ParleyBetData CRUD              *
-     * ************************************************************/
-
-    /**************************************************************
-     *                TODO - Finish CreateParleyBet page          *
-     * ************************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;
 
-    // List of games being included in parley bet
-    private List<GameModel> chosenGames = new();
-
-    // List of basic game models of games available
-    private List<BasicGameModel> basicGamesAvailable = new();
-
-    // List of basic game models of chosen games for parley bet
-    private List<BasicGameModel> basicGamesChosen = new();
-
-    // List of available game models for the current week
+    // List of available games
     private List<GameModel> gamesAvailable = new();
 
-    // List of games chosen for parley bet
-    private List<GameModel> gamesChosen = new();
+    // List of basic games chosen for the parley bet
+    private List<BasicGameModel> basicGamesChosen = new();
 
-    // Array of team record models for available games
-    private TeamRecordModel[] teamRecords = new TeamRecordModel[32];
+    // List of basic games available
+    private List<BasicGameModel> basicGamesAvailable = new();
 
+    // Dictionary with basic games chosen for keys and chosen winner team names for values
+    private Dictionary<BasicGameModel, string> chosenGamesAndWinners = new();
+
+    // IEnumerable of all games
+    private IEnumerable<GameModel>? games;
+
+    // IEnumerable of all teams
+    private IEnumerable<TeamModel>? teams;
+
+    // Amount being wagered on parley bet
+    private decimal betAmount;
+
+    // Bool to check if game max limit has been reached
+    private bool gameMax = false;
+
+    // Bool to check if wager has been submitted
+    private bool wagerSubmitted = false;
 
     /// <summary>
     /// Async initialization method
@@ -50,43 +157,113 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        IEnumerable<GameModel> games = await gameData.GetGames();
+        games = await gameData.GetGames();
 
-        List<GameModel> gamesAvailable = games.Where(g => 
-            g.GameStatus == GameStatus.NOT_STARTED).ToList();
+        teams = await teamData.GetTeams();
 
-        basicGamesAvailable = await PopulationHelpers.PopulateBasicGameModelListFromGameList(
-            gamesAvailable, gameData, teamData);
+        gamesAvailable = 
+            games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
-        teamRecords = await PopulationHelpers.PopulateTeamRecordsArrayFromBasicGameList(
-            basicGamesAvailable, gameData, teamData, recordData);
+        basicGamesAvailable = 
+            await PopulationHelpers.PopulateBasicGameModelListFromGameList(
+                gamesAvailable, gameData, teamData);
     }
 
     /// <summary>
-    /// Async method adds a game from a selected basic game 
-    /// to the chosen games list
+    /// Async method processes the parley bet and inserts it into the database
     /// </summary>
-    /// <param name="basicGame"></param>
     /// <returns></returns>
-    private async Task SelectGame(BasicGameModel basicGame)
+    private async Task SubmitWager()
     {
-        int gameId = basicGame.GameId;
-
-        GameModel? game =  await gameData.GetGame(gameId);
-
-        if(game is not null)
+        if(chosenGamesAndWinners.Count <= 5 && chosenGamesAndWinners.Count > 1)
         {
-            chosenGames.Add(game);
+            ParleyBetModel parleyBet = new();
+            List<BetModel> bets = new();
+
+            foreach(KeyValuePair<BasicGameModel, string> kv in chosenGamesAndWinners)
+            {
+                TeamModel? chosenWinner = teams?.Where(t => t.TeamName == kv.Value).First();
+                BetModel bet = new();
+
+                if(chosenWinner is not null)
+                {
+                    bet.BetAmount = 0;
+                    bet.BetPayout = 0;
+                    bet.BettorId = loggedInUser!.Id;
+                    bet.GameId = kv.Key.GameId;
+                    bet.ChosenWinnerId = chosenWinner.Id;
+
+                    int betId = await betData.InsertBet(bet);
+
+                    bet.Id = betId;
+
+                    parleyBet.Bets.Add(bet);
+                }
+            }
+
+            parleyBet.BetAmount = betAmount;
+            parleyBet.BetPayout = parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+            parleyBet.BettorId = loggedInUser!.Id;
+
+            HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+            loggedInUser.AccountBalance -= betAmount;
+            houseAccount!.AccountBalance += betAmount;
+
+            await loggedInUser.CreateParleyBetTransaction(parleyBet, houseAccount, config, userData, houseData, parleyData);
+
+            wagerSubmitted = true;
         }
     }
 
     /// <summary>
-    /// Method removes game from the chosen games list
+    /// Method unselects the winner of game
     /// </summary>
-    /// <param name="game"></param>
-    private void UnselectGame(GameModel game)
+    /// <param name="basicGame">BasicGameModel represents basic game the winner is being chosen for</param>
+    private void UndoWinnerSelection(BasicGameModel basicGame)
     {
-        chosenGames.Remove(game);
+        if(chosenGamesAndWinners.ContainsKey(basicGame))
+            chosenGamesAndWinners.Remove(basicGame);
     }
 
+    /// <summary>
+    /// Method chooses winner of game
+    /// </summary>
+    /// <param name="basicGame">BasicGameModel represents the basic game the winner is being chosen for</param>
+    /// <param name="chosenTeamName">string represents team name of chosen winner</param>
+    private void ChooseWinnerForGame(BasicGameModel basicGame, string chosenTeamName)
+    {
+        if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(basicGame))
+            chosenGamesAndWinners.Add(basicGame, chosenTeamName);
+    }
+
+    /// <summary>
+    /// Method selects basic game for parley bet
+    /// </summary>
+    /// <param name="basicGame">BasicGameModel represents basic game being selected for parley bet</param>
+    private void SelectGame(BasicGameModel basicGame)
+    {
+        if(basicGamesChosen.Count < 5 && !basicGamesChosen.Contains(basicGame) 
+            && basicGamesAvailable.Contains(basicGame))
+        {
+            basicGamesChosen.Add(basicGame);
+            basicGamesAvailable.Remove(basicGame);
+        }
+    }
+
+    /// <summary>
+    /// Method unselects a basic game from parley bet
+    /// </summary>
+    /// <param name="basicGame">
+    /// BasicGameModel represents the basic game being removed from
+    /// parley bet
+    /// </param>
+    private void UnselectGame(BasicGameModel basicGame)
+    {
+        if(basicGamesChosen.Contains(basicGame) && !basicGamesAvailable.Contains(basicGame))
+        {
+            basicGamesAvailable.Add(basicGame);
+            basicGamesChosen.Remove(basicGame);
+        }
+    }
 }

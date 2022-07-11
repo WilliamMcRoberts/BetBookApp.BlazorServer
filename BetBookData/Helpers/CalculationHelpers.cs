@@ -161,4 +161,17 @@ public static class CalculationHelpers
 
         return totalPayout;
     }
+
+    public static decimal CalculateParleyBetPayout(this int gamecount, decimal betAmount)
+    {
+        betAmount -= betAmount * (decimal).1;
+        decimal payout = 0;
+
+        if (gamecount == 2) payout = betAmount * (decimal)2.6;
+        else if (gamecount == 3) payout = betAmount * (decimal)6;
+        else if (gamecount == 4) payout = betAmount * (decimal)11;
+        else if (gamecount == 5) payout = betAmount * (decimal)22;
+
+        return payout;
+    }
 }

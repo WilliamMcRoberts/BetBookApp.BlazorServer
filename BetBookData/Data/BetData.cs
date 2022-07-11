@@ -1,6 +1,9 @@
 ﻿using BetBookData.Interfaces;
 using BetBookDbAccess;
 using BetBookData.Models;
+using System.Data;
+using Microsoft.Extensions.Configuration;
+using Dapper;
 
 namespace BetBookData.Data;
 
@@ -8,14 +11,16 @@ public class BetData : IBetData
 {
 
     private readonly ISqlConnection _db;
+    private readonly IConfiguration _config;
 
     /// <summary>
     /// BetData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
-    public BetData(ISqlConnection db)
+    public BetData(ISqlConnection db, IConfiguration config)
     {
         _db = db;
+        _config = config;
     }
 
     /// <summary>
@@ -52,21 +57,29 @@ public class BetData : IBetData
     /// </summary>
     /// <param name="bet">BetModel represents a bet to insert into the database</param>
     /// <returns></returns>
-    public async Task InsertBet(BetModel bet)
+    public async Task<int> InsertBet(BetModel bet)
     {
-        string betStatus = bet.BetStatus.ToString();
-        string payoutStatus = bet.PayoutStatus.ToString();
+        string betStatus = BetStatus.IN_PROGRESS.ToString();
+        string payoutStatus = PayoutStatus.UNPAID.ToString();
 
-        await _db.SaveData("dbo.spBets_Insert", new
-        {
-            bet.BetAmount,
-            bet.BetPayout,
-            bet.BettorId,
-            bet.GameId,
-            bet.ChosenWinnerId,
-            betStatus,
-            payoutStatus
-        });
+        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(_config.GetConnectionString("BetBookDB"));
+
+        var p = new DynamicParameters();
+
+        p.Add("@BetAmount", bet.BetAmount);
+        p.Add("@BetPayout", bet.BetPayout);
+        p.Add("@BettorId", bet.BettorId);
+        p.Add("@GameId", bet.GameId);
+        p.Add("@ChosenWinnerId", bet.ChosenWinnerId);
+        p.Add("@BetStatus", betStatus);
+        p.Add("@PayoutStatus", payoutStatus);
+        p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        await connection.ExecuteAsync("dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
+
+        bet.Id = p.Get<int>("@Id");
+        Console.WriteLine(bet.Id);
+        return bet.Id;
     }
 
     /// <summary>

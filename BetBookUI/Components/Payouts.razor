@@ -77,8 +77,8 @@
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
             await loggedInUser.PayoutBetsTransaction(
-                houseAccount, BettorWinningBetsUnpaid, config, 
-                    userData, houseData, betData);
+                BettorWinningBetsUnpaid, houseAccount, config, userData, 
+                    houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
 
@@ -106,8 +106,8 @@
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
             await loggedInUser.PayoutBetsTransaction(
-                houseAccount, BettorPushBetsUnpaid, config, 
-                    userData, houseData, betData);
+                BettorPushBetsUnpaid, houseAccount, config, userData, 
+                    houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
 

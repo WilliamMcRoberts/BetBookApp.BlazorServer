@@ -57,7 +57,7 @@
                     </div>
                     <div>
                         <button type="button" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase" 
-                            @onclick="(() => PopulateBasicGame(addScores.GameId))">
+                            @onclick="(() =>  PopulateBasicGame(addScores.GameId))">
                             Get Game
                         </button>
                     </div>
@@ -107,7 +107,8 @@
     AddScoresDto addScores = new(); 
 
     /// <summary>
-    /// Async method calls AddScores(), UpdateBetWinners(), and UpdateTeamRecords() methods
+    /// Async method calls AddScores(), UpdateBetWinners(), 
+    /// and UpdateTeamRecords() methods
     /// </summary>
     /// <returns></returns>
     private async Task UpdateScoresBetsRecords()

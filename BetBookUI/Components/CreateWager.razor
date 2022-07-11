@@ -165,16 +165,13 @@
                 bet.ChosenWinnerId = teamToWin.Id;
                 bet.BettorId = LoggedInUser.Id;
                 bet.GameId = CurrentGame.Id;
-                bet.BetStatus = BetStatus.IN_PROGRESS;
-                bet.PayoutStatus = PayoutStatus.UNPAID;
 
                 LoggedInUser.AccountBalance -= bet.BetAmount;
                 houseAccount!.AccountBalance += bet.BetAmount;
 
                 // Transaction method transfers funds from user account
                 // to house account and inserts bet into the database
-                await LoggedInUser.CreateBetTransaction(
-                    houseAccount, bet, config, userData, houseData, betData);
+                await LoggedInUser.CreateBetTransaction(bet, houseAccount, config, userData, houseData, betData);
 
                 wagerPlaced = true;
             }

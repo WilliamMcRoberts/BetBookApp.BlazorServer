@@ -21,9 +21,9 @@ public static class TransactionHelpers
     /// <param name="betData">IBetData</param>
     /// <returns></returns>
     public static async Task CreateBetTransaction(
-       this UserModel user, HouseAccountModel houseAccount, 
-        BetModel bet, IConfiguration config, IUserData userData, 
-        IHouseAccountData houseData, IBetData betData)
+        this UserModel user, BetModel bet, HouseAccountModel houseAccount, 
+            IConfiguration config, IUserData userData, IHouseAccountData houseData, 
+                IBetData betData)
     {
         using IDbConnection connection = new System.Data.SqlClient
                     .SqlConnection(config.GetConnectionString("BetBookDB"));
@@ -67,9 +67,9 @@ public static class TransactionHelpers
     /// <param name="betData">IBetData</param>
     /// <returns></returns>
     public static async Task PayoutBetsTransaction(
-        this UserModel user, HouseAccountModel houseAccount, 
-        List<BetModel> bettorBetsUnpaid, IConfiguration config, 
-        IUserData userData,IHouseAccountData houseData, IBetData betData)
+        this UserModel user, List<BetModel> bettorBetsUnpaid, 
+            HouseAccountModel houseAccount, IConfiguration config, 
+                IUserData userData, IHouseAccountData houseData, IBetData betData)
     {
         using IDbConnection connection = new System.Data.SqlClient
                     .SqlConnection(config.GetConnectionString("BetBookDB"));
@@ -98,6 +98,47 @@ public static class TransactionHelpers
             trans.Rollback();
 
             Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Async static transaction method to transfer funds from user account to 
+    /// house account, then insert parley bet into the database...if both transactions do not 
+    /// complete...transaction will get rolled back
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="houseAccount"></param>
+    /// <param name="parleyBet"></param>
+    /// <param name="config"></param>
+    /// <param name="userData"></param>
+    /// <param name="houseData"></param>
+    /// <param name="parleyData"></param>
+    /// <returns></returns>
+    public static async Task CreateParleyBetTransaction(
+       this UserModel user, ParleyBetModel parleyBet, HouseAccountModel houseAccount,
+        IConfiguration config, IUserData userData, IHouseAccountData houseData, IParleyBetData parleyData)
+    {
+        using IDbConnection connection = new System.Data.SqlClient
+                    .SqlConnection(config.GetConnectionString("BetBookDB"));
+
+        connection.Open();
+
+        using var trans = connection.BeginTransaction();
+
+        try
+        {
+            await userData.UpdateUserAccountBalance(user);
+            await houseData.UpdateHouseAccount(houseAccount);
+            await parleyData.InsertParleyBet(parleyBet);
+
+            trans.Commit();
+        }
+
+        catch (Exception ex)
+        {
+            trans.Rollback();
+
+            Console.WriteLine(ex.Message);
         }
     }
 }
