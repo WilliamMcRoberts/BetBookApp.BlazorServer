@@ -7,6 +7,9 @@ BROWSE GAMES HOME PAGE
 CREATE A WAGER PAGE
 ![CB](https://user-images.githubusercontent.com/95720340/176520483-04ade180-ae7a-41b3-bb6a-58f7c5a8f703.png)
 
+CREATE A PARLEY WAGER PAGE
+![ParleyBetsPage](https://user-images.githubusercontent.com/95720340/178371453-21c99841-b47a-4899-96df-1212e43c68a2.png)
+
 PROFILE PAGE
 ![ProfPage](https://user-images.githubusercontent.com/95720340/176788955-71e6981d-3514-42c4-be03-f55d735e1f69.png)
 
