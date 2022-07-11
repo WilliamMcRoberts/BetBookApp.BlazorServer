@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BetBookUI.Models;
+namespace BetBookUI.Dto;
 
-public class CreateGameModel
+public class CreateGameDto
 {
     // Home team Id
     [Required]

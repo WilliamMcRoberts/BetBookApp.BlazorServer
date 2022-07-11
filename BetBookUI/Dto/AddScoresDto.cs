@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BetBookUI.Models;
+namespace BetBookUI.Dto;
 
-public class AddScoresModel
+public class AddScoresDto
 {
     // Id of game 
     [Required]

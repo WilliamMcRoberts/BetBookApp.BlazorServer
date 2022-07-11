@@ -2,6 +2,8 @@
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Syncfusion.Blazor;
+using BetBookDbAccess;
+
 
 namespace BetBookUI;
 
@@ -37,7 +39,7 @@ public static class RegisterServices
         builder.Services.AddSyncfusionBlazor();
 
 
-        /*********************** Data access / Db access *************************/
+        /*********************** Data access *************************/
 
         builder.Services.AddSingleton<ISqlConnection, SqlConnection>();
         builder.Services.AddTransient<IUserData, UserData>();

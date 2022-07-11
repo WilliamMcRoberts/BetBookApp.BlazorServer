@@ -37,4 +37,8 @@
     <ProjectReference Include="..\BetBookData\BetBookData.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\NewFolder\" />
+  </ItemGroup>
+
 </Project>
