@@ -162,6 +162,12 @@ public static class CalculationHelpers
         return totalPayout;
     }
 
+    /// <summary>
+    /// Static method to calculate the payout of a parley bet
+    /// </summary>
+    /// <param name="gamecount"></param>
+    /// <param name="betAmount"></param>
+    /// <returns></returns>
     public static decimal CalculateParleyBetPayout(this int gamecount, decimal betAmount)
     {
         betAmount -= betAmount * (decimal).1;
@@ -173,5 +179,48 @@ public static class CalculationHelpers
         else if (gamecount == 5) payout = betAmount * (decimal)22;
 
         return payout;
+    }
+
+    /// <summary>
+    /// Method calculates and returns the total pending 
+    /// refund for all push bets made by current user
+    /// </summary>
+    /// <param name="pushBets"></param>
+    /// <returns>decimal</returns>
+    public static decimal CalculateTotalPendingParleyRefund(this List<ParleyBetModel> parleyPushBets)
+    {
+        if (parleyPushBets.Count == 0)
+            return 0;
+
+        decimal total = 0;
+
+        foreach (ParleyBetModel bet in parleyPushBets)
+            total += bet.BetPayout;
+
+        total = Convert.ToDecimal((total).ToString("#.00"));
+
+        return total;
+    }
+
+    /// <summary>
+    /// Method calculates and returns the total pending
+    /// payout for all winning bets made by current user
+    /// </summary>
+    /// <param name="winningBets"></param>
+    /// <returns>decimal</returns>
+    public static decimal CalculateTotalPendingParleyPayout(this List<ParleyBetModel> parleyWinningBets)
+    {
+        if (parleyWinningBets.Count == 0)
+            return 0;
+
+        decimal total = 0;
+        decimal totalPayout;
+
+        foreach (ParleyBetModel parleyBet in parleyWinningBets)
+            total += (parleyBet.BetPayout + parleyBet.BetAmount);
+
+        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
+
+        return totalPayout;
     }
 }

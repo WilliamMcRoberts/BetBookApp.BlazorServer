@@ -3,16 +3,26 @@
     <label style="margin-left: 5.25em;">@BetType Bets</label>
     @if(BasicBets.Count != 0)
     {
-        @foreach(BasicBetModel bet in BasicBets)
+        if(BasicBets.Where(bb => bb.PayoutAmount != 0).ToList().Count == 0)
         {
             <div class="bet">
-                <ul>
-                    <li>Chosen Winner || @bet.ChosenWinnerTeamName</li>
-                    <li>Final Winner || @bet.FinalWinnerTeamName</li>
-                    <li>Wager Amount || @bet.PayoutAmount</li>
-                    <li>Point Spread || @bet.Spread</li>
-                </ul>
+                <p style="margin: 1em 0;">NONE</p>
             </div>
+        }
+        @foreach(BasicBetModel basicBet in BasicBets)
+        {
+            
+            if(basicBet.PayoutAmount != 0)
+            {
+                <div class="bet">
+                    <ul>
+                        <li>Chosen Winner || @basicBet.ChosenWinnerTeamName</li>
+                        <li>Final Winner || @basicBet.FinalWinnerTeamName</li>
+                        <li>Payout Amount || @Convert.ToDecimal(basicBet.PayoutAmount).ToString("#.00")</li>
+                        <li>Point Spread || @basicBet.Spread</li>
+                    </ul>
+                </div>
+            }
         }
     }
     else

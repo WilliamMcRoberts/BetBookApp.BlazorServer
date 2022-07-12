@@ -84,13 +84,20 @@
                 }
             </ul>
             <div class="bet-details">
+                @if(betAmountBad)
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
+                }
+                @if(betCountBad)
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU MUST PICK AT LEAST 2 GAMES AND NO MORE THAN 5 FOR A PARLEY</div>
+                }
                 @if(loggedInUser is not null)
                 {
                     <div style="text-align:center;padding-top:1em;">
                         <label>Account Balance: $@loggedInUser.AccountBalance</label>
                     </div>
                 }
-            
                 <div class="wager-box">
                     
                     <label style="text-align: center;">Wager Amount</label>
@@ -98,7 +105,7 @@
                 </div>
                 <div class="review">
                     <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
-                        <p>Your @chosenGamesAndWinners.Count game parley bet for $@betAmount is ready.</p>
+                        <p>Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
                         <p>If everything looks good click "Submit Wager"</p>
                         <div style="margin-top:3.4em;" class="undo-btn-container">
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
@@ -118,6 +125,14 @@
 
 
 @code {
+        /***************************
+         * TODO - Parley bet payout methods
+         * ***************************/    
+
+        /***************************
+         * TODO - Parley bet winner check method
+         * ***************************/  
+
 
     // Current logged in user
     private UserModel? loggedInUser;
@@ -143,11 +158,14 @@
     // Amount being wagered on parley bet
     private decimal betAmount;
 
-    // Bool to check if game max limit has been reached
-    private bool gameMax = false;
-
     // Bool to check if wager has been submitted
     private bool wagerSubmitted = false;
+
+    // Bool to check if bet amount is greater than zero
+    private bool betAmountBad = false;
+
+    // Bool to check if bet count is less than 6
+    private bool betCountBad = false;
 
     /// <summary>
     /// Async initialization method
@@ -156,6 +174,9 @@
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        loggedInUser.AccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
 
         games = await gameData.GetGames();
 
@@ -175,45 +196,54 @@
     /// <returns></returns>
     private async Task SubmitWager()
     {
-        if(chosenGamesAndWinners.Count <= 5 && chosenGamesAndWinners.Count > 1)
+        if (chosenGamesAndWinners.Count <= 5 && chosenGamesAndWinners.Count > 1)
         {
-            ParleyBetModel parleyBet = new();
-            List<BetModel> bets = new();
-
-            foreach(KeyValuePair<BasicGameModel, string> kv in chosenGamesAndWinners)
+            if (betAmount > 0)
             {
-                TeamModel? chosenWinner = teams?.Where(t => t.TeamName == kv.Value).First();
-                BetModel bet = new();
+                ParleyBetModel parleyBet = new();
+                List<BetModel> bets = new();
 
-                if(chosenWinner is not null)
+                foreach (KeyValuePair<BasicGameModel, string> kv in chosenGamesAndWinners)
                 {
-                    bet.BetAmount = 0;
-                    bet.BetPayout = 0;
-                    bet.BettorId = loggedInUser!.Id;
-                    bet.GameId = kv.Key.GameId;
-                    bet.ChosenWinnerId = chosenWinner.Id;
+                    TeamModel? chosenWinner = teams?.Where(t => t.TeamName == kv.Value).First();
+                    BetModel bet = new();
 
-                    int betId = await betData.InsertBet(bet);
+                    if (chosenWinner is not null)
+                    {
+                        bet.BetAmount = 0;
+                        bet.BetPayout = 0;
+                        bet.BettorId = loggedInUser!.Id;
+                        bet.GameId = kv.Key.GameId;
+                        bet.ChosenWinnerId = chosenWinner.Id;
 
-                    bet.Id = betId;
+                        int betId = await betData.InsertBet(bet);
 
-                    parleyBet.Bets.Add(bet);
+                        bet.Id = betId;
+
+                        parleyBet.Bets.Add(bet);
+                    }
                 }
+
+                parleyBet.BetAmount = betAmount;
+                parleyBet.BetPayout = parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+                parleyBet.BettorId = loggedInUser!.Id;
+
+                HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+                loggedInUser.AccountBalance -= betAmount;
+                houseAccount!.AccountBalance += betAmount;
+
+                await loggedInUser.CreateParleyBetTransaction(parleyBet, houseAccount, config, userData, houseData, parleyData);
+
+                wagerSubmitted = true;
             }
 
-            parleyBet.BetAmount = betAmount;
-            parleyBet.BetPayout = parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
-            parleyBet.BettorId = loggedInUser!.Id;
-
-            HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
-
-            loggedInUser.AccountBalance -= betAmount;
-            houseAccount!.AccountBalance += betAmount;
-
-            await loggedInUser.CreateParleyBetTransaction(parleyBet, houseAccount, config, userData, houseData, parleyData);
-
-            wagerSubmitted = true;
+            else
+                betAmountBad = true;
         }
+
+        else
+            betCountBad = true;
     }
 
     /// <summary>

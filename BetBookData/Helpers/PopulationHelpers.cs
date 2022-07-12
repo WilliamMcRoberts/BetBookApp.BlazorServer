@@ -226,15 +226,56 @@ public static class PopulationHelpers
             if (chosenTeam is not null && gameWagered is not null)
             {
                 bb.ChosenWinnerTeamName = chosenTeam.TeamName;
-                bb.FinalWinnerTeamName = "Game Not Finished";
+
+                if(bet.FinalWinnerId != 0)
+                {
+                    TeamModel? team = await teamData.GetTeam(bet.FinalWinnerId);
+
+                    if(team is not null)
+                    {
+                        bb.FinalWinnerTeamName = team.TeamName;
+                    }
+                }
+
+                else
+                    bb.FinalWinnerTeamName = "Game Not Finished";
+
                 bb.Spread = gameWagered.PointSpread;
-                bb.PayoutAmount =
-                    Convert.ToDecimal((
-                        bet.BetAmount + bet.BetPayout).ToString("#.00"));
+                bb.PayoutAmount = bet.BetPayout;
                 basicBetsList.Add(bb);
             }
         }
 
         return basicBetsList;
+    }
+
+    /// <summary>
+    /// Async static method populates a list of parley basic bets from a list
+    /// of parley bets
+    /// </summary>
+    /// <param name="parleyBets">List<ParleyBetModel></param>
+    /// <param name="gameData">IGameData</param>
+    /// <param name="teamData">ITeamData</param>
+    /// <param name="betData">IBetData</param>
+    /// <returns></returns>
+    public static async Task<List<ParleyBasicBetModel>> PopulateParleyBasicBetListFromParleyBetsList(
+            this List<ParleyBetModel> parleyBets, IGameData gameData, ITeamData teamData, IBetData betData)
+    {
+        List<ParleyBasicBetModel> parleyBasicBets = new();
+
+        foreach(ParleyBetModel parleyBet in parleyBets)
+        {
+            ParleyBasicBetModel parleyBasicBet = new();
+
+            parleyBasicBet.BasicBets = 
+                await  parleyBet.Bets.PopulateBasicBetsListFromBetsList(
+                    gameData, teamData);
+            parleyBasicBet.BetAmount = parleyBet.BetAmount;
+            parleyBasicBet.BetPayout = parleyBet.BetPayout;
+
+            parleyBasicBets.Add(parleyBasicBet);
+        }
+
+        return parleyBasicBets;
     }
 }

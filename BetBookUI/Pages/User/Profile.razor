@@ -1,125 +1,13 @@
 ﻿@page "/Profile"
 @attribute [Authorize]
-@inject AuthenticationStateProvider authProvider
-@inject IHouseAccountData houseData
-@inject IBetData betData
-@inject IUserData userData
-@inject IGameData gameData
-@inject ITeamData teamData
 
 <PageTitle>Profile</PageTitle>
 
 @*********************************** Demo Display ******************************************@
-
-<div class="user-profile">
-    <div class="payout-section">
-        <Payouts BettorWinningBetsUnpaid="bettorWinningBetsUnpaid" 
-                 BettorPushBetsUnpaid="bettorPushBetsUnpaid"
-                 TotalPendingPayout="totalPendingPayout"
-                 TotalPendingRefund="totalPendingRefund"/>
-    </div>
-    <div class="divider"></div>
-    <div class="bets">
-        <BetLists BasicBets="bettorInProgressBasicBets" 
-                  BetType="Open"/>
-
-        <BetLists BasicBets="bettorWinningBetsUnpaidBasicBets" 
-                  BetType="Winning Unpaid"/>
-
-        <BetLists BasicBets="bettorPushBetsUnpaidBasicBets" 
-                  BetType="Unpaid Push"/>
-    </div>
+<div class="profile">
+    <ProfileRegBets/>
+    <ProfileParleyBets/>
 </div>
 
-@code {
-
-    // List of winning bets with status "WINNER" and payout status 
-    // of "UNPAID" created by user
-    private List<BetModel> bettorWinningBetsUnpaid = new();
-
-    // List of created by current user with the bets status of "WINNER"
-    private List<BetModel> bettorWinningBets = new();
-
-    // List of all bettor bets with bet status of "PUSH"
-    // and payout status of "UNPAID"
-    private List<BetModel> bettorPushBetsUnpaid = new();
-
-    // List of all bettor bets with bet status of "IN_PROGRESS"
-    private List<BetModel> bettorInProgressBets = new();
-
-    // List of basic bets with bet status of "IN_PROGRESS"
-    private List<BasicBetModel> bettorInProgressBasicBets = new();
-
-    // List of basic bets of bets with bet status of "WINNER"
-    private List<BasicBetModel> bettorWinningBetsUnpaidBasicBets = new();
-
-    // List of basic bets of bets with bet status of "PUSH"
-    private List<BasicBetModel> bettorPushBetsUnpaidBasicBets = new();
-
-    // Total payout of all bets to be payed out
-    private decimal totalPendingPayout;
-
-    // Total pending refund from pushed bets
-    private decimal totalPendingRefund;
-
-    // Current logged in user
-    private UserModel? loggedInUser;
-
-    /// <summary>
-    /// Async initialization method
-    /// </summary>
-    /// <returns></returns>
-    protected async override Task OnInitializedAsync()
-    {
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        await FilterBetsAndPopulateBetLists(loggedInUser.Id);
-
-        // Total payout of all unpaid winning bets
-        totalPendingPayout = 
-            bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
-
-        // Total retfund of all unpaid push bets
-        totalPendingRefund = 
-            bettorPushBetsUnpaid.CalculateTotalPendingRefund();
-    }
-
-    /// <summary>
-    /// Async method filters user bets and populates all bet lists
-    /// and all basic bets lists
-    /// </summary>
-    /// <param name="userId">int represents id of current user</param>
-    /// <returns></returns>
-    private async Task FilterBetsAndPopulateBetLists(int userId)
-    {
-        IEnumerable<BetModel> bets = await betData.GetBets();
-
-        List<BetModel> bettorBets = bets.Where(b => 
-            b.BettorId == userId).ToList();
-
-        bettorWinningBets = bettorBets.Where(b =>
-            b.BetStatus == BetStatus.WINNER).ToList();
-
-        bettorPushBetsUnpaid = bettorBets.Where(b => 
-            b.BetStatus == BetStatus.PUSH && 
-            b.PayoutStatus == PayoutStatus.UNPAID).ToList();
-
-        bettorWinningBetsUnpaid = bettorWinningBets.Where(b =>
-            b.PayoutStatus == PayoutStatus.UNPAID).ToList();
-
-        bettorInProgressBets = bettorBets.Where(b =>
-            b.BetStatus == BetStatus.IN_PROGRESS).ToList();
-
-        bettorInProgressBasicBets = 
-            await bettorInProgressBets.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-
-        bettorWinningBetsUnpaidBasicBets = 
-            await bettorWinningBetsUnpaid.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-
-        bettorPushBetsUnpaidBasicBets = 
-            await bettorPushBetsUnpaid.PopulateBasicBetsListFromBetsList(
-                gameData, teamData);
-    } 
-}
+@*TODO - Parley bet payout methods*@
+@*TODO - Parley bet winner check method*@

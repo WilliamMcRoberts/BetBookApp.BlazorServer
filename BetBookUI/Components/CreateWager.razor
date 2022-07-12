@@ -25,7 +25,7 @@
                     <div style="color:red;text-align:center;">*GAME HAS ALREADY STARTED*</div>
                 }
                 <div style="text-align:center;padding-top:1em;">
-                    <label>Account Balance: $@UserAccountBalance</label>
+                    <label>Account Balance: $@loggedInUser?.AccountBalance</label>
                 </div>
                 <div class="wager-box">
                     
@@ -91,7 +91,7 @@
         </button>
         </div>
     }
-    </div>
+</div>
 
 @code {
 
@@ -125,12 +125,18 @@
     public BasicGameModel BasicCurrentGame { get; set; } = new();
 
     // Current logged in user
-    [Parameter]
-    public UserModel LoggedInUser { get; set; } = new();
+    public UserModel? loggedInUser;
 
-    // Account balance of current logged in user
-    [Parameter]
-    public decimal UserAccountBalance { get; set; }
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        loggedInUser.AccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+    }
 
 
     /// <summary>
@@ -163,15 +169,15 @@
                 bet.BetPayout = 
                     (decimal)((double)amountToBet - (double)amountToBet * VIG);
                 bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = LoggedInUser.Id;
+                bet.BettorId = loggedInUser!.Id;
                 bet.GameId = CurrentGame.Id;
 
-                LoggedInUser.AccountBalance -= bet.BetAmount;
+                loggedInUser.AccountBalance -= bet.BetAmount;
                 houseAccount!.AccountBalance += bet.BetAmount;
 
                 // Transaction method transfers funds from user account
                 // to house account and inserts bet into the database
-                await LoggedInUser.CreateBetTransaction(bet, houseAccount, config, userData, houseData, betData);
+                await loggedInUser.CreateBetTransaction(bet, houseAccount, config, userData, houseData, betData);
 
                 wagerPlaced = true;
             }

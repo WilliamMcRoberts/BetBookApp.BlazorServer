@@ -7,6 +7,11 @@ public class ParleyBetModel
 
     public List<BetModel> Bets { get; set; } = new();
 
+    public int Bet1Id { get; set; }
+    public int Bet2Id { get; set; }
+    public int Bet3Id { get; set; }
+    public int Bet4Id { get; set; }
+    public int Bet5Id { get; set; }
     // Id of the bettor
     public int BettorId { get; set; }
 

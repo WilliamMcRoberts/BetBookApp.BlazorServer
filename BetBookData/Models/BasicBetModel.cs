@@ -3,7 +3,7 @@
 public class BasicBetModel
 {
     // Team name of the chosen winner
-    public string ChosenWinnerTeamName { get; set; }
+    public string? ChosenWinnerTeamName { get; set; }
 
     // Team name of the final winner
     public string? FinalWinnerTeamName { get; set; }

@@ -1,0 +1,127 @@
+﻿@inject IHouseAccountData houseData
+@inject IBetData betData
+@inject IUserData userData
+@inject IGameData gameData
+@inject ITeamData teamData
+@inject IParleyBetData parleyData
+@inject AuthenticationStateProvider authProvider
+
+<div class="user-profile-parley">
+    <div>
+        <div class="label-container">
+            @if(loggedInUser is not null)
+            {
+                <h3 class="profile-label">@loggedInUser.DisplayName's Parley Bets</h3>
+                <h3 class="bal-label">Balance $@loggedInUser.AccountBalance</h3>
+            }
+        </div>
+        <div class="item">
+        <p>Pending Payout: $@totalPendingParleyPayout</p>
+        </div>
+        <div class="item">
+            <p>Pending Refund: $@totalPendingParleyRefund</p>
+        </div>
+        <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningParleyBets">Collect My Winnings</button>
+        </div>
+        <div style="text-align: center;margin-bottom: 1em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundUnpaidPushParleyBets">Refund My Push Bets</button>
+        </div>
+    </div>
+    <div class="divider"></div>
+
+    <ParleyBetLists ParleyBasicBetList="bettorInProgressBasicParleyBets"
+                    ParleyBetType="Open"/>
+    <ParleyBetLists ParleyBasicBetList="bettorWinningBetsUnpaidBasicParleyBets"
+                    ParleyBetType="Winning Unpaid"/>
+    <ParleyBetLists ParleyBasicBetList="bettorPushBetsUnpaidBasicParleyBets"
+                    ParleyBetType="Unpaid Push"/>
+</div>
+
+@code {
+
+    // Current logged in user
+    private UserModel? loggedInUser;
+
+    private List<ParleyBetModel> bettorWinningParleyBetsUnpaid = new();
+
+    private List<ParleyBetModel> bettorPushParleyBetsUnpaid = new();
+
+    // List of all bettor bets with bet status of "IN_PROGRESS"
+    private List<ParleyBetModel> bettorInProgressParleyBets = new();
+
+    private List<ParleyBasicBetModel> bettorInProgressBasicParleyBets = new();
+
+    private List<ParleyBasicBetModel> bettorWinningBetsUnpaidBasicParleyBets = new();
+
+    private List<ParleyBasicBetModel> bettorPushBetsUnpaidBasicParleyBets = new();
+
+    private decimal totalPendingParleyPayout;
+
+    private decimal totalPendingParleyRefund;
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        loggedInUser.AccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+
+        await FilterParleyBetsAndPopulateLists();
+
+        // Total payout of all unpaid winning parley bets
+        totalPendingParleyPayout = 
+            bettorWinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
+
+        // Total retfund of all unpaid parley push bets
+        totalPendingParleyRefund = 
+            bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund();
+    }
+
+    private async Task FilterParleyBetsAndPopulateLists()
+    {
+        if(loggedInUser is not null)
+        {
+            IEnumerable<ParleyBetModel> allParleyBets = await parleyData.GetParleyBets();
+
+            bettorWinningParleyBetsUnpaid = allParleyBets.Where(b => 
+                b.BettorId == loggedInUser.Id && 
+                b.ParleyBetStatus == ParleyBetStatus.WINNER && 
+                b.ParleyPayoutStatus == ParleyPayoutStatus.UNPAID).ToList();
+
+            bettorPushParleyBetsUnpaid = allParleyBets.Where(b => 
+                b.BettorId == loggedInUser.Id && 
+                b.ParleyBetStatus == ParleyBetStatus.PUSH && 
+                b.ParleyPayoutStatus == ParleyPayoutStatus.UNPAID).ToList();
+
+            bettorInProgressParleyBets = allParleyBets.Where(b =>
+                b.BettorId == loggedInUser.Id &&
+                b.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
+
+            bettorInProgressBasicParleyBets = 
+            await bettorInProgressParleyBets.PopulateParleyBasicBetListFromParleyBetsList(
+                gameData, teamData, betData);
+
+            bettorWinningBetsUnpaidBasicParleyBets = 
+                await bettorWinningParleyBetsUnpaid.PopulateParleyBasicBetListFromParleyBetsList(
+                    gameData, teamData, betData);
+
+            bettorPushBetsUnpaidBasicParleyBets = 
+                await bettorPushParleyBetsUnpaid.PopulateParleyBasicBetListFromParleyBetsList(
+                    gameData, teamData, betData);
+        }
+    }
+
+    private void PayoutUnpaidWinningParleyBets()
+    {
+
+    }
+
+    private void RefundUnpaidPushParleyBets()
+    {
+        
+    }
+}

@@ -7,10 +7,12 @@ namespace BetBookData.Data;
 public class ParleyBetData : IParleyBetData
 {
     private readonly ISqlConnection _db;
+    private readonly IBetData _betData;
 
-    public ParleyBetData(ISqlConnection db)
+    public ParleyBetData(ISqlConnection db, IBetData betData)
     {
         _db = db;
+        _betData = betData;
     }
 
     /// <summary>
@@ -20,8 +22,57 @@ public class ParleyBetData : IParleyBetData
     /// <returns>IEnumerable of ParleyBetModel represents all parley bets in the database</returns>
     public async Task<IEnumerable<ParleyBetModel>> GetParleyBets()
     {
-        return await _db.LoadData<ParleyBetModel, dynamic>(
+        IEnumerable<ParleyBetModel> parleyBets = await _db.LoadData<ParleyBetModel, dynamic>(
         "dbo.spParleyBets_GetAll", new { });
+
+        foreach (ParleyBetModel parleyBet in parleyBets)
+        {
+            if (parleyBet.Bet1Id != 0)
+            {
+                BetModel? bet1 = await _betData.GetBet(parleyBet.Bet1Id);
+                if (bet1 is not null)
+                {
+                    parleyBet.Bets.Add(bet1);
+                }
+            }
+
+            if (parleyBet.Bet2Id != 0)
+            {
+                BetModel? bet2 = await _betData.GetBet(parleyBet.Bet2Id);
+                if (bet2 is not null)
+                {
+                    parleyBet.Bets.Add(bet2);
+                }
+            }
+
+            if (parleyBet.Bet3Id != 0)
+            {
+                BetModel? bet3 = await _betData.GetBet(parleyBet.Bet3Id);
+                if (bet3 is not null)
+                {
+                    parleyBet.Bets.Add(bet3);
+                }
+            }
+
+            if (parleyBet.Bet4Id != 0)
+            {
+                BetModel? bet4 = await _betData.GetBet(parleyBet.Bet4Id);
+                if (bet4 is not null)
+                {
+                    parleyBet.Bets.Add(bet4);
+                }
+            }
+
+            if (parleyBet.Bet5Id != 0)
+            {
+                BetModel? bet5 = await _betData.GetBet(parleyBet.Bet5Id);
+                if (bet5 is not null)
+                {
+                    parleyBet.Bets.Add(bet5);
+                }
+            }
+        }
+        return parleyBets;
     }
 
     /// <summary>
@@ -51,26 +102,31 @@ public class ParleyBetData : IParleyBetData
     /// <returns></returns>
     public async Task InsertParleyBet(ParleyBetModel parleyBet)
     {
-        int bet1Id = parleyBet.Bets[0].Id;
-        int bet2Id = parleyBet.Bets[1].Id;
-        int bet3Id = 0;
-        int bet4Id = 0;
-        int bet5Id = 0;
+
+        parleyBet.Bet1Id = parleyBet.Bets[0].Id;
+        parleyBet.Bet2Id = parleyBet.Bets[1].Id;
 
         if (parleyBet.Bets.Count > 2)
         {
-            bet3Id = parleyBet.Bets[2].Id;
+            parleyBet.Bet3Id = parleyBet.Bets[2].Id;
         }
+        else
+            parleyBet.Bet3Id = 0;
 
         if (parleyBet.Bets.Count > 3)
         {
-            bet4Id = parleyBet.Bets[3].Id;
+            parleyBet.Bet4Id = parleyBet.Bets[3].Id;
         }
+        else
+            parleyBet.Bet4Id = 0;
 
         if (parleyBet.Bets.Count > 4)
         {
-            bet5Id = parleyBet.Bets[4].Id;
+            parleyBet.Bet5Id = parleyBet.Bets[4].Id;
         }
+        else
+            parleyBet.Bet5Id = 0;
+
 
 
         string parleyBetStatus = ParleyBetStatus.IN_PROGRESS.ToString();
@@ -78,11 +134,11 @@ public class ParleyBetData : IParleyBetData
 
         await _db.SaveData("dbo.spParleyBets_Insert", new
         {
-            bet1Id,
-            bet2Id,
-            bet3Id,
-            bet4Id,
-            bet5Id,
+            parleyBet.Bet1Id,
+            parleyBet.Bet2Id,
+            parleyBet.Bet3Id,
+            parleyBet.Bet4Id,
+            parleyBet.Bet5Id,
             parleyBet.BettorId,
             parleyBet.BetAmount,
             parleyBet.BetPayout,
@@ -99,37 +155,19 @@ public class ParleyBetData : IParleyBetData
     /// <returns></returns>
     public async Task UpdateParleyBet(ParleyBetModel parleyBet)
     {
-        int bet1Id = parleyBet.Bets[0].Id;
-        int bet2Id = parleyBet.Bets[1].Id;
-        int bet3Id = 0;
-        int bet4Id = 0;
-        int bet5Id = 0;
 
-        if (parleyBet.Bets.Count > 2)
-        {
-            bet3Id = parleyBet.Bets[2].Id;
-        }
 
-        if (parleyBet.Bets.Count > 3)
-        {
-            bet4Id = parleyBet.Bets[3].Id;
-        }
-
-        if (parleyBet.Bets.Count > 4)
-        {
-            bet5Id = parleyBet.Bets[4].Id;
-        }
         string parleyBetStatus = parleyBet.ParleyBetStatus.ToString();
         string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToString();
 
         await _db.SaveData("dbo.spParleyBets_Update", new
         {
             parleyBet.Id,
-            bet1Id,
-            bet2Id,
-            bet3Id,
-            bet4Id,
-            bet5Id,
+            parleyBet.Bet1Id,
+            parleyBet.Bet2Id,
+            parleyBet.Bet3Id,
+            parleyBet.Bet4Id,
+            parleyBet.Bet5Id,
             parleyBet.BettorId,
             parleyBet.BetAmount,
             parleyBet.BetPayout,
