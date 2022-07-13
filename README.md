@@ -11,7 +11,7 @@ CREATE A PARLEY WAGER PAGE
 ![ParleyBetsPage](https://user-images.githubusercontent.com/95720340/178371453-21c99841-b47a-4899-96df-1212e43c68a2.png)
 
 PROFILE PAGE
-![ProfilePb](https://user-images.githubusercontent.com/95720340/178809111-50c671ae-9d03-4435-a0a9-60934f82de48.png)
+![PPB](https://user-images.githubusercontent.com/95720340/178809277-8cff9855-cf4b-4c89-a390-58ef29ea5668.png)
 
 ADMIN GAME INPUT PAGE
 ![newGameInput](https://user-images.githubusercontent.com/95720340/177120612-1a877502-eaa1-4b3f-aaf8-d2db32652b4a.png)
