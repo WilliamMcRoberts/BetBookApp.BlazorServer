@@ -37,7 +37,7 @@
         @if(wagerSubmitted == false)
         {
             <div class="input-label-container">
-                <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Games Chosen</h1>
+                <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Parley Games</h1>
                 <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
             </div>
             <ul>
@@ -125,14 +125,10 @@
 
 
 @code {
-        /***************************
-         * TODO - Parley bet payout methods
-         * ***************************/    
 
-        /***************************
-         * TODO - Parley bet winner check method
-         * ***************************/  
-
+    /************************************************************
+     *          TODO - Continue Testing Bet Calculations
+     * ***********************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;
@@ -225,7 +221,8 @@
                 }
 
                 parleyBet.BetAmount = betAmount;
-                parleyBet.BetPayout = parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+                parleyBet.BetPayout = 
+                    parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
                 parleyBet.BettorId = loggedInUser!.Id;
 
                 HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
@@ -233,7 +230,9 @@
                 loggedInUser.AccountBalance -= betAmount;
                 houseAccount!.AccountBalance += betAmount;
 
-                await loggedInUser.CreateParleyBetTransaction(parleyBet, houseAccount, config, userData, houseData, parleyData);
+                await loggedInUser.CreateParleyBetTransaction(
+                    parleyBet, houseAccount, config, userData, houseData, 
+                        parleyData);
 
                 wagerSubmitted = true;
             }

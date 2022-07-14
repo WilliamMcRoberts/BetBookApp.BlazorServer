@@ -48,9 +48,7 @@ public static class CalculationHelpers
         TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
         TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
 
-        TeamModel? winner;
-
-        winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
+        TeamModel? winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
             (favoriteScoreMinusPointSpread > underdogScore) ? favorite :
                 underdog;
 

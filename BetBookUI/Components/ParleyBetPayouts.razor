@@ -1,0 +1,92 @@
+﻿@inject IHouseAccountData houseData
+@inject IBetData betData
+@inject IUserData userData
+@inject IGameData gameData
+@inject ITeamData teamData
+@inject IParleyBetData parleyData
+@inject IConfiguration config
+@inject AuthenticationStateProvider authProvider
+
+<div>
+    <div class="label-container">
+            @if(loggedInUser is not null)
+            {
+                <h3 class="profile-label">@loggedInUser.DisplayName's Parley Bets</h3>
+                <h3 class="bal-label">Balance $@loggedInUser.AccountBalance</h3>
+            }
+        </div>
+        <div class="item">
+        <p>Pending Payout: $@TotalPendingParleyPayout</p>
+        </div>
+        <div class="item">
+            <p>Pending Refund: $@TotalPendingParleyRefund</p>
+        </div>
+        <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningParleyBets">Collect My Winnings</button>
+        </div>
+        <div style="text-align: center;margin-bottom: 1em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidPushParleyBets">Refund My Push Bets</button>
+        </div>
+    </div>
+
+@code {
+    private UserModel? loggedInUser;
+    private HouseAccountModel? houseAccount;
+
+    [Parameter]
+    public decimal TotalPendingParleyPayout { get; set; }
+    [Parameter]
+    public decimal TotalPendingParleyRefund { get; set; }
+    [Parameter]
+    public List<ParleyBetModel> WinningParleyBetsUnpaid { get; set; } = new();
+    [Parameter]
+    public List<ParleyBetModel> PushParleyBetsUnpaid { get; set; } = new();
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        houseAccount = await houseData.GetHouseAccount();
+
+        loggedInUser.AccountBalance = 
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+    }
+
+
+    private async Task PayoutUnpaidWinningParleyBets()
+    {
+        if(loggedInUser is not null && houseAccount is not null)
+        {
+            await loggedInUser.PayoutParleyBetsTransaction(
+                WinningParleyBetsUnpaid, houseAccount, TotalPendingParleyPayout, config, 
+                    userData, houseData, parleyData);
+
+            loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+            WinningParleyBetsUnpaid.Clear();
+
+            TotalPendingParleyPayout = 
+                WinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
+        }
+    }
+
+    private async Task PayoutUnpaidPushParleyBets()
+    {
+        if(loggedInUser is not null && houseAccount is not null)
+        {
+            await loggedInUser.PayoutParleyBetsTransaction(
+                PushParleyBetsUnpaid, houseAccount, TotalPendingParleyRefund, config, 
+                    userData, houseData, parleyData);
+
+            loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+            PushParleyBetsUnpaid.Clear();
+
+            TotalPendingParleyRefund = 
+                PushParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
+        }
+    }
+}

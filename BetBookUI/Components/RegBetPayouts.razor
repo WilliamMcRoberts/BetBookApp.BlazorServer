@@ -73,13 +73,10 @@
 
         if(houseAccount is not null && loggedInUser is not null)
         {
-            houseAccount.AccountBalance -= TotalPendingPayout;
-            loggedInUser.AccountBalance += TotalPendingPayout;
-
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
             await loggedInUser.PayoutBetsTransaction(
-                BettorWinningBetsUnpaid, houseAccount, config, userData, 
+                BettorWinningBetsUnpaid, houseAccount, TotalPendingPayout, config, userData, 
                     houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
@@ -102,13 +99,10 @@
 
         if(houseAccount is not null && loggedInUser is not null)
         {
-            houseAccount.AccountBalance -= TotalPendingRefund;
-            loggedInUser.AccountBalance += TotalPendingRefund;
-
             // Transaction method updates bet statuses, transfers
             // funds from house account to user account
             await loggedInUser.PayoutBetsTransaction(
-                BettorPushBetsUnpaid, houseAccount, config, userData, 
+                BettorPushBetsUnpaid, houseAccount, TotalPendingRefund, config, userData, 
                     houseData, betData);
 
             loggedInUser = await authProvider.GetUserFromAuth(userData);
