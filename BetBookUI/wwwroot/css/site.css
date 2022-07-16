@@ -2,6 +2,9 @@
 
 html, body {
     font-family: 'Montserrat', sans-serif;
+    background-image: url(../images/FootballNFL2.jpg);
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 h1:focus {
@@ -201,7 +204,7 @@ ul {
     margin-right: 1em;
     overflow-y: scroll;
     /*overflow: scroll;*/
-    height: 78vh;
+    height: 76vh;
 }
 
 .chosen-game-list-container {
@@ -211,7 +214,7 @@ ul {
     width: 55%;
     height: 1300px;
     overflow-y: scroll;
-    height: 78vh;
+    height: 76vh;
 }
 
 .parley-bet-game-list-section {
@@ -250,7 +253,7 @@ ul {
     width: 45%;
     overflow-y: scroll;
     /*overflow: scroll;*/
-    height: 78vh;
+    height: 76vh;
 }
 
 .team-item {
@@ -285,7 +288,7 @@ ul {
     margin-right: 1em;
     overflow-y: scroll;
     /*overflow: scroll;*/
-    height: 78vh;
+    height: 76vh;
 }
 
 .game-wager-container {
