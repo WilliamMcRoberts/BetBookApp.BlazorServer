@@ -12,7 +12,7 @@
 <PageTitle>CreateParleyBet</PageTitle>
 
 <div style="margin-left: 4em;" class="balance">
-    <label>Your Balance: $@loggedInUser?.AccountBalance</label>
+    <label>@loggedInUser?.DisplayName's Balance: $@loggedInUser?.AccountBalance</label>
 </div>
 <div class="parley-bet-game-list-section">
     <div class="available-game-list-container">
@@ -30,7 +30,7 @@
         <ul>
             @foreach(BasicGameModel basicGame in basicGamesAvailable)
             {
-                <li class="parley-game-item" @onclick="() => SelectGame(basicGame)">
+                <li style="text-align:center;" class="parley-game-item" @onclick="() => SelectGame(basicGame)">
                     <label style="font-size: 17px;">@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</label>
                 </li>
             }

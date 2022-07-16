@@ -9,7 +9,7 @@
 <PageTitle>CreateBet</PageTitle>
 
 <div style="margin-left: 4em;" class="balance">
-    <label>Your Balance: $@loggedInUser?.AccountBalance</label>
+    <label>@loggedInUser?.DisplayName's Balance: $@loggedInUser?.AccountBalance</label>
 </div>
 <div class="game-wager-container">
 
@@ -42,9 +42,6 @@
     // Current logged in user
     private UserModel? loggedInUser;
 
-    // Account balance of current logged in user
-    private decimal userAccountBalance;
-
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -55,7 +52,7 @@
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        userAccountBalance = 
+        loggedInUser.AccountBalance = 
             Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
         
 
