@@ -8,7 +8,7 @@ CREATE A WAGER PAGE
 ![CreateAWager](https://user-images.githubusercontent.com/95720340/179335173-e16cbee0-997b-48e9-8520-dc79f4b30ccd.png)
 
 CREATE A PARLEY WAGER PAGE
-![CreateParleyBet](https://user-images.githubusercontent.com/95720340/179335426-3082e72a-b5d3-4970-9109-0b7f3975607d.png)
+![ParleyCreation](https://user-images.githubusercontent.com/95720340/179336372-4cf92e2b-5754-441a-9c1d-350b36fc002d.png)
 
 PROFILE PAGE
 ![ProfileRegParley](https://user-images.githubusercontent.com/95720340/179335046-22a6ae3d-07ed-4066-b46f-d249d5f2494b.png)
