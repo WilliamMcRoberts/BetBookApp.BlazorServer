@@ -5,13 +5,13 @@ BROWSE GAMES HOME PAGE
 ![browse](https://user-images.githubusercontent.com/95720340/177406152-4628f61d-4bae-419a-b1af-6c7a2d68f9e1.png)
 
 CREATE A WAGER PAGE
-![CreateAWager](https://user-images.githubusercontent.com/95720340/179335173-e16cbee0-997b-48e9-8520-dc79f4b30ccd.png)
+![WagerPlacementPic](https://user-images.githubusercontent.com/95720340/179336594-d6a8a6e2-ee18-49f5-b055-395947637ab0.png)
 
 CREATE A PARLEY WAGER PAGE
-![ParleyCreation](https://user-images.githubusercontent.com/95720340/179336372-4cf92e2b-5754-441a-9c1d-350b36fc002d.png)
+![CreateParleyPic](https://user-images.githubusercontent.com/95720340/179336614-b1997400-59ef-4b57-a910-7bc67f3c01c2.png)
 
 PROFILE PAGE
-![ProfileRegParley](https://user-images.githubusercontent.com/95720340/179335046-22a6ae3d-07ed-4066-b46f-d249d5f2494b.png)
+![ProfilePic](https://user-images.githubusercontent.com/95720340/179336598-dc26bc5a-5772-4e85-98a2-cab85afa3062.png)
 
 ADMIN GAME INPUT PAGE
 ![AdminGamesInput](https://user-images.githubusercontent.com/95720340/179335403-c5f8b04f-1a7a-436e-8dda-237e0ac1006c.png)
@@ -24,7 +24,7 @@ ADMIN SCORES UPDATE PAGE
 
 
 
-
+![CreateParleyPic](https://user-images.githubusercontent.com/95720340/179336614-b1997400-59ef-4b57-a910-7bc67f3c01c2.png)
 
 
 
