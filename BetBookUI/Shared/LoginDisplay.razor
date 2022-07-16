@@ -1,4 +1,7 @@
-﻿<AuthorizeView Policy="Admin">
+﻿@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+
+<AuthorizeView Policy="Admin">
     <Authorized>
         <a href="/AdminGamesInput">
             <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Admin Games Input</button>

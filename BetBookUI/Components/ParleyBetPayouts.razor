@@ -9,38 +9,46 @@
 
 <div>
     <div class="label-container">
-            @if(loggedInUser is not null)
-            {
-                <h3 class="profile-label">@loggedInUser.DisplayName's Parley Bets</h3>
-                <h3 class="bal-label">Balance $@loggedInUser.AccountBalance</h3>
-            }
-        </div>
-        <div class="item">
-        <p>Pending Payout: $@TotalPendingParleyPayout</p>
-        </div>
-        <div class="item">
-            <p>Pending Refund: $@TotalPendingParleyRefund</p>
-        </div>
-        <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
-            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningParleyBets">Collect My Winnings</button>
-        </div>
-        <div style="text-align: center;margin-bottom: 1em;">
-            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidPushParleyBets">Refund My Push Bets</button>
-        </div>
+        <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Parley Bets</h3>
     </div>
+    <div class="item">
+    <p>Pending Payout: $@TotalPendingParleyPayout</p>
+    </div>
+    <div class="item">
+        <p>Pending Refund: $@TotalPendingParleyRefund</p>
+    </div>
+    <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningParleyBets">Collect My Winnings</button>
+    </div>
+    <div style="text-align: center;margin-bottom: 1em;">
+        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidPushParleyBets">Refund My Push Bets</button>
+    </div>
+</div>
 
 @code {
+
+    // Current logged in user
     private UserModel? loggedInUser;
+
+    // House account
     private HouseAccountModel? houseAccount;
 
+    // Total pending payout from all winning parley bets made by user
     [Parameter]
     public decimal TotalPendingParleyPayout { get; set; }
+
+    // Total pending refund from all push parley bets made by user
     [Parameter]
     public decimal TotalPendingParleyRefund { get; set; }
+
+    // List of winning parley bets made by user
     [Parameter]
     public List<ParleyBetModel> WinningParleyBetsUnpaid { get; set; } = new();
+
+    // List of push parley bets made by user 
     [Parameter]
     public List<ParleyBetModel> PushParleyBetsUnpaid { get; set; } = new();
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -55,7 +63,10 @@
             Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
     }
 
-
+    /// <summary>
+    /// Method pays out all unpaid winning parley bets
+    /// </summary>
+    /// <returns></returns>
     private async Task PayoutUnpaidWinningParleyBets()
     {
         if(loggedInUser is not null && houseAccount is not null)
@@ -73,6 +84,10 @@
         }
     }
 
+    /// <summary>
+    /// Method pays out all unpaid push parley bets
+    /// </summary>
+    /// <returns></returns>
     private async Task PayoutUnpaidPushParleyBets()
     {
         if(loggedInUser is not null && houseAccount is not null)

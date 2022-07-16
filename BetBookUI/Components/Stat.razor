@@ -1,13 +1,16 @@
-﻿
+﻿@inject NavigationManager navManager
+
 <div class="rec-sec">
-        <label style="text-align: center;">@StatName: @TeamStats[GameTeamRecordsListIndex]</label>
+        <label style="margin-left: 2.5em;">@StatName</label>
         <div class="team">
             @if(TeamStats[GameTeamRecordsListIndex] != 0)
             {
-                @foreach(var draw in GameTeamRecordsLists[GameTeamRecordsListIndex])
-                {
-                    <h6>@draw| |</h6>
-                }
+                <ul style="margin: 0 0;">
+                    @foreach(var team in GameTeamRecordsLists[GameTeamRecordsListIndex])
+                    {
+                        <li style="margin-right: 2em;margin-top: .5em;margin-bottom:.5em;">@team</li>
+                    }
+                </ul>
             }
             else
             {

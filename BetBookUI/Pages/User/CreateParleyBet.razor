@@ -11,10 +11,13 @@
 
 <PageTitle>CreateParleyBet</PageTitle>
 
+<div style="margin-left: 4em;" class="balance">
+    <label>Your Balance: $@loggedInUser?.AccountBalance</label>
+</div>
 <div class="parley-bet-game-list-section">
     <div class="available-game-list-container">
         <div class="input-label-container">
-            <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Available Games</h1>
+            <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Available Games</h3>
             @if(basicGamesChosen.Count >= 5)
             {
                 <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">GAME LIMIT MAX</div>
@@ -28,7 +31,7 @@
             @foreach(BasicGameModel basicGame in basicGamesAvailable)
             {
                 <li class="parley-game-item" @onclick="() => SelectGame(basicGame)">
-                    <label>@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</label>
+                    <label style="font-size: 17px;">@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</label>
                 </li>
             }
         </ul>
@@ -37,7 +40,7 @@
         @if(wagerSubmitted == false)
         {
             <div class="input-label-container">
-                <h1 style="margin-left: 1em;margin-top: .5em;" class="title">Parley Games</h1>
+                <h3 style="font-weight: 700; margin-left: 1em;margin-top: .5em;" class="title">Parley Games</h3>
                 <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
             </div>
             <ul>
@@ -92,22 +95,16 @@
                 {
                     <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU MUST PICK AT LEAST 2 GAMES AND NO MORE THAN 5 FOR A PARLEY</div>
                 }
-                @if(loggedInUser is not null)
-                {
-                    <div style="text-align:center;padding-top:1em;">
-                        <label>Account Balance: $@loggedInUser.AccountBalance</label>
-                    </div>
-                }
                 <div class="wager-box">
                     
                     <label style="text-align: center;">Wager Amount</label>
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                 </div>
                 <div class="review">
-                    <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
+                        <label class="local" style="padding: .25em .25em;margin-bottom: 1em;">Bet Details</label>
                         <p>Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
                         <p>If everything looks good click "Submit Wager"</p>
-                        <div style="margin-top:3.4em;" class="undo-btn-container">
+                        <div style="margin-top:3.4em;margin-bottom: 2em;" class="undo-btn-container">
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                                 @onclick="SubmitWager">
                                 Submit Wager
@@ -125,10 +122,6 @@
 
 
 @code {
-
-    /************************************************************
-     *          TODO - Continue Testing Bet Calculations
-     * ***********************************************************/
 
     // Current logged in user
     private UserModel? loggedInUser;

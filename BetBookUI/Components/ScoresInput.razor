@@ -6,7 +6,7 @@
 
 <div class="input">
     <div class="winner-input">
-            <h1 style="margin-top: .5em;" class="title">Update Scores</h1>
+            <h3 style="font-weight: 700;margin-top: .5em;" class="title">Scores Input</h3>
         <div class="game">
             @if (scoresAdded)
             {
@@ -100,9 +100,13 @@
     // Boolean to check if game status is finished
     private bool statusBad = false;
 
+    // Id of game
     private int gameId;
 
+    // Underdog team score
     private int underdogTeamScore;
+
+    // Favorite team score
     private int favoriteTeamScore;
 
 

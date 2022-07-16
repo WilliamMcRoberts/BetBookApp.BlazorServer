@@ -5,7 +5,7 @@
 @inject ITeamRecordData recordData
 
 <div class="game-info-container">
-        <h1 style="margin-top: .5em;" class="title">Game Details</h1>
+        <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
         <div style="margin-bottom:1em;">
             <ul class="game-list">
                 <li class="team-item">@BasicCurrentGame.AwayTeamName at @BasicCurrentGame.HomeTeamName || @BasicCurrentGame.FavoriteTeamName - @BasicCurrentGame.PointSpread points</li>
@@ -13,7 +13,7 @@
             <br />
             <div class="records">
                 <div class="fav-records">
-                    <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@BasicCurrentGame.FavoriteTeamName</label>
+                    <label style="font-size: 30px;text-align:center;margin-left: 1em;">@BasicCurrentGame.FavoriteTeamName</label>
                     <div class="stat">
                         <Stat GameTeamRecordsListIndex="0" 
                           GameTeamRecordsLists="GameTeamRecordsLists" 
@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="und-records">
-                    <label style="font-size: 30px;text-align:center;margin-bottom: 1em;">@BasicCurrentGame.UnderdogTeamName</label>
+                    <label style="font-size: 30px;text-align:center;margin-left: 1em;">@BasicCurrentGame.UnderdogTeamName</label>
                     <div class="stat">
                         <Stat GameTeamRecordsListIndex="3" 
                           GameTeamRecordsLists="GameTeamRecordsLists" 

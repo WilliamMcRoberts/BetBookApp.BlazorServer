@@ -9,3 +9,4 @@ global using BetBookData.Helpers;
 global using BetBookUI.Helpers;
 global using BetBookUI.Components;
 global using Syncfusion.Blazor.Inputs;
+global using Syncfusion.Blazor.Buttons;

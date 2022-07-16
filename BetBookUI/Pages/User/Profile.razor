@@ -1,11 +1,30 @@
 ﻿@page "/Profile"
 @attribute [Authorize]
+@inject IUserData userData
+@inject AuthenticationStateProvider authProvider
 
 <PageTitle>Profile</PageTitle>
 
 @*********************************** Demo Display ******************************************@
-
-<div class="profile">
-    <ProfileRegBets/>
-    <ProfileParleyBets/>
+<div style="margin-left: 4em;" class="balance">
+    <label>Your Balance: $@loggedInUser?.AccountBalance</label>
 </div>
+<div class="profile">
+    
+    <ProfileRegBets/>
+
+    <ProfileParleyBets/>
+
+</div>
+
+
+@code {
+    private UserModel? loggedInUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        loggedInUser.AccountBalance =
+            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+    }
+}

@@ -9,11 +9,7 @@
 
 <div>
     <div class="label-container">
-        @if(loggedInUser is not null)
-        {
-            <h3 class="profile-label">@loggedInUser.DisplayName's Regular Bets</h3>
-            <h3 class="bal-label">Balance $@loggedInUser.AccountBalance</h3>
-        }
+        <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Single Bets</h3>
     </div>
     <div class="item">
     <p>Pending Payout: $@TotalPendingPayout</p>
@@ -50,6 +46,9 @@
     [Parameter]
     public List<BetModel> BettorPushBetsUnpaid { get; set; } = new();
 
+    // House account
+    private HouseAccountModel? houseAccount;
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -59,6 +58,7 @@
         loggedInUser = await authProvider.GetUserFromAuth(userData);
         loggedInUser.AccountBalance =  
             Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        houseAccount = await houseData.GetHouseAccount();
     }
 
     /// <summary>
@@ -68,9 +68,6 @@
     /// <returns></returns>
     private async Task PayoutUnpaidWinningBets()
     {
-        HouseAccountModel? houseAccount = 
-            await houseData.GetHouseAccount();
-
         if(houseAccount is not null && loggedInUser is not null)
         {
             // Transaction method updates bet statuses, transfers
@@ -94,9 +91,6 @@
     /// <returns></returns>
     private async Task RefundUnpaidPushBets()
     {
-        HouseAccountModel? houseAccount = 
-            await houseData.GetHouseAccount();
-
         if(houseAccount is not null && loggedInUser is not null)
         {
             // Transaction method updates bet statuses, transfers

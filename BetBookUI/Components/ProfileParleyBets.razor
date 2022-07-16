@@ -28,26 +28,37 @@
     // Current logged in user
     private UserModel? loggedInUser;
 
+    // House account
     private HouseAccountModel? houseAccount;
 
+    // List of unpaid winning parley bets mad by user
     private List<ParleyBetModel> bettorWinningParleyBetsUnpaid = new();
 
+    // List of unpaid push parley bets made by user
     private List<ParleyBetModel> bettorPushParleyBetsUnpaid = new();
 
     // List of all bettor bets with bet status of "IN_PROGRESS"
     private List<ParleyBetModel> bettorInProgressParleyBets = new();
 
+    // List of basic parley bets with original status of "IN_PROGRESS"
     private List<ParleyBasicBetModel> bettorInProgressBasicParleyBets = new();
 
+    // List of basic parley bets with original status of "WINNING"
     private List<ParleyBasicBetModel> bettorWinningBetsUnpaidBasicParleyBets = new();
 
+    // List of basic parley bets with original status of "PUSH"
     private List<ParleyBasicBetModel> bettorPushBetsUnpaidBasicParleyBets = new();
 
+    // IEnumerable of all parley bets
     IEnumerable<ParleyBetModel>? allParleyBets;
 
+    // Total pending payout from all winning parley bets made by user
     private decimal totalPendingParleyPayout;
 
+    // Total pending refund from all push parley bets made by user
     private decimal totalPendingParleyRefund;
+
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -74,6 +85,10 @@
             bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund();
     }
 
+    /// <summary>
+    /// Async method populates all parley bet lists and all parley basic bet lists
+    /// </summary>
+    /// <returns></returns>
     private async Task FilterParleyBetsAndPopulateLists()
     {
         if(loggedInUser is not null && allParleyBets is not null)
