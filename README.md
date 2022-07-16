@@ -2,29 +2,34 @@
 .NET 6 Blazor Server Application using a SQL Server DB, Dapper micro-ORM and Azure AD B2C for authentication. This app allows users with an account to receive 10,000 BetBucks to place wagers on games in the upcoming 2022-2023 NFL Season. Users can place wagers on "parley" style bets up to five games with appropriate payouts or bet on single games. Point spreads only in the first version. Moneyline and over unders will be future features.
 
 BROWSE GAMES HOME PAGE
-![browse](https://user-images.githubusercontent.com/95720340/177406152-4628f61d-4bae-419a-b1af-6c7a2d68f9e1.png)
+![HomePageBG](https://user-images.githubusercontent.com/95720340/179340028-17a29104-76f1-4889-bbce-b06bc1b4b3bd.png)
 
 CREATE A WAGER PAGE
-![WagerPlacementPic](https://user-images.githubusercontent.com/95720340/179336594-d6a8a6e2-ee18-49f5-b055-395947637ab0.png)
+![CreateBetBG](https://user-images.githubusercontent.com/95720340/179340026-353b14fe-8632-4811-8e9b-02022e108f2b.png)
 
 CREATE A PARLEY WAGER PAGE
-![CreateParleyPic](https://user-images.githubusercontent.com/95720340/179336614-b1997400-59ef-4b57-a910-7bc67f3c01c2.png)
+![CreateParleyBetBG](https://user-images.githubusercontent.com/95720340/179340025-689302ed-320a-4108-a840-ff0743bfde8f.png)
 
 PROFILE PAGE
-![ProfilePic](https://user-images.githubusercontent.com/95720340/179336598-dc26bc5a-5772-4e85-98a2-cab85afa3062.png)
+![ProfileBG](https://user-images.githubusercontent.com/95720340/179340027-89b73650-6d61-4630-902d-95f0fcc2635c.png)
 
 ADMIN GAME INPUT PAGE
-![AdminGamesInput](https://user-images.githubusercontent.com/95720340/179335403-c5f8b04f-1a7a-436e-8dda-237e0ac1006c.png)
+![AddGamesBG](https://user-images.githubusercontent.com/95720340/179340029-3b74cce3-4e32-45d5-b0e3-8157d6a76711.png)
 
 ADMIN SCORES UPDATE PAGE
-![AdminScoresInput](https://user-images.githubusercontent.com/95720340/179335405-2e126e74-75ba-4792-b021-3c4975307388.png)
+![AddScoresBG](https://user-images.githubusercontent.com/95720340/179340023-26b5774e-c0e8-40da-83f8-caaf9bd68059.png)
 
 
 
 
 
 
-![CreateParleyPic](https://user-images.githubusercontent.com/95720340/179336614-b1997400-59ef-4b57-a910-7bc67f3c01c2.png)
+
+
+
+
+
+
 
 
 
