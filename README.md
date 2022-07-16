@@ -5,19 +5,23 @@ BROWSE GAMES HOME PAGE
 ![browse](https://user-images.githubusercontent.com/95720340/177406152-4628f61d-4bae-419a-b1af-6c7a2d68f9e1.png)
 
 CREATE A WAGER PAGE
-![CRE](https://user-images.githubusercontent.com/95720340/179334517-32fe2773-216b-45b5-803c-4a2c947f0a17.png)
+![CreateAWager](https://user-images.githubusercontent.com/95720340/179335173-e16cbee0-997b-48e9-8520-dc79f4b30ccd.png)
 
 CREATE A PARLEY WAGER PAGE
-![CAP](https://user-images.githubusercontent.com/95720340/179334504-7942920c-f022-437a-8025-3b94ab677f21.png)
+![CreateParleyBet](https://user-images.githubusercontent.com/95720340/179335426-3082e72a-b5d3-4970-9109-0b7f3975607d.png)
 
 PROFILE PAGE
-![PRO](https://user-images.githubusercontent.com/95720340/179334521-568d86e6-3666-4bad-95aa-4f5b417be099.png)
+![ProfileRegParley](https://user-images.githubusercontent.com/95720340/179335046-22a6ae3d-07ed-4066-b46f-d249d5f2494b.png)
 
 ADMIN GAME INPUT PAGE
-![AGI](https://user-images.githubusercontent.com/95720340/179334498-5f44ee1b-bf6a-410e-9634-3210c9e66866.png)
+![AdminGamesInput](https://user-images.githubusercontent.com/95720340/179335403-c5f8b04f-1a7a-436e-8dda-237e0ac1006c.png)
 
 ADMIN SCORES UPDATE PAGE
-![ASI](https://user-images.githubusercontent.com/95720340/179334501-2cc07ccf-e099-4aca-9c75-474b58380ba5.png)
+![AdminScoresInput](https://user-images.githubusercontent.com/95720340/179335405-2e126e74-75ba-4792-b021-3c4975307388.png)
+
+
+
+
 
 
 
