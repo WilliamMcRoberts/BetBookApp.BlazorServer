@@ -12,6 +12,7 @@
 @******************************  Demo Display  ********************************@
 
 <div class="games-page">
+
     <div class="week-title">
         @if(basicGamesAvailable.Count != 1)
         {
@@ -23,10 +24,13 @@
         }
         <h1 style="margin-right: 8em;">@currentSeason Season Week @currentWeek</h1>
     </div>
+
     <div class="games">
+
         <GameDisplay BasicGameList="basicGamesAvailable" 
                      RecordsArray="teamRecords" 
                      User="loggedInUser"/>
+
     </div>
 </div>
 
