@@ -78,11 +78,15 @@
 
         // Total payout of all unpaid winning parley bets
         totalPendingParleyPayout = 
-            bettorWinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
+            Convert.ToDecimal(
+                (bettorWinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout())
+                .ToString("#.00"));
 
         // Total retfund of all unpaid parley push bets
         totalPendingParleyRefund = 
-            bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund();
+            Convert.ToDecimal(
+                (bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund())
+                    .ToString("#.00"));
     }
 
     /// <summary>

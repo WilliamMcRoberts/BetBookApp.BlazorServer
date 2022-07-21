@@ -70,12 +70,12 @@
         await FilterBetsAndPopulateBetLists();
 
         // Total payout of all unpaid winning bets
-        totalPendingPayout = 
-            bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
+        totalPendingPayout =  
+            Convert.ToDecimal((bettorWinningBetsUnpaid.CalculateTotalPendingPayout()).ToString("#.00"));
 
         // Total retfund of all unpaid push bets
         totalPendingRefund = 
-            bettorPushBetsUnpaid.CalculateTotalPendingRefund();
+            Convert.ToDecimal((bettorPushBetsUnpaid.CalculateTotalPendingRefund()).ToString("#.00"));
     }
 
     /// <summary>
