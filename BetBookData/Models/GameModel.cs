@@ -12,7 +12,6 @@ public class GameModel
     public int Id { get; set; }
 
     // Home team of the game
-    [Required]
     public int HomeTeamId { get; set; }
 
     // Away team of the game
@@ -25,7 +24,6 @@ public class GameModel
     public int UnderdogId { get; set; }
 
     // Stadium the game is being played in
-    [Required]
     public string Stadium { get; set; }
 
     // The point spread of the game
