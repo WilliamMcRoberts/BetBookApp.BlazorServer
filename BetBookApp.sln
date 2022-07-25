@@ -14,9 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookData", "BetBookData\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookDbAccess", "BetBookDbAccess\BetBookDbAccess.csproj", "{BEFB1A59-3DC6-431D-98BC-687C8716FA96}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookMinimalApi", "..\BetBookMinimalApi\BetBookMinimalApi.csproj", "{53A13908-0B42-4EF0-9B3F-8066DE0ED3CF}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BetBookSqlDatabase", "BetBookSqlDatabase\BetBookSqlDatabase.sqlproj", "{04880732-1CD8-4574-B6E7-63CE6DCB184A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetBookApi", "BetBookApi\BetBookApi.csproj", "{07DAD778-CD57-477F-869C-0BED870BEBED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,16 +36,16 @@ Global
 		{BEFB1A59-3DC6-431D-98BC-687C8716FA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEFB1A59-3DC6-431D-98BC-687C8716FA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEFB1A59-3DC6-431D-98BC-687C8716FA96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53A13908-0B42-4EF0-9B3F-8066DE0ED3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53A13908-0B42-4EF0-9B3F-8066DE0ED3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53A13908-0B42-4EF0-9B3F-8066DE0ED3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53A13908-0B42-4EF0-9B3F-8066DE0ED3CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{07DAD778-CD57-477F-869C-0BED870BEBED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07DAD778-CD57-477F-869C-0BED870BEBED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07DAD778-CD57-477F-869C-0BED870BEBED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07DAD778-CD57-477F-869C-0BED870BEBED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
