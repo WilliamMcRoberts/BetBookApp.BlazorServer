@@ -3,23 +3,23 @@ using BetBookData.Models;
 
 namespace BetBookApi.Api;
 
-public static class GamesApi
+public static class BetsApi
 {
-    public static void ConfigureGamesApi(this WebApplication app)
+    public static void ConfigureBetsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Games", GetGames);
-        app.MapGet("/Games/{id}", GetGame);
-        app.MapPost("/Games", InsertGame);
-        app.MapPut("/Games", UpdateGame);
-        app.MapDelete("/Games/{id}", DeleteGame);
+        app.MapGet("/Bets", GetBets);
+        app.MapGet("/Bets/{id}", GetBet);
+        app.MapPost("/Bets", InsertBet);
+        app.MapPut("/Bets", UpdateBet);
+        app.MapDelete("/Bets/{id}", DeleteBet);
     }
 
-    public static async Task<IResult> GetGames(IGameData data)
+    public static async Task<IResult> GetBets(IBetData data)
     {
         try
         {
-            return Results.Ok(await data.GetGames());
+            return Results.Ok(await data.GetBets());
         }
         catch (Exception ex)
         {
@@ -27,11 +27,11 @@ public static class GamesApi
         }
     }
 
-    private static async Task<IResult> GetGame(int id, IGameData data)
+    private static async Task<IResult> GetBet(int id, IBetData data)
     {
         try
         {
-            return Results.Ok(await data.GetGame(id));
+            return Results.Ok(await data.GetBet(id));
         }
         catch (Exception ex)
         {
@@ -39,11 +39,11 @@ public static class GamesApi
         }
     }
 
-    private static async Task<IResult> InsertGame(GameModel game, IGameData data)
+    private static async Task<IResult> InsertBet(BetModel bet, IBetData data)
     {
         try
         {
-            await data.InsertGame(game);
+            await data.InsertBet(bet);
             return Results.Ok();
         }
         catch (Exception ex)
@@ -52,11 +52,11 @@ public static class GamesApi
         }
     }
 
-    private static async Task<IResult> UpdateGame(GameModel game, IGameData data)
+    private static async Task<IResult> UpdateBet(BetModel bet, IBetData data)
     {
         try
         {
-            await data.UpdateGame(game);
+            await data.UpdateBet(bet);
             return Results.Ok();
         }
         catch (Exception ex)
@@ -65,11 +65,11 @@ public static class GamesApi
         }
     }
 
-    private static async Task<IResult> DeleteGame(int id, IGameData data)
+    private static async Task<IResult> DeleteBet(int id, IBetData data)
     {
         try
         {
-            await data.DeleteGame(id);
+            await data.DeleteBet(id);
             return Results.Ok();
         }
         catch (Exception ex)

@@ -10,8 +10,10 @@ public static class UsersApi
         // Endpoint mappings
         app.MapGet("/Users", GetUsers);
         app.MapGet("/Users/{id}", GetUser);
+        app.MapGet("/Users/{objectIdentifier}", GetUserFromAuthentication);
         app.MapPost("/Users", InsertUser);
         app.MapPut("/Users", UpdateUser);
+        app.MapPut("/Users/AccountBalance", UpdateUserAccountBalance);
         app.MapDelete("/Users/{id}", DeleteUser);
     }
 
@@ -39,6 +41,18 @@ public static class UsersApi
         }
     }
 
+    private static async Task<IResult> GetUserFromAuthentication(string objectIdentifier, IUserData data)
+    {
+        try
+        {
+            return Results.Ok(await data.GetUserFromAuthentication(objectIdentifier));
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
     private static async Task<IResult> InsertUser(UserModel user, IUserData data)
     {
         try
@@ -57,6 +71,19 @@ public static class UsersApi
         try
         {
             await data.UpdateUser(user);
+            return Results.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
+    private static async Task<IResult> UpdateUserAccountBalance(UserModel user, IUserData data)
+    {
+        try
+        {
+            await data.UpdateUserAccountBalance(user);
             return Results.Ok();
         }
         catch (Exception ex)
