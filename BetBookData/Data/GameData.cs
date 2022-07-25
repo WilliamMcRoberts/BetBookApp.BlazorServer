@@ -18,6 +18,7 @@ public class GameData : IGameData
         _db = db;
     }
 
+
     /// <summary>
     /// Async method calls the spGames_GetAll stored procedure to retrieve 
     /// all games in the database
@@ -58,6 +59,7 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
+
         int weekNumber = game.Season.CalculateWeek(game.DateOfGame);
         string seasonType = game.DateOfGame.CalculateSeason().ToString();
         string gameStatus = game.GameStatus.ToString();
@@ -84,10 +86,11 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task UpdateGame(GameModel game)
     {
+
         string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
 
-        if(game.GameWinnerId == 0)
+        if (game.GameWinnerId == 0)
         {
             await _db.SaveData("dbo.spGames_UpdateDraw", new
             {
@@ -108,6 +111,7 @@ public class GameData : IGameData
 
         else
         {
+
             await _db.SaveData("dbo.spGames_Update", new
             {
                 game.Id,

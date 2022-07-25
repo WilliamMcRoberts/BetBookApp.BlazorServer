@@ -18,7 +18,7 @@
     <div class="available-game-list-container">
         <div class="input-label-container">
             <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Available Games</h3>
-            @if(basicGamesChosen.Count >= 5)
+            @if(gamesChosen.Count >= 5)
             {
                 <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">* GAME LIMIT *</div>
             }
@@ -28,59 +28,74 @@
             }
         </div>
         <ul>
-            @foreach(BasicGameModel basicGame in basicGamesAvailable)
+            @if(gamesAvailable.Count != 0)
             {
-                <li style="text-align:center;" class="parley-game-item" @onclick="() => SelectGame(basicGame)">
-                    <label style="font-size: 17px;">@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread points</label>
-                </li>
+                @foreach(GameModel game in gamesAvailable)
+                {
+                    @if(game.HomeTeam is not null && game.AwayTeam is not null && game.Favorite is not null)
+                    {
+                        
+                        <li style="text-align:center;display:flex;" class="parley-game-item" @onclick="() => SelectGame(game)">
+                            <div class="helmet-mash">
+                                <img style="height:40px;" src="/images/@game.AwayTeam.ImagePath" alt="team logo">
+                                <img style="height:40px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
+                            </div>
+                            <div>
+                                <label style="font-size: 17px;margin-top:1em;margin-left:2em;">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.Favorite.TeamName - @game.PointSpread points</label>
+                                <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
+                            </div>
+                        </li>
+                    }
+                }
             }
         </ul>
     </div>
-    <div class="chosen-game-list-container"> 
+    <div class="chosen-game-list-section"> 
         @if(wagerSubmitted == false)
         {
             <div class="input-label-container">
-                <h3 style="font-weight: 700; margin-left: 1em;margin-top: .5em;" class="title">Parley Games</h3>
+                <h3 style="font-weight: 700; margin-left: 1em;margin-top: .5em;" class="title">Chosen Games</h3>
                 <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
             </div>
             <ul>
-                @foreach(BasicGameModel basicGame in basicGamesChosen)
+                @foreach(GameModel game in gamesChosen)
                 {
                     <li class="parley-game-item" style="text-align:center;" >
-                        <h3>@basicGame.AwayTeamName At @basicGame.HomeTeamName || @basicGame.FavoriteTeamName - @basicGame.PointSpread</h3>
-                        @if(chosenGamesAndWinners.ContainsValue(basicGame.FavoriteTeamName))
+                        <h3>@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.Favorite.TeamName - @game.PointSpread</h3>
+                        <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
+                        @if(chosenGamesAndWinners.ContainsValue(game.Favorite.TeamName))
                         {
                             <div>
-                                <label style="margin-right: .5em;">You've chosen @basicGame.FavoriteTeamName - @basicGame.PointSpread points over @basicGame.UnderdogTeamName</label>
+                                <label style="margin-right: .5em;">You've chosen @game.Favorite.TeamName - @game.PointSpread points over @game.Underdog.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                    @onclick="() => UndoWinnerSelection(basicGame)">
-                                    Undo @basicGame.FavoriteTeamName
+                                    @onclick="() => UndoWinnerSelection(game)">
+                                    Undo @game.Favorite.TeamName
                                 </button>
                             </div>
                         }
-                        else if (chosenGamesAndWinners.ContainsValue(basicGame.UnderdogTeamName))
+                        else if (chosenGamesAndWinners.ContainsValue(game.Underdog.TeamName))
                         {
                             <div>
-                                <label style="margin-right: .5em;">You've chosen @basicGame.UnderdogTeamName + @basicGame.PointSpread points over @basicGame.FavoriteTeamName</label>
+                                <label style="margin-right: .5em;">You've chosen @game.Underdog.TeamName + @game.PointSpread points over @game.Favorite.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                    @onclick="() => UndoWinnerSelection(basicGame)">
-                                    Undo @basicGame.UnderdogTeamName
+                                    @onclick="() => UndoWinnerSelection(game)">
+                                    Undo @game.Underdog.TeamName
                                 </button>
                             </div>
                         }
                         else
                         {
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(basicGame, basicGame.FavoriteTeamName))">
-                                Choose @basicGame.FavoriteTeamName - @basicGame.PointSpread
+                                @onclick="(() => ChooseWinnerForGame(game, game.Favorite.TeamName))">
+                                Choose @game.Favorite.TeamName - @game.PointSpread
                             </button>
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => UnselectGame(basicGame))">
+                                @onclick="(() => UnselectGame(game))">
                                 Remove Game
                             </button>
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(basicGame, basicGame.UnderdogTeamName))">
-                                Choose @basicGame.UnderdogTeamName + @basicGame.PointSpread
+                                @onclick="(() => ChooseWinnerForGame(game, game.Underdog.TeamName))">
+                                Choose @game.Underdog.TeamName + @game.PointSpread
                             </button>
                         }
                     </li>
@@ -129,14 +144,11 @@
     // List of available games
     private List<GameModel> gamesAvailable = new();
 
-    // List of basic games chosen for the parley bet
-    private List<BasicGameModel> basicGamesChosen = new();
-
-    // List of basic games available
-    private List<BasicGameModel> basicGamesAvailable = new();
+    // List of available games
+    private List<GameModel> gamesChosen = new();
 
     // Dictionary with basic games chosen for keys and chosen winner team names for values
-    private Dictionary<BasicGameModel, string> chosenGamesAndWinners = new();
+    private Dictionary<GameModel, string> chosenGamesAndWinners = new();
 
     // IEnumerable of all games
     private IEnumerable<GameModel>? games;
@@ -174,9 +186,8 @@
         gamesAvailable = 
             games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
-        basicGamesAvailable = 
-            await PopulationHelpers.PopulateBasicGameModelListFromGameList(
-                gamesAvailable, gameData, teamData);
+        gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
+
     }
 
     /// <summary>
@@ -192,7 +203,7 @@
                 ParleyBetModel parleyBet = new();
                 List<BetModel> bets = new();
 
-                foreach (KeyValuePair<BasicGameModel, string> kv in chosenGamesAndWinners)
+                foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
                 {
                     TeamModel? chosenWinner = teams?.Where(t => t.TeamName == kv.Value).First();
                     BetModel bet = new();
@@ -202,7 +213,7 @@
                         bet.BetAmount = 0;
                         bet.BetPayout = 0;
                         bet.BettorId = loggedInUser!.Id;
-                        bet.GameId = kv.Key.GameId;
+                        bet.GameId = kv.Key.Id;
                         bet.ChosenWinnerId = chosenWinner.Id;
 
                         int betId = await betData.InsertBet(bet);
@@ -241,35 +252,35 @@
     /// <summary>
     /// Method unselects the winner of game
     /// </summary>
-    /// <param name="basicGame">BasicGameModel represents basic game the winner is being chosen for</param>
-    private void UndoWinnerSelection(BasicGameModel basicGame)
+    /// <param name="game">BasicGameModel represents basic game the winner is being chosen for</param>
+    private void UndoWinnerSelection(GameModel game)
     {
-        if(chosenGamesAndWinners.ContainsKey(basicGame))
-            chosenGamesAndWinners.Remove(basicGame);
+        if(chosenGamesAndWinners.ContainsKey(game))
+            chosenGamesAndWinners.Remove(game);
     }
 
     /// <summary>
     /// Method chooses winner of game
     /// </summary>
-    /// <param name="basicGame">BasicGameModel represents the basic game the winner is being chosen for</param>
+    /// <param name="game">BasicGameModel represents the basic game the winner is being chosen for</param>
     /// <param name="chosenTeamName">string represents team name of chosen winner</param>
-    private void ChooseWinnerForGame(BasicGameModel basicGame, string chosenTeamName)
+    private void ChooseWinnerForGame(GameModel game, string chosenTeamName)
     {
-        if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(basicGame))
-            chosenGamesAndWinners.Add(basicGame, chosenTeamName);
+        if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(game))
+            chosenGamesAndWinners.Add(game, chosenTeamName);
     }
 
     /// <summary>
     /// Method selects basic game for parley bet
     /// </summary>
-    /// <param name="basicGame">BasicGameModel represents basic game being selected for parley bet</param>
-    private void SelectGame(BasicGameModel basicGame)
+    /// <param name="game">BasicGameModel represents basic game being selected for parley bet</param>
+    private void SelectGame(GameModel game)
     {
-        if(basicGamesChosen.Count < 5 && !basicGamesChosen.Contains(basicGame) 
-            && basicGamesAvailable.Contains(basicGame))
+        if(gamesChosen.Count < 5 && !gamesChosen.Contains(game) 
+            && gamesAvailable.Contains(game))
         {
-            basicGamesChosen.Add(basicGame);
-            basicGamesAvailable.Remove(basicGame);
+            gamesChosen.Add(game);
+            gamesAvailable.Remove(game);
         }
     }
 
@@ -280,12 +291,12 @@
     /// BasicGameModel represents the basic game being removed from
     /// parley bet
     /// </param>
-    private void UnselectGame(BasicGameModel basicGame)
+    private void UnselectGame(GameModel game)
     {
-        if(basicGamesChosen.Contains(basicGame) && !basicGamesAvailable.Contains(basicGame))
+        if(gamesChosen.Contains(game) && !gamesAvailable.Contains(game))
         {
-            basicGamesAvailable.Add(basicGame);
-            basicGamesChosen.Remove(basicGame);
+            gamesAvailable.Add(game);
+            gamesChosen.Remove(game);
         }
     }
 }

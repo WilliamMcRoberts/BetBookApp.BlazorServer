@@ -1,9 +1,0 @@
-﻿CREATE TABLE [dbo].[TeamRecords]
-(
-	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [TeamId] INT NOT NULL, 
-    [Wins] NVARCHAR(1000) NOT NULL, 
-    [Losses] NVARCHAR(1000) NOT NULL, 
-    [Draws] NVARCHAR(1000) NOT NULL,
-    FOREIGN KEY (TeamId) REFERENCES Teams(Id)
-)

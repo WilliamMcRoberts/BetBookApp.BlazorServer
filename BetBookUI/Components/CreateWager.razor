@@ -12,7 +12,7 @@
 
 <div class="wager-form-container">
     <h3 style="font-weight: 700;margin-top: .5em;" class="title">Create A Wager</h3>
-    @if(BasicCurrentGame is not null)
+    @if(CurrentGame is not null)
 {
         @if(wagerPlaced == false)
         {
@@ -46,11 +46,11 @@
             <div class="winner-btn-container">
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(CurrentGame.FavoriteId))">
-                    Choose @BasicCurrentGame.FavoriteTeamName - @BasicCurrentGame.PointSpread
+                    Choose @CurrentGame.Favorite.TeamName - @CurrentGame.PointSpread
                 </button>
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                     @onclick="(() => ChooseWinner(CurrentGame.UnderdogId))">
-                    Choose @BasicCurrentGame.UnderdogTeamName + @BasicCurrentGame.PointSpread
+                    Choose @CurrentGame.Underdog.TeamName + @CurrentGame.PointSpread
                 </button>
             </div>
         }
@@ -60,13 +60,13 @@
                 <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
                 @if(teamToWin is not null)
                 {
-                        @if(teamToWin.TeamName == BasicCurrentGame.FavoriteTeamName)
+                        @if(teamToWin.TeamName == CurrentGame.Favorite.TeamName)
                         {
-                            <p>@teamToWin.TeamName - @BasicCurrentGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName - @CurrentGame.PointSpread points</p>
                         }
                         else
                         {
-                            <p>@teamToWin.TeamName + @BasicCurrentGame.PointSpread points</p>
+                            <p>@teamToWin.TeamName + @CurrentGame.PointSpread points</p>
                         }
                     <p>For $@betAmount</p>
                     <div style="margin-top:3.4em;" class="undo-btn-container">
@@ -121,12 +121,11 @@
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
 
-    // Display info for current game being viewed
-    [Parameter]
-    public BasicGameModel BasicCurrentGame { get; set; } = new();
 
     // Current logged in user
     public UserModel? loggedInUser;
+
+    public IEnumerable<TeamModel> teams;
 
     /// <summary>
     /// Async initialization method
@@ -135,8 +134,11 @@
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
+
         loggedInUser.AccountBalance = 
             Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+
+        teams = await teamData.GetTeams();
     }
 
 
@@ -197,17 +199,17 @@
     /// </summary>
     /// <param name="teamId">int representing the Id of the team being chosen</param>
     /// <returns></returns>
-    private async Task ChooseWinner(int teamId)
+    private void ChooseWinner(int teamId)
     {
         if(teamId == CurrentGame.FavoriteId)
         {
-            teamToWin = await teamData.GetTeam(CurrentGame.FavoriteId);
+            teamToWin = teams.Where(t => t.Id == CurrentGame.FavoriteId).FirstOrDefault();
             winnerChosen = true;
         }
 
         else if(teamId == CurrentGame.UnderdogId)
         {
-            teamToWin = await teamData.GetTeam(CurrentGame.UnderdogId);
+            teamToWin = teams.Where(t => t.Id == CurrentGame.UnderdogId).FirstOrDefault();
             winnerChosen = true;
         }
     }

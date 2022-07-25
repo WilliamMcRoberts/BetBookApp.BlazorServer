@@ -47,7 +47,6 @@ public static class RegisterServices
         builder.Services.AddTransient<IBetData, BetData>();
         builder.Services.AddTransient<IGameData, GameData>();
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
-        builder.Services.AddTransient<ITeamRecordData, TeamRecordData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
     }
 }

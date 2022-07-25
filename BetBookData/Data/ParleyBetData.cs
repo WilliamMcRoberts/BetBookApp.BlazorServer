@@ -25,53 +25,6 @@ public class ParleyBetData : IParleyBetData
         IEnumerable<ParleyBetModel> parleyBets = await _db.LoadData<ParleyBetModel, dynamic>(
         "dbo.spParleyBets_GetAll", new { });
 
-        foreach (ParleyBetModel parleyBet in parleyBets)
-        {
-            if (parleyBet.Bet1Id != 0)
-            {
-                BetModel? bet1 = await _betData.GetBet(parleyBet.Bet1Id);
-                if (bet1 is not null)
-                {
-                    parleyBet.Bets.Add(bet1);
-                }
-            }
-
-            if (parleyBet.Bet2Id != 0)
-            {
-                BetModel? bet2 = await _betData.GetBet(parleyBet.Bet2Id);
-                if (bet2 is not null)
-                {
-                    parleyBet.Bets.Add(bet2);
-                }
-            }
-
-            if (parleyBet.Bet3Id != 0)
-            {
-                BetModel? bet3 = await _betData.GetBet(parleyBet.Bet3Id);
-                if (bet3 is not null)
-                {
-                    parleyBet.Bets.Add(bet3);
-                }
-            }
-
-            if (parleyBet.Bet4Id != 0)
-            {
-                BetModel? bet4 = await _betData.GetBet(parleyBet.Bet4Id);
-                if (bet4 is not null)
-                {
-                    parleyBet.Bets.Add(bet4);
-                }
-            }
-
-            if (parleyBet.Bet5Id != 0)
-            {
-                BetModel? bet5 = await _betData.GetBet(parleyBet.Bet5Id);
-                if (bet5 is not null)
-                {
-                    parleyBet.Bets.Add(bet5);
-                }
-            }
-        }
         return parleyBets;
     }
 
@@ -155,8 +108,6 @@ public class ParleyBetData : IParleyBetData
     /// <returns></returns>
     public async Task UpdateParleyBet(ParleyBetModel parleyBet)
     {
-
-
         string parleyBetStatus = parleyBet.ParleyBetStatus.ToString();
         string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToString();
 

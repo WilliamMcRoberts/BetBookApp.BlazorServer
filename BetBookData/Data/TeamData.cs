@@ -11,18 +11,18 @@ public class TeamData : ITeamData
 {
 
     private readonly ISqlConnection _db;
-    private readonly IConfiguration _config;
 
     /// <summary>
     /// TeamData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     /// <param name="config">IConfiguration represents Configuration class interface</param>
-    public TeamData(ISqlConnection db, IConfiguration config)
+    public TeamData(ISqlConnection db)
     {
         _db = db;
-        _config = config;
     }
+
+
 
     /// <summary>
     /// Async method calls the spTeams_GetAll stored procedure to retrieve 
@@ -70,14 +70,14 @@ public class TeamData : ITeamData
     /// </returns>
     public async Task<int> InsertTeam(TeamModel team)
     {
-        await _db.SaveData("dbo.spGames_Insert", new
+        await _db.SaveData("dbo.spTeams_Insert", new
         {
             team.TeamName,
             team.City,
             team.Stadium,
-            team.WinCount,
-            team.LossCount,
-            team.Drawcount,
+            team.Wins,
+            team.Losses,
+            team.Draws,
         });
 
         return team.Id;
@@ -98,9 +98,9 @@ public class TeamData : ITeamData
             team.TeamName,
             team.City,
             team.Stadium,
-            team.WinCount,
-            team.LossCount,
-            team.Drawcount
+            team.Wins,
+            team.Losses,
+            team.Draws
         });
     }
 

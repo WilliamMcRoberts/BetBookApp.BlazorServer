@@ -2,73 +2,171 @@
 @inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
 @inject ITeamData teamData
-@inject ITeamRecordData recordData
 
 <div class="game-info-container">
         <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
+    @if(CurrentGame is not null)
+    {
         <div style="margin-bottom:1em;">
             <ul class="game-list">
-                <li class="team-item">@BasicCurrentGame.AwayTeamName at @BasicCurrentGame.HomeTeamName || @BasicCurrentGame.FavoriteTeamName - @BasicCurrentGame.PointSpread points</li>
+                <li class="team-item">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName || @CurrentGame.Favorite.TeamName - @CurrentGame.PointSpread points</li>
+                <li class="game-time-date">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</li>
             </ul>
             <br />
             <div class="records">
                 <div class="fav-records">
-                    <label style="font-size: 30px;text-align:center;margin-left: 1em;">@BasicCurrentGame.FavoriteTeamName</label>
+                    <img style="height:100px;" src="/images/@CurrentGame.Favorite.ImagePath" alt="team logo">
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="0" 
-                          GameTeamRecordsLists="GameTeamRecordsLists" 
-                          TeamStats="TeamStats" 
-                          StatName="Wins"/>
+                        <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Wins</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Favorite.Wins is not null)
+                                {
+                                    @if(CurrentGame.Favorite.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Favorite.Wins.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="1" 
-                          GameTeamRecordsLists="GameTeamRecordsLists" 
-                          TeamStats="TeamStats" 
-                          StatName="Losses"/>
+                        <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Losses</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Favorite.Losses is not null)
+                                {
+                                    @if(CurrentGame.Favorite.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Favorite.Losses.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="2" 
-                        GameTeamRecordsLists="GameTeamRecordsLists" 
-                        TeamStats="TeamStats" 
-                        StatName="Draws"/>
+                        <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Draws</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Favorite.Draws is not null)
+                                {
+                                    @if(CurrentGame.Favorite.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Favorite.Draws.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="und-records">
-                    <label style="font-size: 30px;text-align:center;margin-left: 1em;">@BasicCurrentGame.UnderdogTeamName</label>
+                    <img style="height:100px;" src="/images/@CurrentGame.Underdog.ImagePath" alt="team logo">
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="3" 
-                          GameTeamRecordsLists="GameTeamRecordsLists" 
-                          TeamStats="TeamStats" 
-                          StatName="Wins"/>
+                          <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Wins</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Underdog.Wins is not null)
+                                {
+                                    @if(CurrentGame.Underdog.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Underdog.Wins.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="4" 
-                          GameTeamRecordsLists="GameTeamRecordsLists" 
-                          TeamStats="TeamStats" 
-                          StatName="Losses"/>
+                        <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Losses</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Underdog.Losses is not null)
+                                {
+                                    @if(CurrentGame.Underdog.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Underdog.Losses.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div class="stat">
-                        <Stat GameTeamRecordsListIndex="5" 
-                        GameTeamRecordsLists="GameTeamRecordsLists" 
-                        TeamStats="TeamStats" 
-                        StatName="Draws"/>
+                        <div class="rec-sec">
+                            <div style="text-align:center;">
+                                <label>Draws</label>
+                            </div>
+                            <div class="team">
+                                @if(CurrentGame.Underdog.Draws is not null)
+                                {
+                                    @if(CurrentGame.Underdog.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    {
+                                        @foreach(string team in CurrentGame.Underdog.Draws.Split('|').SkipLast(1).ToArray())
+                                        {
+                                            <h6 class="rec-item">@team</h6>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <h6 class="rec-item">None</h6>   
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    }
+    
     </div>
 
 @code {
 
     // Display info for current game being viewed
     [Parameter]
-    public BasicGameModel BasicCurrentGame { get; set; } = new();
-
-    // Stats of the teams in the game
-    [Parameter]
-    public int[] TeamStats { get; set; } = new int[6];
-
-    // List of a list of team records in current game
-    [Parameter]
-    public List<List<string>> GameTeamRecordsLists { get; set; } = new();
+    public GameModel CurrentGame { get; set; } = new();
 }

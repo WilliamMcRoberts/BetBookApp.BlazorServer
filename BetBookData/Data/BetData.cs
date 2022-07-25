@@ -78,7 +78,7 @@ public class BetData : IBetData
         await connection.ExecuteAsync("dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
 
         bet.Id = p.Get<int>("@Id");
-        Console.WriteLine(bet.Id);
+
         return bet.Id;
     }
 

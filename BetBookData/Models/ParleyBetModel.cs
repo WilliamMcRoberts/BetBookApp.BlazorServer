@@ -4,9 +4,6 @@ public class ParleyBetModel
 {
     // Id of ParleyBetModel
     public int Id { get; set; }
-
-    public List<BetModel> Bets { get; set; } = new();
-
     public int Bet1Id { get; set; }
     public int Bet2Id { get; set; }
     public int Bet3Id { get; set; }
@@ -26,4 +23,7 @@ public class ParleyBetModel
 
     // Payout status of the parley bet
     public ParleyPayoutStatus ParleyPayoutStatus { get; set; }
+
+    // List of bets in parley bet
+    public List<BetModel> Bets { get; set; } = new();
 }

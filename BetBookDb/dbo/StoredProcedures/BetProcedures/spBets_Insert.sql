@@ -5,7 +5,8 @@
 	@GameId int,
 	@ChosenWinnerId int,
 	@BetStatus nvarchar(20),
-	@PayoutStatus nvarchar(20)
+	@PayoutStatus nvarchar(20),
+    @Id int = 0 output
 AS
 begin
     insert into dbo.Bets (BetAmount, 
@@ -22,4 +23,6 @@ begin
             @ChosenWinnerId,
             @BetStatus,
             @PayoutStatus);
+
+    select @Id = SCOPE_IDENTITY();
 end

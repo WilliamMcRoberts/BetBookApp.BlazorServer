@@ -10,12 +10,18 @@ using BetBookData.Models;
 namespace BetBookData.Helpers;
 public static class UpdateHelpers
 {
-    public static async Task UpdateParleyBetWinners(IParleyBetData parleyData)
+    public static async Task UpdateParleyBetWinners(
+        this IParleyBetData parleyData, IEnumerable<ParleyBetModel> parleyBets, 
+            IEnumerable<GameModel> games, IEnumerable<TeamModel> teams, 
+                IEnumerable<BetModel> bets)
     {
-        IEnumerable<ParleyBetModel> allParleyBets = await parleyData.GetParleyBets();
 
-        List<ParleyBetModel> parleyBetsInProgress = allParleyBets.Where(pb =>
+        List<ParleyBetModel> parleyBetsInProgress = parleyBets.Where(pb =>
             pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
+
+        parleyBetsInProgress = 
+            parleyBetsInProgress.PopulateParleyBetsWithBetsGamesTeams(
+                games, teams, bets);
 
         foreach (ParleyBetModel pb in parleyBetsInProgress)
         {
@@ -56,17 +62,17 @@ public static class UpdateHelpers
     /// <returns></returns>
     public static async Task UpdateBetWinners(
         this GameModel currentGame, double favoriteScore,
-            double underdogScore, IBetData betData, ITeamData teamData)
+            double underdogScore, IBetData betData, IEnumerable<GameModel> games, IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
     {
-
-        IEnumerable<BetModel> bets = await betData.GetBets();
 
         List<BetModel> betsOnCurrentGame = bets.Where(b =>
             b.GameId == currentGame.Id).ToList();
 
-        TeamModel? winningTeamForBets =
-            await currentGame.CalculateWinningTeamForBet(
-                favoriteScore, underdogScore, teamData);
+        betsOnCurrentGame = 
+            betsOnCurrentGame.PopulateBetModelsWithGamesTeams(games, teams);
+
+        TeamModel? winningTeamForBets = currentGame.CalculateWinningTeamForBet(
+                favoriteScore, underdogScore, teams);
 
         // Bets are winners or losers
         if (winningTeamForBets is not null)
@@ -110,29 +116,27 @@ public static class UpdateHelpers
     /// </param>
     /// <returns></returns>
     public static async Task UpdateTeamRecords(this GameModel currentGame,
-        double favoriteScore, double underdogScore, ITeamData teamData, 
-            ITeamRecordData recordData)
+        double favoriteScore, double underdogScore, 
+            IEnumerable<TeamModel> teams, ITeamData teamData)
     {
-        TeamModel? currentFavoriteTeam =
-            await teamData.GetTeam(currentGame.FavoriteId);
-        TeamModel? currentUnderdogTeam =
-            await teamData.GetTeam(currentGame.UnderdogId);
+        TeamModel? currentFavorite = teams.Where(t => t.Id == currentGame.FavoriteId).FirstOrDefault();
+        TeamModel? currentUnderdog = teams.Where(t => t.Id == currentGame.UnderdogId).FirstOrDefault();
 
-        if (currentFavoriteTeam is not null && currentUnderdogTeam is not null)
+        if (currentFavorite is not null && currentUnderdog is not null)
         {
             TeamModel? actualWinningTeam = new();
             TeamModel? actualLosingTeam = new();
 
             if (favoriteScore > underdogScore)
             {
-                actualWinningTeam = currentFavoriteTeam;
-                actualLosingTeam = currentUnderdogTeam;
+                actualWinningTeam = currentFavorite;
+                actualLosingTeam = currentUnderdog;
             }
 
             else if (favoriteScore < underdogScore)
             {
-                actualWinningTeam = currentUnderdogTeam;
-                actualLosingTeam = currentFavoriteTeam;
+                actualWinningTeam = currentUnderdog;
+                actualLosingTeam = currentFavorite;
             }
 
             else if (favoriteScore == underdogScore)
@@ -141,37 +145,21 @@ public static class UpdateHelpers
             // If game is a draw
             if (actualWinningTeam is null)
             {
-                TeamRecordModel? teamFavoriteRecord =
-                    await recordData.GetTeamRecord(currentFavoriteTeam.Id);
-                TeamRecordModel? teamUnderdogRecord =
-                    await recordData.GetTeamRecord(currentUnderdogTeam.Id);
+                currentFavorite.Draws += $"{currentUnderdog.TeamName}|";
+                currentUnderdog.Draws += $"{currentFavorite.TeamName}|";
 
-                if (teamFavoriteRecord is not null && teamUnderdogRecord is not null)
-                {
-                    teamFavoriteRecord.Draws += $"{currentUnderdogTeam.TeamName}|";
-                    teamUnderdogRecord.Draws += $"{currentFavoriteTeam.TeamName}|";
-
-                    await recordData.UpdateTeamRecord(teamFavoriteRecord);
-                    await recordData.UpdateTeamRecord(teamUnderdogRecord);
-                }
+                await teamData.UpdateTeam(currentFavorite);
+                await teamData.UpdateTeam(currentUnderdog);
             }
 
             // If game is not a draw
             else
             {
-                TeamRecordModel? winnerTeamRecord =
-                    await recordData.GetTeamRecord(actualWinningTeam.Id);
-                TeamRecordModel? loserTeamRecord =
-                    await recordData.GetTeamRecord(actualLosingTeam.Id);
+                actualWinningTeam.Wins += $"{actualLosingTeam.TeamName}|";
+                actualLosingTeam.Losses += $"{actualWinningTeam.TeamName}|";
 
-                if (winnerTeamRecord is not null && loserTeamRecord is not null)
-                {
-                    winnerTeamRecord.Wins += $"{actualLosingTeam.TeamName}|";
-                    loserTeamRecord.Losses += $"{actualWinningTeam.TeamName}|";
-
-                    await recordData.UpdateTeamRecord(winnerTeamRecord);
-                    await recordData.UpdateTeamRecord(loserTeamRecord);
-                }
+                await teamData.UpdateTeam(actualWinningTeam);
+                await teamData.UpdateTeam(actualLosingTeam);
             }
         }
     }
@@ -181,7 +169,7 @@ public static class UpdateHelpers
     /// </summary>
     /// <returns></returns>
     public static async Task<bool> UpdateScores(this GameModel currentGame, 
-        int favoriteTeamScore, int underdogTeamScore, ITeamData teamData, 
+        int favoriteTeamScore, int underdogTeamScore, IEnumerable<TeamModel> teams, 
             IGameData gameData)
     {
         if (currentGame.GameStatus != GameStatus.FINISHED)
@@ -191,8 +179,8 @@ public static class UpdateHelpers
             currentGame.GameStatus = GameStatus.FINISHED;
 
             TeamModel? gameWinner =
-                await currentGame.CalculateWinningTeam(favoriteTeamScore,
-                        underdogTeamScore, teamData);
+                currentGame.CalculateWinningTeam(favoriteTeamScore,
+                        underdogTeamScore, teams);
 
             if (gameWinner is not null)
                 currentGame.GameWinnerId = gameWinner.Id;

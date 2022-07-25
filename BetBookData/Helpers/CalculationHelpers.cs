@@ -11,18 +11,17 @@ public static class CalculationHelpers
     /// <param name="game"></param>
     /// <param name="favoriteScore"></param>
     /// <param name="underdogScore"></param>
-    /// <param name="teamData"></param>
+    /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
-    public static async Task<TeamModel> CalculateWinningTeam(
+    public static TeamModel CalculateWinningTeam(
         this GameModel game, double favoriteScore, double underdogScore, 
-            ITeamData teamData)
+            IEnumerable<TeamModel> teams)
     {
-        TeamModel? winner;
 
-        TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
-        TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
+        TeamModel? favorite = teams.Where(t => t.Id == game.FavoriteId).FirstOrDefault();
+        TeamModel? underdog = teams.Where(t => t.Id == game.UnderdogId).FirstOrDefault();
 
-        winner = (favoriteScore == underdogScore) ? null :
+        TeamModel? winner = (favoriteScore == underdogScore) ? null :
             (favoriteScore > underdogScore) ? favorite :
                 underdog;
 
@@ -36,17 +35,17 @@ public static class CalculationHelpers
     /// <param name="game"></param>
     /// <param name="favoriteScore"></param>
     /// <param name="underdogScore"></param>
-    /// <param name="teamData"></param>
+    /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
-    public static async Task<TeamModel> CalculateWinningTeamForBet(
+    public static TeamModel CalculateWinningTeamForBet(
         this GameModel game, double favoriteScore, double underdogScore, 
-            ITeamData teamData)
+            IEnumerable<TeamModel> teams)
     {
         double pointSpread = game.PointSpread;
         double favoriteScoreMinusPointSpread = favoriteScore - pointSpread;
 
-        TeamModel? favorite = await teamData.GetTeam(game.FavoriteId);
-        TeamModel? underdog = await teamData.GetTeam(game.UnderdogId);
+        TeamModel? favorite = teams.Where(t => t.Id == game.FavoriteId).FirstOrDefault();
+        TeamModel? underdog = teams.Where(t => t.Id == game.UnderdogId).FirstOrDefault();
 
         TeamModel? winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
             (favoriteScoreMinusPointSpread > underdogScore) ? favorite :
@@ -176,7 +175,7 @@ public static class CalculationHelpers
         else if (gamecount == 4) payout = betAmount * (decimal)11;
         else if (gamecount == 5) payout = betAmount * (decimal)22;
 
-        return payout;
+        return Convert.ToDecimal((payout).ToString("#.00"));
     }
 
     /// <summary>
@@ -195,9 +194,7 @@ public static class CalculationHelpers
         foreach (ParleyBetModel bet in parleyPushBets)
             total += bet.BetPayout;
 
-        total = Convert.ToDecimal((total).ToString("#.00"));
-
-        return total;
+        return Convert.ToDecimal((total).ToString("#.00"));
     }
 
     /// <summary>
@@ -212,13 +209,10 @@ public static class CalculationHelpers
             return 0;
 
         decimal total = 0;
-        decimal totalPayout;
 
         foreach (ParleyBetModel parleyBet in parleyWinningBets)
             total += (parleyBet.BetPayout + parleyBet.BetAmount);
 
-        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
-
-        return totalPayout;
+        return Convert.ToDecimal((total).ToString("#.00"));
     }
 }

@@ -1,9 +1,9 @@
 ﻿@page "/CreateBet/{gameId:int}"
+@using BetBookData.Helpers
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
 @inject ITeamData teamData
-@inject ITeamRecordData recordData
 @inject IUserData userData
 
 <PageTitle>CreateBet</PageTitle>
@@ -13,12 +13,9 @@
 </div>
 <div class="game-wager-container">
 
-    <GameDetails BasicCurrentGame="basicCurrentGame" 
-                 TeamStats="teamStats" 
-                 GameTeamRecordsLists="gameTeamRecordsLists"/>
+    <GameDetails CurrentGame="currentGame"/>
 
-    <CreateWager CurrentGame="currentGame"
-                 BasicCurrentGame="basicCurrentGame"/>
+    <CreateWager CurrentGame="currentGame"/>
 </div>
 
 @code {
@@ -30,17 +27,12 @@
     // Current game being viewed
     private GameModel? currentGame;
 
-    // Display info for current game being viewed
-    private BasicGameModel basicCurrentGame = new();
-
-    // List of a list of team records in current game
-    private List<List<string>> gameTeamRecordsLists = new();
-
-    // Stats of the teams in the game
-    int[] teamStats = new int[6];
-
     // Current logged in user
     private UserModel? loggedInUser;
+
+    private IEnumerable<GameModel> games;
+
+    private IEnumerable<TeamModel> teams;
 
     /// <summary>
     /// Async initialization method
@@ -48,22 +40,18 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-        currentGame = await gameData.GetGame(gameId);
+        games = await gameData.GetGames();
+
+        teams = await teamData.GetTeams();
+
+        currentGame = games.Where(g => g.Id == gameId)
+                           .ToList()
+                           .PopulateGameModelsWithTeams(teams)
+                           .FirstOrDefault();
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
         loggedInUser.AccountBalance = 
             Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
-
-        if(currentGame is not null)
-        {
-            basicCurrentGame = 
-                await currentGame.PopulateBasicGameModelFromGame(teamData);
-            gameTeamRecordsLists =  
-                await currentGame.PopulateRecordsListsFromGame(recordData);
-        }
-
-        if(gameTeamRecordsLists is not null)
-            teamStats = gameTeamRecordsLists.PopulateTeamStatsFromRecordLists();
     }
 }

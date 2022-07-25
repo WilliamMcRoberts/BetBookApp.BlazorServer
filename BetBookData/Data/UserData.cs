@@ -117,6 +117,7 @@ public class UserData : IUserData
         });
     }
 
+
     /// <summary>
     /// Async method calls the spUsers_UpdateAccountBalance stored procedure which
     /// updates the account balance of a user

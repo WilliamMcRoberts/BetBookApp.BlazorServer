@@ -1,29 +1,33 @@
 ﻿@inject NavigationManager navManager
 @inject IGameData gameData
 
-@if(BasicGameList is not null)
+@if(AvailableGameList is not null && AvailableGameList.Count != 0)
 {
-    int index = 0;
-    foreach(BasicGameModel bg in BasicGameList)
+    foreach(GameModel g in AvailableGameList)
     {
+
         <div class="game-container">
             <div class="away-team">
                 <label class="local">Away</label>
-                <p class="mt-2">@bg.AwayTeamName</p>
+                <img style="height:100px;" src="/images/@g.AwayTeam.ImagePath" alt="team logo">
                 <div class="basic-record">
-                    <p>@RecordsArray[index].Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                    <p>@RecordsArray[index].Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                    <p>@RecordsArray[index].Draws.Split('|').SkipLast(1).ToArray().Length</p>
+                    @if(g.AwayTeam.Wins is not null && g.AwayTeam.Losses is not null && g.AwayTeam.Draws is not null)
+                    {
+                        <p>@g.AwayTeam.Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
+                        <p>@g.AwayTeam.Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
+                        <p>@g.AwayTeam.Draws.Split('|').SkipLast(1).ToArray().Length</p>
+                    }
                 </div>
             </div>
             <div class="game-details">
                 <ul class="game-info">
-                    <li class="team-item">@bg.AwayTeamName at @bg.HomeTeamName || @bg.FavoriteTeamName - @bg.PointSpread points</li>
+                    <li class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName || @g.Favorite.TeamName - @g.PointSpread points</li>
+                    <li class="game-time-date">@g.DateOfGameOnly at @g.TimeOfGameOnly pm</li>
                 </ul>
                 <div class="bet-selection">
                     <div>
-                        <button @onclick="(() => CreateBet(bg.GameId))" 
-                            class="mb-2 site-btn btn site-btn-light btn-sm text-uppercase">
+                        <button @onclick="(() => CreateBet(g.Id))" 
+                            class="mt-4 site-btn btn site-btn-light btn-sm text-uppercase">
                             Place A Wager On Game
                         </button>
                     </div>
@@ -31,20 +35,24 @@
             </div>
             <div class="home-team">
                 <label class="local">Home</label>
-                <p class="mt-2">@bg.HomeTeamName</p>
+                <img style="height:100px;" src="/images/@g.HomeTeam.ImagePath" alt="team logo">
                 <div class="basic-record">
-                    <p>@RecordsArray[index + 1].Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                    <p>@RecordsArray[index + 1].Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                    <p>@RecordsArray[index + 1].Draws.Split('|').SkipLast(1).ToArray().Length</p>
+                    @if(g.HomeTeam.Wins is not null && g.HomeTeam.Losses is not null && g.HomeTeam.Draws is not null)
+                    {
+                        <p>@g.HomeTeam.Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
+                        <p>@g.HomeTeam.Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
+                        <p>@g.HomeTeam.Draws.Split('|').SkipLast(1).ToArray().Length</p>
+                    }
                 </div>
             </div>
         </div>
-        index += 2;
+        
     }
 }
 else
 {
-    <h1 class="title">There are no games currently available.</h1>
+    <h1 style="margin-top:2em;" class="title">There are no games currently available.</h1>
+    <h1 style="margin-top:1em;" class="title">We'll have to wait until next week.</h1>
 }
 
 
@@ -52,12 +60,17 @@ else
 
     [Parameter]
     public UserModel User { get; set; } = new();
-    [Parameter]
-    public List<BasicGameModel> BasicGameList { get; set; } = new();
-    [Parameter]
-    public TeamRecordModel[] RecordsArray { get; set; } = new TeamRecordModel[32];
 
+    [Parameter]
+    public List<GameModel> AvailableGameList { get; set; } = new();
 
+    public string endPath = ".svg";
+
+    public string GetPath(TeamModel team)
+    {
+        string path = $"{team.TeamName.ToLower()}.svg";
+        return path;
+    }
 
     /// <summary>
     /// Selects a game to place a wager on and navigates to
@@ -73,5 +86,4 @@ else
         else
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
-
 }
