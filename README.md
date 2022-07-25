@@ -5,7 +5,7 @@ BROWSE GAMES HOME PAGE
 ![GameBrowse](https://user-images.githubusercontent.com/95720340/180886841-aa457173-efde-4e0e-82f5-d93cf3374de0.png)
 
 CREATE A WAGER PAGE
-![CreateBetBG](https://user-images.githubusercontent.com/95720340/179340026-353b14fe-8632-4811-8e9b-02022e108f2b.png)
+![WagCre](https://user-images.githubusercontent.com/95720340/180887410-7596be3e-a171-4e91-93d0-1c957178b5da.png)
 
 CREATE A PARLEY WAGER PAGE
 ![ParleyBt](https://user-images.githubusercontent.com/95720340/180887209-af69b84a-a9ba-4985-87b8-0b85c7fba8cc.png)
