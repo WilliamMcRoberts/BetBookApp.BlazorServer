@@ -2,13 +2,13 @@
 .NET 6 Blazor Server Application using a SQL Server DB, Dapper micro-ORM and Azure AD B2C for authentication. This app allows users with an account to receive 10,000 BetBucks to place wagers on games in the upcoming 2022-2023 NFL Season. Users can place wagers on "parley" style bets up to five games with appropriate payouts or bet on single games. Point spreads only in the first version. Moneyline and over unders will be future features.
 
 BROWSE GAMES HOME PAGE
-![HomePageBG](https://user-images.githubusercontent.com/95720340/179340028-17a29104-76f1-4889-bbce-b06bc1b4b3bd.png)
+![GameBrowse](https://user-images.githubusercontent.com/95720340/180886841-aa457173-efde-4e0e-82f5-d93cf3374de0.png)
 
 CREATE A WAGER PAGE
-![CreateBetBG](https://user-images.githubusercontent.com/95720340/179340026-353b14fe-8632-4811-8e9b-02022e108f2b.png)
+![WagCre](https://user-images.githubusercontent.com/95720340/180887410-7596be3e-a171-4e91-93d0-1c957178b5da.png)
 
 CREATE A PARLEY WAGER PAGE
-![PbPage](https://user-images.githubusercontent.com/95720340/179370079-22e8b6db-7b0a-48f9-bd3a-ce541bb0ea5e.png)
+![ParleyBt](https://user-images.githubusercontent.com/95720340/180887209-af69b84a-a9ba-4985-87b8-0b85c7fba8cc.png)
 
 PROFILE PAGE
 ![ProfileBG](https://user-images.githubusercontent.com/95720340/179340027-89b73650-6d61-4630-902d-95f0fcc2635c.png)
