@@ -228,7 +228,6 @@ ul {
     width: 35%;
     margin-right: 1em;
     overflow-y: scroll;
-    /*overflow: scroll;*/
     height: 76vh;
 }
 
@@ -277,7 +276,6 @@ ul {
     border-radius: 15px;
     width: 45%;
     overflow-y: scroll;
-    /*overflow: scroll;*/
     height: 76vh;
 }
 
@@ -312,7 +310,6 @@ ul {
     background: palegreen;
     margin-right: 1em;
     overflow-y: scroll;
-    /*overflow: scroll;*/
     height: 76vh;
 }
 
@@ -425,8 +422,6 @@ ul {
     justify-content: space-evenly;
 }
 
-
-
 .rec-sec {
     margin-bottom: 1em;
 }
@@ -496,7 +491,6 @@ ul {
     width: 50%;
     margin: 0 auto;
 }
-
 
 /*************************************
         Buttons
