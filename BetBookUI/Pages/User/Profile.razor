@@ -323,15 +323,15 @@
 @code {
     private UserModel? loggedInUser;
 
-    private HouseAccountModel houseAccount;
+    private HouseAccountModel? houseAccount;
 
-    private IEnumerable<TeamModel> teams;
+    private IEnumerable<TeamModel>? teams;
 
-    private IEnumerable<GameModel> games;
+    private IEnumerable<GameModel>? games;
 
-    private IEnumerable<BetModel> bets;
+    private IEnumerable<BetModel>? bets;
 
-    private IEnumerable<ParleyBetModel> parleyBets;
+    private IEnumerable<ParleyBetModel>? parleyBets;
 
     private List<BetModel> bettorInProgressBets = new();
 

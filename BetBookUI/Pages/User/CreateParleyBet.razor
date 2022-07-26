@@ -65,23 +65,19 @@
                         <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
                         @if(chosenGamesAndWinners.ContainsValue(game.Favorite.TeamName))
                         {
-                            <div>
                                 <label style="margin-right: .5em;">You've chosen @game.Favorite.TeamName - @game.PointSpread points over @game.Underdog.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection(game)">
                                     Undo @game.Favorite.TeamName
                                 </button>
-                            </div>
                         }
                         else if (chosenGamesAndWinners.ContainsValue(game.Underdog.TeamName))
                         {
-                            <div>
                                 <label style="margin-right: .5em;">You've chosen @game.Underdog.TeamName + @game.PointSpread points over @game.Favorite.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection(game)">
                                     Undo @game.Underdog.TeamName
                                 </button>
-                            </div>
                         }
                         else
                         {
