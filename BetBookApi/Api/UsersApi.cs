@@ -8,13 +8,13 @@ public static class UsersApi
     public static void ConfigureUsersApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Users", GetUsers);
-        app.MapGet("/Users/{id}", GetUser);
-        app.MapGet("/Users/{objectIdentifier}", GetUserFromAuthentication);
-        app.MapPost("/Users", InsertUser);
-        app.MapPut("/Users", UpdateUser);
-        app.MapPut("/Users/AccountBalance", UpdateUserAccountBalance);
-        app.MapDelete("/Users/{id}", DeleteUser);
+        app.MapGet("/Users", GetUsers).WithName("GetUsers");
+        app.MapGet("/Users/{id}", GetUser).WithName("GetUserById");
+        app.MapGet("/Users/objectIdentifier", GetUserFromAuthentication).WithName("GetUserByObjectId");
+        app.MapPost("/Users", InsertUser).WithName("InsertUser");
+        app.MapPut("/Users", UpdateUser).WithName("UpdateUser");
+        app.MapPut("/Users/AccountBalance", UpdateUserAccountBalance).WithName("UpdateUserAccountBalance");
+        app.MapDelete("/Users/{id}", DeleteUser).WithName("DeleteUser");
     }
 
     public static async Task<IResult> GetUsers(IUserData data)
