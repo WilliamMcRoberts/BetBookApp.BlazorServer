@@ -67,8 +67,8 @@
                                         <li>Final Winner || NONE</li>
 
                                     }
-                                    <li>Payout Amount || @Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                        <li>Point Spread || @bet.Game.PointSpread</li>
+                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
+                                    <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
@@ -107,8 +107,8 @@
                                     {
                                         <li>Final Winner || NONE</li>
                                     }
-                                    <li>Payout Amount || @Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                        <li>Point Spread || @bet.Game.PointSpread</li>
+                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
+                                        <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
@@ -147,8 +147,8 @@
                                     {
                                         <li>Final Winner || NONE</li>
                                     }
-                                    <li>Payout Amount || @Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                        <li>Point Spread || @bet.Game.PointSpread</li>
+                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
+                                        <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
@@ -213,7 +213,7 @@
                                         <li>Final Winner || NONE</li>
 
                                     }
-                                        <li>Point Spread || @bet.Game.PointSpread</li>
+                                        <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
@@ -256,7 +256,7 @@
                                         <li>Final Winner || NONE</li>
 
                                     }
-                                    <li>Point Spread || @bet.Game.PointSpread</li>
+                                    <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
@@ -298,7 +298,7 @@
                                     {
                                         <li>Final Winner || NONE</li>
                                     }
-                                    <li>Point Spread || @bet.Game.PointSpread</li>
+                                    <li>Point Spread || @bet.Game?.PointSpread</li>
                                     </ul>
                                 </div>
                             }
