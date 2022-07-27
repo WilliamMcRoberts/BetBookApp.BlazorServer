@@ -13,160 +13,55 @@
 <PageTitle>Profile</PageTitle>
 
 @*********************************** Demo Display ******************************************@
+
 <div style="margin-left: 4em;" class="balance">
     <label>@loggedInUser?.DisplayName's Balance: $@loggedInUser?.AccountBalance</label>
 </div>
 <div class="profile">
     
-        <div class="user-profile-reg">
-            <div class="payout-section">
-                <div>
-                    <div class="label-container">
-                        <h3 style="font-weight: 700">Single Bets</h3>
-                    </div>
-                    <div class="item">
-                    <p>Pending Payout: $@totalPendingPayout</p>
-                    </div>
-                    <div class="item">
-                        <p>Pending Refund: $@totalPendingRefund</p>
-                    </div>
-                    <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
-                        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningBets">Collect My Winnings</button>
-                    </div>
-                    <div style="text-align: center;margin-bottom: 1em;">
-                        <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundUnpaidPushBets">Refund My Push Bets</button>
-                    </div>
+    <div class="user-profile-reg">
+
+        <div class="payout-section">
+
+            <div>
+                <div class="label-container">
+                    <h3 style="font-weight: 700">Single Bets</h3>
+                </div>
+                <div class="item">
+                <p>Pending Payout: $@totalPendingPayout</p>
+                </div>
+                <div class="item">
+                    <p>Pending Refund: $@totalPendingRefund</p>
+                </div>
+                <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+                    <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningBets">Collect My Winnings</button>
+                </div>
+                <div style="text-align: center;margin-bottom: 1em;">
+                    <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundUnpaidPushBets">Refund My Push Bets</button>
                 </div>
             </div>
-        <div class="divider"></div>
-        <div class="bets">
-            <div>
-                <label style="margin-left: 5.25em;">Open Bets</label>
-                    @if(bettorInProgressBets.Count != 0)
-                    {
-                        if(bettorInProgressBets.Where(b => b.BetPayout != 0).ToList().Count == 0)
-                        {
-                            <div class="bet">
-                                <p style="margin: 1em 0;">NONE</p>
-                            </div>
-                        }
-                        @foreach(BetModel bet in bettorInProgressBets)
-                        {
-            
-                            if(bet.BetPayout != 0)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
 
-                                    }
-                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                    <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <div class="bet">
-                            <p style="margin: 1em 0;">NONE</p>
-                        </div>
-                    }
-            </div>
-            <div>
-                <label style="margin-left: 5.25em;">Winning Bets</label>
-                    @if(bettorWinningBetsUnpaid.Count != 0)
-                    {
-                        if(bettorWinningBetsUnpaid.Where(b => b.BetPayout != 0).ToList().Count == 0)
-                        {
-                            <div class="bet">
-                                <p style="margin: 1em 0;">NONE</p>
-                            </div>
-                        }
-                        @foreach(BetModel bet in bettorWinningBetsUnpaid)
-                        {
-            
-                            if(bet.BetPayout != 0)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
-                                    }
-                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                        <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <div class="bet">
-                            <p style="margin: 1em 0;">NONE</p>
-                        </div>
-                    }
-            </div>
-            <div>
-                <label style="margin-left: 5.25em;">Push Bets</label>
-                    @if(bettorPushBetsUnpaid.Count != 0)
-                    {
-                        if(bettorPushBetsUnpaid.Where(b => b.BetPayout != 0).ToList().Count == 0)
-                        {
-                            <div class="bet">
-                                <p style="margin: 1em 0;">NONE</p>
-                            </div>
-                        }
-                        @foreach(BetModel bet in bettorPushBetsUnpaid)
-                        {
-            
-                            if(bet.BetPayout != 0)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
-                                    }
-                                    <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                                        <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <div class="bet">
-                            <p style="margin: 1em 0;">NONE</p>
-                        </div>
-                    }
-            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="bets">
+
+            <RegBetList BetType="Open"
+                        BetList="bettorInProgressBets"/>
+
+            <RegBetList BetType="Winning"
+                        BetList="bettorWinningBetsUnpaid"/>
+
+            <RegBetList BetType="Push"
+                        BetList="bettorPushBetsUnpaid"/>
         </div>
     </div>
 
     <div class="user-profile-parley">
 
-        <div>
+        <div class="payout-section">
+
             <div class="label-container">
                 <h3 style="font-weight: 700">Parley Bets</h3>
             </div>
@@ -186,135 +81,15 @@
         </div>
 
         <div class="divider"></div>
-    
-        <div>
-            <label style="margin-left: 3.5em;">Open Parley Bets</label>
-            @if(bettorInProgressParleyBets.Count != 0)
-            {
-                    int index = 1;
-                    @foreach(ParleyBetModel parleyBet in bettorInProgressParleyBets)
-                    {
-                        <div class="parley-bet">
-                            <div class="parley-bet-label">
-                                <label style="margin-left:4.25em;margin-top:1em;">Parley Bet #@index</label>
-                                <label style="margin-right:5em;margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
-                            </div>
-                            @foreach(BetModel bet in parleyBet.Bets)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
 
-                                    }
-                                        <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        </div>
-                        index++;
-                    }
-            }
-            else
-            {
-                <div class="parley-bet">
-                    <div class="bet">
-                        <p style="margin: 1em 0;">NONE</p>
-                    </div>
-                </div>
-            }
-        </div>
-        <div>
-            <label style="margin-left: 3.5em;">Winning Parley Bets</label>
-            @if(bettorWinningParleyBetsUnpaid.Count != 0)
-            {
-                    int index = 1;
-                    @foreach(ParleyBetModel parleyBet in bettorWinningParleyBetsUnpaid)
-                    {
-                        <div class="parley-bet">
-                            <div class="parley-bet-label">
-                                <label style="margin-left:4.25em;margin-top:1em;">Parley Bet #@index</label>
-                                <label style="margin-right:5em;margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
-                            </div>
-                            @foreach(BetModel bet in parleyBet.Bets)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
+        <ParleyBetList BetType="Open"
+                       BetList="bettorInProgressParleyBets" />
 
-                                    }
-                                    <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        </div>
-                        index++;
-                    }
-            }
-            else
-            {
-                <div class="parley-bet">
-                    <div class="bet">
-                        <p style="margin: 1em 0;">NONE</p>
-                    </div>
-                </div>
-            }
-        </div>
-        <div>
-            <label style="margin-left: 3.5em;">Push Parley Bets</label>
-            @if(bettorPushParleyBetsUnpaid.Count != 0)
-            {
-                    int index = 1;
-                    @foreach(ParleyBetModel parleyBet in bettorPushParleyBetsUnpaid)
-                    {
-                        <div class="parley-bet">
-                            <div class="parley-bet-label">
-                                <label style="margin-left:4.25em;margin-top:1em;">Parley Bet #@index</label>
-                                <label style="margin-right:5em;margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
-                            </div>
-                            @foreach(BetModel bet in parleyBet.Bets)
-                            {
-                                <div class="bet">
-                                    <ul>
-                                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                                    @if(bet.FinalWinner is not null)
-                                    {
-                                        <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                                    }
-                                    else
-                                    {
-                                        <li>Final Winner || NONE</li>
-                                    }
-                                    <li>Point Spread || @bet.Game?.PointSpread</li>
-                                    </ul>
-                                </div>
-                            }
-                        </div>
-                        index++;
-                    }
-            }
-            else
-            {
-                <div class="parley-bet">
-                    <div class="bet">
-                        <p style="margin: 1em 0;">NONE</p>
-                    </div>
-                </div>
-            }
-        </div>
+        <ParleyBetList BetType="Winning"
+                       BetList="bettorWinningParleyBetsUnpaid" />
+
+        <ParleyBetList BetType="Push"
+                       BetList="bettorPushParleyBetsUnpaid" />
     </div>
 
 </div>
@@ -375,7 +150,8 @@
                        b.BetStatus == BetStatus.IN_PROGRESS).ToList();
 
         if (bettorInProgressBets.Count != 0)
-            bettorInProgressBets = bettorInProgressBets.PopulateBetModelsWithGamesTeams(games, teams);
+            bettorInProgressBets = bettorInProgressBets.
+                PopulateBetModelsWithGamesTeams(games, teams);
 
         bettorWinningBetsUnpaid = 
             bets.Where(b => b.BettorId == loggedInUser.Id &&
@@ -383,7 +159,8 @@
                        b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
         if (bettorWinningBetsUnpaid.Count != 0)
-            bettorWinningBetsUnpaid = bettorWinningBetsUnpaid.PopulateBetModelsWithGamesTeams(games, teams);
+            bettorWinningBetsUnpaid = 
+                bettorWinningBetsUnpaid.PopulateBetModelsWithGamesTeams(games, teams);
 
         bettorPushBetsUnpaid = 
             bets.Where(b => b.BettorId == loggedInUser.Id &&
@@ -391,7 +168,8 @@
                        b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
         if (bettorPushBetsUnpaid.Count != 0)
-            bettorPushBetsUnpaid = bettorPushBetsUnpaid.PopulateBetModelsWithGamesTeams(games, teams);
+            bettorPushBetsUnpaid = bettorPushBetsUnpaid.
+                PopulateBetModelsWithGamesTeams(games, teams);
 
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&
@@ -490,8 +268,6 @@
                 bettorPushBetsUnpaid.CalculateTotalPendingRefund();
         }
     }
-
-    // TODO - Fix ParleyBet Payouts
 
     /// <summary>
     /// Method pays out all unpaid winning parley bets

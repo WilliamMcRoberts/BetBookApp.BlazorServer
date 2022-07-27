@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookDbAccess", "BetBookD
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BetBookSqlDatabase", "BetBookSqlDatabase\BetBookSqlDatabase.sqlproj", "{04880732-1CD8-4574-B6E7-63CE6DCB184A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetBookApi", "BetBookApi\BetBookApi.csproj", "{07DAD778-CD57-477F-869C-0BED870BEBED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookApi", "BetBookApi\BetBookApi.csproj", "{07DAD778-CD57-477F-869C-0BED870BEBED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
