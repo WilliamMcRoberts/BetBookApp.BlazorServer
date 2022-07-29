@@ -14,7 +14,11 @@ PROFILE PAGE
 ![ProfileBG](https://user-images.githubusercontent.com/95720340/179340027-89b73650-6d61-4630-902d-95f0fcc2635c.png)
 
 ADMIN GAME UPDATE PAGE
-![AddGamesBG](https://user-images.githubusercontent.com/95720340/179340029-3b74cce3-4e32-45d5-b0e3-8157d6a76711.png)
+![AGU](https://user-images.githubusercontent.com/95720340/181859589-5762d73c-f1ed-4e14-9e42-429dd40f2875.png)
+
+ADMIN SCORES FETCH PAGE
+![ASI](https://user-images.githubusercontent.com/95720340/181859561-f9a979de-367f-4395-ac34-3110722e65f9.png)
+
 
 
 
