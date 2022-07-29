@@ -13,11 +13,10 @@ CREATE A PARLEY WAGER PAGE
 PROFILE PAGE
 ![ProfileBG](https://user-images.githubusercontent.com/95720340/179340027-89b73650-6d61-4630-902d-95f0fcc2635c.png)
 
-ADMIN GAME INPUT PAGE
+ADMIN GAME UPDATE PAGE
 ![AddGamesBG](https://user-images.githubusercontent.com/95720340/179340029-3b74cce3-4e32-45d5-b0e3-8157d6a76711.png)
 
-ADMIN SCORES UPDATE PAGE
-![AddScoresBG](https://user-images.githubusercontent.com/95720340/179340023-26b5774e-c0e8-40da-83f8-caaf9bd68059.png)
+
 
 
 
