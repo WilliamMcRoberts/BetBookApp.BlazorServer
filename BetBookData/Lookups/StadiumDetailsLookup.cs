@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BetBookData.Lookups;
-public class Stadiumdetails
+public class StadiumDetailsLookup
 {
     public int StadiumID { get; set; }
     public string Name { get; set; }

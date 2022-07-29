@@ -1,8 +1,8 @@
-﻿@page "/AdminGamesInput"
+﻿@page "/AdminGamesUpdate"
 @attribute [Authorize(Policy = "Admin")]
 @inject IGameData gameData
 
-<PageTitle>AdminGamesInput</PageTitle>
+<PageTitle>AdminGamesUpdate</PageTitle>
 
 <div style="text-align:center; margin-right: 720px;" class="balance">
     <label>Admin</label>
@@ -12,7 +12,7 @@
     <div class="game-input">
 
         <div class="input-label-container">
-            <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Game Input</h3>
+            <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Game Update</h3>
             @if(teamAlreadyPlaying == false)
             {
                 <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">FILL OUT THE FORM TO CREATE A GAME</div>

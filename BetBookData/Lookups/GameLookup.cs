@@ -90,7 +90,7 @@ public class Score
     public object AwayTimeouts { get; set; }
     public DateTime DateTimeUTC { get; set; }
     public int Attendance { get; set; }
-    public Stadiumdetails StadiumDetails { get; set; }
+    public StadiumDetailsLookup StadiumDetails { get; set; }
 }
 
 
