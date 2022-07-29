@@ -59,9 +59,7 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
-
-        int weekNumber = game.Season.CalculateWeek(game.DateOfGame);
-        string seasonType = game.DateOfGame.CalculateSeason().ToString();
+        string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
 
         await _db.SaveData("dbo.spGames_Insert", new
@@ -72,10 +70,13 @@ public class GameData : IGameData
             game.UnderdogId,
             game.Stadium,
             game.PointSpread,
-            weekNumber,
+            game.WeekNumber,
             seasonType,
             game.DateOfGame,
-            gameStatus
+            gameStatus,
+            game.ScoreId,
+            game.DateOfGameOnly,
+            game.TimeOfGameOnly
         });
     }
 
@@ -101,11 +102,14 @@ public class GameData : IGameData
                 game.UnderdogId,
                 game.Stadium,
                 game.PointSpread,
-                game.FavoriteFinalScore,
-                game.UnderdogFinalScore,
+                game.HomeTeamFinalScore,
+                game.AwayTeamFinalScore,
                 seasonType,
                 game.DateOfGame,
-                gameStatus
+                gameStatus,
+                game.ScoreId,
+                game.DateOfGameOnly,
+                game.TimeOfGameOnly
             });
         }
 
@@ -121,12 +125,15 @@ public class GameData : IGameData
                 game.UnderdogId,
                 game.Stadium,
                 game.PointSpread,
-                game.FavoriteFinalScore,
-                game.UnderdogFinalScore,
+                game.HomeTeamFinalScore,
+                game.AwayTeamFinalScore,
                 game.GameWinnerId,
                 seasonType,
                 game.DateOfGame,
-                gameStatus
+                gameStatus,
+                game.ScoreId,
+                game.DateOfGameOnly,
+                game.TimeOfGameOnly
             });
         }
     }

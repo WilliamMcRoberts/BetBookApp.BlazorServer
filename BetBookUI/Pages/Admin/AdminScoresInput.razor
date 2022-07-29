@@ -4,104 +4,25 @@
 @inject ITeamData teamData
 @inject IBetData betData
 @inject IParleyBetData parleyData
+@inject IGameService gameService
 
 <PageTitle>AdminScoresInput</PageTitle>
-
-<div style="text-align:center; margin-right: 720px;" class="balance">
-    <label>Admin</label>
+<div style="text-align: center;margin-top:4em;">
+    <button @onclick="UpdateAllScores" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+        Get And Insert Scores
+    </button>
 </div>
 
-<div class="input">
-    <div class="winner-input">
-            <h3 style="font-weight: 700;margin-top: .5em;" class="title">Scores Input</h3>
-        <div class="game">
-            @if (scoresAdded)
-            {
-                <div style="margin: 4em 1em;">
-                    <h1>Winners have been successfully added!</h1>
-                    <h1>You may add more game winners.</h1>
-                </div>
-            }
-            else
-            {
-                @if(currentGame is not null)
-                {
-                    <ul class="game-info">
-                    <li class="team-item">Home Team || @currentGame.HomeTeam?.TeamName</li>
-                    <li class="team-item">Away Team || @currentGame.AwayTeam?.TeamName</li>
-                    <li class="team-item">Favorite || @currentGame.Favorite?.TeamName</li>
-                    <li class="team-item">Underdog || @currentGame.Underdog?.TeamName</li>
-                    <li class="team-item">Point Spread || @currentGame.PointSpread</li>
-                </ul>
-                }
-            }
-            <br>
-        </div>
-        @if(statusBad == true)
-        {
-            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">
-                *YOU CANNOT ADD SCORES TO A GAME WITH A FINISHED STATUS*
-            </div>
-        }
-        else if(noGame == true)
-        {
-            <div style="color:red;text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;margin-right:2em;">
-                *THERE IS NO GAME WITH THAT GAME ID, TRY AGAIN*
-            </div>
-        }
-        else
-        {
-            <div style="text-align:center;margin-bottom:1em;font-size:15px;font-weight:700;">
-                ENTER A GAME ID TO SELECT A GAME
-            </div>
-        }
-        <div class="game-id-box">
-            <div style="display: flex;justify-content: space-between;">
-                <div class="scores-box">
-                    <label>Game Id</label>
-                    <input type="number" 
-                        @bind-value="@gameId" 
-                        @bind-value:event="oninput"/>
-                </div>
-                <div>
-                    <button type="button" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase" 
-                        @onclick="(() =>  PopulateCurrentGame(gameId))">
-                        Get Game
-                    </button>
-                </div>
-            </div>
-            <div style="margin-top: 2em;margin-bottom:2em;display: flex;justify-content: space-between;">
-                <div class="scores-box">
-                <label>Favorite Score</label>
-                <input type="number" 
-                    @bind-value="@favoriteTeamScore" 
-                    @bind-value:event="oninput"/>
-                </div>
-                <div style="margin: 0 2em;">
-                    <button @onclick="UpdateScoresBetsRecords" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
-                        Submit Scores
-                    </button>
-                </div>
-                <div class="scores-box">
-                    <label>Underdog Score</label>
-                    <input type="number" 
-                        @bind-value="@underdogTeamScore" 
-                        @bind-value:event="oninput"/>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 @code {
-    public IEnumerable<GameModel> games;
+    public IEnumerable<GameModel>? games;
 
-    public IEnumerable<TeamModel> teams;
+    public IEnumerable<TeamModel>? teams;
 
-    public IEnumerable<BetModel> bets;
+    public IEnumerable<BetModel>? bets;
 
-    public IEnumerable<ParleyBetModel> parleyBets;
+    public IEnumerable<ParleyBetModel>? parleyBets;
 
     // Current game being updated
     private GameModel? currentGame  = new();
@@ -118,12 +39,6 @@
     // Id of game
     private int gameId;
 
-    // Underdog team score
-    private int underdogTeamScore;
-
-    // Favorite team score
-    private int favoriteTeamScore;
-
     protected override async Task OnInitializedAsync()
     {
         games = await gameData.GetGames();
@@ -132,47 +47,32 @@
         parleyBets = await parleyData.GetParleyBets();
     }
 
-    /// <summary>
-    /// Async method calls AddScores(), UpdateBetWinners(), 
-    /// and UpdateTeamRecords() methods
-    /// </summary>
-    /// <returns></returns>
-    private async Task UpdateScoresBetsRecords()
+    private async Task UpdateAllScores()
     {
-        if (currentGame is not null)
+
+        foreach(GameModel game in games!.Where(g => g.GameStatus != GameStatus.FINISHED))
         {
-            statusBad = await currentGame.UpdateScores(
-                favoriteTeamScore, underdogTeamScore, teams, gameData);
+            GameLookup gameLookup = new();
 
-            if(statusBad == false)
+            gameLookup = await gameService.GetGameByScoreIdLookup(game.ScoreId);
+
+            if (gameLookup.Score.IsOver)
             {
-                await currentGame.UpdateBetWinners(
-                    favoriteTeamScore, underdogTeamScore, betData, games, teams, bets);
+                game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
+                game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
 
-                await currentGame.UpdateTeamRecords(
-                    favoriteTeamScore, underdogTeamScore, teams, teamData);
+                await game.UpdateScores(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, gameData);
 
-                scoresAdded = true;
-                underdogTeamScore = 0;
-                favoriteTeamScore = 0;
+                await game.UpdateBetWinners(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, betData, games!, teams!, bets!);
 
-                await parleyData.UpdateParleyBetWinners(
-                    parleyBets, games, teams, bets);
+                await game.UpdateTeamRecords(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, teamData);
             }
-            
         }
 
-        else
-            noGame = true;
-
-        
-    }
-
-    public void PopulateCurrentGame(int gameId)
-    {
-        currentGame = games.Where(g => g.Id == gameId)
-                           .ToList()
-                           .PopulateGameModelsWithTeams(teams)
-                           .FirstOrDefault(); 
+        await parleyData.UpdateParleyBetWinners(
+                    parleyBets!, games!, teams!, bets!);
     }
 }

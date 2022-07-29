@@ -61,8 +61,8 @@ public static class UpdateHelpers
     /// </param>
     /// <returns></returns>
     public static async Task UpdateBetWinners(
-        this GameModel currentGame, double favoriteScore,
-            double underdogScore, IBetData betData, IEnumerable<GameModel> games, IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
+        this GameModel currentGame, double homeTeamFinalScore,
+            double awayTeamFinalScore, IBetData betData, IEnumerable<GameModel> games, IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
     {
 
         List<BetModel> betsOnCurrentGame = bets.Where(b =>
@@ -72,7 +72,7 @@ public static class UpdateHelpers
             betsOnCurrentGame.PopulateBetModelsWithGamesTeams(games, teams);
 
         TeamModel? winningTeamForBets = currentGame.CalculateWinningTeamForBet(
-                favoriteScore, underdogScore, teams);
+                homeTeamFinalScore, awayTeamFinalScore, teams);
 
         // Bets are winners or losers
         if (winningTeamForBets is not null)
@@ -116,40 +116,40 @@ public static class UpdateHelpers
     /// </param>
     /// <returns></returns>
     public static async Task UpdateTeamRecords(this GameModel currentGame,
-        double favoriteScore, double underdogScore, 
+        double homeTeamFinalScore, double awayTeamFinalScore, 
             IEnumerable<TeamModel> teams, ITeamData teamData)
     {
-        TeamModel? currentFavorite = teams.Where(t => t.Id == currentGame.FavoriteId).FirstOrDefault();
-        TeamModel? currentUnderdog = teams.Where(t => t.Id == currentGame.UnderdogId).FirstOrDefault();
+        TeamModel? homeTeam = teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
+        TeamModel? awayTeam = teams.Where(t => t.Id == currentGame.AwayTeamId).FirstOrDefault();
 
-        if (currentFavorite is not null && currentUnderdog is not null)
+        if (homeTeam is not null && awayTeam is not null)
         {
             TeamModel? actualWinningTeam = new();
             TeamModel? actualLosingTeam = new();
 
-            if (favoriteScore > underdogScore)
+            if (homeTeamFinalScore > awayTeamFinalScore)
             {
-                actualWinningTeam = currentFavorite;
-                actualLosingTeam = currentUnderdog;
+                actualWinningTeam = homeTeam;
+                actualLosingTeam = awayTeam;
             }
 
-            else if (favoriteScore < underdogScore)
+            else if (homeTeamFinalScore < awayTeamFinalScore)
             {
-                actualWinningTeam = currentUnderdog;
-                actualLosingTeam = currentFavorite;
+                actualWinningTeam = awayTeam;
+                actualLosingTeam = homeTeam;
             }
 
-            else if (favoriteScore == underdogScore)
+            else if (homeTeamFinalScore == awayTeamFinalScore)
                 actualWinningTeam = null;
 
             // If game is a draw
             if (actualWinningTeam is null)
             {
-                currentFavorite.Draws += $"{currentUnderdog.TeamName}|";
-                currentUnderdog.Draws += $"{currentFavorite.TeamName}|";
+                homeTeam.Draws += $"{awayTeam.TeamName}|";
+                awayTeam.Draws += $"{homeTeam.TeamName}|";
 
-                await teamData.UpdateTeam(currentFavorite);
-                await teamData.UpdateTeam(currentUnderdog);
+                await teamData.UpdateTeam(homeTeam);
+                await teamData.UpdateTeam(awayTeam);
             }
 
             // If game is not a draw
@@ -168,29 +168,25 @@ public static class UpdateHelpers
     /// Async method updates game with scores and statuses
     /// </summary>
     /// <returns></returns>
-    public static async Task<bool> UpdateScores(this GameModel currentGame, 
-        int favoriteTeamScore, int underdogTeamScore, IEnumerable<TeamModel> teams, 
+    public static async Task UpdateScores(this GameModel currentGame, 
+        double homeTeamScore, double awayTeamScore, IEnumerable<TeamModel> teams, 
             IGameData gameData)
     {
         if (currentGame.GameStatus != GameStatus.FINISHED)
         {
-            currentGame.FavoriteFinalScore = favoriteTeamScore;
-            currentGame.UnderdogFinalScore = underdogTeamScore;
+            currentGame.HomeTeamFinalScore = homeTeamScore;
+            currentGame.AwayTeamFinalScore = awayTeamScore;
             currentGame.GameStatus = GameStatus.FINISHED;
 
             TeamModel? gameWinner =
-                currentGame.CalculateWinningTeam(favoriteTeamScore,
-                        underdogTeamScore, teams);
+                currentGame.CalculateWinningTeam(homeTeamScore,
+                        awayTeamScore, teams);
 
             if (gameWinner is not null)
                 currentGame.GameWinnerId = gameWinner.Id;
 
             await gameData.UpdateGame(currentGame);
 
-            return false;
         }
-
-        else
-            return true;
     }
 }

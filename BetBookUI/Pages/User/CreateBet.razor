@@ -1,5 +1,4 @@
 ﻿@page "/CreateBet/{gameId:int}"
-@using BetBookData.Helpers
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
@@ -30,9 +29,9 @@
     // Current logged in user
     private UserModel? loggedInUser;
 
-    private IEnumerable<GameModel> games;
+    private IEnumerable<GameModel>? games;
 
-    private IEnumerable<TeamModel> teams;
+    private IEnumerable<TeamModel>? teams;
 
     /// <summary>
     /// Async initialization method

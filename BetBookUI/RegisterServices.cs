@@ -4,7 +4,6 @@ using Microsoft.Identity.Web.UI;
 using Syncfusion.Blazor;
 using BetBookDbAccess;
 
-
 namespace BetBookUI;
 
 /// <summary>
@@ -48,5 +47,6 @@ public static class RegisterServices
         builder.Services.AddTransient<IGameData, GameData>();
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
+        builder.Services.AddSingleton<IGameService, GameService>();
     }
 }

@@ -60,9 +60,16 @@ public class BetData : IBetData
     public async Task<int> InsertBet(BetModel bet)
     {
         string betStatus = BetStatus.IN_PROGRESS.ToString();
-        string payoutStatus = PayoutStatus.UNPAID.ToString();
+        string payoutStatus;
 
-        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(_config.GetConnectionString("BetBookDB"));
+        if (bet.PayoutStatus == PayoutStatus.PARLEY)
+            payoutStatus = PayoutStatus.PARLEY.ToString();
+
+        else
+            payoutStatus = PayoutStatus.UNPAID.ToString();
+
+        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
+            _config.GetConnectionString("BetBookDB"));
 
         var p = new DynamicParameters();
 
@@ -73,9 +80,11 @@ public class BetData : IBetData
         p.Add("@ChosenWinnerId", bet.ChosenWinnerId);
         p.Add("@BetStatus", betStatus);
         p.Add("@PayoutStatus", payoutStatus);
-        p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+        p.Add( "@Id", 0, dbType: DbType.Int32,
+            direction: ParameterDirection.Output);
 
-        await connection.ExecuteAsync("dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
+        await connection.ExecuteAsync(
+            "dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
 
         bet.Id = p.Get<int>("@Id");
 

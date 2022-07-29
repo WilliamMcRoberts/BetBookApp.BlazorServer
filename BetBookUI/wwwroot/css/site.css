@@ -200,13 +200,8 @@ ul {
     border-radius: 15px;
 }
 
-.und-records {
+.stat-records {
     display:flex;
-    flex-direction: column;
-}
-
-.fav-records {
-    display: flex;
     flex-direction: column;
 }
 
@@ -323,14 +318,15 @@ ul {
     width: 50%;
     border-radius: 15px;
     background: #98FB98; /*Pale Green*/
+    
 }
 
 .input-box {
     padding: .5em 0;
     width: 50%;
-    margin-left: 2em;
     display: flex;
     flex-direction: column;
+    margin:0 auto;
 }
 
 .input-label-container {
@@ -405,9 +401,19 @@ ul {
     margin-top: 4em;
 }
 
+.bet-details {
+    margin-bottom: 2em;
+}
+
 .review {
     text-align: center;
     margin-top: 4em;
+    border: 2px solid green;
+    border-radius: 15px;
+    padding-top: 1em;
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-bottom: 4em;
 }
 
 .team {

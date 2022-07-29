@@ -6,6 +6,7 @@
     [Stadium] NVARCHAR(50) NOT NULL, 
     [Wins] NVARCHAR(1000) NOT NULL, 
     [Losses] NVARCHAR(1000) NOT NULL, 
-    [Draws] NVARCHAR(1000) NOT NULL
+    [Draws] NVARCHAR(1000) NOT NULL, 
+    [Symbol] NVARCHAR(4) NULL
 )
 

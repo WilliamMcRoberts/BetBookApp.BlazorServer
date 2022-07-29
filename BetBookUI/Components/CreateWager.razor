@@ -6,6 +6,7 @@
 @inject ITeamData teamData
 @inject IHouseAccountData houseData
 @inject IConfiguration config
+@inject IGameService gameService
 
 @************************************* Demo Display **********************************************@
 
@@ -17,7 +18,7 @@
         @if(wagerPlaced == false)
         {
             <div>
-                @if(betAmountGood == false)
+                @if(betAmountBad)
                 {
                     <div style="color:red;text-align:center;">*BET AMOUNT MUST BE MORE THAN ZERO*</div>
                 }
@@ -35,7 +36,7 @@
                 </div>
             </div>
         }
-        
+
         @if (winnerChosen == false)
         {
             <div class="review">
@@ -45,48 +46,60 @@
             </div>
             <div class="winner-btn-container">
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                    @onclick="(() => ChooseWinner(CurrentGame.FavoriteId))">
-                    Choose @CurrentGame.Favorite.TeamName - @CurrentGame.PointSpread
+                    @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                    Choose @CurrentGame.Favorite.TeamName @CurrentGame.PointSpreadDescription.Substring(0, 5)
                 </button>
                 <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                    @onclick="(() => ChooseWinner(CurrentGame.UnderdogId))">
-                    Choose @CurrentGame.Underdog.TeamName + @CurrentGame.PointSpread
+                    @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                    Choose @CurrentGame.AwayTeam.TeamName @InvertSpread(CurrentGame.PointSpread)
                 </button>
             </div>
         }
         else if(winnerChosen == true && wagerPlaced == false)
         {
             <div class="review">
-                <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Details</label>
+                <label class="local" style="padding: .25em .25em;margin-bottom: .5em;">Bet Summary</label>
                 @if(teamToWin is not null)
                 {
-                        @if(teamToWin.TeamName == CurrentGame.Favorite.TeamName)
+                        @if(teamToWin.TeamName == CurrentGame.HomeTeam.TeamName)
                         {
-                            <p>@teamToWin.TeamName - @CurrentGame.PointSpread points</p>
+                            <p>You've chosen @teamToWin.TeamName @CurrentGame.PointSpreadDescription</p>
                         }
                         else
                         {
-                            <p>@teamToWin.TeamName + @CurrentGame.PointSpread points</p>
+                            <p>You've chosen @teamToWin.TeamName @InvertSpread(CurrentGame.PointSpread) points</p>
                         }
                     <p>For $@betAmount</p>
                     <div style="margin-top:3.4em;" class="undo-btn-container">
-                        <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                            @onclick="UndoWinnerSelection">
-                            Undo @teamToWin.TeamName As Winner
-                        </button>   
+                        @if(teamToWin.TeamName == CurrentGame.HomeTeam.TeamName)
+                        {
+                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                @onclick="UndoWinnerSelection">
+                                Undo @teamToWin.TeamName @CurrentGame.PointSpreadDescription.Substring(0, 5)
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                @onclick="UndoWinnerSelection">
+                                Undo @teamToWin.TeamName @InvertSpread(CurrentGame.PointSpread)
+                            </button>
+                        }
                     </div>
                 }
             </div>
         }
-        else if(winnerChosen == true && wagerPlaced == true)
+        else if(wagerPlaced == true)
         {
-            <p style="text-align:center;">Good luck on your new wager! Click "Home" to browse more games.</p>
+            <p style="text-align:center;">
+                Good luck on your new wager! Click "Home" to browse more games.
+            </p>
         }
 }
     @if(wagerPlaced == false)
     {
         <div style="padding: 2em .25em;text-align:center;">
-            <button class="mt-4 site-btn btn site-btn-light btn-sm text-uppercase"
+            <button class="mt-2 mb-4 site-btn btn site-btn-light btn-sm text-uppercase"
                 @onclick="(() => PlaceWager(betAmount, teamToWin!))">
                 Submit Wager
         </button>
@@ -106,7 +119,7 @@
     private bool winnerChosen = false;
 
     // Boolean to check if bet amount is good
-    private bool betAmountGood = true;
+    private bool betAmountBad = false;
 
     // 10% vigorish for all bets
     private double VIG = .1;
@@ -119,7 +132,7 @@
 
     // Current game being viewed
     [Parameter]
-    public GameModel CurrentGame { get; set; } = new();
+    public GameModel? CurrentGame { get; set; } = new();
 
 
     // Current logged in user
@@ -158,39 +171,51 @@
     /// <returns></returns>
     private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
     {
-        if (DateTime.Now < CurrentGame.DateOfGame)
+        if (CurrentGame is not null && amountToBet != 0)
         {
-            if (amountToBet != 0)
+            bool hasStarted;
+
+            GameLookup? gameLookup = 
+                await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
+
+            if(gameLookup is not null)
             {
-                
-                BetModel bet = new();
+                hasStarted = gameLookup.Score.HasStarted;
 
-                HouseAccountModel? houseAccount = 
-                    await houseData.GetHouseAccount();
+                if (hasStarted == false)
+                {
+                    BetModel bet = new();
 
-                bet.BetAmount = amountToBet;
-                bet.BetPayout = 
-                    (decimal)((double)amountToBet - (double)amountToBet * VIG);
-                bet.ChosenWinnerId = teamToWin.Id;
-                bet.BettorId = loggedInUser!.Id;
-                bet.GameId = CurrentGame.Id;
+                    HouseAccountModel? houseAccount =
+                        await houseData.GetHouseAccount();
 
-                loggedInUser.AccountBalance -= bet.BetAmount;
-                houseAccount!.AccountBalance += bet.BetAmount;
+                    bet.BetAmount = amountToBet;
+                    bet.BetPayout =
+                        (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                    bet.ChosenWinnerId = teamToWin.Id;
+                    bet.BettorId = loggedInUser!.Id;
+                    bet.GameId = CurrentGame.Id;
 
-                // Transaction method transfers funds from user account
-                // to house account and inserts bet into the database
-                await loggedInUser.CreateBetTransaction(bet, houseAccount, config, userData, houseData, betData);
+                    loggedInUser.AccountBalance -= bet.BetAmount;
+                    houseAccount!.AccountBalance += bet.BetAmount;
 
-                wagerPlaced = true;
+                    // Transaction method transfers funds from user account
+                    // to house account and inserts bet into the database
+                    await loggedInUser.CreateBetTransaction(
+                        bet, houseAccount, config, userData, houseData, betData);
+
+                    wagerPlaced = true;
+                    CurrentGame = null;
+                    amountToBet = 0;
+                }
+
+                else
+                    gameNotStarted = false;
             }
-
-            else
-                betAmountGood = false;
         }
 
         else
-            gameNotStarted = false;
+            betAmountBad = true;
     }
 
     /// <summary>
@@ -201,15 +226,17 @@
     /// <returns></returns>
     private void ChooseWinner(int teamId)
     {
-        if(teamId == CurrentGame.FavoriteId)
+        if(teamId == CurrentGame?.FavoriteId)
         {
-            teamToWin = teams.Where(t => t.Id == CurrentGame.FavoriteId).FirstOrDefault();
+            teamToWin = 
+                teams.Where(t => t.Id == CurrentGame.FavoriteId).FirstOrDefault();
             winnerChosen = true;
         }
 
-        else if(teamId == CurrentGame.UnderdogId)
+        else if(teamId == CurrentGame?.UnderdogId)
         {
-            teamToWin = teams.Where(t => t.Id == CurrentGame.UnderdogId).FirstOrDefault();
+            teamToWin = 
+                teams.Where(t => t.Id == CurrentGame.UnderdogId).FirstOrDefault();
             winnerChosen = true;
         }
     }
@@ -223,6 +250,16 @@
         winnerChosen = false;
     }
 
+    private string InvertSpread(double pointSpread)
+    {
+        if (pointSpread < 0)
+            return $"+ {pointSpread * -1}";
+        else if (pointSpread == 0)
+            return $"+ 0";
+        else
+            return $"- {pointSpread}";
+    }
+
     /// <summary>
     /// Syncfusion method for numeric text box on value change
     /// </summary>
@@ -233,3 +270,5 @@
         StateHasChanged();
     }
 }
+
+

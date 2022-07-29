@@ -111,4 +111,7 @@
   <ItemGroup>
     <None Include="BetBookSqlDatabase.publish.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BetBookSqlDatabase.refactorlog" />
+  </ItemGroup>
 </Project>

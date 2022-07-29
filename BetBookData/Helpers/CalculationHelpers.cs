@@ -14,16 +14,16 @@ public static class CalculationHelpers
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinningTeam(
-        this GameModel game, double favoriteScore, double underdogScore, 
+        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore, 
             IEnumerable<TeamModel> teams)
     {
 
-        TeamModel? favorite = teams.Where(t => t.Id == game.FavoriteId).FirstOrDefault();
-        TeamModel? underdog = teams.Where(t => t.Id == game.UnderdogId).FirstOrDefault();
+        TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
+        TeamModel? awayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
 
-        TeamModel? winner = (favoriteScore == underdogScore) ? null :
-            (favoriteScore > underdogScore) ? favorite :
-                underdog;
+        TeamModel? winner = (homeTeamFinalScore == awayTeamFinalScore) ? null :
+            (homeTeamFinalScore > awayTeamFinalScore) ? homeTeam :
+                awayTeam;
 
         return winner!;
     }
@@ -38,18 +38,18 @@ public static class CalculationHelpers
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinningTeamForBet(
-        this GameModel game, double favoriteScore, double underdogScore, 
+        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore, 
             IEnumerable<TeamModel> teams)
     {
         double pointSpread = game.PointSpread;
-        double favoriteScoreMinusPointSpread = favoriteScore - pointSpread;
+        double homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + pointSpread;
 
-        TeamModel? favorite = teams.Where(t => t.Id == game.FavoriteId).FirstOrDefault();
-        TeamModel? underdog = teams.Where(t => t.Id == game.UnderdogId).FirstOrDefault();
+        TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
+        TeamModel? awayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
 
-        TeamModel? winner = (favoriteScoreMinusPointSpread == underdogScore) ? null :
-            (favoriteScoreMinusPointSpread > underdogScore) ? favorite :
-                underdog;
+        TeamModel? winner = (homeTeamScoreAfterPointSpreaad == awayTeamFinalScore) ? null :
+            (homeTeamScoreAfterPointSpreaad > awayTeamFinalScore) ? homeTeam :
+                awayTeam;
 
         return winner!;
     }
@@ -57,8 +57,8 @@ public static class CalculationHelpers
     /// <summary>
     /// Method calculates and returns week of season given a certain date
     /// </summary>
-    /// <param name="season"></param>
-    /// <param name="dateTime"></param>
+    /// <param name = "season" ></ param >
+    /// < param name="dateTime"></param>
     /// <returns></returns>
     public static int CalculateWeek(this SeasonType season, DateTime dateTime)
     {
@@ -67,50 +67,42 @@ public static class CalculationHelpers
         DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
 
         int week = 0;
-
+        
         if (season == SeasonType.PRE)
-        {
-            TimeSpan span = dateTime - preSeasonStartDate;
-            week = span.Days / 7;
-        }
-
+            week = (dateTime - preSeasonStartDate).Days / 7;
+            
         else if (season == SeasonType.REG)
-        {
-            TimeSpan span = dateTime - regularSeasonStartDate;
-            week = span.Days / 7;
-        }
+            week = (dateTime - regularSeasonStartDate).Days / 7;
 
         else if (season == SeasonType.POST)
-        {
-            TimeSpan span = dateTime - postSeasonStartDate;
-            week = span.Days / 7;
-        }
+            week = (dateTime - postSeasonStartDate).Days / 7;
 
-        if(week < 0)
+        if (week < 0)
             return 0;
 
-        return week + 1;
+        return week;
     }
 
     /// <summary>
     /// Method calculates the season of provided DateTime 
     /// </summary>
-    /// <param name="dateTime">DateTime represents date to calculate</param>
+    /// <param name = "dateTime" > DateTime represents date to calculate</param>
     /// <returns>SeasonType represents the type of season</returns>
     public static SeasonType CalculateSeason(this DateTime dateTime)
     {
         DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
         DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
         DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
-        DateTime superBowlDay = new DateTime(2023, 2, 5);
 
         SeasonType result = new();
 
         if (dateTime > preSeasonStartDate && dateTime < regularSeasonStartDate)
             result = SeasonType.PRE;
+
         else if (dateTime > regularSeasonStartDate && dateTime < postSeasonStartDate)
             result = SeasonType.REG;
-        else if (dateTime > postSeasonStartDate && dateTime < superBowlDay)
+
+        else if (dateTime > postSeasonStartDate)
             result = SeasonType.POST;
 
         return result;
@@ -132,9 +124,7 @@ public static class CalculationHelpers
         foreach (BetModel bet in pushBets)
             total += bet.BetPayout;
 
-        total = Convert.ToDecimal((total).ToString("#.00"));
-
-        return total;
+        return total = Convert.ToDecimal((total).ToString("#.00"));
     }
 
     /// <summary>
@@ -154,9 +144,7 @@ public static class CalculationHelpers
         foreach (BetModel bet in winningBets)
             total += (bet.BetPayout + bet.BetAmount);
 
-        totalPayout = Convert.ToDecimal((total).ToString("#.00"));
-
-        return totalPayout;
+        return totalPayout = Convert.ToDecimal((total).ToString("#.00"));
     }
 
     /// <summary>

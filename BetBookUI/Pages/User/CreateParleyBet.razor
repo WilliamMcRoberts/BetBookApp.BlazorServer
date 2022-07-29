@@ -8,6 +8,7 @@
 @inject IHouseAccountData houseData
 @inject IParleyBetData parleyData
 @inject IConfiguration config
+@inject IGameService gameService
 
 <PageTitle>CreateParleyBet</PageTitle>
 
@@ -32,7 +33,7 @@
             {
                 @foreach(GameModel game in gamesAvailable)
                 {
-                    @if(game.HomeTeam is not null && game.AwayTeam is not null && game.Favorite is not null)
+                    @if(game.HomeTeam is not null && game.AwayTeam is not null)
                     {
                         
                         <li style="text-align:center;display:flex;" class="parley-game-item" @onclick="() => SelectGame(game)">
@@ -41,7 +42,7 @@
                                 <img style="height:40px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
                             </div>
                             <div>
-                                <label style="font-size: 17px;margin-top:1em;margin-left:2em;">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.Favorite.TeamName - @game.PointSpread points</label>
+                                <label style="font-size: 17px;margin-top:1em;margin-left:2em;">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.HomeTeam.TeamName @game.PointSpreadDescription</label>
                                 <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
                             </div>
                         </li>
@@ -55,43 +56,50 @@
         {
             <div class="input-label-container">
                 <h3 style="font-weight: 700; margin-left: 1em;margin-top: .5em;" class="title">Chosen Games</h3>
-                <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
+                @if (gameNotStarted)
+                {
+                    <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">SELECT A WINNER FOR EACH GAME</div>
+                }
+                else
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ONE OF THE GAMES YOU SELECTED HAS ALREADY STARTED</div>
+                }
             </div>
             <ul>
                 @foreach(GameModel game in gamesChosen)
                 {
                     <li class="parley-game-item" style="text-align:center;" >
-                        <h3>@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.Favorite.TeamName - @game.PointSpread</h3>
+                        <h3>@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.HomeTeam.TeamName @game.PointSpreadDescription</h3>
                         <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
-                        @if(chosenGamesAndWinners.ContainsValue(game.Favorite.TeamName))
+                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam.TeamName))
                         {
-                                <label style="margin-right: .5em;">You've chosen @game.Favorite.TeamName - @game.PointSpread points over @game.Underdog.TeamName</label>
+                                <label style="margin-right: .5em;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection(game)">
-                                    Undo @game.Favorite.TeamName
+                                    Undo @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5)
                                 </button>
                         }
-                        else if (chosenGamesAndWinners.ContainsValue(game.Underdog.TeamName))
+                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam.TeamName))
                         {
-                                <label style="margin-right: .5em;">You've chosen @game.Underdog.TeamName + @game.PointSpread points over @game.Favorite.TeamName</label>
+                                <label style="margin-right: .5em;">You've chosen @game.AwayTeam.TeamName @InvertSpread(game.PointSpread) over @game.HomeTeam.TeamName</label>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection(game)">
-                                    Undo @game.Underdog.TeamName
+                                    Undo @game.AwayTeam.TeamName @InvertSpread(game.PointSpread)
                                 </button>
                         }
                         else
                         {
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.Favorite.TeamName))">
-                                Choose @game.Favorite.TeamName - @game.PointSpread
+                                @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
+                                Choose @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0,5)
                             </button>
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                                 @onclick="(() => UnselectGame(game))">
                                 Remove Game
                             </button>
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.Underdog.TeamName))">
-                                Choose @game.Underdog.TeamName + @game.PointSpread
+                                @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
+                                Choose @game.AwayTeam.TeamName @InvertSpread(game.PointSpread)
                             </button>
                         }
                     </li>
@@ -112,15 +120,16 @@
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                 </div>
                 <div class="review">
-                        <label class="local" style="padding: .25em .25em;margin-bottom: 1em;">Bet Details</label>
+                        <label class="local" style="padding: .25em .25em;margin-bottom: 1em;">Bet Summary</label>
                         <p>Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
                         <p>If everything looks good click "Submit Wager"</p>
-                        <div style="margin-top:3.4em;margin-bottom: 2em;" class="undo-btn-container">
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="SubmitWager">
-                                Submit Wager
-                            </button>  
-                        </div>
+                        
+                </div>
+                <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
+                    <button class="mb-2 mt-4 site-btn btn site-btn-light btn-sm text-uppercase" 
+                        @onclick="SubmitWager">
+                        Submit Wager
+                    </button>  
                 </div>
             </div>
         }
@@ -164,6 +173,8 @@
     // Bool to check if bet count is less than 6
     private bool betCountBad = false;
 
+    private bool gameNotStarted = true;
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -197,26 +208,44 @@
             if (betAmount > 0)
             {
                 ParleyBetModel parleyBet = new();
-                List<BetModel> bets = new();
 
                 foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
                 {
-                    TeamModel? chosenWinner = teams?.Where(t => t.TeamName == kv.Value).First();
-                    BetModel bet = new();
+                    bool hasStarted;
 
-                    if (chosenWinner is not null)
+                    GameLookup? gameLookup = 
+                        await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
+
+                    if(gameLookup is not null)
                     {
-                        bet.BetAmount = 0;
-                        bet.BetPayout = 0;
-                        bet.BettorId = loggedInUser!.Id;
-                        bet.GameId = kv.Key.Id;
-                        bet.ChosenWinnerId = chosenWinner.Id;
+                        hasStarted = gameLookup.Score.HasStarted;
 
-                        int betId = await betData.InsertBet(bet);
+                        if (hasStarted == false)
+                        {
+                            TeamModel? chosenWinner =
+                                teams?.Where(t => t.TeamName == kv.Value).FirstOrDefault();
 
-                        bet.Id = betId;
+                            BetModel bet = new();
 
-                        parleyBet.Bets.Add(bet);
+                            if (chosenWinner is not null)
+                            {
+                                bet.BetAmount = 0;
+                                bet.BetPayout = 0;
+                                bet.BettorId = loggedInUser!.Id;
+                                bet.GameId = kv.Key.Id;
+                                bet.ChosenWinnerId = chosenWinner.Id;
+                                bet.PayoutStatus = PayoutStatus.PARLEY;
+
+                                int betId = await betData.InsertBet(bet);
+
+                                bet.Id = betId;
+
+                                parleyBet.Bets.Add(bet);
+                            }
+                        }
+
+                        else
+                            gameNotStarted = false;
                     }
                 }
 
@@ -248,7 +277,7 @@
     /// <summary>
     /// Method unselects the winner of game
     /// </summary>
-    /// <param name="game">BasicGameModel represents basic game the winner is being chosen for</param>
+    /// <param name="game">GameModel represents game the winner is being chosen for</param>
     private void UndoWinnerSelection(GameModel game)
     {
         if(chosenGamesAndWinners.ContainsKey(game))
@@ -258,18 +287,20 @@
     /// <summary>
     /// Method chooses winner of game
     /// </summary>
-    /// <param name="game">BasicGameModel represents the basic game the winner is being chosen for</param>
+    /// <param name="game">GameModel represents the game the winner is being chosen for</param>
     /// <param name="chosenTeamName">string represents team name of chosen winner</param>
     private void ChooseWinnerForGame(GameModel game, string chosenTeamName)
     {
         if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(game))
             chosenGamesAndWinners.Add(game, chosenTeamName);
+        if (chosenGamesAndWinners.Count >= 2 && betCountBad)
+            betCountBad = false;
     }
 
     /// <summary>
     /// Method selects basic game for parley bet
     /// </summary>
-    /// <param name="game">BasicGameModel represents basic game being selected for parley bet</param>
+    /// <param name="game">GameModel represents game being selected for parley bet</param>
     private void SelectGame(GameModel game)
     {
         if(gamesChosen.Count < 5 && !gamesChosen.Contains(game) 
@@ -283,8 +314,8 @@
     /// <summary>
     /// Method unselects a basic game from parley bet
     /// </summary>
-    /// <param name="basicGame">
-    /// BasicGameModel represents the basic game being removed from
+    /// <param name="game">
+    /// GameModel represents the game being removed from
     /// parley bet
     /// </param>
     private void UnselectGame(GameModel game)
@@ -294,5 +325,15 @@
             gamesAvailable.Add(game);
             gamesChosen.Remove(game);
         }
+    }
+
+    private string InvertSpread(double pointSpread)
+    {
+        if (pointSpread < 0)
+            return $"+ {pointSpread * -1}";
+        else if (pointSpread == 0)
+            return $"+ 0";
+        else
+            return $"- {pointSpread}";
     }
 }

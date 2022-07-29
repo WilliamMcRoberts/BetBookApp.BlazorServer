@@ -1,5 +1,4 @@
-﻿
-@inject AuthenticationStateProvider authProvider
+﻿@inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
 @inject ITeamData teamData
 
@@ -9,31 +8,35 @@
     {
         <div style="margin-bottom:1em;">
             <ul class="game-list">
-                <li class="team-item">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName || @CurrentGame.Favorite.TeamName - @CurrentGame.PointSpread points</li>
+                <li class="team-item">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName || @CurrentGame.HomeTeam.TeamName @CurrentGame.PointSpreadDescription</li>
                 <li class="game-time-date">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</li>
             </ul>
             <br />
             <div class="records">
-                <div class="fav-records">
-                    <img style="height:100px;" src="/images/@CurrentGame.Favorite.ImagePath" alt="team logo">
+                <div class="stat-records">
+                    <img style="height:100px;" src="/images/@CurrentGame.AwayTeam.ImagePath" alt="team logo">
                     <div class="stat">
                         <div class="rec-sec">
                             <div style="text-align:center;">
                                 <label>Wins</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Favorite.Wins is not null)
+                                @if(CurrentGame.AwayTeam.Wins is not null)
                                 {
-                                    @if(CurrentGame.Favorite.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Favorite.Wins.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>  
                                     }
                                 }
                             </div>
@@ -45,18 +48,24 @@
                                 <label>Losses</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Favorite.Losses is not null)
+                                @if(CurrentGame.AwayTeam.Losses is not null)
                                 {
-                                    @if(CurrentGame.Favorite.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Favorite.Losses.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
+                                            
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>
+                                         
                                     }
                                 }
                             </div>
@@ -68,44 +77,52 @@
                                 <label>Draws</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Favorite.Draws is not null)
+                                @if(CurrentGame.AwayTeam.Draws is not null)
                                 {
-                                    @if(CurrentGame.Favorite.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Favorite.Draws.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>   
                                     }
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="und-records">
-                    <img style="height:100px;" src="/images/@CurrentGame.Underdog.ImagePath" alt="team logo">
+                <div class="stat-records">
+                    <img style="height:100px;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
                     <div class="stat">
                           <div class="rec-sec">
                             <div style="text-align:center;">
                                 <label>Wins</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Underdog.Wins is not null)
+                                @if(CurrentGame.HomeTeam.Wins is not null)
                                 {
-                                    @if(CurrentGame.Underdog.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Underdog.Wins.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>     
                                     }
                                 }
                             </div>
@@ -117,18 +134,22 @@
                                 <label>Losses</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Underdog.Losses is not null)
+                                @if(CurrentGame.HomeTeam.Losses is not null)
                                 {
-                                    @if(CurrentGame.Underdog.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Underdog.Losses.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>     
                                     }
                                 }
                             </div>
@@ -140,18 +161,22 @@
                                 <label>Draws</label>
                             </div>
                             <div class="team">
-                                @if(CurrentGame.Underdog.Draws is not null)
+                                @if(CurrentGame.HomeTeam.Draws is not null)
                                 {
-                                    @if(CurrentGame.Underdog.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
+                                    @if(CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
                                     {
-                                        @foreach(string team in CurrentGame.Underdog.Draws.Split('|').SkipLast(1).ToArray())
+                                        @foreach(string team in CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray())
                                         {
-                                            <h6 class="rec-item">@team</h6>
+                                            <div class="rec-item">
+                                                <h6 style="padding:.5em .5em;">@team</h6>
+                                            </div>
                                         }
                                     }
                                     else
                                     {
-                                        <h6 class="rec-item">None</h6>   
+                                        <div class="rec-item">
+                                            <h6 style="padding:.5em .5em;">None</h6>  
+                                        </div>  
                                     }
                                 }
                             </div>
@@ -170,3 +195,8 @@
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
 }
+
+
+
+
+

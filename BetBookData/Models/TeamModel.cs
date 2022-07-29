@@ -9,6 +9,8 @@ public class TeamModel
     // ID of the team
     public int Id { get; set; }
 
+    
+
     // Name of the team
     public string TeamName { get; set; }
 
@@ -26,6 +28,9 @@ public class TeamModel
 
     // Teams that the current team have been in a draw with
     public string Draws { get; set; }
+
+    public string Symbol { get; set; }
+
 
     public string ImagePath { get => $"{TeamName.ToLower()}.svg"; }
 

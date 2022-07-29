@@ -38,7 +38,8 @@ public enum BetStatus
 public enum PayoutStatus
 {
     UNPAID,
-    PAID
+    PAID,
+    PARLEY
 }
 
 /// <summary>

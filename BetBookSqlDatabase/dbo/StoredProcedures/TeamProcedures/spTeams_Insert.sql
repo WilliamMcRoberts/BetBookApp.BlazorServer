@@ -5,11 +5,12 @@
 	@Wins nvarchar(1000),
 	@Losses nvarchar(1000),
 	@Draws nvarchar(1000),
+    @Symbol nvarchar(4),
 	@Id int = 0 output
 AS
 begin
-    insert into dbo.Teams (TeamName, City, Stadium, Wins, Losses, Draws)
-	values (@TeamName, @City, @Stadium, @Wins, @Losses, @Draws);
+    insert into dbo.Teams (TeamName, City, Stadium, Wins, Losses, Draws, Symbol)
+	values (@TeamName, @City, @Stadium, @Wins, @Losses, @Draws, @Symbol);
 
 	select @Id = SCOPE_IDENTITY();
 end

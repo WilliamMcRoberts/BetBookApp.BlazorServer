@@ -2,6 +2,6 @@
 
 AS
 begin
-    select Id, TeamName, City, Stadium, Wins, Losses, Draws
+    select Id, TeamName, City, Stadium, Wins, Losses, Draws, Symbol
 	from dbo.Teams;
 end

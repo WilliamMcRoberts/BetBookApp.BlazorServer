@@ -10,3 +10,9 @@ global using BetBookUI.Helpers;
 global using BetBookUI.Components;
 global using Syncfusion.Blazor.Inputs;
 global using Syncfusion.Blazor.Buttons;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using BetBookData.Services;
+global using BetBookData.Lookups;
+
+

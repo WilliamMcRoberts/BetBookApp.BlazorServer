@@ -11,8 +11,7 @@
             }
             @foreach(BetModel bet in BetList)
             {
-            
-                if(bet.BetPayout != 0)
+                if(bet.PayoutStatus != PayoutStatus.PARLEY && bet.BetAmount != 0)
                 {
                     <div class="bet">
                         <ul>

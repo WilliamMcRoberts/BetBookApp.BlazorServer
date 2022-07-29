@@ -9,13 +9,16 @@ begin
            UnderdogId, 
            Stadium,
            PointSpread,
-           FavoriteFinalScore,
-           UnderdogFinalScore,
+           HomeTeamFinalScore, 
+           AwayTeamFinalScore, 
            GameWinnerId, 
            WeekNumber,
            SeasonType, 
            DateOfGame,
-           GameStatus
+           GameStatus,
+           ScoreId,
+           DateOfGameOnly,
+           TimeOfGameOnly
 	from dbo.Games
 	where Id = @Id;
 end

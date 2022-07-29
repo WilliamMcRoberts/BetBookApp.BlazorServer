@@ -5,7 +5,6 @@
 {
     foreach(GameModel g in AvailableGameList)
     {
-
         <div class="game-container">
             <div class="away-team">
                 <label class="local">Away</label>
@@ -21,7 +20,7 @@
             </div>
             <div class="game-details">
                 <ul class="game-info">
-                    <li class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName || @g.Favorite.TeamName - @g.PointSpread points</li>
+                    <li class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName || @g.HomeTeam.TeamName @g.PointSpreadDescription</li>
                     <li class="game-time-date">@g.DateOfGameOnly at @g.TimeOfGameOnly pm</li>
                 </ul>
                 <div class="bet-selection">
@@ -64,13 +63,8 @@ else
     [Parameter]
     public List<GameModel> AvailableGameList { get; set; } = new();
 
-    public string endPath = ".svg";
-
-    public string GetPath(TeamModel team)
-    {
-        string path = $"{team.TeamName.ToLower()}.svg";
-        return path;
-    }
+    [Parameter]
+    public IEnumerable<TeamModel>? Teams { get; set; }
 
     /// <summary>
     /// Selects a game to place a wager on and navigates to

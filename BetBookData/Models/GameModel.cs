@@ -38,10 +38,10 @@ public class GameModel
     public double PointSpread { get; set; }
 
     // Final score of the favorite
-    public double FavoriteFinalScore { get; set; }
+    public double HomeTeamFinalScore { get; set; }
 
     // Final score of the underdog
-    public double UnderdogFinalScore { get; set; }
+    public double AwayTeamFinalScore { get; set; }
 
     // Winner of the game
     public int GameWinnerId { get; set; }
@@ -60,6 +60,10 @@ public class GameModel
     // Status of the game
     public GameStatus GameStatus { get; set; }
 
-    public string DateOfGameOnly { get => DateOfGame.ToString("MM-dd"); }
-    public string TimeOfGameOnly { get => DateOfGame.ToString("hh:mm"); }
+    public int ScoreId { get; set; }
+
+    public string PointSpreadDescription { get => (Math.Round(PointSpread) < 0) ? $"- {PointSpread.ToString().Trim('-')} points" : $"+ {PointSpread} points"; }
+
+    public string DateOfGameOnly { get; set; }
+    public string TimeOfGameOnly { get; set; }
 }
