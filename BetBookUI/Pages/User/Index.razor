@@ -74,7 +74,7 @@
         if (gamesAvailable.Count < 1)
         {
             gamesAvailable = 
-                await gameService.GetGamesForNextWeek(currentSeason, currentWeek, teams);
+                await gameService.GetGamesForNextWeek(currentSeason, currentWeek);
         }
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);

@@ -5,17 +5,29 @@ using System.Text.Json;
 using BetBookData.Interfaces;
 using BetBookData.Lookups;
 using BetBookData.Models;
+using BetBookData.Helpers;
 
 namespace BetBookData.Services;
 public class GameService : IGameService
 {
     private readonly HttpClient _httpClient;
     private readonly IGameData _gameData;
+    private readonly ITeamData _teamData;
+    private readonly IBetData _betData;
+    private readonly IParleyBetData _parleyData;
+    IEnumerable<TeamModel>? teams;
+    IEnumerable<GameModel>? games;
+    IEnumerable<BetModel>? bets;
+    IEnumerable<ParleyBetModel>? parleyBets;
 
-    public GameService(IGameData gameData)
+    public GameService(IGameData gameData, ITeamData teamData,
+        IBetData betData, IParleyBetData parleyData)
     {
         _httpClient = new();
         _gameData = gameData;
+        _teamData = teamData;
+        _betData = betData;
+        _parleyData = parleyData;
     }
 
     public async Task<TeamLookup> GetGameByTeamLookup(TeamModel team)
@@ -96,8 +108,11 @@ public class GameService : IGameService
     }
 
     public async Task<List<GameModel>> GetGamesForNextWeek(
-        SeasonType currentSeason, int currentWeek, IEnumerable<TeamModel> teams)
+        SeasonType currentSeason, int currentWeek)
     {
+        if (teams is null || !teams.Any())
+            teams = await _teamData.GetTeams();
+
         List<GameModel> nextWeekGames = new();
 
         int nextWeek;
@@ -174,5 +189,63 @@ public class GameService : IGameService
         }
 
         return nextWeekGames;
+    }
+
+    public async Task FetchAllScoresForFinishedGames()
+    {
+        if (teams is null || !teams.Any())
+            teams = await _teamData.GetTeams();
+        if (games is null || !games.Any())
+            games = await _gameData.GetGames();
+        if (bets is null || !bets.Any())
+            bets = await _betData.GetBets();
+        if (parleyBets is null || !parleyBets.Any())
+            parleyBets = await _parleyData.GetParleyBets();
+
+        foreach (GameModel game in games!.Where(g => g.GameStatus != GameStatus.FINISHED))
+        {
+            GameLookup gameLookup = new();
+
+            gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
+
+            if (gameLookup.Score.IsOver)
+            {
+                game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
+                game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
+
+                await game.UpdateScores(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, _gameData);
+
+                await game.UpdateBetWinners(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, _betData, games!, teams!, bets!);
+
+                await game.UpdateTeamRecords(
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, _teamData);
+            }
+        }
+
+        await _parleyData.UpdateParleyBetWinners(
+                    parleyBets!, games!, teams!, bets!);
+    }
+
+    public async Task FetchAllUpdatedGameInfoForAvailableGames()
+    {
+        if (games is null || !games.Any())
+            games = await _gameData.GetGames();
+
+        foreach (GameModel game in games.Where(g => g.GameStatus == GameStatus.NOT_STARTED))
+        {
+            GameLookup gameLookup = new();
+
+            gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
+
+            if (gameLookup.Score.HasStarted == false)
+            {
+                if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
+                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+
+                await _gameData.UpdateGame(game);
+            }
+        }
     }
 }

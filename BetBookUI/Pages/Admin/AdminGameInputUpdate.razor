@@ -13,14 +13,6 @@
 
         <div class="input-label-container">
             <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Game Update</h3>
-            @if(teamAlreadyPlaying == false)
-            {
-                <div style="text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">FILL OUT THE FORM TO CREATE A GAME</div>
-            }
-            else
-            {
-                <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">TEAM ENTERED CANNOT BE A TEAM ALREADY PLAYING</div>
-            }
         </div>
 
         <EditForm Model="ug" OnValidSubmit="UpdateGame">
@@ -114,23 +106,9 @@
 </div>
 
 @code {
+
     // Model
     UpdateGameDto ug = new();
-
-    private IEnumerable<GameModel>? games;
-
-    string? season;
-
-    string? status;
-
-    private List<GameModel> availableGames = new();
-
-    private bool teamAlreadyPlaying = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        games = await gameData.GetGames();
-    }
 
     /// <summary>
     /// Async method for admin to insert a game into 

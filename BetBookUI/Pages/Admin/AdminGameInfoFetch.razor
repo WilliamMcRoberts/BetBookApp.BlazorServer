@@ -1,9 +1,5 @@
 ﻿@page "/AdminGameInfoFetch"
 @attribute [Authorize(Policy = "Admin")]
-@inject IGameData gameData
-@inject ITeamData teamData
-@inject IBetData betData
-@inject IParleyBetData parleyData
 @inject IGameService gameService
 
 <PageTitle>AdminGameInfoFetch</PageTitle>
@@ -23,81 +19,14 @@
 
 
 @code {
-    public IEnumerable<GameModel>? games;
-
-    public IEnumerable<TeamModel>? teams;
-
-    public IEnumerable<BetModel>? bets;
-
-    public IEnumerable<ParleyBetModel>? parleyBets;
-
-    // Current game being updated
-    private GameModel? currentGame  = new();
-
-    // Boolean to check if winners were added
-    private bool scoresAdded = false;
-
-    // Boolean to check if current game is null
-    private bool noGame = false;
-
-    // Boolean to check if game status is finished
-    private bool statusBad = false;
-
-    // Id of game
-    private int gameId;
-
-    protected override async Task OnInitializedAsync()
-    {
-        games = await gameData.GetGames();
-        teams = await teamData.GetTeams();
-        bets = await betData.GetBets();
-        parleyBets = await parleyData.GetParleyBets();
-    }
 
     private async Task FetchAllScoresForFinishedGames()
     {
-
-        foreach(GameModel game in games!.Where(g => g.GameStatus != GameStatus.FINISHED))
-        {
-            GameLookup gameLookup = new();
-
-            gameLookup = await gameService.GetGameByScoreIdLookup(game.ScoreId);
-
-            if (gameLookup.Score.IsOver)
-            {
-                game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
-                game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
-
-                await game.UpdateScores(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, gameData);
-
-                await game.UpdateBetWinners(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, betData, games!, teams!, bets!);
-
-                await game.UpdateTeamRecords(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, teamData);
-            }
-        }
-
-        await parleyData.UpdateParleyBetWinners(
-                    parleyBets!, games!, teams!, bets!);
+        await gameService.FetchAllScoresForFinishedGames();
     }
 
     private async Task FetchAllUpdatedGameInfoForAvailableGames()
     {
-        foreach(GameModel game in games.Where(g => g.GameStatus == GameStatus.NOT_STARTED))
-        {
-            GameLookup gameLookup = new();
-
-            gameLookup = await gameService.GetGameByScoreIdLookup(game.ScoreId);
-
-            if (gameLookup.Score.HasStarted == false)
-            {
-                if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
-                
-                await gameData.UpdateGame(game);
-            }
-        }
+        await gameService.FetchAllUpdatedGameInfoForAvailableGames();
     }
 }

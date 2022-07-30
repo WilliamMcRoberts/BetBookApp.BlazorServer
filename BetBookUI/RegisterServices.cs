@@ -37,6 +37,8 @@ public static class RegisterServices
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
         builder.Services.AddSyncfusionBlazor();
 
+        builder.Services.AddHostedService<TimerService>();
+
 
         /*********************** Data access *************************/
 
@@ -48,5 +50,6 @@ public static class RegisterServices
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
         builder.Services.AddSingleton<IGameService, GameService>();
+
     }
 }
