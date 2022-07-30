@@ -1,4 +1,4 @@
-﻿@page "/AdminScoresInput"
+﻿@page "/AdminGameInfoFetch"
 @attribute [Authorize(Policy = "Admin")]
 @inject IGameData gameData
 @inject ITeamData teamData
@@ -6,10 +6,17 @@
 @inject IParleyBetData parleyData
 @inject IGameService gameService
 
-<PageTitle>AdminScoresInput</PageTitle>
+<PageTitle>AdminGameInfoFetch</PageTitle>
+
 <div style="text-align: center;margin-top:4em;">
-    <button @onclick="UpdateAllScores" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+    <button @onclick="FetchAllScoresForFinishedGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
         Fetch And Insert Scores
+    </button>
+</div>
+
+<div style="text-align: center;margin-top:4em;">
+    <button @onclick="FetchAllUpdatedGameInfoForAvailableGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+        Fetch And Update Game Info
     </button>
 </div>
 
@@ -47,7 +54,7 @@
         parleyBets = await parleyData.GetParleyBets();
     }
 
-    private async Task UpdateAllScores()
+    private async Task FetchAllScoresForFinishedGames()
     {
 
         foreach(GameModel game in games!.Where(g => g.GameStatus != GameStatus.FINISHED))
@@ -74,5 +81,23 @@
 
         await parleyData.UpdateParleyBetWinners(
                     parleyBets!, games!, teams!, bets!);
+    }
+
+    private async Task FetchAllUpdatedGameInfoForAvailableGames()
+    {
+        foreach(GameModel game in games.Where(g => g.GameStatus == GameStatus.NOT_STARTED))
+        {
+            GameLookup gameLookup = new();
+
+            gameLookup = await gameService.GetGameByScoreIdLookup(game.ScoreId);
+
+            if (gameLookup.Score.HasStarted == false)
+            {
+                if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
+                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+                
+                await gameData.UpdateGame(game);
+            }
+        }
     }
 }

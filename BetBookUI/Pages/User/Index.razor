@@ -13,6 +13,7 @@
 <div class="games-page">
 
     <div class="week-title">
+
         @if(gamesAvailable is not null && gamesAvailable.Count != 1)
         {
             <h1 style="margin-left: 8em;">@gamesAvailable.Count Available Games</h1>
@@ -22,6 +23,7 @@
             <h1 style="margin-left: 8em;">@gamesAvailable.Count Available Game</h1>
         }
         <h1 style="margin-right: 8em;">@currentSeason Season Week @nextWeek</h1>
+
     </div>
 
     <div class="games">
@@ -61,12 +63,12 @@
     {
         teams = await teamData.GetTeams();
         games = await gameData.GetGames();
+
         gamesAvailable = games.Where(g => 
             g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
         currentSeason = DateTime.Now.CalculateSeason();
         currentWeek = currentSeason.CalculateWeek(DateTime.Now);
-
         nextWeek = currentWeek + 1;
 
         if (gamesAvailable.Count < 1)

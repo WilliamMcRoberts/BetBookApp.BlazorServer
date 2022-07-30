@@ -46,7 +46,7 @@ public class GameModel
     // Winner of the game
     public int GameWinnerId { get; set; }
 
-    public TeamModel GameWinner { get; set; }
+    public TeamModel? GameWinner { get; set; }
 
     // Week number
     public int WeekNumber { get; set; }
@@ -62,8 +62,14 @@ public class GameModel
 
     public int ScoreId { get; set; }
 
-    public string PointSpreadDescription { get => (Math.Round(PointSpread) < 0) ? $"- {PointSpread.ToString().Trim('-')} points" : $"+ {PointSpread} points"; }
+    public string PointSpreadDescription 
+    { 
+        get => 
+            (Math.Round(PointSpread) < 0) ? 
+            $"- {PointSpread.ToString().Trim('-')} points" : 
+            $"+ {PointSpread} points";
+    }
 
-    public string DateOfGameOnly { get; set; }
-    public string TimeOfGameOnly { get; set; }
+    public string? DateOfGameOnly { get; set; }
+    public string? TimeOfGameOnly { get; set; }
 }
