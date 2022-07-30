@@ -21,7 +21,7 @@ public class GameService : IGameService
     IEnumerable<ParleyBetModel>? parleyBets;
 
     public GameService(IGameData gameData, ITeamData teamData,
-        IBetData betData, IParleyBetData parleyData)
+            IBetData betData, IParleyBetData parleyData)
     {
         _httpClient = new();
         _gameData = gameData;
@@ -151,8 +151,10 @@ public class GameService : IGameService
             {
                 GameModel gameModel = new();
 
-                gameModel.HomeTeam = teams.Where(t => t.Symbol == g.HomeTeam)?.FirstOrDefault()!;
-                gameModel.AwayTeam = teams.Where(t => t.Symbol == g.AwayTeam)?.FirstOrDefault()!;
+                gameModel.HomeTeam = teams.Where(t =>
+                    t.Symbol == g.HomeTeam)?.FirstOrDefault()!;
+                gameModel.AwayTeam = teams.Where(t =>
+                    t.Symbol == g.AwayTeam)?.FirstOrDefault()!;
                 gameModel.HomeTeamId = gameModel.HomeTeam.Id;
                 gameModel.AwayTeamId = gameModel.AwayTeam.Id;
                 gameModel.DateOfGame = g.DateTime;
@@ -174,7 +176,7 @@ public class GameService : IGameService
                     gameModel.UnderdogId = gameModel.Underdog.Id;
                 }
 
-                else if (gameModel.PointSpread > 0)
+                else
                 {
                     gameModel.Favorite = gameModel.AwayTeam;
                     gameModel.FavoriteId = gameModel.AwayTeam.Id;
@@ -202,7 +204,8 @@ public class GameService : IGameService
         if (parleyBets is null || !parleyBets.Any())
             parleyBets = await _parleyData.GetParleyBets();
 
-        foreach (GameModel game in games!.Where(g => g.GameStatus != GameStatus.FINISHED))
+        foreach (GameModel game in games!.Where(g =>
+            g.GameStatus != GameStatus.FINISHED))
         {
             GameLookup gameLookup = new();
 
@@ -214,13 +217,16 @@ public class GameService : IGameService
                 game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
 
                 await game.UpdateScores(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, _gameData);
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                        teams!, _gameData);
 
                 await game.UpdateBetWinners(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, _betData, games!, teams!, bets!);
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                        _betData, games!, teams!, bets!);
 
                 await game.UpdateTeamRecords(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore, teams!, _teamData);
+                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                        teams!, _teamData);
             }
         }
 
@@ -228,12 +234,13 @@ public class GameService : IGameService
                     parleyBets!, games!, teams!, bets!);
     }
 
-    public async Task FetchAllUpdatedGameInfoForAvailableGames()
+    public async Task GetPointSpreadUpdateForAvailableGames()
     {
         if (games is null || !games.Any())
             games = await _gameData.GetGames();
 
-        foreach (GameModel game in games.Where(g => g.GameStatus == GameStatus.NOT_STARTED))
+        foreach (GameModel game in games.Where(g
+                    => g.GameStatus == GameStatus.NOT_STARTED))
         {
             GameLookup gameLookup = new();
 

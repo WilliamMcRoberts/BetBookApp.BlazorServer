@@ -11,7 +11,7 @@ namespace BetBookData.Services;
 public class TimerService : BackgroundService
 {
     private readonly IGameService _gameService;
-    private readonly PeriodicTimer _timerForPointSpreadUpdate = new PeriodicTimer(TimeSpan.FromHours(4));
+    private readonly PeriodicTimer _timerForPointSpreadUpdate = new(TimeSpan.FromHours(4));
     private readonly ILogger<TimerService> _logger;
     public TimerService(IGameService gameService, ILogger<TimerService> logger)
     {
@@ -21,10 +21,8 @@ public class TimerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while(await _timerForPointSpreadUpdate.WaitForNextTickAsync(stoppingToken) && 
-                !stoppingToken.IsCancellationRequested)
-        {
-            await _gameService.FetchAllUpdatedGameInfoForAvailableGames();
-        }
+        while(await _timerForPointSpreadUpdate.WaitForNextTickAsync(stoppingToken) 
+                    && !stoppingToken.IsCancellationRequested)
+            await _gameService.GetPointSpreadUpdateForAvailableGames();
     }
 }
