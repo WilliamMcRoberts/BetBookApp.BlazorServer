@@ -42,7 +42,7 @@
                                 <img style="height:40px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
                             </div>
                             <div>
-                                <label style="font-size: 17px;margin-top:1em;margin-left:2em;">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.HomeTeam.TeamName @game.PointSpreadDescription</label>
+                                <label style="font-size: 17px;margin-top:1em;margin-left:2em;">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName @game.PointSpreadDescription</label>
                                 <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
                             </div>
                         </li>
@@ -69,7 +69,7 @@
                 @foreach(GameModel game in gamesChosen)
                 {
                     <li class="parley-game-item" style="text-align:center;" >
-                        <h3>@game.AwayTeam.TeamName At @game.HomeTeam.TeamName || @game.HomeTeam.TeamName @game.PointSpreadDescription</h3>
+                        <h3>@game.AwayTeam.TeamName At @game.HomeTeam.TeamName @game.PointSpreadDescription</h3>
                         <li style="font-size:15px;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</li>
                         @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam.TeamName))
                         {
