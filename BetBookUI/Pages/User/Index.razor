@@ -16,13 +16,13 @@
 
         @if(gamesAvailable is not null && gamesAvailable.Count != 1)
         {
-            <h1 style="margin-left: 8em;">@gamesAvailable.Count Available Games</h1>
+            <h3 style="margin-left: 8em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
         }
         else if(gamesAvailable is not null)
         {
-            <h1 style="margin-left: 8em;">@gamesAvailable.Count Available Game</h1>
+            <h3 style="margin-left: 8em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
         }
-        <h1 style="margin-right: 8em;">@currentSeason Season Week @nextWeek</h1>
+        <h3 style="margin-right: 8em;font-weight:700;">@currentSeason Season Week @nextWeek</h3>
 
     </div>
 

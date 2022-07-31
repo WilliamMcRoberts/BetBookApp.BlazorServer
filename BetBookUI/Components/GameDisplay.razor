@@ -7,7 +7,7 @@
     {
         <div class="game-container">
             <div class="away-team">
-                <label class="local">Away</label>
+                <label>Away</label>
                 <img style="height:100px;" src="/images/@g.AwayTeam.ImagePath" alt="team logo">
                 <div class="basic-record">
                     @if(g.AwayTeam.Wins is not null && g.AwayTeam.Losses is not null && g.AwayTeam.Draws is not null)
@@ -23,17 +23,16 @@
                     <li class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName @g.PointSpreadDescription</li>
                     <li class="game-time-date">@g.DateOfGameOnly at @g.TimeOfGameOnly pm</li>
                 </ul>
+
                 <div class="bet-selection">
-                    <div>
-                        <button @onclick="(() => CreateBet(g.Id))" 
-                            class="mt-4 site-btn btn site-btn-light btn-sm text-uppercase">
-                            Place A Wager On Game
-                        </button>
-                    </div>
+                    <button @onclick="(() => CreateBet(g.Id))" 
+                        class="mt-4 site-btn btn site-btn-light btn-sm text-uppercase">
+                        Place A Wager On Game
+                    </button>
                 </div>
             </div>
             <div class="home-team">
-                <label class="local">Home</label>
+                <label>Home</label>
                 <img style="height:100px;" src="/images/@g.HomeTeam.ImagePath" alt="team logo">
                 <div class="basic-record">
                     @if(g.HomeTeam.Wins is not null && g.HomeTeam.Losses is not null && g.HomeTeam.Draws is not null)
