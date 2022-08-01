@@ -4,6 +4,9 @@ Bet Book is a .NET 6 Blazor Server application using Dapper micro-ORM for data a
 BROWSE GAMES HOME PAGE
 ![STI](https://user-images.githubusercontent.com/95720340/182048364-5ebd3379-f735-4467-abaf-d0f4b6a585b6.png)
 
+PLACE A WAGER PAGE
+![STCREATEBET](https://user-images.githubusercontent.com/95720340/182076181-2cbd18f5-abff-48b7-9129-02e44bced3db.png)
+
 CREATE A PARLEY WAGER PAGE
 ![STPARLEY](https://user-images.githubusercontent.com/95720340/182048363-67d9610f-9bae-41e4-9d1a-2c7c72c225c5.png)
 
