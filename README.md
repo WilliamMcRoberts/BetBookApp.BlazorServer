@@ -8,7 +8,7 @@ CREATE A WAGER PAGE
 ![STCRBET](https://user-images.githubusercontent.com/95720340/182082566-118014af-1b3e-4a01-bfbf-518cb9d3a16e.png)
 
 CREATE A PARLEY WAGER PAGE
-![STPARLEY](https://user-images.githubusercontent.com/95720340/182048363-67d9610f-9bae-41e4-9d1a-2c7c72c225c5.png)
+![STPLY](https://user-images.githubusercontent.com/95720340/182197896-fcec1a67-2da9-4d37-ad3c-d567600b2770.png)
 
 
 
