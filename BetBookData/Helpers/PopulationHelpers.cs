@@ -5,7 +5,6 @@ namespace BetBookData.Helpers;
 
 public static class PopulationHelpers
 {
-
     public static List<GameModel> PopulateGameModelsWithTeams(
         this List<GameModel> games, IEnumerable<TeamModel> teams)
     {
@@ -13,8 +12,10 @@ public static class PopulationHelpers
         {
             g.HomeTeam = teams.Where(t => t.Id == g.HomeTeamId).FirstOrDefault()!;
             g.AwayTeam = teams.Where(t => t.Id == g.AwayTeamId).FirstOrDefault()!;
+
             g.Favorite = teams.Where(t => t.Id == g.FavoriteId).FirstOrDefault()!;
             g.Underdog = teams.Where(t => t.Id == g.UnderdogId).FirstOrDefault()!;
+
             if (g.GameWinnerId != 0)
                 g.GameWinner = teams.Where(t => t.Id == g.GameWinnerId).FirstOrDefault()!;
         }
@@ -46,28 +47,36 @@ public static class PopulationHelpers
     {
         foreach(ParleyBetModel parleyBet in parleyBets)
         {
-            BetModel bet1 = bets.Where(b => b.Id == parleyBet.Bet1Id).FirstOrDefault();
-            parleyBet.Bets.Add(bet1);
+            BetModel? bet1 = bets.Where(b => b.Id == parleyBet.Bet1Id).FirstOrDefault();
+            BetModel? bet2 = bets.Where(b => b.Id == parleyBet.Bet2Id).FirstOrDefault();
 
-            BetModel bet2 = bets.Where(b => b.Id == parleyBet.Bet2Id).FirstOrDefault();
-            parleyBet.Bets.Add(bet2);
-
-            if(parleyBet.Bet3Id != 0)
+            if (bet1 is not null && bet2 is not null)
             {
-                BetModel bet3 = bets.Where(b => b.Id == parleyBet.Bet3Id).FirstOrDefault();
-                parleyBet.Bets.Add(bet3);
-            }
+                parleyBet.Bets.Add(bet1);
+                parleyBet.Bets.Add(bet2);
 
-            if (parleyBet.Bet4Id != 0)
-            {
-                BetModel bet4 = bets.Where(b => b.Id == parleyBet.Bet4Id).FirstOrDefault();
-                parleyBet.Bets.Add(bet4);
-            }
+                if (parleyBet.Bet3Id != 0)
+                {
+                    BetModel? bet3 = bets.Where(b => b.Id == parleyBet.Bet3Id).FirstOrDefault();
 
-            if (parleyBet.Bet5Id != 0)
-            {
-                BetModel bet5 = bets.Where(b => b.Id == parleyBet.Bet5Id).FirstOrDefault();
-                parleyBet.Bets.Add(bet5);
+                    if (bet3 is not null)
+                        parleyBet.Bets.Add(bet3);
+
+                    if (parleyBet.Bet4Id != 0)
+                    {
+                        BetModel? bet4 = bets.Where(b => b.Id == parleyBet.Bet4Id).FirstOrDefault();
+
+                        if (bet4 is not null)
+                            parleyBet.Bets.Add(bet4);
+
+                        if (parleyBet.Bet5Id != 0)
+                        {
+                            BetModel? bet5 = bets.Where(b => b.Id == parleyBet.Bet5Id).FirstOrDefault();
+                            if (bet5 is not null)
+                                parleyBet.Bets.Add(bet5);
+                        }
+                    }
+                }
             }
 
             parleyBet.Bets.PopulateBetModelsWithGamesTeams(games, teams);
@@ -75,6 +84,4 @@ public static class PopulationHelpers
 
         return parleyBets;
     }
-
-    
 }

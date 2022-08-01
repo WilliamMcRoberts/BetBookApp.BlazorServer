@@ -19,14 +19,14 @@
                 </div>
             </div>
             <div class="game-details">
-                <ul class="game-info">
+                <ul class="game-info mt-4">
                     <li class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName @g.PointSpreadDescription</li>
                     <li class="game-time-date">@g.DateOfGameOnly at @g.TimeOfGameOnly pm</li>
                 </ul>
 
-                <div class="bet-selection">
+                <div class="bet-selection-single">
                     <button @onclick="(() => CreateBet(g.Id))" 
-                        class="mt-4 site-btn btn site-btn-light btn-sm text-uppercase">
+                        class="mb-4 site-btn btn site-btn-light btn-sm text-uppercase">
                         Place A Wager On Game
                     </button>
                 </div>

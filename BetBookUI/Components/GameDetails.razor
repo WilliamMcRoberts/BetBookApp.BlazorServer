@@ -1,199 +1,284 @@
 ﻿@inject AuthenticationStateProvider authProvider
 @inject IGameData gameData
 @inject ITeamData teamData
+@inject IGameService gameService
+@inject IHouseAccountData houseData
+@inject IConfiguration config
+@inject IUserData userData
+@inject IBetData betData
 
 <div class="game-info-container">
-        <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
+    <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
     @if(CurrentGame is not null)
     {
         <div style="margin-bottom:1em;">
-            <ul class="game-list">
+            <ul class="game-intro">
                 <li class="team-item">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName @CurrentGame.PointSpreadDescription</li>
                 <li class="game-time-date">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</li>
             </ul>
             <br />
             <div class="records">
                 <div class="stat-records">
-                    <img style="height:100px;" src="/images/@CurrentGame.AwayTeam.ImagePath" alt="team logo">
-                    <div class="stat">
-                        <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Wins</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.AwayTeam.Wins is not null)
-                                {
-                                    @if(CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>  
-                                    }
-                                }
-                            </div>
-                        </div>
+                    <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.AwayTeam.ImagePath" alt="team logo">
+                    <div class="stat-container">
+                        <Stat StatType="Wins"
+                              Stats="CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
+
+                        <Stat StatType="Losses"
+                              Stats="CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray()"/>
+
+                        <Stat StatType="Draws"
+                              Stats="CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                    <div class="stat">
-                        <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Losses</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.AwayTeam.Losses is not null)
-                                {
-                                    @if(CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                            
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>
-                                         
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat">
-                        <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Draws</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.AwayTeam.Draws is not null)
-                                {
-                                    @if(CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>   
-                                    }
-                                }
-                            </div>
-                        </div>
+                    <div class="mt-4 mb-2 team-selection-container">
+                        @if(winnerChosen && teamToWin?.TeamName == CurrentGame.AwayTeam.TeamName)
+                        {
+                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                @onclick="() => UndoWinnerSelection()">
+                                Undo @teamToWin?.TeamName @GetSpread(teamToWin.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
+                        else if(!winnerChosen)
+                        {
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                                Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
                     </div>
                 </div>
                 <div class="stat-records">
-                    <img style="height:100px;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
-                    <div class="stat">
-                          <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Wins</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.HomeTeam.Wins is not null)
-                                {
-                                    @if(CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>     
-                                    }
-                                }
-                            </div>
-                        </div>
+                    <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
+                    <div class="stat-container">
+                        <Stat StatType="Wins"
+                          Stats="CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
+
+                        <Stat StatType="Losses"
+                              Stats="CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray()"/>
+
+                        <Stat StatType="Draws"
+                              Stats="CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                    <div class="stat">
-                        <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Losses</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.HomeTeam.Losses is not null)
-                                {
-                                    @if(CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>     
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat">
-                        <div class="rec-sec">
-                            <div style="text-align:center;">
-                                <label>Draws</label>
-                            </div>
-                            <div class="team">
-                                @if(CurrentGame.HomeTeam.Draws is not null)
-                                {
-                                    @if(CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray().Length != 0)
-                                    {
-                                        @foreach(string team in CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray())
-                                        {
-                                            <div class="rec-item">
-                                                <h6 style="padding:.5em .5em;">@team</h6>
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div class="rec-item">
-                                            <h6 style="padding:.5em .5em;">None</h6>  
-                                        </div>  
-                                    }
-                                }
-                            </div>
-                        </div>
+                    <div class="mt-4 mb-2 team-selection-container">
+                        @if(winnerChosen && teamToWin?.TeamName == CurrentGame.HomeTeam.TeamName)
+                        {
+                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                @onclick="() => UndoWinnerSelection()">
+                                Undo @teamToWin?.TeamName @GetSpread(teamToWin.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
+                        else if(!winnerChosen)
+                        {
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                                Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     }
-    
-    </div>
+</div>
+<div class="bet-details">
+    @if(CurrentGame is not null)
+    {
+        @if (teamToWinNull)
+        {
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITHOUT A CHOSEN WINNER</div>
+
+        }
+        @if(betAmountBad)
+        {
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
+        }
+        @if(gameNotStarted == false)
+        {
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">THIS GAME HAS ALREADY STARTED...PLEASE CHOOSE ANOTHER GAME</div>
+        }
+        <div class="wager-box">
+            <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
+            <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
+        </div>  
+        <div style="text-align:center;margin-top:1em;">
+            <p style="margin: .5em auto;">Your bet for $@betAmount is ready.</p>
+            <p style="margin: .5em auto;">If everything looks good click "Submit Wager"</p>
+        </div>
+        <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
+            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                @onclick="(() => PlaceWager(betAmount, teamToWin!))">
+                Submit Wager
+            </button>  
+        </div>
+    }
+</div>
 
 @code {
 
     // Display info for current game being viewed
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
+
+    private UserModel? loggedInUser;
+
+    private decimal betAmount;
+
+    private bool betAmountBad;
+
+    // Boolean sets to true when a winner is chosen
+    private bool winnerChosen = false;
+
+    private bool teamToWinNull;
+
+    private TeamModel? teamToWin;
+
+    // Boolean to check if wager has been placed
+    private bool wagerPlaced = false;
+
+    // bool to check if game has started
+    private bool gameNotStarted = true;
+
+    // 10% vigorish for all bets
+    private double VIG = .1;
+
+    private IEnumerable<TeamModel>? teams;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        teams = await teamData.GetTeams();
+    }
+
+    /// <summary>
+    /// Async method to update bet info, insert a new bet
+    /// into the database, update user account balance, and
+    /// update the house account balance
+    /// </summary>
+    /// <param name="amountToBet">
+    /// decimal representing the amount of money 
+    /// the user is wagering on the bet
+    /// </param>
+    /// <param name="teamToWin">
+    /// TeamModel representing the team that the user has chosen
+    /// to be the winner of the game
+    /// </param>
+    /// <returns></returns>
+    private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
+    {
+        if (amountToBet != 0)
+        {
+            if (teamToWin is not null)
+            {
+                bool hasStarted;
+
+                GameLookup? gameLookup =
+                    await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
+
+                if (gameLookup is not null)
+                {
+                    hasStarted = gameLookup.Score.HasStarted;
+
+                    if (hasStarted == false)
+                    {
+                        BetModel bet = new();
+
+                        HouseAccountModel? houseAccount =
+                            await houseData.GetHouseAccount();
+
+                        bet.BetAmount = amountToBet;
+                        bet.BetPayout =
+                            (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                        bet.ChosenWinnerId = teamToWin.Id;
+                        bet.BettorId = loggedInUser!.Id;
+                        bet.GameId = CurrentGame.Id;
+
+                        loggedInUser.AccountBalance -= bet.BetAmount;
+                        houseAccount!.AccountBalance += bet.BetAmount;
+
+                        // Transaction method transfers funds from user account
+                        // to house account and inserts bet into the database
+                        await loggedInUser.CreateBetTransaction(
+                            bet, houseAccount, config, userData, houseData, betData);
+
+                        wagerPlaced = true;
+                        CurrentGame = null;
+                        amountToBet = 0;
+                    }
+
+                    else
+                        gameNotStarted = false;
+                }
+            }
+
+            else
+                teamToWinNull = true;
+
+        }
+
+        else
+            betAmountBad = true;
+    }
+
+    /// <summary>
+    /// Async method to select chosen winner of game
+    /// and grab that team from the database
+    /// </summary>
+    /// <param name="teamId">int representing the Id of the team being chosen</param>
+    /// <returns></returns>
+    private void ChooseWinner(int teamId)
+    {
+        if(teamId == CurrentGame.HomeTeamId)
+        {
+            teamToWin = 
+                teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
+            winnerChosen = true;
+        }
+
+        else if(teamId == CurrentGame.AwayTeamId)
+        {
+            teamToWin = 
+                teams?.Where(t => t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
+            winnerChosen = true;
+        }
+    }
+
+    /// <summary>
+    /// Method reverts a winner selection
+    /// </summary>
+    private void UndoWinnerSelection()
+    {
+        teamToWin = null;
+        winnerChosen = false;
+    }
+
+    private string GetSpread(string teamName, double pointSpread)
+    {
+        string result = "";
+
+        
+        if(teamName == CurrentGame.AwayTeam.TeamName)
+        {
+            if (pointSpread < 0)
+                result = $"+ {pointSpread * -1}";
+            else if (pointSpread == 0)
+                result = $"+ 0";
+            else
+                result = $"- {pointSpread}";
+        }
+
+        else if(teamName == CurrentGame.HomeTeam.TeamName)
+        {
+            if (pointSpread < 0)
+                result = $"- {pointSpread.ToString().Trim('-')}";
+            else if (pointSpread == 0)
+                result = "+ 0";
+            else
+                result = $"+ {pointSpread}";
+        }
+
+        return result;
+
+    }
 }
 
 

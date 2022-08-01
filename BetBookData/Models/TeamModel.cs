@@ -23,15 +23,24 @@ public class TeamModel
     // Teams that the current team have beaten
     public string Wins { get; set; }
 
+
     // Teams that the current team has lost to
     public string Losses { get; set; }
 
+
     // Teams that the current team have been in a draw with
     public string Draws { get; set; }
+
 
     public string Symbol { get; set; }
 
 
     public string ImagePath { get => $"{TeamName.ToLower()}.svg"; }
+
+    public string[] TeamWins { get => Wins.Split('|').SkipLast(1).ToArray(); }
+
+    public string[] TeamLosses { get => Losses.Split('|').SkipLast(1).ToArray(); }
+
+    public string[] TeamDraws { get => Wins.Split('|').SkipLast(1).ToArray(); }
 
 }
