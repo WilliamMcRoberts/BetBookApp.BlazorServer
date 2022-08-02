@@ -5,16 +5,18 @@ BROWSE GAMES HOME PAGE
 ![STH](https://user-images.githubusercontent.com/95720340/182467855-8461c623-c4db-489d-b96f-db64272de230.png)
 
 CREATE A WAGER PAGE
-![STGD](https://user-images.githubusercontent.com/95720340/182293351-02c74d18-8870-4a1e-9fe1-be525c50dd0b.png)
+![STDETAILS](https://user-images.githubusercontent.com/95720340/182468406-722146a0-f7da-4656-b3e9-046b6dbcf106.png)
 
 CREATE A PARLEY WAGER PAGE
 ![STPARLEYWAGER](https://user-images.githubusercontent.com/95720340/182467865-65393ef3-848f-4c5e-9de3-b247c7a5ffcb.png)
 
 PROFILE PAGE
-![STPRFL](https://user-images.githubusercontent.com/95720340/182407400-2ee834e3-7a1d-4f16-8037-66626e2386a8.png)
+![STPROFILE](https://user-images.githubusercontent.com/95720340/182468401-65913125-4c58-46cf-ac7a-9e6d81843a84.png)
 
 ADMIN PAGE
-![STADMIN](https://user-images.githubusercontent.com/95720340/182415646-2a4da1b7-44f1-4712-99ec-a18bd73c4eca.png)
+![STADMN](https://user-images.githubusercontent.com/95720340/182468388-0cfbc232-00c9-45de-b297-c10f7da081ce.png)
+
+
 
 
 
