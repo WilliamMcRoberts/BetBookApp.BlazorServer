@@ -11,7 +11,7 @@ CREATE A PARLEY WAGER PAGE
 ![STPBP](https://user-images.githubusercontent.com/95720340/182302734-6886ea66-318d-4667-b748-bab7b343a2bd.png)
 
 PROFILE PAGE
-![STPP](https://user-images.githubusercontent.com/95720340/182302212-fa67aeb3-2830-4109-a9a3-d37f0c7172b0.png)
+![STPRFL](https://user-images.githubusercontent.com/95720340/182407400-2ee834e3-7a1d-4f16-8037-66626e2386a8.png)
 
 
 
