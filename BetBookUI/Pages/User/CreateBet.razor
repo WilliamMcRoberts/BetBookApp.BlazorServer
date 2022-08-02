@@ -9,7 +9,7 @@
 
 <div class="game-wager-container">
 
-    <GameDetails CurrentGame="currentGame"/>
+    <GameDetails CurrentGame="CurrentGame"/>
 
 </div>
 
@@ -20,7 +20,7 @@
     public int gameId { get; set; }
 
     // Current game being viewed
-    private GameModel? currentGame;
+    private GameModel? CurrentGame { get; set; }
 
     // Current logged in user
     private UserModel? loggedInUser;
@@ -39,7 +39,7 @@
 
         teams = await teamData.GetTeams();
 
-        currentGame = games.Where(g => g.Id == gameId)
+        CurrentGame = games.Where(g => g.Id == gameId)
                            .ToList()
                            .PopulateGameModelsWithTeams(teams)
                            .FirstOrDefault();

@@ -14,7 +14,8 @@
         <div style="margin-bottom:1em;">
             <ul class="game-intro">
                 <li class="team-item">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName @CurrentGame.PointSpreadDescription</li>
-                <li class="game-time-date">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</li>
+                <li class="game-time-date-stadium">@CurrentGame.Stadium</li>
+                <li class="game-time-date-stadium">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</li>
             </ul>
             <br />
             <div class="records">
@@ -30,22 +31,7 @@
                         <Stat StatType="Draws"
                               Stats="CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                    <div class="mt-4 mb-2 team-selection-container">
-                        @if(winnerChosen && teamToWin?.TeamName == CurrentGame.AwayTeam.TeamName)
-                        {
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                @onclick="() => UndoWinnerSelection()">
-                                Undo @teamToWin?.TeamName @GetSpread(teamToWin.TeamName, CurrentGame.PointSpread)
-                            </button>
-                        }
-                        else if(!winnerChosen)
-                        {
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
-                            </button>
-                        }
-                    </div>
+                    
                 </div>
                 <div class="stat-records">
                     <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
@@ -59,22 +45,63 @@
                         <Stat StatType="Draws"
                               Stats="CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                    <div class="mt-4 mb-2 team-selection-container">
-                        @if(winnerChosen && teamToWin?.TeamName == CurrentGame.HomeTeam.TeamName)
+                </div>
+            </div>
+            <div class="choose-winner-section">
+                <div class="mt-4 mb-2 team-selection-container">
+                    @if(winnerChosen)
+                    {
+                        if(teamToWin?.TeamName == CurrentGame.AwayTeam.TeamName)
                         {
                             <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                 @onclick="() => UndoWinnerSelection()">
-                                Undo @teamToWin?.TeamName @GetSpread(teamToWin.TeamName, CurrentGame.PointSpread)
+                                Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
-                        else if(!winnerChosen)
+                        else
                         {
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                                Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
+
+                        
+                    }
+                    else if(!winnerChosen)
+                    {
+                        <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                            Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
+                        </button>
+                    }
+                </div>
+                <div class="mt-4 mb-2 team-selection-container">
+                    @if(winnerChosen)
+                    {
+                        if(teamToWin?.TeamName == CurrentGame.HomeTeam.TeamName)
+                        {
+                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                @onclick="UndoWinnerSelection">
+                                Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
                                 Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
-                    </div>
+
+                    }
+                    else if(!winnerChosen)
+                    {
+                        <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                            Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
+                        </button>
+                    }
                 </div>
             </div>
         </div>
@@ -106,7 +133,7 @@
         </div>
         <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                @onclick="(() => PlaceWager(betAmount, teamToWin!))">
+                @onclick="SubmitSingleWager">
                 Submit Wager
             </button>  
         </div>
@@ -149,23 +176,10 @@
         teams = await teamData.GetTeams();
     }
 
-    /// <summary>
-    /// Async method to update bet info, insert a new bet
-    /// into the database, update user account balance, and
-    /// update the house account balance
-    /// </summary>
-    /// <param name="amountToBet">
-    /// decimal representing the amount of money 
-    /// the user is wagering on the bet
-    /// </param>
-    /// <param name="teamToWin">
-    /// TeamModel representing the team that the user has chosen
-    /// to be the winner of the game
-    /// </param>
-    /// <returns></returns>
-    private async Task PlaceWager(decimal amountToBet, TeamModel teamToWin)
+
+    private async Task SubmitSingleWager()
     {
-        if (amountToBet != 0)
+        if (betAmount != 0)
         {
             if (teamToWin is not null)
             {
@@ -185,9 +199,9 @@
                         HouseAccountModel? houseAccount =
                             await houseData.GetHouseAccount();
 
-                        bet.BetAmount = amountToBet;
+                        bet.BetAmount = betAmount;
                         bet.BetPayout =
-                            (decimal)((double)amountToBet - (double)amountToBet * VIG);
+                            (decimal)((double)betAmount - (double)betAmount * VIG);
                         bet.ChosenWinnerId = teamToWin.Id;
                         bet.BettorId = loggedInUser!.Id;
                         bet.GameId = CurrentGame.Id;
@@ -201,8 +215,8 @@
                             bet, houseAccount, config, userData, houseData, betData);
 
                         wagerPlaced = true;
-                        CurrentGame = null;
-                        amountToBet = 0;
+                        CurrentGame = null!;
+                        betAmount = 0;
                     }
 
                     else

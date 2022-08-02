@@ -12,17 +12,23 @@
 
 <div class="games-page">
 
-    <div class="week-title">
+    <div class="info-label-container">
 
         @if(gamesAvailable is not null && gamesAvailable.Count != 1)
         {
-            <h3 style="margin-left: 8em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
+            <div>
+                <h3 style="margin-left:5.5em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
+            </div>
         }
         else if(gamesAvailable is not null)
         {
-            <h3 style="margin-left: 8em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
+            <div>
+                <h3 style="margin-left:5.5em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
+            </div>
         }
-        <h3 style="margin-right: 8em;font-weight:700;">@currentSeason Season Week @nextWeek</h3>
+        <div>
+            <h3 style="margin-right:5.5em;font-weight:700;">@currentSeason Season Week @nextWeek</h3>
+        </div>
 
     </div>
 

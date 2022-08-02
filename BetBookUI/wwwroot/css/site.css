@@ -204,13 +204,26 @@ ul {
     margin: 0 auto;
 }
 
-.game-time-date {
+.game-time-date-stadium {
     font-size: 20px;
     font-weight: 700;
 }
 
-.parley-game-item {
+.parley-game-item-unchosen {
     border: 2px solid green;
+    padding: 1em .5em;
+    margin: .5em auto;
+    border-radius: 15px;
+    background-color: rgb(0,0,0); /*Fallback color */
+    background-color: rgba(0,0,0, 0.4); /*Black w/opacity*/
+    backdrop-filter: blur(10px);
+    color: white;
+    text-align: center;
+    width: 70%;
+}
+
+.parley-game-item-chosen {
+    border: 2px solid red;
     padding: 1em .5em;
     margin: .5em auto;
     border-radius: 15px;
@@ -228,7 +241,7 @@ ul {
 }
 
 .parley-bet {
-    border: 2px solid green;
+    border: 1px solid white;
     border-radius: 15px;
     margin: 1em 4em;
 }
@@ -306,24 +319,10 @@ ul {
     margin-right: 1rem;
 }
 
-.local {
-    border: 3px solid green;
-    border-radius: 15px;
-    background: white;
-}
-
-.wager-form-container {
-    border: 4px solid green;
-    background: rgb(152,251,152, .5);
-    border-radius: 15px;
-    width: 45%;
-    overflow-y: scroll;
-    height: 76vh;
-}
 
 .team-item {
     padding: .25em;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 700;
 }
 
@@ -331,8 +330,6 @@ ul {
     display: flex;
     justify-content: space-evenly;
 }
-
-
 
 .game-container {
     display: flex;
@@ -353,7 +350,6 @@ ul {
     display: flex;
     justify-content: center;
     flex-direction:column;
-
 }
 
 .game-input {
@@ -385,23 +381,27 @@ ul {
 
 
 .user-profile-reg {
-    width: 45%;
-    background: rgb(152,251,152, .5); /*Pale Green*/
-    border-radius: 15px;
-    border: 4px solid green;
-    margin-right: .5em;
+    height: 100vh;
     overflow-y: scroll;
-    height: 76vh;
+    width: 45%;
+    border: 2px solid green;
+    border-radius: 15px;
+    background-color: rgb(0,0,0); /*Fallback color */
+    background-color: rgba(0,0,0, 0.4); /*Black w/opacity*/
+    backdrop-filter: blur(10px);
+    color:white;
 }
 
 .user-profile-parley {
-    width: 45%;
-    background: rgb(152,251,152, .5); /*Pale Green*/
-    border-radius: 15px;
-    border: 4px solid green;
-    margin-left: .5em;
+    height: 100vh;
     overflow-y: scroll;
-    height: 76vh;
+    width: 45%;
+    border: 2px solid green;
+    border-radius: 15px;
+    background-color: rgb(0,0,0); /*Fallback color */
+    background-color: rgba(0,0,0, 0.4); /*Black w/opacity*/
+    backdrop-filter: blur(10px);
+    color:white;
 }
 
 .profile {
@@ -415,6 +415,11 @@ ul {
 
 .team-selection-container {
     margin:0 auto;
+}
+
+.choose-winner-section {
+    display:flex;
+    justify-content:space-between;
 }
 
 .game-intro {
@@ -450,8 +455,6 @@ ul {
     width: 70%;
 }
 
-
-
 .team {
     display: flex;
     justify-content: center;
@@ -465,11 +468,6 @@ ul {
 
 .rec-sec {
     margin-bottom: 1em;
-}
-
-.divider {
-    border-bottom: 2px solid green;
-    margin: 2em 6em;
 }
 
 .game {
@@ -493,16 +491,16 @@ ul {
 }
 
 .bet {
-    background: white;
     border-radius: 15px;
     margin: 0 auto;
-    border: 3px solid green;
+    border: 1px solid white;
     width: 75%;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 700;
     text-align: center;
     margin-top: 1em;
     margin-bottom: 1em;
+    backdrop-filter: blur(1px);
 }
 
 .item {
