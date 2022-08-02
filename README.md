@@ -8,7 +8,7 @@ CREATE A WAGER PAGE
 ![STGD](https://user-images.githubusercontent.com/95720340/182293351-02c74d18-8870-4a1e-9fe1-be525c50dd0b.png)
 
 CREATE A PARLEY WAGER PAGE
-![STCPB](https://user-images.githubusercontent.com/95720340/182291885-1bda825d-a3e1-456c-acd6-8e266461c4bd.png)
+![STPBP](https://user-images.githubusercontent.com/95720340/182302734-6886ea66-318d-4667-b748-bab7b343a2bd.png)
 
 PROFILE PAGE
 ![STPP](https://user-images.githubusercontent.com/95720340/182302212-fa67aeb3-2830-4109-a9a3-d37f0c7172b0.png)
