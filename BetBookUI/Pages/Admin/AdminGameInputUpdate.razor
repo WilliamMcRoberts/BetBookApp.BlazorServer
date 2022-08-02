@@ -1,18 +1,36 @@
-﻿@page "/AdminGameInputUpdate"
+﻿@page "/AdminPage"
 @attribute [Authorize(Policy = "Admin")]
 @inject IGameData gameData
+@inject IGameService gameService
 
-<PageTitle>AdminGameInputUpdate</PageTitle>
+<PageTitle>AdminPage</PageTitle>
 
 <div style="text-align:center; margin-right: 720px;" class="balance">
     <label>Admin</label>
 </div>
 
+
+
+
 <div class="input">
     <div class="game-input">
 
         <div class="input-label-container">
-            <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Game Update</h3>
+            <h3 style="font-weight: 700;margin-left: 1em;margin-top: .5em;" class="title">Manual Game Update</h3>
+        </div>
+
+        <div style="display:flex;justify-content:space-evenly;margin-bottom: 2em;">
+            <div style="margin-top:2em;text-align:center;">
+                <button @onclick="FetchAllScoresForFinishedGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+                    Fetch Scores
+                </button>
+            </div>
+
+            <div style="margin-top:2em;text-align:center;">
+                <button @onclick="GetPointSpreadUpdateForAvailableGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
+                    Fetch Spreads
+                </button>
+            </div>
         </div>
 
         <EditForm Model="ug" OnValidSubmit="UpdateGame">
@@ -97,7 +115,7 @@
                 <input type="number" @bind-value="@ug.ScoreId" @bind-value:event="oninput"/>
             </div>
 
-            <div style="text-align:center;">
+            <div style="text-align:center;margin-bottom:2em;">
                  <button type="submit" class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase">Update Game</button>
             </div>
 
@@ -144,6 +162,12 @@
 
         ug = new();
     }
+
+    private async Task FetchAllScoresForFinishedGames() =>
+        await gameService.FetchAllScoresForFinishedGames();
+
+    private async Task GetPointSpreadUpdateForAvailableGames() => 
+        await gameService.GetPointSpreadUpdateForAvailableGames();
 
     /// <summary>
     /// Method for value change for date of game
