@@ -11,7 +11,7 @@ CREATE A PARLEY WAGER PAGE
 ![STFCREATEPARLEY](https://user-images.githubusercontent.com/95720340/182482266-6e064ce5-6945-4a45-9085-94f6cc5203be.png)
 
 PROFILE PAGE
-![STFPROFILE](https://user-images.githubusercontent.com/95720340/182482298-96c5ce8d-b10a-4093-bf64-344091b3fe67.png)
+![STFPN](https://user-images.githubusercontent.com/95720340/182483322-8a9a8560-8909-487d-9fcd-8cac7174acd7.png)
 
 ADMIN PAGE
 ![STFADMIN](https://user-images.githubusercontent.com/95720340/182482294-2fa532bf-67dc-4f67-a6b6-0e4790ea8fce.png)
