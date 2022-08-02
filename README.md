@@ -5,7 +5,7 @@ BROWSE GAMES HOME PAGE
 ![STCB](https://user-images.githubusercontent.com/95720340/182084612-ed9e67a3-e0f4-4cd9-a7f6-2d67337df990.png)
 
 CREATE A WAGER PAGE
-![STCRBET](https://user-images.githubusercontent.com/95720340/182082566-118014af-1b3e-4a01-bfbf-518cb9d3a16e.png)
+![STCBP](https://user-images.githubusercontent.com/95720340/182292214-c41d31f2-2272-4db8-8565-393c0f57072c.png)
 
 CREATE A PARLEY WAGER PAGE
 ![STCPB](https://user-images.githubusercontent.com/95720340/182291885-1bda825d-a3e1-456c-acd6-8e266461c4bd.png)
