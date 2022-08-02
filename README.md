@@ -13,7 +13,8 @@ CREATE A PARLEY WAGER PAGE
 PROFILE PAGE
 ![STPRFL](https://user-images.githubusercontent.com/95720340/182407400-2ee834e3-7a1d-4f16-8037-66626e2386a8.png)
 
-
+ADMIN PAGE
+![STADMIN](https://user-images.githubusercontent.com/95720340/182415646-2a4da1b7-44f1-4712-99ec-a18bd73c4eca.png)
 
 
 
