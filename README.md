@@ -5,7 +5,7 @@ BROWSE GAMES HOME PAGE
 ![STH](https://user-images.githubusercontent.com/95720340/182467855-8461c623-c4db-489d-b96f-db64272de230.png)
 
 CREATE A WAGER PAGE
-![STDETAILS](https://user-images.githubusercontent.com/95720340/182468406-722146a0-f7da-4656-b3e9-046b6dbcf106.png)
+![STGAME](https://user-images.githubusercontent.com/95720340/182469991-86c1212a-d62f-412f-ac20-cbb3286c5551.png)
 
 CREATE A PARLEY WAGER PAGE
 ![STPARLEYWAGER](https://user-images.githubusercontent.com/95720340/182467865-65393ef3-848f-4c5e-9de3-b247c7a5ffcb.png)
