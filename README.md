@@ -2,19 +2,26 @@
 Bet Book is a .NET 6 Blazor Server application using Dapper micro-ORM for data access and Azure AD B2C for authentication. This app allows users with an account to receive $10,000 (Not Real) to place wagers on games in the upcoming 2022-2023 NFL Season. Bet Book consumes a SportsData.IO api for up-to-date spreads and scores. Users can place wagers on "parley" style bets up to five games with appropriate payouts or bet on single games. Game info, team stats, bet info and user info is stored in a SQL database and can be accessed through an internal api. Mobile app is in developmnet.
 
 BROWSE GAMES HOME PAGE
-![STBGP](https://user-images.githubusercontent.com/95720340/182302204-55eca4cb-3d89-4398-8068-bbd85fd71331.png)
+![STFHOME](https://user-images.githubusercontent.com/95720340/182482285-4d33be48-98f4-4be2-9a7e-5f7cb76402cb.png)
 
 CREATE A WAGER PAGE
-![STGD](https://user-images.githubusercontent.com/95720340/182293351-02c74d18-8870-4a1e-9fe1-be525c50dd0b.png)
+![STFCREATE](https://user-images.githubusercontent.com/95720340/182482277-6a2c3a7f-375c-43e8-beec-2e8fa122a037.png)
 
 CREATE A PARLEY WAGER PAGE
-![STPBP](https://user-images.githubusercontent.com/95720340/182302734-6886ea66-318d-4667-b748-bab7b343a2bd.png)
+![STFCREATEPARLEY](https://user-images.githubusercontent.com/95720340/182482266-6e064ce5-6945-4a45-9085-94f6cc5203be.png)
 
 PROFILE PAGE
-![STPRFL](https://user-images.githubusercontent.com/95720340/182407400-2ee834e3-7a1d-4f16-8037-66626e2386a8.png)
+![STFPN](https://user-images.githubusercontent.com/95720340/182483322-8a9a8560-8909-487d-9fcd-8cac7174acd7.png)
 
 ADMIN PAGE
-![STADMIN](https://user-images.githubusercontent.com/95720340/182415646-2a4da1b7-44f1-4712-99ec-a18bd73c4eca.png)
+![STFADMIN](https://user-images.githubusercontent.com/95720340/182482294-2fa532bf-67dc-4f67-a6b6-0e4790ea8fce.png)
+
+
+
+
+
+
+
 
 
 
