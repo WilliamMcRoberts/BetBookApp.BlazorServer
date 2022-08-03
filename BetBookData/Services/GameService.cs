@@ -6,6 +6,7 @@ using BetBookData.Interfaces;
 using BetBookData.Lookups;
 using BetBookData.Models;
 using BetBookData.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.Services;
 public class GameService : IGameService
@@ -15,19 +16,21 @@ public class GameService : IGameService
     private readonly ITeamData _teamData;
     private readonly IBetData _betData;
     private readonly IParleyBetData _parleyData;
+    private readonly IConfiguration _config;
     IEnumerable<TeamModel>? teams;
     IEnumerable<GameModel>? games;
     IEnumerable<BetModel>? bets;
     IEnumerable<ParleyBetModel>? parleyBets;
 
     public GameService(IGameData gameData, ITeamData teamData,
-            IBetData betData, IParleyBetData parleyData)
+            IBetData betData, IParleyBetData parleyData, IConfiguration config)
     {
         _httpClient = new();
         _gameData = gameData;
         _teamData = teamData;
         _betData = betData;
         _parleyData = parleyData;
+        _config = config;
     }
 
     public async Task<TeamLookup> GetGameByTeamLookup(TeamModel team)
@@ -37,7 +40,8 @@ public class GameService : IGameService
         try
         {
             var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/odds/json/TeamTrends/{team.Symbol}?key=631ffaf2cf5d4555a9a1f7ba2d74a0f3");
+                    $"https://api.sportsdata.io/v3/nfl/odds/json/TeamTrends/" +
+                    $"{team.Symbol}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -62,7 +66,8 @@ public class GameService : IGameService
         try
         {
             var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/stats/json/BoxScoreByScoreIDV3/{scoreId}?key=631ffaf2cf5d4555a9a1f7ba2d74a0f3");
+                    $"https://api.sportsdata.io/v3/nfl/stats/json/BoxScoreByScoreIDV3/" +
+                    $"{scoreId}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -88,7 +93,8 @@ public class GameService : IGameService
         try
         {
             var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/2022{currentSeason}/{week}?key=631ffaf2cf5d4555a9a1f7ba2d74a0f3");
+                    $"https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/2022{currentSeason}" +
+                    $"/{week}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -115,58 +121,44 @@ public class GameService : IGameService
 
         List<GameModel> nextWeekGames = new();
 
-        int nextWeek;
-
-        if (currentSeason == SeasonType.PRE && currentWeek == 4)
-        {
-            currentSeason = SeasonType.REG;
-            nextWeek = 1;
-        }
-
-        else if (currentSeason == SeasonType.REG && currentWeek == 17)
-        {
-            currentSeason = SeasonType.POST;
-            nextWeek = 1;
-        }
-
-        else
-            nextWeek = currentWeek + 1;
+        (int, SeasonType) nextWeekSeason = 
+            (currentWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
 
         Game[] gameArray = new Game[16];
 
         try
         {
-            gameArray = await GetGamesByWeekLookup(currentSeason, nextWeek);
+            gameArray = await GetGamesByWeekLookup(
+                nextWeekSeason.Item2, nextWeekSeason.Item1);
         }
 
         catch (Exception ex)
         {
-
             Console.WriteLine(ex.Message);
         }
 
         if (gameArray.Length > 0)
         {
-            foreach (Game g in gameArray)
+            foreach (Game game in gameArray)
             {
                 GameModel gameModel = new();
 
                 gameModel.HomeTeam = teams.Where(t =>
-                    t.Symbol == g.HomeTeam)?.FirstOrDefault()!;
+                    t.Symbol == game.HomeTeam)?.FirstOrDefault()!;
                 gameModel.AwayTeam = teams.Where(t =>
-                    t.Symbol == g.AwayTeam)?.FirstOrDefault()!;
+                    t.Symbol == game.AwayTeam)?.FirstOrDefault()!;
                 gameModel.HomeTeamId = gameModel.HomeTeam.Id;
                 gameModel.AwayTeamId = gameModel.AwayTeam.Id;
-                gameModel.DateOfGame = g.DateTime;
+                gameModel.DateOfGame = game.DateTime;
                 gameModel.DateOfGameOnly = gameModel.DateOfGame.ToString("MM-dd");
                 gameModel.TimeOfGameOnly = gameModel.DateOfGame.ToString("hh:mm");
                 gameModel.GameStatus = GameStatus.NOT_STARTED;
-                gameModel.WeekNumber = g.Week;
-                gameModel.PointSpread = Math.Round(g.PointSpread, 1);
-                gameModel.Stadium = g.StadiumDetails.Name;
+                gameModel.WeekNumber = game.Week;
+                gameModel.PointSpread = Math.Round(game.PointSpread, 1);
+                gameModel.Stadium = game.StadiumDetails.Name;
                 gameModel.Season = currentSeason;
                 gameModel.GameStatus = GameStatus.NOT_STARTED;
-                gameModel.ScoreId = g.ScoreID;
+                gameModel.ScoreId = game.ScoreID;
 
                 if (gameModel.PointSpread <= 0)
                 {

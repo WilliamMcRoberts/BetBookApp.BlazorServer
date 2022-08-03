@@ -65,7 +65,7 @@ public class GameModel
     public string PointSpreadDescription 
     { 
         get => 
-            (Math.Round(PointSpread) < 0) ? 
+            PointSpread < 0 ? 
             $"- {PointSpread.ToString().Trim('-')} points" : 
             $"+ {PointSpread} points";
     }

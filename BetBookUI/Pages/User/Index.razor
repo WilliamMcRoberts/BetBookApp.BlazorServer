@@ -6,7 +6,7 @@
 @inject IGameData gameData
 @inject IGameService gameService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>HOME</PageTitle>
 
 @******************************  Demo Display  ********************************@
 
@@ -17,17 +17,17 @@
         @if(gamesAvailable is not null && gamesAvailable.Count != 1)
         {
             <div>
-                <h3 style="margin-left:5.5em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
+                <h3 style="margin-left:15em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
             </div>
         }
         else if(gamesAvailable is not null)
         {
             <div>
-                <h3 style="margin-left:5.5em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
+                <h3 style="margin-left:15em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
             </div>
         }
         <div>
-            <h3 style="margin-right:5.5em;font-weight:700;">@currentSeason Season Week @nextWeek</h3>
+            <h3 style="margin-right:15em;font-weight:700;">@nextWeekSeason Season Week @nextWeek</h3>
         </div>
 
     </div>
@@ -55,6 +55,8 @@
     // Current season type
     SeasonType currentSeason;
 
+    SeasonType nextWeekSeason;
+
     List<GameModel> gamesAvailable = new();
 
     IEnumerable<TeamModel>? teams;
@@ -75,13 +77,16 @@
 
         currentSeason = DateTime.Now.CalculateSeason();
         currentWeek = currentSeason.CalculateWeek(DateTime.Now);
-        nextWeek = currentWeek + 1;
+
+        (nextWeek, nextWeekSeason) = 
+            (currentWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
 
         if (gamesAvailable.Count < 1)
         {
             gamesAvailable = 
                 await gameService.GetGamesForNextWeek(currentSeason, currentWeek);
         }
+        
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 

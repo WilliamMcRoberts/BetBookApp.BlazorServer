@@ -4,28 +4,28 @@
 <AuthorizeView Policy="Admin">
     <Authorized>
         <a href="/AdminPage">
-            <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Admin</button>
+            <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Admin</button>
         </a>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView>
     <Authorized>
         <a href="/CreateParleyBet">
-            <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Create Parley Bet</button>
+            <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Create Parley Bet</button>
         </a>
         <a href="/Profile">
-             <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Profile</button>
+             <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Profile</button>
         </a>
         <a href="/">
-            <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Home</button>
+            <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Home</button>
         </a>
         <a href="MicrosoftIdentity/Account/SignOut">
-            <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">Logout</button>
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase">Logout</button>
         </a>
     </Authorized>
     <NotAuthorized>
         <a href="MicrosoftIdentity/Account/SignIn">
-            <button style="margin-top:1.75em;" class="site-btn btn site-btn-light btn-sm text-uppercase">SignIn/SignUp</button>
+            <button style="margin-top:.5em;" class="site-btn btn site-btn-light btn-sm text-uppercase">SignIn/SignUp</button>
         </a>
     </NotAuthorized>
 </AuthorizeView>

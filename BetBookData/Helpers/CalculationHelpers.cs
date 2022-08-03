@@ -83,6 +83,24 @@ public static class CalculationHelpers
         return week;
     }
 
+    public static (int,SeasonType) CalculateNextWeekAndSeasonFromCurrentWeekAndSeason(
+            this (int currentWeek, SeasonType currentSeason) weekSeason)
+    {
+        (int, SeasonType) newWeekSeason;
+
+        if (weekSeason == (4, SeasonType.PRE))
+            newWeekSeason = (1, SeasonType.REG);
+
+        else if (weekSeason == (17, SeasonType.REG))
+            newWeekSeason = (1, SeasonType.POST);
+
+        else
+            newWeekSeason = 
+                (weekSeason.currentWeek + 1, weekSeason.currentSeason);
+
+        return newWeekSeason;
+    }
+
     /// <summary>
     /// Method calculates the season of provided DateTime 
     /// </summary>

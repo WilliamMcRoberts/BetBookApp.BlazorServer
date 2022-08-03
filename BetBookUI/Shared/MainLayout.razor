@@ -1,16 +1,17 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navManager
+@inject IJSRuntime jsRuntime
 
 
 <PageTitle>BetBookUI</PageTitle>
 
 <div class="page">
     <main>
-        <div class="header px-5 pt-3 nav-links">
-            <div @onclick="NavigateHome" class="icon-container">
-                <image class="fb-icon" src="/images/fb.png" />
+        <div id="header" class="header px-5 pt-3 nav-links">
+            <a href="/" class="icon-container">
+                <image class="fb-icon" src="/images/fbicon.png" />
                 <h3 class="name">Bet Book</h3>
-            </div>
+            </a>
             <div class="login">
                 <LoginDisplay />
             </div>
@@ -22,7 +23,7 @@
 </div>
 
 @code {
-    
+
     /// <summary>
     /// Method navigates to the home page
     /// </summary>

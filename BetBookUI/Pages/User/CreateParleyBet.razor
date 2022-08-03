@@ -10,28 +10,28 @@
 @inject IConfiguration config
 @inject IGameService gameService
 
-<PageTitle>CreateParleyBet</PageTitle>
+<PageTitle>CREATE A PARLEY BET</PageTitle>
 
 <div class="info-label-container">
-    <h3 style="font-weight: 700;margin-top: 1em;margin-bottom:0;margin-right:4em;">@gamesAvailable.Count Available Games</h3>
+    <h3 style="font-weight: 700;margin-top: 1em;margin-bottom:0;margin-left:9.5em;">@gamesAvailable.Count Available Games</h3>
     @if (chosenGamesAndWinners.Count < 5)
     {
-        <div style="margin-top:1em;font-size:15px;margin-left:4em;">
+        <div style="margin-top:1em;font-size:15px;margin-right:18em;">
             <h6 style="font-weight:700;">1. SELECT A WINNER FOR UP TO 5 GAMES</h6>
             <h6 style="font-weight:700;">2. ENTER A WAGER AMOUNT THEN CLICK "SUBMIT"</h6>
         </div>
     }
     else
     {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:3.5em;">* GAME LIMIT *</div>
+        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">* GAME LIMIT *</div>
     }
     @if(betCountBad)
     {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:3.5em;">YOU MUST PICK AT LEAST 2 GAMES FOR A PARLEY</div>
+        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">YOU MUST PICK AT LEAST 2 GAMES FOR A PARLEY</div>
     }
     @if(gameNotStarted == false)
     {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:3.5em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED..TRY AGAIN</div>
+        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED..TRY AGAIN</div>
 
     }
 </div>
