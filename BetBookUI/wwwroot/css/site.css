@@ -22,7 +22,7 @@ a, .btn-link {
 }
 
 .content {
-    margin-top: 125px;
+    margin-top: 175px;
     position:relative;
 }
 
@@ -86,10 +86,6 @@ p {
     font-weight: 700;
 }
 
-li {
-
-}
-
 ul {
     list-style-type: none;
 }
@@ -135,7 +131,6 @@ ul {
     margin-top: 200px;
     color: white;
 }
-
 
 .login {
     padding-top:.75em;
@@ -222,36 +217,11 @@ ul {
     margin-left:4em;
 }
 
-.balance-strip {
-    border: 1px solid green;
-    border-radius: 5px;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.5);
-    backdrop-filter: blur(10px);
-    color:white;
-    margin-bottom:2em;
+.balance-item {
+    color: white;
+    width:15%;
 }
 
-.user-info-strip {
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom:4em;
-}
-
-
-.balance-strip-container {
-    width: 13%;
-}
-
-.open-bets-strip {
-    border: 1px solid green;
-    border-radius: 5px;
-    width: 15%;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.5);
-    backdrop-filter: blur(10px);
-    color:white;
-}
 
 /*******************************
         Layout
@@ -488,6 +458,7 @@ ul {
 .info-label-container {
     display: flex;
     justify-content: space-between;
+    margin-top:100px;
 }
 
 .label-container {

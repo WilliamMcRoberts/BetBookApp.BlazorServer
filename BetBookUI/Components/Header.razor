@@ -1,10 +1,69 @@
-﻿
+﻿@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+@inject IBetData betData
+
 <div id="header" class="header px-5 pt-3 nav-links">
     <a href="/" class="icon-container">
         <image class="fb-icon" src="/images/fbicon.png" />
         <h3 class="name">Bet Book</h3>
     </a>
+
+    <div class="balance-item">
+        <h6 style="font-size:30px;font-weight:700;margin-top:.35em;">$@Convert.ToDecimal(loggedInUser?.AccountBalance).ToString("#,##0.00")</h6>
+    </div>
+
     <div class="login">
         <LoginDisplay />
     </div>
 </div>
+
+
+@code {
+    UserModel? loggedInUser;
+
+    IEnumerable<BetModel>? bets;
+
+    List<BetModel> betsByUser = new();
+
+    List<BetModel> winningBetsByUser = new();
+
+    decimal profit;
+
+    decimal loss;
+
+    List<BetModel> losingBetsByUser = new();
+
+    /// <summary>
+    /// Async initialization method
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        if(loggedInUser is not null)
+            loggedInUser.AccountBalance =
+                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+
+        bets = await betData.GetBets();
+
+        if (loggedInUser is not null)
+        {
+            betsByUser = bets.Where(b => b.BettorId == loggedInUser.Id).ToList();
+            winningBetsByUser = betsByUser.Where(b => b.BetStatus == BetStatus.WINNER).ToList();
+            losingBetsByUser = betsByUser.Where(b => b.BetStatus == BetStatus.LOSER).ToList();
+
+            foreach(BetModel bet in winningBetsByUser)
+            {
+                profit += bet.BetPayout;
+            }
+
+            foreach(BetModel bet in losingBetsByUser)
+            {
+                loss += bet.BetAmount;
+            }
+        }
+        
+    }
+}
