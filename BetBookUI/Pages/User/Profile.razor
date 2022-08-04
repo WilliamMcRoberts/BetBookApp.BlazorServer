@@ -11,18 +11,15 @@
 
 <PageTitle>PROFILE</PageTitle>
 
-@*********************************** Demo Display ******************************************@
+<UserInfoStrip LoggedInUser="loggedInUser"/>
 
-<div style="margin-left:6em;" class="balance">
-    <h3 style="font-weight:700;">Balance: $@Convert.ToDecimal(loggedInUser?.AccountBalance).ToString("#,##0.00")</h3>
-</div>
 <div class="profile">
     <div class="user-profile-reg">
         <div class=" payout-section">
 
             <div>
                 <div class="label-container">
-                    <h3 style="font-weight: 700">Single Bets</h3>
+                    <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Single Bets</h3>
                 </div>
                 <div class="item">
                 <p>Pending Payout: $@Convert.ToDecimal(totalPendingPayout).ToString("#,##0.00")</p>
@@ -54,13 +51,13 @@
     </div>
     
     
-
+    
     <div class="user-profile-parley">
 
         <div class=" payout-section">
 
             <div class="label-container">
-                <h3 style="font-weight: 700">Parley Bets</h3>
+                <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Parley Bets</h3>
             </div>
             <div class="item">
             <p>Pending Payout: $@Convert.ToDecimal(totalPendingParleyPayout).ToString("#,##0.00")</p>
@@ -146,7 +143,7 @@
 
         if (bettorInProgressBets.Count != 0)
             bettorInProgressBets = bettorInProgressBets.
-                PopulateBetModelsWithGamesTeams(games, teams);
+                PopulateBetModelsWithGamesAndTeams(games, teams);
 
         bettorWinningBetsUnpaid = 
             bets.Where(b => b.BettorId == loggedInUser.Id &&
@@ -155,7 +152,7 @@
 
         if (bettorWinningBetsUnpaid.Count != 0)
             bettorWinningBetsUnpaid = 
-                bettorWinningBetsUnpaid.PopulateBetModelsWithGamesTeams(games, teams);
+                bettorWinningBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
 
         bettorPushBetsUnpaid = 
             bets.Where(b => b.BettorId == loggedInUser.Id &&
@@ -164,7 +161,7 @@
 
         if (bettorPushBetsUnpaid.Count != 0)
             bettorPushBetsUnpaid = bettorPushBetsUnpaid.
-                PopulateBetModelsWithGamesTeams(games, teams);
+                PopulateBetModelsWithGamesAndTeams(games, teams);
 
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&
@@ -172,7 +169,7 @@
         
         if(bettorInProgressParleyBets.Count != 0)
             bettorInProgressParleyBets = 
-                bettorInProgressParleyBets.PopulateParleyBetsWithBetsGamesTeams(
+                bettorInProgressParleyBets.PopulateParleyBetsWithBetsWithGamesAndTeams(
                     games, teams, bets);
 
         bettorWinningParleyBetsUnpaid = parleyBets.Where(pb => 
@@ -182,7 +179,7 @@
 
         if(bettorWinningParleyBetsUnpaid.Count != 0)
             bettorWinningParleyBetsUnpaid = 
-                bettorWinningParleyBetsUnpaid.PopulateParleyBetsWithBetsGamesTeams(
+                bettorWinningParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(
                     games, teams, bets);
 
         bettorPushParleyBetsUnpaid = parleyBets.Where(b => 
@@ -192,7 +189,7 @@
         
         if(bettorPushParleyBetsUnpaid.Count != 0)
             bettorPushParleyBetsUnpaid = 
-                bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsGamesTeams(
+                bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(
                     games, teams, bets);
 
         totalPendingPayout = 

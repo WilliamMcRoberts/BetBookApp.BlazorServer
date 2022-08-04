@@ -12,31 +12,23 @@
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
 
+<UserInfoStrip LoggedInUser="loggedInUser"/>
+
 <div class="info-label-container">
-    <h3 style="font-weight: 700;margin-top: 1em;margin-bottom:0;margin-left:9.5em;">@gamesAvailable.Count Available Games</h3>
     @if (chosenGamesAndWinners.Count < 5)
     {
-        <div style="margin-top:1em;font-size:15px;margin-right:18em;">
+        <div style="margin-top:1em;font-size:15px;margin-left:18em;">
             <h6 style="font-weight:700;">1. SELECT A WINNER FOR UP TO 5 GAMES</h6>
             <h6 style="font-weight:700;">2. ENTER A WAGER AMOUNT THEN CLICK "SUBMIT"</h6>
         </div>
     }
     else
     {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">* GAME LIMIT *</div>
-    }
-    @if(betCountBad)
-    {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">YOU MUST PICK AT LEAST 2 GAMES FOR A PARLEY</div>
-    }
-    @if(gameNotStarted == false)
-    {
-        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-right:13.5em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED..TRY AGAIN</div>
-
+        <div style="color:red;text-align:center;margin-top:1.5em;font-size:20px;font-weight:700;margin-left:13.5em;">* GAME LIMIT *</div>
     }
 </div>
 <div class="parley-bet-game-list-section">
-    @if(wagerSubmitted == false)
+    @if(wagerPlaced == false)
     {
         <div style="width:100%;">
             @foreach(GameModel game in gamesAvailable)
@@ -130,7 +122,7 @@
                     </div>
                 }
 
-        }
+            }
             <div class="bet-details">
                 @if(betAmountBad)
                 {
@@ -139,6 +131,10 @@
                 @if(betCountBad)
                 {
                     <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU MUST PICK AT LEAST 2 GAMES AND NO MORE THAN 5 FOR A PARLEY</div>
+                }
+                @if(gameNotStarted == false)
+                {
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED..TRY AGAIN</div>
                 }
                 <div class="wager-box">
                     <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
@@ -189,7 +185,7 @@
     private decimal betAmount;
 
     // Bool to check if wager has been submitted
-    private bool wagerSubmitted = false;
+    private bool wagerPlaced = false;
 
     // Bool to check if bet amount is greater than zero
     private bool betAmountBad = false;
@@ -198,6 +194,7 @@
     private bool betCountBad = false;
 
     private bool gameNotStarted = true;
+
 
     /// <summary>
     /// Async initialization method
@@ -287,7 +284,7 @@
                     parleyBet, houseAccount, config, userData, houseData, 
                         parleyData);
 
-                wagerSubmitted = true;
+                wagerPlaced = true;
             }
 
             else

@@ -23,7 +23,7 @@ public static class PopulationHelpers
         return games;
     }
 
-    public static List<BetModel> PopulateBetModelsWithGamesTeams(
+    public static List<BetModel> PopulateBetModelsWithGamesAndTeams(
         this List<BetModel> bets, IEnumerable<GameModel> games, 
             IEnumerable<TeamModel> teams)
     {
@@ -41,7 +41,7 @@ public static class PopulationHelpers
         return bets;
     }
 
-    public static List<ParleyBetModel> PopulateParleyBetsWithBetsGamesTeams(
+    public static List<ParleyBetModel> PopulateParleyBetsWithBetsWithGamesAndTeams(
         this List<ParleyBetModel> parleyBets, IEnumerable<GameModel> games, 
             IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
     {
@@ -79,7 +79,7 @@ public static class PopulationHelpers
                 }
             }
 
-            parleyBet.Bets.PopulateBetModelsWithGamesTeams(games, teams);
+            parleyBet.Bets.PopulateBetModelsWithGamesAndTeams(games, teams);
         }
 
         return parleyBets;

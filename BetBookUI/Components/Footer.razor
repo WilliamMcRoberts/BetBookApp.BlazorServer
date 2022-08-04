@@ -1,0 +1,142 @@
+﻿@inject IGameData gameData
+@inject ITeamData teamData
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+
+
+<div class="footer">
+    <div class="social-media-icon-container pt-4">
+        <div class="icon-wrap">
+            <a href="https://twitter.com">
+                <image class="icon" src="../images/twitter.png"></image>
+            </a>
+        </div>
+        <div class="icon-wrap">
+            <a href="https://facebook.com">
+                <image class="icon" src="../images/facebook.png"></image>
+            </a>
+        </div>
+        <div class="icon-wrap">
+            <a href="https://linkedin.com">
+                <image class="icon" src="../images/linkedin.png"></image>
+            </a>
+        </div>
+        <div class="icon-wrap">
+            <a href="https://instagram.com">
+                <image class="icon" src="../images/instagram.png"></image>
+            </a>
+        </div>
+        <div class="icon-wrap">
+            <a href="https://youtube.com">
+                <image class="icon" src="../images/youtube.png"></image>
+            </a>
+        </div>
+        <div class="contact-item">
+           <h6 class="copyright">@copyright</h6>
+           <h6 class="copyright">@lisence</h6>
+           <h6 class="copyright">@city</h6>
+           <h6 class="copyright">@contact</h6>
+       </div> 
+    </div>
+    <div class="footer-nav-container">
+        <div class="nav-title-game-container">
+            <div>
+                <h6 class="nav-title">Create Bet</h6>
+            </div>
+            <div class="footer-link">
+                 @foreach(GameModel game in availableGames)
+                {
+                    <a class="game-item-nav" href="/CreateBet/@game.Id">
+                        <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
+                    </a>
+                }
+            </div>
+        </div>
+            
+        <div class="nav-title-game-container">
+            <div>
+                <h6 class="nav-title">Create Parley Bet</h6>
+            </div>
+            <div class="footer-link">
+                @foreach(GameModel game in availableGames)
+                {
+                    <a class="game-item-nav" href="/CreateParleyBet">
+                        <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
+                    </a>
+                }
+            </div>
+        </div>
+        
+        <div style="margin-left:4em;"  class="nav-title-game-container">
+            <div>
+                <h6 class="nav-title">Profile</h6>
+            </div>
+            <div class="footer-link">
+                <a class="game-item-nav" href="/Profile">
+                    <li class="footer-game-item">Single Bets</li>
+                </a>
+                <a class="game-item-nav" href="/Profile">
+                    <li class="footer-game-item">Parley Bets</li>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-title-game-container">
+            <div>
+                <h6 class="nav-title">About</h6>
+            </div>
+            <div class="footer-link">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    string copyright = "\u00a9 Copyright Bet Book Gaming Inc.";
+    string lisence = "All Rights Reserved. Digital Millennium Copyright Act.";
+    string city = "Cincinnati, OH 45248";
+    string contact = "betbookgaming@proton.me";
+
+    IEnumerable<GameModel>? games;
+
+    IEnumerable<TeamModel>? teams;
+
+    List<GameModel> availableGames = new();
+
+    UserModel loggedInUser;
+
+    int gameId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        games = await gameData.GetGames();
+
+        teams = await teamData.GetTeams();
+
+        availableGames = games.Where(g =>
+            g.GameStatus == GameStatus.NOT_STARTED).ToList();
+
+        availableGames = availableGames.PopulateGameModelsWithTeams(teams);
+    }
+
+    /// <summary>
+    /// Selects a game to place a wager on and navigates to
+    /// the create bet page
+    /// </summary>
+    /// <param name="gameId">
+    /// int represents the id of game being selected
+    /// </param>
+    private void CreateBet(int gameId)
+    {
+        if(loggedInUser is not null)
+            navManager.NavigateTo($"/CreateBet/{gameId}");
+        else
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+    }
+}

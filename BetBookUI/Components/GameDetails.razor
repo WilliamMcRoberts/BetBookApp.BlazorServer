@@ -7,6 +7,8 @@
 @inject IUserData userData
 @inject IBetData betData
 
+<UserInfoStrip LoggedInUser="loggedInUser"/>
+
 <div class="game-info-container">
     <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
     @if(CurrentGame is not null)
@@ -108,7 +110,7 @@
     }
 </div>
 <div class="bet-details">
-    @if(CurrentGame is not null)
+    @if(wagerPlaced == false)
     {
         @if (teamToWinNull)
         {
@@ -137,6 +139,10 @@
                 Submit Wager
             </button>  
         </div>
+    }
+    else
+    {
+        <h3 style="text-align:center;margin-top:4em;">Good luck on your new wager! Click "Home" to browse more games or refresh the page to place another bet.</h3>
     }
 </div>
 

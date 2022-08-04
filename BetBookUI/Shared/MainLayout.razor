@@ -7,28 +7,15 @@
 
 <div class="page">
     <main>
-        <div id="header" class="header px-5 pt-3 nav-links">
-            <a href="/" class="icon-container">
-                <image class="fb-icon" src="/images/fbicon.png" />
-                <h3 class="name">Bet Book</h3>
-            </a>
-            <div class="login">
-                <LoginDisplay />
-            </div>
-        </div>
+        
+        <Header/>
+
         <article class="content px-4">
             @Body
         </article>
+
+        <Footer/>
+
     </main>
 </div>
 
-@code {
-
-    /// <summary>
-    /// Method navigates to the home page
-    /// </summary>
-    private void NavigateHome()
-    {
-        navManager.NavigateTo("/");
-    }
-}

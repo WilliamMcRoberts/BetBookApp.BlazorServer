@@ -8,9 +8,9 @@
 
 <PageTitle>HOME</PageTitle>
 
-@******************************  Demo Display  ********************************@
-
 <div class="games-page">
+
+    <UserInfoStrip LoggedInUser="loggedInUser"/>
 
     <div class="info-label-container">
 
@@ -40,6 +40,8 @@
 
     </div>
 </div>
+
+
 
 
 @code {
@@ -87,7 +89,6 @@
                 await gameService.GetGamesForNextWeek(currentSeason, currentWeek);
         }
         
-
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);

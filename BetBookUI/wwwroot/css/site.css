@@ -125,7 +125,16 @@ ul {
     border-bottom: 2px solid green;
 }
 
-
+.footer {
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid green;
+    width: 100%;
+    border-top: 2px solid green;
+    margin-top: 200px;
+    color: white;
+}
 
 
 .login {
@@ -147,6 +156,101 @@ ul {
 
 .fb-icon {
     height: 60px;
+}
+
+.icon-wrap {
+    padding: 2em 0;
+    margin-left:6em;
+}
+
+.icon {
+    height: 50px;
+}
+
+.footer-link {
+    margin-top: 1em;
+}
+
+.social-media-icon-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top:1em;
+}
+
+.copyright {
+    color: white;
+    font-size: 20px;
+    margin-bottom:.75em;
+}
+
+.contact-item {
+    width: 35%;
+    padding: 2em 0;
+    text-align: center;
+}
+
+.nav-title {
+    font-size: 25px;
+    text-decoration: underline;
+}
+
+.footer-game-item {
+    list-style-type: none;
+    margin-top: .25em;
+    margin-bottom: .25em;
+}
+
+.game-item-nav {
+    text-decoration: none;
+    color: white;
+}
+
+.game-item-nav:hover {
+    color:green;
+}
+
+.nav-title-game-container {
+    width:20%;
+}
+
+.footer-nav-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 70%;
+    margin-bottom:2em;
+    margin-left:4em;
+}
+
+.balance-strip {
+    border: 1px solid green;
+    border-radius: 5px;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    backdrop-filter: blur(10px);
+    color:white;
+    margin-bottom:2em;
+}
+
+.user-info-strip {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom:4em;
+}
+
+
+.balance-strip-container {
+    width: 13%;
+}
+
+.open-bets-strip {
+    border: 1px solid green;
+    border-radius: 5px;
+    width: 15%;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.5);
+    backdrop-filter: blur(10px);
+    color:white;
 }
 
 /*******************************

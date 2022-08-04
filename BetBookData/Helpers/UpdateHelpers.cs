@@ -20,7 +20,7 @@ public static class UpdateHelpers
             pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
 
         parleyBetsInProgress = 
-            parleyBetsInProgress.PopulateParleyBetsWithBetsGamesTeams(
+            parleyBetsInProgress.PopulateParleyBetsWithBetsWithGamesAndTeams(
                 games, teams, bets);
 
         foreach (ParleyBetModel pb in parleyBetsInProgress)
@@ -69,7 +69,7 @@ public static class UpdateHelpers
             b.GameId == currentGame.Id).ToList();
 
         betsOnCurrentGame = 
-            betsOnCurrentGame.PopulateBetModelsWithGamesTeams(games, teams);
+            betsOnCurrentGame.PopulateBetModelsWithGamesAndTeams(games, teams);
 
         TeamModel? winningTeamForBets = currentGame.CalculateWinningTeamForBet(
                 homeTeamFinalScore, awayTeamFinalScore, teams);
