@@ -162,9 +162,6 @@
 
 @code {
 
-    // Current logged in user
-    private UserModel? loggedInUser;
-
     // List of available games
     private List<GameModel> gamesAvailable = new();
 
@@ -201,10 +198,7 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        loggedInUser.AccountBalance = 
-            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        
 
         games = await gameData.GetGames();
 
@@ -227,6 +221,8 @@
         {
             if (betAmount > 0)
             {
+                UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+
                 ParleyBetModel parleyBet = new();
 
                 foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)

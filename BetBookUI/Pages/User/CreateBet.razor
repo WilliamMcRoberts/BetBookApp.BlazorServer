@@ -22,9 +22,6 @@
     // Current game being viewed
     private GameModel? CurrentGame { get; set; }
 
-    // Current logged in user
-    private UserModel? loggedInUser;
-
     private IEnumerable<GameModel>? games;
 
     private IEnumerable<TeamModel>? teams;
@@ -43,10 +40,5 @@
                            .ToList()
                            .PopulateGameModelsWithTeams(teams)
                            .FirstOrDefault();
-
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        loggedInUser.AccountBalance = 
-            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
     }
 }

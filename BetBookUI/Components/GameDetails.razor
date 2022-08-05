@@ -7,7 +7,6 @@
 @inject IUserData userData
 @inject IBetData betData
 
-<UserInfoStrip LoggedInUser="loggedInUser"/>
 
 <div class="game-info-container">
     <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
@@ -152,7 +151,6 @@
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
 
-    private UserModel? loggedInUser;
 
     private decimal betAmount;
 
@@ -178,7 +176,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
         teams = await teamData.GetTeams();
     }
 
@@ -189,6 +186,8 @@
         {
             if (teamToWin is not null)
             {
+                UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+
                 bool hasStarted;
 
                 GameLookup? gameLookup =

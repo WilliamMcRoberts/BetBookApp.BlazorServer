@@ -19,19 +19,8 @@
 
 
 @code {
+
     UserModel? loggedInUser;
-
-    IEnumerable<BetModel>? bets;
-
-    List<BetModel> betsByUser = new();
-
-    List<BetModel> winningBetsByUser = new();
-
-    decimal profit;
-
-    decimal loss;
-
-    List<BetModel> losingBetsByUser = new();
 
     /// <summary>
     /// Async initialization method
@@ -39,31 +28,6 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-
         loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        if(loggedInUser is not null)
-            loggedInUser.AccountBalance =
-                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
-
-        bets = await betData.GetBets();
-
-        if (loggedInUser is not null)
-        {
-            betsByUser = bets.Where(b => b.BettorId == loggedInUser.Id).ToList();
-            winningBetsByUser = betsByUser.Where(b => b.BetStatus == BetStatus.WINNER).ToList();
-            losingBetsByUser = betsByUser.Where(b => b.BetStatus == BetStatus.LOSER).ToList();
-
-            foreach(BetModel bet in winningBetsByUser)
-            {
-                profit += bet.BetPayout;
-            }
-
-            foreach(BetModel bet in losingBetsByUser)
-            {
-                loss += bet.BetAmount;
-            }
-        }
-        
     }
 }
