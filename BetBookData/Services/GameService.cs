@@ -106,7 +106,6 @@ public class GameService : IGameService
 
         catch (Exception ex)
         {
-
             Console.WriteLine(ex.Message);
         }
 

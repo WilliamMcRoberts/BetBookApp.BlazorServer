@@ -34,8 +34,8 @@ public static class PopulationHelpers
 
             b.ChosenWinner = teams.Where(t => t.Id == b.ChosenWinnerId).FirstOrDefault();
 
-            if (b.FinalWinnerId != 0)
-                b.FinalWinner = teams.Where(t => t.Id == b.FinalWinnerId).FirstOrDefault();
+            b.FinalWinner = 
+                b.FinalWinnerId != 0 ? teams.Where(t => t.Id == b.FinalWinnerId).FirstOrDefault() : null;
         }
 
         return bets;
@@ -47,8 +47,8 @@ public static class PopulationHelpers
     {
         foreach(ParleyBetModel parleyBet in parleyBets)
         {
-            BetModel? bet1 = bets.Where(b => b.Id == parleyBet.Bet1Id).FirstOrDefault();
-            BetModel? bet2 = bets.Where(b => b.Id == parleyBet.Bet2Id).FirstOrDefault();
+            BetModel bet1 = bets.Where(b => b.Id == parleyBet.Bet1Id).FirstOrDefault()!;
+            BetModel bet2 = bets.Where(b => b.Id == parleyBet.Bet2Id).FirstOrDefault()!;
 
             if (bet1 is not null && bet2 is not null)
             {
