@@ -186,7 +186,6 @@ public static class UpdateHelpers
                 currentGame.GameWinnerId = gameWinner.Id;
 
             await gameData.UpdateGame(currentGame);
-
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace BetBookData.Lookups;
 
 
-public class GameLookup
+public class GameByScoreIdLookup
 {
     public Score Score { get; set; }
     public object[] Quarters { get; set; }

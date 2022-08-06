@@ -190,7 +190,7 @@
 
                 bool hasStarted;
 
-                GameLookup? gameLookup =
+                GameByScoreIdLookup gameLookup =
                     await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
 
                 if (gameLookup is not null)

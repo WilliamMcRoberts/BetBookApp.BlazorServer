@@ -8,7 +8,7 @@ namespace BetBookData.Lookups;
 
 
 
-public class TeamLookup
+public class GameByTeamLookup
 {
     public string Team { get; set; }
     public int TeamID { get; set; }

@@ -5,6 +5,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject IGameService gameService
+@inject ITeamService teamService
 
 <PageTitle>HOME</PageTitle>
 
@@ -63,6 +64,8 @@
 
     IEnumerable<GameModel>? games;
 
+    Team[] teamArray;
+
     /// <summary>
     /// Async initialization method
     /// </summary>
@@ -86,7 +89,7 @@
             gamesAvailable = 
                 await gameService.GetGamesForNextWeek(currentSeason, currentWeek);
         }
-        
+
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);

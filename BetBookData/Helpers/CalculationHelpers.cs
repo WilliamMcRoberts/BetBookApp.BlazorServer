@@ -157,12 +157,11 @@ public static class CalculationHelpers
             return 0;
 
         decimal total = 0;
-        decimal totalPayout;
 
         foreach (BetModel bet in winningBets)
             total += (bet.BetPayout + bet.BetAmount);
 
-        return totalPayout = Convert.ToDecimal((total).ToString("#.00"));
+        return total;
     }
 
     /// <summary>
@@ -181,7 +180,7 @@ public static class CalculationHelpers
         else if (gamecount == 4) payout = betAmount * (decimal)11;
         else if (gamecount == 5) payout = betAmount * (decimal)22;
 
-        return Convert.ToDecimal((payout).ToString("#,##0.00"));
+        return payout;
     }
 
     /// <summary>
@@ -200,7 +199,7 @@ public static class CalculationHelpers
         foreach (ParleyBetModel bet in parleyPushBets)
             total += bet.BetPayout;
 
-        return Convert.ToDecimal((total).ToString("#,##0.00"));
+        return total;
     }
 
     /// <summary>
@@ -219,6 +218,6 @@ public static class CalculationHelpers
         foreach (ParleyBetModel parleyBet in parleyWinningBets)
             total += (parleyBet.BetPayout + parleyBet.BetAmount);
 
-        return Convert.ToDecimal((total).ToString("#,##0.00"));
+        return total;
     }
 }

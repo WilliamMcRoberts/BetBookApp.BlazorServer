@@ -230,7 +230,7 @@ else
                 {
                     bool hasStarted;
 
-                    GameLookup? gameLookup = 
+                    GameByScoreIdLookup? gameLookup = 
                         await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
 
                     if(gameLookup is not null)

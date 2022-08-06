@@ -23,6 +23,9 @@ public class TimerService : BackgroundService
     {
         while(await _timerForPointSpreadUpdate.WaitForNextTickAsync(stoppingToken) 
                     && !stoppingToken.IsCancellationRequested)
+        {
+            await _gameService.FetchAllScoresForFinishedGames();
             await _gameService.GetPointSpreadUpdateForAvailableGames();
+        }
     }
 }

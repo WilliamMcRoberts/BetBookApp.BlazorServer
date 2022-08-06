@@ -18,3 +18,4 @@ public class StadiumDetailsLookup
     public float GeoLong { get; set; }
     public string Type { get; set; }
 }
+

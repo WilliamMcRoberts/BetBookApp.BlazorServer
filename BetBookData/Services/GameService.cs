@@ -33,9 +33,9 @@ public class GameService : IGameService
         _config = config;
     }
 
-    public async Task<TeamLookup> GetGameByTeamLookup(TeamModel team)
+    public async Task<GameByTeamLookup> GetGameByTeamLookup(TeamModel team)
     {
-        TeamLookup? teamLookup = new();
+        GameByTeamLookup? teamLookup = new();
 
         try
         {
@@ -47,7 +47,7 @@ public class GameService : IGameService
             {
                 string json = await response.Content.ReadAsStringAsync();
 
-                teamLookup = JsonSerializer.Deserialize<TeamLookup>(json);
+                teamLookup = JsonSerializer.Deserialize<GameByTeamLookup>(json);
             }
         }
         catch (Exception ex)
@@ -59,9 +59,9 @@ public class GameService : IGameService
         return teamLookup!;
     }
 
-    public async Task<GameLookup> GetGameByScoreIdLookup(int scoreId)
+    public async Task<GameByScoreIdLookup> GetGameByScoreIdLookup(int scoreId)
     {
-        GameLookup? gameLookup = new();
+        GameByScoreIdLookup? gameLookup = new();
 
         try
         {
@@ -73,7 +73,7 @@ public class GameService : IGameService
             {
                 string json = await response.Content.ReadAsStringAsync();
 
-                gameLookup = JsonSerializer.Deserialize<GameLookup>(json);
+                gameLookup = JsonSerializer.Deserialize<GameByScoreIdLookup>(json);
             }
         }
 
@@ -120,7 +120,7 @@ public class GameService : IGameService
 
         List<GameModel> nextWeekGames = new();
 
-        (int, SeasonType) nextWeekSeason = 
+        (int, SeasonType) nextWeekSeason =
             (currentWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
 
         Game[] gameArray = new Game[16];
@@ -198,7 +198,7 @@ public class GameService : IGameService
         foreach (GameModel game in games!.Where(g =>
             g.GameStatus != GameStatus.FINISHED))
         {
-            GameLookup gameLookup = new();
+            GameByScoreIdLookup gameLookup = new();
 
             gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
 
@@ -233,7 +233,7 @@ public class GameService : IGameService
         foreach (GameModel game in games.Where(g
                     => g.GameStatus == GameStatus.NOT_STARTED))
         {
-            GameLookup gameLookup = new();
+            GameByScoreIdLookup gameLookup = new();
 
             gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
 
