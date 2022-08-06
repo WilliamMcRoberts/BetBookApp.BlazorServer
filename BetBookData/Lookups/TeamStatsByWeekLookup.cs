@@ -2,19 +2,27 @@
 
 namespace BetBookData.Lookups;
 
-public class TeamStatsByWeekLookup
+
+public class TeamGameStatsByWeekLookup
 {
-    public TeamStat[] TeamStats { get; set; }
+    public TeamGameStat[] TeamGameStats { get; set; }
 }
 
-public class TeamStat
+public class TeamGameStat
 {
+    public string GameKey { get; set; }
+    public DateTime Date { get; set; }
     public int SeasonType { get; set; }
     public int Season { get; set; }
+    public int Week { get; set; }
     public string Team { get; set; }
+    public string Opponent { get; set; }
+    public string HomeOrAway { get; set; }
     public int Score { get; set; }
     public int OpponentScore { get; set; }
     public int TotalScore { get; set; }
+    public string Stadium { get; set; }
+    public string PlayingSurface { get; set; }
     public int Temperature { get; set; }
     public int Humidity { get; set; }
     public int WindSpeed { get; set; }
@@ -25,6 +33,8 @@ public class TeamStat
     public int ScoreQuarter3 { get; set; }
     public int ScoreQuarter4 { get; set; }
     public int ScoreOvertime { get; set; }
+    public int TimeOfPossessionMinutes { get; set; }
+    public int TimeOfPossessionSeconds { get; set; }
     public string TimeOfPossession { get; set; }
     public int FirstDowns { get; set; }
     public int FirstDownsByRushing { get; set; }
@@ -78,6 +88,8 @@ public class TeamStat
     public int OpponentScoreQuarter3 { get; set; }
     public int OpponentScoreQuarter4 { get; set; }
     public int OpponentScoreOvertime { get; set; }
+    public int OpponentTimeOfPossessionMinutes { get; set; }
+    public int OpponentTimeOfPossessionSeconds { get; set; }
     public string OpponentTimeOfPossession { get; set; }
     public int OpponentFirstDowns { get; set; }
     public int OpponentFirstDownsByRushing { get; set; }
@@ -224,15 +236,22 @@ public class TeamStat
     public int OpponentFieldGoalReturnYards { get; set; }
     public int OpponentFieldGoalReturnTouchdowns { get; set; }
     public int OpponentPuntNetYards { get; set; }
+    public bool IsGameOver { get; set; }
     public string TeamName { get; set; }
-    public int Games { get; set; }
+    public string DayOfWeek { get; set; }
     public int PassingDropbacks { get; set; }
     public int OpponentPassingDropbacks { get; set; }
-    public int TeamSeasonID { get; set; }
+    public int TeamGameID { get; set; }
     public int TwoPointConversionReturns { get; set; }
     public int OpponentTwoPointConversionReturns { get; set; }
     public int TeamID { get; set; }
+    public int OpponentID { get; set; }
+    public DateTime Day { get; set; }
+    public DateTime DateTime { get; set; }
+    public int GlobalGameID { get; set; }
     public int GlobalTeamID { get; set; }
-    public int TeamStatID { get; set; }
+    public int GlobalOpponentID { get; set; }
+    public int ScoreID { get; set; }
 }
+
 

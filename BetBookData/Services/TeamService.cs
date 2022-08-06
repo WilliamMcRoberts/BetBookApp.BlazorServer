@@ -21,7 +21,7 @@ public class TeamService : ITeamService
 
     public async Task<Team[]> GetAllTeams()
     {
-        Team[] teams = new Team[34];
+        Team[] teams = new Team[32];
 
         try
         {
@@ -44,20 +44,21 @@ public class TeamService : ITeamService
         return teams;
     }
 
-    public async Task<Team[]> GetAllTeamStats()
+    public async Task<TeamGameStat[]> GetAllTeamGameStatsBySeasonAndWeek(
+            string season, int week)
     {
-        Team[] teams = new Team[34];
+        TeamGameStat[] teamGameStats = new TeamGameStat[32];
 
         try
         {
             var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/scores/json/Teams?key={_config.GetSection("SportsDataIO").GetSection("Key2").Value}");
+                    $"https://api.sportsdata.io/v3/nfl/scores/json/TeamGameStats/{season}/{week}?key={_config.GetSection("SportsDataIO").GetSection("Key2").Value}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsByteArrayAsync();
 
-                teams = JsonSerializer.Deserialize<Team[]>(data)!;
+                teamGameStats = JsonSerializer.Deserialize<TeamGameStat[]>(data)!;
             }
         }
 
@@ -66,6 +67,6 @@ public class TeamService : ITeamService
             Console.WriteLine(ex.Message);
         }
 
-        return teams;
+        return teamGameStats;
     }
 }

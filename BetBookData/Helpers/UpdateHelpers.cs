@@ -119,49 +119,53 @@ public static class UpdateHelpers
         double homeTeamFinalScore, double awayTeamFinalScore, 
             IEnumerable<TeamModel> teams, ITeamData teamData)
     {
-        TeamModel? homeTeam = teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
-        TeamModel? awayTeam = teams.Where(t => t.Id == currentGame.AwayTeamId).FirstOrDefault();
-
-        if (homeTeam is not null && awayTeam is not null)
+        if(DateTime.Now > new DateTime(2022, 9, 7))
         {
-            TeamModel? actualWinningTeam = new();
-            TeamModel? actualLosingTeam = new();
+            TeamModel? homeTeam = teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
+            TeamModel? awayTeam = teams.Where(t => t.Id == currentGame.AwayTeamId).FirstOrDefault();
 
-            if (homeTeamFinalScore > awayTeamFinalScore)
+            if (homeTeam is not null && awayTeam is not null)
             {
-                actualWinningTeam = homeTeam;
-                actualLosingTeam = awayTeam;
-            }
+                TeamModel? actualWinningTeam = new();
+                TeamModel? actualLosingTeam = new();
 
-            else if (homeTeamFinalScore < awayTeamFinalScore)
-            {
-                actualWinningTeam = awayTeam;
-                actualLosingTeam = homeTeam;
-            }
+                if (homeTeamFinalScore > awayTeamFinalScore)
+                {
+                    actualWinningTeam = homeTeam;
+                    actualLosingTeam = awayTeam;
+                }
 
-            else if (homeTeamFinalScore == awayTeamFinalScore)
-                actualWinningTeam = null;
+                else if (homeTeamFinalScore < awayTeamFinalScore)
+                {
+                    actualWinningTeam = awayTeam;
+                    actualLosingTeam = homeTeam;
+                }
 
-            // If game is a draw
-            if (actualWinningTeam is null)
-            {
-                homeTeam.Draws += $"{awayTeam.TeamName}|";
-                awayTeam.Draws += $"{homeTeam.TeamName}|";
+                else if (homeTeamFinalScore == awayTeamFinalScore)
+                    actualWinningTeam = null;
 
-                await teamData.UpdateTeam(homeTeam);
-                await teamData.UpdateTeam(awayTeam);
-            }
+                // If game is a draw
+                if (actualWinningTeam is null)
+                {
+                    homeTeam.Draws += $"{awayTeam.TeamName}|";
+                    awayTeam.Draws += $"{homeTeam.TeamName}|";
 
-            // If game is not a draw
-            else
-            {
-                actualWinningTeam.Wins += $"{actualLosingTeam.TeamName}|";
-                actualLosingTeam.Losses += $"{actualWinningTeam.TeamName}|";
+                    await teamData.UpdateTeam(homeTeam);
+                    await teamData.UpdateTeam(awayTeam);
+                }
 
-                await teamData.UpdateTeam(actualWinningTeam);
-                await teamData.UpdateTeam(actualLosingTeam);
+                // If game is not a draw
+                else
+                {
+                    actualWinningTeam.Wins += $"{actualLosingTeam.TeamName}|";
+                    actualLosingTeam.Losses += $"{actualWinningTeam.TeamName}|";
+
+                    await teamData.UpdateTeam(actualWinningTeam);
+                    await teamData.UpdateTeam(actualLosingTeam);
+                }
             }
         }
+        
     }
 
     /// <summary>
