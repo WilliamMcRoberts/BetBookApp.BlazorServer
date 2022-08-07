@@ -26,11 +26,8 @@ public class GameData : IGameData
     /// <returns>
     /// IEnumerable of GameModel representing all games in the database
     /// </returns>
-    public async Task<IEnumerable<GameModel>> GetGames()
-    {
-        return await _db.LoadData<GameModel, dynamic>(
-        "dbo.spGames_GetAll", new { });
-    }
+    public async Task<IEnumerable<GameModel>> GetGames() => 
+        await _db.LoadData<GameModel, dynamic>("dbo.spGames_GetAll", new{});
 
     /// <summary>
     /// Async method calls spGames_Get stored procedure which retrieves one 

@@ -89,8 +89,6 @@
 @code {
     private UserModel? loggedInUser;
 
-    private HouseAccountModel? houseAccount;
-
     private IEnumerable<TeamModel>? teams;
 
     private IEnumerable<GameModel>? games;
@@ -122,11 +120,6 @@
     protected override async Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-        loggedInUser.AccountBalance =
-            Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
-
-        houseAccount = await houseData.GetHouseAccount();
 
         teams = await teamData.GetTeams();
 
@@ -165,7 +158,7 @@
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&
                 b.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
-        
+
         if(bettorInProgressParleyBets.Count != 0)
             bettorInProgressParleyBets = 
                 bettorInProgressParleyBets.PopulateParleyBetsWithBetsWithGamesAndTeams(
@@ -185,7 +178,7 @@
                 b.BettorId == loggedInUser.Id &&
                 b.ParleyBetStatus == ParleyBetStatus.PUSH && 
                 b.ParleyPayoutStatus == ParleyPayoutStatus.UNPAID).ToList();
-        
+
         if(bettorPushParleyBetsUnpaid.Count != 0)
             bettorPushParleyBetsUnpaid = 
                 bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(
@@ -214,24 +207,18 @@
     /// <returns></returns>
     private async Task PayoutUnpaidWinningBets()
     {
-        if(houseAccount is not null && loggedInUser is not null)
-        {
-            // Transaction method updates bet statuses, transfers
-            // funds from house account to user account
-            await loggedInUser.PayoutBetsTransaction(
-                bettorWinningBetsUnpaid, houseAccount, totalPendingPayout, config, userData, 
-                    houseData, betData);
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
 
-            loggedInUser = await authProvider.GetUserFromAuth(userData);
+        if (houseAccount is null || loggedInUser is null)
+            return;
 
-            loggedInUser.AccountBalance =
-                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        await loggedInUser.PayoutBetsTransaction(
+            bettorWinningBetsUnpaid, houseAccount, totalPendingPayout, config, userData, 
+                houseData, betData);
 
-            bettorWinningBetsUnpaid.Clear();
+        bettorWinningBetsUnpaid.Clear();
 
-            totalPendingPayout = 
-                bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
-        }
+        totalPendingRefund = 0;
     }
 
     /// <summary>
@@ -240,24 +227,18 @@
     /// <returns></returns>
     private async Task RefundUnpaidPushBets()
     {
-        if(houseAccount is not null && loggedInUser is not null)
-        {
-            // Transaction method updates bet statuses, transfers
-            // funds from house account to user account
-            await loggedInUser.PayoutBetsTransaction(
-                bettorPushBetsUnpaid, houseAccount, totalPendingRefund, config, userData, 
-                    houseData, betData);
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
 
-            loggedInUser = await authProvider.GetUserFromAuth(userData);
+        if (houseAccount is null || loggedInUser is null)
+            return;
 
-            loggedInUser.AccountBalance =
-                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
+        await loggedInUser.PayoutBetsTransaction(
+            bettorPushBetsUnpaid, houseAccount, totalPendingRefund, config, userData, 
+                houseData, betData);
 
-            bettorPushBetsUnpaid.Clear();
+        bettorPushBetsUnpaid.Clear();
 
-            totalPendingRefund = 
-                bettorPushBetsUnpaid.CalculateTotalPendingRefund();
-        }
+        totalPendingRefund = 0;
     }
 
     /// <summary>
@@ -266,22 +247,18 @@
     /// <returns></returns>
     private async Task PayoutUnpaidWinningParleyBets()
     {
-        if(loggedInUser is not null && houseAccount is not null)
-        {
-            await loggedInUser.PayoutParleyBetsTransaction(
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+        if (loggedInUser is null || houseAccount is null)
+            return;
+
+        await loggedInUser.PayoutParleyBetsTransaction(
                 bettorWinningParleyBetsUnpaid, houseAccount, totalPendingParleyPayout, config, 
                     userData, houseData, parleyData);
 
-            loggedInUser = await authProvider.GetUserFromAuth(userData);
+        bettorWinningParleyBetsUnpaid.Clear();
 
-            loggedInUser.AccountBalance =
-                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
-
-            bettorWinningParleyBetsUnpaid.Clear();
-
-            totalPendingParleyPayout = 
-                bettorWinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
-        }
+        totalPendingRefund = 0;
     }
 
     /// <summary>
@@ -290,21 +267,17 @@
     /// <returns></returns>
     private async Task PayoutUnpaidPushParleyBets()
     {
-        if(loggedInUser is not null && houseAccount is not null)
-        {
-            await loggedInUser.PayoutParleyBetsTransaction(
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+        if (loggedInUser is null || houseAccount is null)
+            return;
+
+        await loggedInUser.PayoutParleyBetsTransaction(
                 bettorPushParleyBetsUnpaid, houseAccount, totalPendingParleyRefund, config, 
                     userData, houseData, parleyData);
 
-            loggedInUser = await authProvider.GetUserFromAuth(userData);
+        bettorPushParleyBetsUnpaid.Clear();
 
-            loggedInUser.AccountBalance =
-                Convert.ToDecimal((loggedInUser.AccountBalance).ToString("#.00"));
-
-            bettorPushParleyBetsUnpaid.Clear();
-
-            totalPendingParleyRefund = 
-                bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
-        }
+        totalPendingRefund = 0;
     }
 }

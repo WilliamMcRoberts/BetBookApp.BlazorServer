@@ -28,11 +28,8 @@ public class BetData : IBetData
     /// all bets in the database
     /// </summary>
     /// <returns>IEnumerable of BetModel represents all bets in the database</returns>
-    public async Task<IEnumerable<BetModel>> GetBets()
-    {
-        return await _db.LoadData<BetModel, dynamic>(
-        "dbo.spBets_GetAll", new { });
-    }
+    public async Task<IEnumerable<BetModel>> GetBets() => 
+        await _db.LoadData<BetModel, dynamic>( "dbo.spBets_GetAll", new { });
 
     /// <summary>
     /// Async method calls spBets_Get stored procedure which retrieves one 
@@ -62,11 +59,8 @@ public class BetData : IBetData
         string betStatus = BetStatus.IN_PROGRESS.ToString();
         string payoutStatus;
 
-        if (bet.PayoutStatus == PayoutStatus.PARLEY)
-            payoutStatus = PayoutStatus.PARLEY.ToString();
-
-        else
-            payoutStatus = PayoutStatus.UNPAID.ToString();
+        payoutStatus = bet.PayoutStatus == PayoutStatus.PARLEY ? PayoutStatus.PARLEY.ToString() 
+                       : PayoutStatus.UNPAID.ToString();
 
         using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
             _config.GetConnectionString("BetBookDB"));
@@ -116,22 +110,21 @@ public class BetData : IBetData
                 betStatus,
                 payoutStatus
             });
+
+            return;
         }
 
-        else
+        await _db.SaveData("dbo.spBets_UpdatePush", new
         {
-            await _db.SaveData("dbo.spBets_UpdatePush", new
-            {
-                bet.Id,
-                bet.BetAmount,
-                bet.BetPayout,
-                bet.BettorId,
-                bet.GameId,
-                bet.ChosenWinnerId,
-                betStatus,
-                payoutStatus
-            });
-        }
+            bet.Id,
+            bet.BetAmount,
+            bet.BetPayout,
+            bet.BettorId,
+            bet.GameId,
+            bet.ChosenWinnerId,
+            betStatus,
+            payoutStatus
+        });
 
     }
 

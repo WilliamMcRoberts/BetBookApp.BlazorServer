@@ -145,26 +145,21 @@
 
 @code {
 
-    // Display info for current game being viewed
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
-
 
     private decimal betAmount;
 
     private bool betAmountBad;
 
-    // Boolean sets to true when a winner is chosen
     private bool winnerChosen = false;
 
     private bool teamToWinNull;
 
     private TeamModel? teamToWin;
 
-    // Boolean to check if wager has been placed
     private bool wagerPlaced = false;
 
-    // bool to check if game has started
     private bool gameNotStarted = true;
 
     // 10% vigorish for all bets
@@ -177,62 +172,54 @@
         teams = await teamData.GetTeams();
     }
 
-
     private async Task SubmitSingleWager()
     {
-        if (betAmount != 0)
+        if (betAmount == 0)
         {
-            if (teamToWin is not null)
-            {
-                UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-                bool hasStarted;
-
-                GameByScoreIdLookup gameLookup =
-                    await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
-
-                if (gameLookup is not null)
-                {
-                    hasStarted = gameLookup.Score.HasStarted;
-
-                    if (hasStarted == false)
-                    {
-                        BetModel bet = new();
-
-                        HouseAccountModel? houseAccount =
-                            await houseData.GetHouseAccount();
-
-                        bet.BetAmount = betAmount;
-                        bet.BetPayout =
-                            (decimal)((double)betAmount - (double)betAmount * VIG);
-                        bet.ChosenWinnerId = teamToWin.Id;
-                        bet.BettorId = loggedInUser!.Id;
-                        bet.GameId = CurrentGame.Id;
-
-                        loggedInUser.AccountBalance -= bet.BetAmount;
-                        houseAccount!.AccountBalance += bet.BetAmount;
-
-                        // Transaction method transfers funds from user account
-                        // to house account and inserts bet into the database
-                        await loggedInUser.CreateBetTransaction(
-                            bet, houseAccount, config, userData, houseData, betData);
-
-                        wagerPlaced = true;
-                        CurrentGame = null!;
-                        betAmount = 0;
-                    }
-
-                    else
-                        gameNotStarted = false;
-                }
-            }
-
-            else
-                teamToWinNull = true;
+            betAmountBad = true;
+            return;
         }
 
-        else
-            betAmountBad = true;
+        if (teamToWin is null)
+        {
+            teamToWinNull = true;
+            return;
+        }
+
+        GameByScoreIdLookup gameLookup =
+            await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
+
+        if (gameLookup.Score.HasStarted)
+        {
+            gameNotStarted = false;
+            return;
+        }
+
+        BetModel bet = new();
+
+        HouseAccountModel? houseAccount =
+            await houseData.GetHouseAccount();
+
+        UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        bet.BetAmount = betAmount;
+        bet.BetPayout =
+            (decimal)((double)betAmount - (double)betAmount * VIG);
+        bet.ChosenWinnerId = teamToWin.Id;
+        bet.BettorId = loggedInUser!.Id;
+        bet.GameId = CurrentGame.Id;
+
+        loggedInUser.AccountBalance -= bet.BetAmount;
+        houseAccount!.AccountBalance += bet.BetAmount;
+
+        // Transaction method transfers funds from user account
+        // to house account and inserts bet into the database
+        await loggedInUser.CreateBetTransaction(
+            bet, houseAccount, config, userData, houseData, betData);
+
+        wagerPlaced = true;
+        CurrentGame = null!;
+        betAmount = 0;
     }
 
     /// <summary>
@@ -243,19 +230,17 @@
     /// <returns></returns>
     private void ChooseWinner(int teamId)
     {
-        if(teamId == CurrentGame.HomeTeamId)
-        {
-            teamToWin = 
-                teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
-            winnerChosen = true;
-        }
-
-        else if(teamId == CurrentGame.AwayTeamId)
+        if(teamId == CurrentGame.AwayTeamId)
         {
             teamToWin = 
                 teams?.Where(t => t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
             winnerChosen = true;
+            return;
         }
+
+        teamToWin = 
+            teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
+        winnerChosen = true;
     }
 
     /// <summary>
@@ -269,19 +254,16 @@
 
     private string GetSpread(string teamName, double pointSpread)
     {
-        string result = string.Empty;
-
         if(teamName == CurrentGame.AwayTeam.TeamName)
-            result = 
-                (pointSpread < 0) ? $"+ {pointSpread * -1}" 
-                : (pointSpread == 0) ? $"+ 0" : $"- {pointSpread}";
-
-        else if(teamName == CurrentGame.HomeTeam.TeamName)
-            result = 
-                (pointSpread < 0) ? $"- {pointSpread.ToString().Trim('-')}" 
-                : (pointSpread == 0) ? $"+ 0" : $"+ {pointSpread}";
-
-        return result;
+        {
+            return pointSpread < 0 ? $"+ {pointSpread * -1}" 
+                   : pointSpread == 0 ? $"+ 0" 
+                   : $"- {pointSpread}";
+        }
+        
+        return pointSpread < 0 ? $"- {pointSpread.ToString().Trim('-')}"
+               : pointSpread == 0 ? $"+ 0" 
+               : $"+ {pointSpread}";
     }
 }
 

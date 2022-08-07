@@ -20,13 +20,8 @@ public class ParleyBetData : IParleyBetData
     /// all parley bets in the database
     /// </summary>
     /// <returns>IEnumerable of ParleyBetModel represents all parley bets in the database</returns>
-    public async Task<IEnumerable<ParleyBetModel>> GetParleyBets()
-    {
-        IEnumerable<ParleyBetModel> parleyBets = await _db.LoadData<ParleyBetModel, dynamic>(
-        "dbo.spParleyBets_GetAll", new { });
-
-        return parleyBets;
-    }
+    public async Task<IEnumerable<ParleyBetModel>> GetParleyBets() => 
+        await _db.LoadData<ParleyBetModel, dynamic>( "dbo.spParleyBets_GetAll", new { });
 
     /// <summary>
     /// Async method calls spParleyBets_Get stored procedure which retrieves one 

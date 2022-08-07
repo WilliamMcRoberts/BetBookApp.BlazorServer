@@ -22,8 +22,11 @@ public class GameService : IGameService
     IEnumerable<BetModel>? bets;
     IEnumerable<ParleyBetModel>? parleyBets;
 
-    public GameService(IGameData gameData, ITeamData teamData,
-            IBetData betData, IParleyBetData parleyData, IConfiguration config)
+    public GameService(IGameData gameData, 
+                       ITeamData teamData,
+                       IBetData betData, 
+                       IParleyBetData parleyData, 
+                       IConfiguration config)
     {
         _httpClient = new();
         _gameData = gameData;
@@ -136,49 +139,44 @@ public class GameService : IGameService
             Console.WriteLine(ex.Message);
         }
 
-        if (gameArray.Length > 0)
+        foreach (Game game in gameArray)
         {
-            foreach (Game game in gameArray)
+            GameModel gameModel = new();
+
+            gameModel.HomeTeam = teams.Where(t =>
+                t.Symbol == game.HomeTeam)?.FirstOrDefault()!;
+            gameModel.AwayTeam = teams.Where(t =>
+                t.Symbol == game.AwayTeam)?.FirstOrDefault()!;
+            gameModel.HomeTeamId = gameModel.HomeTeam.Id;
+            gameModel.AwayTeamId = gameModel.AwayTeam.Id;
+            gameModel.DateOfGame = game.DateTime;
+            gameModel.DateOfGameOnly = gameModel.DateOfGame.ToString("MM-dd");
+            gameModel.TimeOfGameOnly = gameModel.DateOfGame.ToString("hh:mm");
+            gameModel.GameStatus = GameStatus.NOT_STARTED;
+            gameModel.WeekNumber = game.Week;
+            gameModel.PointSpread = Math.Round(game.PointSpread, 1);
+            gameModel.Stadium = game.StadiumDetails.Name;
+            gameModel.Season = currentSeason;
+            gameModel.GameStatus = GameStatus.NOT_STARTED;
+            gameModel.ScoreId = game.ScoreID;
+
+            if (gameModel.PointSpread > 0)
             {
-                GameModel gameModel = new();
-
-                gameModel.HomeTeam = teams.Where(t =>
-                    t.Symbol == game.HomeTeam)?.FirstOrDefault()!;
-                gameModel.AwayTeam = teams.Where(t =>
-                    t.Symbol == game.AwayTeam)?.FirstOrDefault()!;
-                gameModel.HomeTeamId = gameModel.HomeTeam.Id;
-                gameModel.AwayTeamId = gameModel.AwayTeam.Id;
-                gameModel.DateOfGame = game.DateTime;
-                gameModel.DateOfGameOnly = gameModel.DateOfGame.ToString("MM-dd");
-                gameModel.TimeOfGameOnly = gameModel.DateOfGame.ToString("hh:mm");
-                gameModel.GameStatus = GameStatus.NOT_STARTED;
-                gameModel.WeekNumber = game.Week;
-                gameModel.PointSpread = Math.Round(game.PointSpread, 1);
-                gameModel.Stadium = game.StadiumDetails.Name;
-                gameModel.Season = currentSeason;
-                gameModel.GameStatus = GameStatus.NOT_STARTED;
-                gameModel.ScoreId = game.ScoreID;
-
-                if (gameModel.PointSpread <= 0)
-                {
-                    gameModel.Favorite = gameModel.HomeTeam;
-                    gameModel.FavoriteId = gameModel.Favorite.Id;
-                    gameModel.Underdog = gameModel.AwayTeam;
-                    gameModel.UnderdogId = gameModel.Underdog.Id;
-                }
-
-                else
-                {
-                    gameModel.Favorite = gameModel.AwayTeam;
-                    gameModel.FavoriteId = gameModel.AwayTeam.Id;
-                    gameModel.Underdog = gameModel.HomeTeam;
-                    gameModel.UnderdogId = gameModel.Underdog.Id;
-                }
-
+                gameModel.Favorite = gameModel.AwayTeam;
+                gameModel.FavoriteId = gameModel.AwayTeam.Id;
+                gameModel.Underdog = gameModel.HomeTeam;
+                gameModel.UnderdogId = gameModel.Underdog.Id;
                 nextWeekGames.Add(gameModel);
-
                 await _gameData.InsertGame(gameModel);
+                continue;
             }
+
+            gameModel.Favorite = gameModel.HomeTeam;
+            gameModel.FavoriteId = gameModel.Favorite.Id;
+            gameModel.Underdog = gameModel.AwayTeam;
+            gameModel.UnderdogId = gameModel.Underdog.Id;
+            nextWeekGames.Add(gameModel);
+            await _gameData.InsertGame(gameModel);
         }
 
         return nextWeekGames;
@@ -198,27 +196,26 @@ public class GameService : IGameService
         foreach (GameModel game in games!.Where(g =>
             g.GameStatus != GameStatus.FINISHED))
         {
-            GameByScoreIdLookup gameLookup = new();
+            GameByScoreIdLookup gameLookup = await GetGameByScoreIdLookup(
+                    game.ScoreId);
 
-            gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
+            if (gameLookup.Score.IsOver == false)
+                continue;
 
-            if (gameLookup.Score.IsOver)
-            {
-                game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
-                game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
+            game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
+            game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
 
-                await game.UpdateScores(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                        teams!, _gameData);
+            await game.UpdateScores(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                    teams!, _gameData);
 
-                await game.UpdateBetWinners(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                        _betData, games!, teams!, bets!);
+            await game.UpdateBetWinners(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                    _betData, games!, teams!, bets!);
 
-                await game.UpdateTeamRecords(
-                    game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                        teams!, _teamData);
-            }
+            await game.UpdateTeamRecords(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
+                    teams!, _teamData);
         }
 
         await _parleyData.UpdateParleyBetWinners(
@@ -237,13 +234,17 @@ public class GameService : IGameService
 
             gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
 
-            if (gameLookup.Score.HasStarted == false)
+            if (gameLookup.Score.HasStarted)
             {
-                if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
-
+                game.GameStatus = GameStatus.IN_PROGRESS;
                 await _gameData.UpdateGame(game);
+                continue;
             }
+
+            if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
+                game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+
+            await _gameData.UpdateGame(game);
         }
     }
 }

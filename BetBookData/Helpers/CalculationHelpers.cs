@@ -14,7 +14,7 @@ public static class CalculationHelpers
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinningTeam(
-        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore, 
+        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore,
             IEnumerable<TeamModel> teams)
     {
 
@@ -38,7 +38,7 @@ public static class CalculationHelpers
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinningTeamForBet(
-        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore, 
+        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore,
             IEnumerable<TeamModel> teams)
     {
         double pointSpread = game.PointSpread;
@@ -62,20 +62,9 @@ public static class CalculationHelpers
     /// <returns></returns>
     public static int CalculateWeek(this SeasonType season, DateTime dateTime)
     {
-        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
-        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
-        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
-
-        int week = 0;
-        
-        if (season == SeasonType.PRE)
-            week = (dateTime - preSeasonStartDate).Days / 7;
-            
-        else if (season == SeasonType.REG)
-            week = (dateTime - regularSeasonStartDate).Days / 7;
-
-        else if (season == SeasonType.POST)
-            week = (dateTime - postSeasonStartDate).Days / 7;
+        int week = season == SeasonType.PRE ? (dateTime - new DateTime(2022, 8, 4)).Days / 7 
+                   : season == SeasonType.REG ? (dateTime - new DateTime(2022, 9, 8)).Days / 7 
+                   : (dateTime - new DateTime(2023, 1, 14)).Days / 7;
 
         if (week < 0)
             return 0;
@@ -83,22 +72,12 @@ public static class CalculationHelpers
         return week;
     }
 
-    public static (int,SeasonType) CalculateNextWeekAndSeasonFromCurrentWeekAndSeason(
+    public static (int, SeasonType) CalculateNextWeekAndSeasonFromCurrentWeekAndSeason(
             this (int currentWeek, SeasonType currentSeason) weekSeason)
     {
-        (int, SeasonType) newWeekSeason;
-
-        if (weekSeason == (4, SeasonType.PRE))
-            newWeekSeason = (1, SeasonType.REG);
-
-        else if (weekSeason == (17, SeasonType.REG))
-            newWeekSeason = (1, SeasonType.POST);
-
-        else
-            newWeekSeason = 
-                (weekSeason.currentWeek + 1, weekSeason.currentSeason);
-
-        return newWeekSeason;
+        return weekSeason == (4, SeasonType.PRE) ? (1, SeasonType.REG) 
+            : (weekSeason == (17, SeasonType.REG) ? (1, SeasonType.POST) 
+            : (weekSeason.currentWeek + 1, weekSeason.currentSeason));
     }
 
     /// <summary>
@@ -108,22 +87,9 @@ public static class CalculationHelpers
     /// <returns>SeasonType represents the type of season</returns>
     public static SeasonType CalculateSeason(this DateTime dateTime)
     {
-        DateTime preSeasonStartDate = new DateTime(2022, 8, 4);
-        DateTime regularSeasonStartDate = new DateTime(2022, 9, 8);
-        DateTime postSeasonStartDate = new DateTime(2023, 1, 14);
-
-        SeasonType result = new();
-
-        if (dateTime > preSeasonStartDate && dateTime < regularSeasonStartDate)
-            result = SeasonType.PRE;
-
-        else if (dateTime > regularSeasonStartDate && dateTime < postSeasonStartDate)
-            result = SeasonType.REG;
-
-        else if (dateTime > postSeasonStartDate)
-            result = SeasonType.POST;
-
-        return result;
+        return dateTime > new DateTime(2022, 8, 4) && dateTime < new DateTime(2022, 9, 8) ? SeasonType.PRE 
+            : dateTime > new DateTime(2022, 9, 8) && dateTime < new DateTime(2023, 1, 14) ? SeasonType.REG 
+            : SeasonType.POST;
     }
 
     /// <summary>
@@ -142,7 +108,7 @@ public static class CalculationHelpers
         foreach (BetModel bet in pushBets)
             total += bet.BetPayout;
 
-        return total = Convert.ToDecimal((total).ToString("#.00"));
+        return total;
     }
 
     /// <summary>
@@ -171,16 +137,13 @@ public static class CalculationHelpers
     /// <param name="betAmount"></param>
     /// <returns></returns>
     public static decimal CalculateParleyBetPayout(this int gamecount, decimal betAmount)
-    {
+    { 
         betAmount -= betAmount * (decimal).1;
-        decimal payout = 0;
 
-        if (gamecount == 2) payout = betAmount * (decimal)2.6;
-        else if (gamecount == 3) payout = betAmount * (decimal)6;
-        else if (gamecount == 4) payout = betAmount * (decimal)11;
-        else if (gamecount == 5) payout = betAmount * (decimal)22;
-
-        return payout;
+        return gamecount == 2 ? betAmount * (decimal)2.6 
+            : gamecount == 3 ? betAmount * (decimal)6 
+            : gamecount == 4 ? betAmount * (decimal)11 
+            : betAmount * (decimal)22;
     }
 
     /// <summary>

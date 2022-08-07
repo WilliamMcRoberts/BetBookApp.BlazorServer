@@ -9,7 +9,6 @@ namespace BetBookData.Data;
 
 public class TeamData : ITeamData
 {
-
     private readonly ISqlConnection _db;
 
     /// <summary>
@@ -22,8 +21,6 @@ public class TeamData : ITeamData
         _db = db;
     }
 
-
-
     /// <summary>
     /// Async method calls the spTeams_GetAll stored procedure to retrieve 
     /// all teams in the database
@@ -31,11 +28,8 @@ public class TeamData : ITeamData
     /// <returns>
     /// IEnumerable of TeamModel representing all teams in the database
     /// </returns>
-    public async Task<IEnumerable<TeamModel>> GetTeams()
-    {
-        return await _db.LoadData<TeamModel, dynamic>(
-        "dbo.spTeams_GetAll", new { });
-    }
+    public async Task<IEnumerable<TeamModel>> GetTeams() =>
+        await _db.LoadData<TeamModel, dynamic>( "dbo.spTeams_GetAll", new { });
 
     /// <summary>
     /// Async method calls spTeams_Get stored procedure which retrieves one 

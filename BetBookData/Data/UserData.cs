@@ -26,11 +26,8 @@ public class UserData : IUserData
     /// <returns>
     /// IEnumerable of UserModel represents all users in database
     /// </returns>
-    public async Task<IEnumerable<UserModel>> GetUsers()
-    {
-        return await _db.LoadData<UserModel, dynamic>(
-        "dbo.spUsers_GetAll", new { });
-    }
+    public async Task<IEnumerable<UserModel>> GetUsers() => 
+        await _db.LoadData<UserModel, dynamic>("dbo.spUsers_GetAll", new { });
 
     /// <summary>
     /// Async method calls spUsers_Get stored procedure which retrieves one 

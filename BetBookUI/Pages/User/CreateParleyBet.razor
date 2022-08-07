@@ -196,8 +196,6 @@ else
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-
-
         games = await gameData.GetGames();
 
         teams = await teamData.GetTeams();
@@ -206,7 +204,6 @@ else
             games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
-
     }
 
     /// <summary>
@@ -215,77 +212,70 @@ else
     /// <returns></returns>
     private async Task SubmitParleyWager()
     {
-        if (chosenGamesAndWinners.Count <= 5 && chosenGamesAndWinners.Count > 1)
+        if (chosenGamesAndWinners.Count < 2)
         {
-            if (betAmount > 0)
-            {
-                UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
-
-                ParleyBetModel parleyBet = new();
-
-                foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
-                {
-                    bool hasStarted;
-
-                    GameByScoreIdLookup? gameLookup = 
-                        await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
-
-                    if(gameLookup is not null)
-                    {
-                        hasStarted = gameLookup.Score.HasStarted;
-
-                        if (hasStarted == false)
-                        {
-                            TeamModel? chosenWinner =
-                                teams?.Where(t => t.TeamName == kv.Value).FirstOrDefault();
-
-                            BetModel bet = new();
-
-                            if (chosenWinner is not null)
-                            {
-                                bet.BetAmount = 0;
-                                bet.BetPayout = 0;
-                                bet.BettorId = loggedInUser!.Id;
-                                bet.GameId = kv.Key.Id;
-                                bet.ChosenWinnerId = chosenWinner.Id;
-                                bet.PayoutStatus = PayoutStatus.PARLEY;
-
-                                int betId = await betData.InsertBet(bet);
-
-                                bet.Id = betId;
-
-                                parleyBet.Bets.Add(bet);
-                            }
-                        }
-
-                        else
-                            gameNotStarted = false;
-                    }
-                }
-
-                parleyBet.BetAmount = betAmount;
-                parleyBet.BetPayout = 
-                    parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
-                parleyBet.BettorId = loggedInUser!.Id;
-
-                HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
-
-                loggedInUser.AccountBalance -= betAmount;
-                houseAccount!.AccountBalance += betAmount;
-
-                await loggedInUser.CreateParleyBetTransaction(
-                    parleyBet, houseAccount, config, userData, houseData, 
-                        parleyData);
-
-                wagerPlaced = true;
-            }
-
-            else
-                betAmountBad = true;
+            betCountBad = true;
+            return;
         }
 
-        else
-            betCountBad = true;
+        if (betAmount <= 0)
+        {
+            betAmountBad = true;
+            return;
+        }
+
+        UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        ParleyBetModel parleyBet = new();
+
+        foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
+        {
+            GameByScoreIdLookup? gameLookup = 
+                await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
+
+            if (gameLookup is null)
+                return;
+
+            if (gameLookup.Score.HasStarted)
+            {
+                gameNotStarted = false;
+                return;
+            }
+
+            TeamModel? chosenWinner =
+                    teams?.Where(t => t.TeamName == kv.Value).FirstOrDefault();
+
+            BetModel bet = new();
+
+            if (chosenWinner is null)
+                return;
+
+            bet.BetAmount = 0;
+            bet.BetPayout = 0;
+            bet.BettorId = loggedInUser!.Id;
+            bet.GameId = kv.Key.Id;
+            bet.ChosenWinnerId = chosenWinner.Id;
+            bet.PayoutStatus = PayoutStatus.PARLEY;
+            bet.Id = await betData.InsertBet(bet);
+
+            parleyBet.Bets.Add(bet);
+        }
+
+        parleyBet.BetAmount = betAmount;
+        parleyBet.BetPayout = 
+            parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+        parleyBet.BettorId = loggedInUser!.Id;
+
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+        loggedInUser.AccountBalance -= betAmount;
+        houseAccount!.AccountBalance += betAmount;
+
+        await loggedInUser.CreateParleyBetTransaction(
+            parleyBet, houseAccount, config, userData, houseData, 
+                parleyData);
+
+        wagerPlaced = true;
     }
 
     /// <summary>
@@ -343,18 +333,16 @@ else
 
     private string GetSpread(GameModel currentGame, string teamName)
     {
-        string result = string.Empty;
-
         if(teamName == currentGame.AwayTeam.TeamName)
-            result = 
-                (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}" 
-                : (currentGame.PointSpread == 0) ? $"+ 0" : $"- {currentGame.PointSpread}";
+        {
+            return (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}" 
+                : (currentGame.PointSpread == 0) ? $"+ 0" 
+                : $"- {currentGame.PointSpread}";
+        }
 
-        else if(teamName == currentGame.HomeTeam.TeamName)
-            result = 
-                (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread.ToString().Trim('-')}" 
-                : (currentGame.PointSpread == 0) ? $"+ 0" : $"+ {currentGame.PointSpread}";
 
-        return result;
+        return (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread.ToString().Trim('-')}" 
+            : (currentGame.PointSpread == 0) ? $"+ 0" 
+            : $"+ {currentGame.PointSpread}";
     }
 }

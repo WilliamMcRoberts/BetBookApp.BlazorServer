@@ -45,8 +45,6 @@
 
 @code {
 
-    SfGrid<Odds> Grid;
-
     public List<Odds> OddsList { get; set; } = new();
 
     protected override void OnInitialized()
@@ -95,8 +93,8 @@
     public class Odds
     {
         public int NumberOfGames { get; set; }
-        public string Odd { get; set; }
-        public string Example { get; set; }
-        public string BetType { get; set; }
+        public string? Odd { get; set; }
+        public string? Example { get; set; }
+        public string? BetType { get; set; }
     }
 }
