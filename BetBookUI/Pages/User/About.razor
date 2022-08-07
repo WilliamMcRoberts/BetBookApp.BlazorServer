@@ -1,0 +1,102 @@
+﻿@page "/About"
+@using Syncfusion.Blazor.Grids
+
+<PageTitle>ABOUT</PageTitle>
+
+<h3 style="font-weight: 700;margin-top: .5em;margin-left:9em;">About</h3>
+<div class="about-about">
+    <h6 style="font-size:25px;font-weight:700;">Bet Book NFL is the first prototype in a line of web and mobile gaming apps. After you create an account, $10,000 will be deposited into your account to place wagers with. This money is not real and is meant to simulate real wagers being placed. Testers that participate by placing wagers at least once a week through the 2022 NFL season and complete a survey once a month will recieve an official Bet Book Gaming NFT in exchange for their feedback. This NFT will grant holders early access, discounts, and special benefits. Please check this info page regularly for updates. Thank you and enjoy!</h6>
+    <br />
+    <h6 style="font-size:25px;font-weight:700;">- Founder of Bet Book Gaming</h6>
+</div>
+
+<h3 style="font-weight: 700;margin-top: 1em;margin-left:9em;">Odds</h3>
+<div class="about-odds">
+    <SfGrid DataSource="@OddsList">
+        <GridColumns>
+            <GridColumn Field="@nameof(Odds.NumberOfGames)"
+                        HeaderText="Number Of Games"
+                        TextAlign="TextAlign.Justify">
+            </GridColumn>
+            <GridColumn Field="@nameof(Odds.Odd)"
+                        HeaderText="Odds"
+                        TextAlign="TextAlign.Justify">
+            </GridColumn>
+            <GridColumn Field="@nameof(Odds.Example)"
+                        HeaderText="Example"
+                        TextAlign="TextAlign.Justify">
+            </GridColumn>
+            <GridColumn Field="@nameof(Odds.BetType)"
+                        HeaderText="Bet Type"
+                        TextAlign="TextAlign.Justify">
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+
+<style>
+
+    .e-headercell{
+        font-family: "Bell MT";
+        color: green;
+    }
+
+</style>
+
+@code {
+
+    SfGrid<Odds> Grid;
+
+    public List<Odds> OddsList { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        OddsList.Add(new Odds()
+            {
+                NumberOfGames = 1,
+                Odd = "1 to 1",
+                Example = "$100 => $100",
+                BetType = "Single"
+            });
+
+        OddsList.Add(new Odds()
+            {
+                NumberOfGames = 2,
+                Odd = "2.6 to 1",
+                Example = "$100 => $260",
+                BetType = "Parley"
+            });
+
+        OddsList.Add(new Odds()
+            {
+                NumberOfGames = 3,
+                Odd = "6 to 1",
+                Example = "$100 => $600",
+                BetType = "Parley"
+            });
+
+        OddsList.Add(new Odds()
+            {
+                NumberOfGames = 4,
+                Odd = "11 to 1",
+                Example = "$100 => $1100",
+                BetType = "Parley"
+            });
+
+        OddsList.Add(new Odds()
+        {
+            NumberOfGames = 5,
+            Odd = "22 to 1",
+            Example = "$100 => $2200",
+            BetType = "Parley"
+        });
+    }
+
+    public class Odds
+    {
+        public int NumberOfGames { get; set; }
+        public string Odd { get; set; }
+        public string Example { get; set; }
+        public string BetType { get; set; }
+    }
+}

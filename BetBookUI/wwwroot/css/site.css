@@ -92,7 +92,7 @@ ul {
 
 .title {
     font-family: 'Montserrat', sans-serif;
-    text-align: center;
+    text-align:center;
 }
 
 .nav-links {
@@ -227,6 +227,25 @@ ul {
 .balance-item {
     color: white;
     width:15%;
+}
+
+.about-about {
+    background-color: rgb(0,0,0); /*Fallback color */
+    background-color: rgba(0,0,0, 0.5); /*Black w/opacity*/
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 2px solid green;
+    border-radius: 15px;
+    width: 70%;
+    margin: 0 auto;
+    padding: 2em 2em;
+    
+}
+
+.about-odds {
+    border: 2px solid green;
+    width: 70%;
+    margin:0 auto;
 }
 
 

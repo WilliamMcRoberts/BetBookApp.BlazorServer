@@ -12,6 +12,7 @@ var secret = builder.Configuration["GoogleRecaptchaV3:Secret"];
 builder.ConfigureServices();
 
 var app = builder.Build();
+
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
     builder.Configuration.GetValue<string>("Syncfusion:Key"));
 

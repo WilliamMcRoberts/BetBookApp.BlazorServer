@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.2.0.40" />
       <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
     <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
@@ -24,13 +25,13 @@
 </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.24.1" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.24.1" />
-     <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.58" />
-    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.58" />
-    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.58" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.58" />
-    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.58" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.1" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.1" />
+     <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.2.0.40" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.2.0.40" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.2.0.40" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.2.0.40" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.2.0.40" />
 </ItemGroup>
 
   <ItemGroup>

@@ -23,6 +23,7 @@
                 <div class="stat-records">
                     <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.AwayTeam.ImagePath" alt="team logo">
                     <div class="stat-container">
+
                         <Stat StatType="Wins"
                               Stats="CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
 
@@ -37,6 +38,7 @@
                 <div class="stat-records">
                     <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
                     <div class="stat-container">
+
                         <Stat StatType="Wins"
                           Stats="CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
 
@@ -66,8 +68,6 @@
                                 Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
-
-                        
                     }
                     else if(!winnerChosen)
                     {
@@ -94,7 +94,6 @@
                                 Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
-
                     }
                     else if(!winnerChosen)
                     {
@@ -114,7 +113,6 @@
         @if (teamToWinNull)
         {
             <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITHOUT A CHOSEN WINNER</div>
-
         }
         @if(betAmountBad)
         {
@@ -231,7 +229,6 @@
 
             else
                 teamToWinNull = true;
-
         }
 
         else
@@ -272,31 +269,19 @@
 
     private string GetSpread(string teamName, double pointSpread)
     {
-        string result = "";
+        string result = string.Empty;
 
-        
         if(teamName == CurrentGame.AwayTeam.TeamName)
-        {
-            if (pointSpread < 0)
-                result = $"+ {pointSpread * -1}";
-            else if (pointSpread == 0)
-                result = $"+ 0";
-            else
-                result = $"- {pointSpread}";
-        }
+            result = 
+                (pointSpread < 0) ? $"+ {pointSpread * -1}" 
+                : (pointSpread == 0) ? $"+ 0" : $"- {pointSpread}";
 
         else if(teamName == CurrentGame.HomeTeam.TeamName)
-        {
-            if (pointSpread < 0)
-                result = $"- {pointSpread.ToString().Trim('-')}";
-            else if (pointSpread == 0)
-                result = "+ 0";
-            else
-                result = $"+ {pointSpread}";
-        }
+            result = 
+                (pointSpread < 0) ? $"- {pointSpread.ToString().Trim('-')}" 
+                : (pointSpread == 0) ? $"+ 0" : $"+ {pointSpread}";
 
         return result;
-
     }
 }
 

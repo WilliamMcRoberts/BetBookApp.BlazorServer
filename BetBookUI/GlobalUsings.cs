@@ -14,5 +14,7 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using BetBookData.Services;
 global using BetBookData.Lookups;
+global using Syncfusion.Blazor.Grids;
+
 
 
