@@ -17,7 +17,7 @@ ADMIN PAGE
 ![FINADMIN](https://user-images.githubusercontent.com/95720340/182922911-593828d0-4227-4a92-a988-228efcc0f1ff.png)
 
 SITE FOOTER
-![FINFOOTER](https://user-images.githubusercontent.com/95720340/182922902-7c63c9b8-0bd2-4098-ac1c-f81d1c01e87e.png)
+![STFINHOME](https://user-images.githubusercontent.com/95720340/183269633-1f8dae10-f3ce-40c6-9005-0615c7de3d95.png)
 
 
 
