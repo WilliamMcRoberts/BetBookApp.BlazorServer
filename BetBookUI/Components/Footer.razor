@@ -6,92 +6,106 @@
 
 
 <div class="footer">
-    <div class="social-media-icon-container pt-4">
-        <div class="icon-wrap">
-            <a href="https://twitter.com">
-                <image class="icon" src="../images/twitter.png"></image>
-            </a>
+    <div style="display:flex;justify-content:space-between;">
+        <div style="display:flex;flex-direction:column;">
+            <div class="social-media-icon-container pt-4">
+                <div style="margin-left:6em;" class="icon-wrap">
+                    <a href="https://twitter.com">
+                        <image class="icon" src="../images/twitter.png"></image>
+                    </a>
+                </div>
+                <div class="icon-wrap">
+                    <a href="https://facebook.com">
+                        <image class="icon" src="../images/facebook.png"></image>
+                    </a>
+                </div>
+                <div class="icon-wrap">
+                    <a href="https://linkedin.com">
+                        <image class="icon" src="../images/linkedin.png"></image>
+                    </a>
+                </div>
+                <div class="icon-wrap">
+                    <a href="https://instagram.com">
+                        <image class="icon" src="../images/instagram.png"></image>
+                    </a>
+                </div>
+                <div class="icon-wrap">
+                    <a href="https://youtube.com">
+                        <image class="icon" src="../images/youtube.png"></image>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-nav-container">
+                <div class="nav-title-game-container">
+                    <div>
+                        <h6 class="nav-title">Create Bet</h6>
+                    </div>
+                    <div class="footer-link">
+                         @foreach(GameModel game in availableGames)
+                        {
+                            <a class="game-item-nav" href="/CreateBet/@game.Id">
+                                <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
+                            </a>
+                        }
+                    </div>
+                </div>
+            
+                <div class="nav-title-game-container">
+                    <div>
+                        <h6 class="nav-title">Create Parley Bet</h6>
+                    </div>
+                    <div class="footer-link">
+                        @foreach(GameModel game in availableGames)
+                        {
+                            <a class="game-item-nav" href="/CreateParleyBet">
+                                <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
+                            </a>
+                        }
+                    </div>
+                </div>
+        
+                <div style="margin-left:4em;"  class="nav-title-game-container">
+                    <div>
+                        <h6 class="nav-title">Profile</h6>
+                    </div>
+                    <div class="footer-link">
+                        <a class="game-item-nav" href="/Profile">
+                            <li class="footer-game-item">Single Bets</li>
+                        </a>
+                        <a class="game-item-nav" href="/Profile">
+                            <li class="footer-game-item">Parley Bets</li>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-title-game-container">
+                    <div>
+                        <h6 class="nav-title">About</h6>
+                    </div>
+                    <div class="footer-link">
+                        <a class="game-item-nav" href="/About">
+                            <li class="footer-game-item">Site Info</li>
+                        </a>
+                        <a class="game-item-nav" href="/About">
+                            <li class="footer-game-item">Odds For Bets</li>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="icon-wrap">
-            <a href="https://facebook.com">
-                <image class="icon" src="../images/facebook.png"></image>
+        
+       <div class="contact-item">
+            <a style="margin-bottom:1em;" href="/" class="icon-container">
+                <image class="fb-icon" src="/images/fbicon.png" />
+                <h3 class="name">Bet Book</h3>
             </a>
-        </div>
-        <div class="icon-wrap">
-            <a href="https://linkedin.com">
-                <image class="icon" src="../images/linkedin.png"></image>
-            </a>
-        </div>
-        <div class="icon-wrap">
-            <a href="https://instagram.com">
-                <image class="icon" src="../images/instagram.png"></image>
-            </a>
-        </div>
-        <div class="icon-wrap">
-            <a href="https://youtube.com">
-                <image class="icon" src="../images/youtube.png"></image>
-            </a>
-        </div>
-        <div class="contact-item">
            <h6 class="copyright">@copyright</h6>
            <h6 class="copyright">@lisence</h6>
            <h6 class="copyright">@city</h6>
            <h6 class="copyright">@contact</h6>
-       </div> 
-    </div>
-    <div class="footer-nav-container">
-        <div class="nav-title-game-container">
-            <div>
-                <h6 class="nav-title">Create Bet</h6>
-            </div>
-            <div class="footer-link">
-                 @foreach(GameModel game in availableGames)
-                {
-                    <a class="game-item-nav" href="/CreateBet/@game.Id">
-                        <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
-                    </a>
-                }
-            </div>
-        </div>
-            
-        <div class="nav-title-game-container">
-            <div>
-                <h6 class="nav-title">Create Parley Bet</h6>
-            </div>
-            <div class="footer-link">
-                @foreach(GameModel game in availableGames)
-                {
-                    <a class="game-item-nav" href="/CreateParleyBet">
-                        <li class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</li>
-                    </a>
-                }
-            </div>
-        </div>
+       </div>
         
-        <div style="margin-left:4em;"  class="nav-title-game-container">
-            <div>
-                <h6 class="nav-title">Profile</h6>
-            </div>
-            <div class="footer-link">
-                <a class="game-item-nav" href="/Profile">
-                    <li class="footer-game-item">Single Bets</li>
-                </a>
-                <a class="game-item-nav" href="/Profile">
-                    <li class="footer-game-item">Parley Bets</li>
-                </a>
-            </div>
-        </div>
-
-        <div class="nav-title-game-container">
-            <div>
-                <h6 class="nav-title">About</h6>
-            </div>
-            <div class="footer-link">
-
-            </div>
-        </div>
     </div>
-
 </div>
 
 @code {
