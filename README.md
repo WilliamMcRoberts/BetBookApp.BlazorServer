@@ -20,8 +20,7 @@ ABOUT PAGE
 ![DNABOUT](https://user-images.githubusercontent.com/95720340/183273278-a3c85edf-6bbe-4c6d-b83e-e39bfcd151de.png)
 
 SITE FOOTER
-![STFINHOME](https://user-images.githubusercontent.com/95720340/183269633-1f8dae10-f3ce-40c6-9005-0615c7de3d95.png)
-
+![DNFOOTER](https://user-images.githubusercontent.com/95720340/183273353-f0c3a284-4acf-4e69-835a-5d2401c51613.png)
 
 
 
