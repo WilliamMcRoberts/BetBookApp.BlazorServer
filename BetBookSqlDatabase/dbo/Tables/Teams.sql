@@ -7,6 +7,8 @@
     [Wins] NVARCHAR(1000) NOT NULL, 
     [Losses] NVARCHAR(1000) NOT NULL, 
     [Draws] NVARCHAR(1000) NOT NULL, 
-    [Symbol] NVARCHAR(4) NULL
+    [Symbol] NVARCHAR(4) NOT NULL, 
+    [Division] NVARCHAR(10) NOT NULL, 
+    [Conference] NVARCHAR(4) NOT NULL
 )
 

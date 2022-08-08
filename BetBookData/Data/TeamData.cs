@@ -72,7 +72,9 @@ public class TeamData : ITeamData
             team.Wins,
             team.Losses,
             team.Draws,
-            team.Symbol
+            team.Symbol,
+            team.Division,
+            team.Conference
         });
 
         return team.Id;
@@ -96,7 +98,9 @@ public class TeamData : ITeamData
             team.Wins,
             team.Losses,
             team.Draws,
-            team.Symbol
+            team.Symbol,
+            team.Division,
+            team.Conference
         });
     }
 

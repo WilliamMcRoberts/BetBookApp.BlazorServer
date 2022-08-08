@@ -34,6 +34,9 @@ public class TeamModel
 
     public string Symbol { get; set; }
 
+    public string Division { get; set; }
+
+    public string Conference { get; set; }
 
     public string ImagePath { get => $"{TeamName.ToLower()}.svg"; }
 
