@@ -8,7 +8,6 @@ global using BetBookData.Helpers;
 global using BetBookUI.Helpers;
 global using BetBookData.Services;
 global using BetBookData.Lookups;
-global using Syncfusion.Blazor.Grids;
 
 
 
