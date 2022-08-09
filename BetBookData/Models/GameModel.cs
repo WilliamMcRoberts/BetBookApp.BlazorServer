@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BetBookData;
+﻿
 
 namespace BetBookData.Models;
 

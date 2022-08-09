@@ -1,5 +1,4 @@
-﻿using BetBookData.Interfaces;
-using BetBookData.Models;
+﻿using BetBookData.Models;
 
 namespace BetBookData.Helpers;
 

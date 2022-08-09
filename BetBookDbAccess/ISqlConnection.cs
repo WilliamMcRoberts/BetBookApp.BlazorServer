@@ -1,5 +1,4 @@
-﻿using Dapper;
-
+﻿
 namespace BetBookDbAccess;
 public interface ISqlConnection
 {

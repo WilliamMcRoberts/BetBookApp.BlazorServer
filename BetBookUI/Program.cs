@@ -1,7 +1,5 @@
 ﻿using BetBookUI;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Rewrite;
-using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 

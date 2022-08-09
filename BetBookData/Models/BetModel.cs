@@ -1,5 +1,4 @@
 ﻿
-using BetBookData;
 
 namespace BetBookData.Models;
 

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using BetBookData.Interfaces;
+﻿using BetBookData.Interfaces;
 using BetBookDbAccess;
 using BetBookData.Models;
 

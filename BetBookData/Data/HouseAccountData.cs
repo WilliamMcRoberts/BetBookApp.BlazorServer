@@ -1,8 +1,6 @@
-﻿using System.Data;
-using BetBookData.Interfaces;
+﻿using BetBookData.Interfaces;
 using BetBookDbAccess;
 using BetBookData.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.Data;
 
