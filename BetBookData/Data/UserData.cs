@@ -1,5 +1,5 @@
-﻿using BetBookData.Interfaces;
-using BetBookDbAccess;
+﻿using BetBookData.DbAccess;
+using BetBookData.Interfaces;
 using BetBookData.Models;
 
 namespace BetBookData.Data;

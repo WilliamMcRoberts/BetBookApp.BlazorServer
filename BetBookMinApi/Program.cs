@@ -1,7 +1,7 @@
-﻿using BetBookApi.Api;
-using BetBookData.Data;
+﻿using BetBookData.Data;
+using BetBookData.DbAccess;
 using BetBookData.Interfaces;
-using BetBookDbAccess;
+using BetBookMinApi.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddSingleton<ISqlConnection, SqlConnection>();
 builder.Services.AddTransient<IGameData, GameData>();
@@ -37,5 +38,4 @@ app.ConfigureParleyBetsApi();
 app.ConfigureHouseAccountApi();
 
 app.Run();
-
 

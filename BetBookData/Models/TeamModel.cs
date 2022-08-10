@@ -44,6 +44,6 @@ public class TeamModel
 
     public string[] TeamLosses { get => Losses.Split('|').SkipLast(1).ToArray(); }
 
-    public string[] TeamDraws { get => Wins.Split('|').SkipLast(1).ToArray(); }
+    public string[] TeamDraws { get => Draws.Split('|').SkipLast(1).ToArray(); }
 
 }

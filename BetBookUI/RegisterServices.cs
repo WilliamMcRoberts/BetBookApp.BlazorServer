@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using BetBookData.DbAccess;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Syncfusion.Blazor;
@@ -36,7 +37,7 @@ public static class RegisterServices
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
         builder.Services.AddSyncfusionBlazor();
 
-        builder.Services.AddHostedService<TimerService>();
+        //builder.Services.AddHostedService<TimerService>();
 
 
         /*********************** Data access *************************/

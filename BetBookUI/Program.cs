@@ -5,8 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var secret = builder.Configuration["GoogleRecaptchaV3:Secret"];
 
-
-
 builder.ConfigureServices();
 
 var app = builder.Build();

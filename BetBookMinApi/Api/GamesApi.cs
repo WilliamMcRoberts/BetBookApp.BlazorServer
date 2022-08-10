@@ -1,7 +1,7 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
 
-namespace BetBookApi.Api;
+namespace BetBookMinApi.Api;
 
 public static class GamesApi
 {

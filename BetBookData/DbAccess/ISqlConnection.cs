@@ -1,5 +1,5 @@
 ﻿
-namespace BetBookDbAccess;
+namespace BetBookData.DbAccess;
 public interface ISqlConnection
 {
     Task<IEnumerable<T>> LoadData<T, U>(

@@ -1,7 +1,7 @@
 ﻿
-using BetBookDbAccess;
 using BetBookData.Models;
 using BetBookData.Interfaces;
+using BetBookData.DbAccess;
 
 namespace BetBookData.Data;
 public class ParleyBetData : IParleyBetData

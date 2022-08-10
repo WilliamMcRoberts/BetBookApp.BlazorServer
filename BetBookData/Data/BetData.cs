@@ -1,9 +1,9 @@
 ﻿using BetBookData.Interfaces;
-using BetBookDbAccess;
 using BetBookData.Models;
 using System.Data;
 using Microsoft.Extensions.Configuration;
 using Dapper;
+using BetBookData.DbAccess;
 
 namespace BetBookData.Data;
 

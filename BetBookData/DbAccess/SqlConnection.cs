@@ -2,7 +2,7 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace BetBookDbAccess;
+namespace BetBookData.DbAccess;
 public class SqlConnection : ISqlConnection
 {
     private readonly IConfiguration _config;
