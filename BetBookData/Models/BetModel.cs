@@ -2,6 +2,8 @@
 
 namespace BetBookData.Models;
 
+#nullable enable
+
 /// <summary>
 /// Bet model
 /// </summary>
@@ -42,7 +44,6 @@ public class BetModel
 
     // Status of the payout of the bet
     public PayoutStatus PayoutStatus { get; set; }
-
-
-
 }
+
+#nullable restore

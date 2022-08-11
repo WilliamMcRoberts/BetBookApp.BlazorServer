@@ -2,6 +2,9 @@
 using BetBookData.Models;
 
 namespace BetBookData.Helpers;
+
+#nullable enable
+
 public static class StatusCheckHelpers
 {
     public static bool CheckIfParleyBetLoser(this ParleyBetModel parleyBet)
@@ -37,3 +40,5 @@ public static class StatusCheckHelpers
         return true;
     }
 }
+
+#nullable restore

@@ -4,6 +4,10 @@ using BetBookData.Interfaces;
 using BetBookData.DbAccess;
 
 namespace BetBookData.Data;
+
+#nullable enable
+
+
 public class ParleyBetData : IParleyBetData
 {
     private readonly ISqlConnection _db;
@@ -137,3 +141,5 @@ public class ParleyBetData : IParleyBetData
         });
     }
 }
+
+#nullable restore

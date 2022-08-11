@@ -2,6 +2,8 @@
 
 namespace BetBookData.Models;
 
+#nullable enable
+
 /// <summary>
 /// Game model
 /// </summary>
@@ -13,25 +15,25 @@ public class GameModel
     // Home team of the game
     public int HomeTeamId { get; set; }
 
-    public TeamModel HomeTeam { get; set; }
+    public TeamModel? HomeTeam { get; set; }
 
     // Away team of the game
     public int AwayTeamId { get; set; }
 
-    public TeamModel AwayTeam { get; set; }
+    public TeamModel? AwayTeam { get; set; }
 
     // Team that is declared the favorite
     public int FavoriteId { get; set; }
 
-    public TeamModel Favorite { get; set; }
+    public TeamModel? Favorite { get; set; }
 
     // Team that is declared the underdog
     public int UnderdogId { get; set; }
 
-    public TeamModel Underdog { get; set; }
+    public TeamModel? Underdog { get; set; }
 
     // Stadium the game is being played in
-    public string Stadium { get; set; }
+    public string Stadium { get; set; } = string.Empty;
 
     // The point spread of the game
     public double PointSpread { get; set; }
@@ -69,6 +71,9 @@ public class GameModel
             $"+ {PointSpread} points";
     }
 
-    public string? DateOfGameOnly { get; set; }
-    public string? TimeOfGameOnly { get; set; }
+    public string DateOfGameOnly { get; set; } = string.Empty;
+    public string TimeOfGameOnly { get; set; } = string.Empty;
 }
+
+
+#nullable restore

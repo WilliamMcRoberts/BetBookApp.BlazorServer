@@ -2,6 +2,8 @@
 
 namespace BetBookData.Interfaces;
 
+#nullable enable
+
 /// <summary>
 /// UserData interface
 /// </summary>
@@ -15,3 +17,5 @@ public interface IUserData
     Task UpdateUser(UserModel user);
     Task UpdateUserAccountBalance(UserModel user);
 }
+
+#nullable restore

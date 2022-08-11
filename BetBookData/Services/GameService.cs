@@ -7,6 +7,9 @@ using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.Services;
+
+#nullable enable
+
 public class GameService : IGameService
 {
     private readonly HttpClient _httpClient;
@@ -139,12 +142,19 @@ public class GameService : IGameService
 
         foreach (Game game in gameArray)
         {
-            GameModel gameModel = new();
+            GameModel gameModel = new()
+            {
+                HomeTeam = teams.Where(t =>
+                t.Symbol == game.HomeTeam)?.FirstOrDefault(),
+                AwayTeam = teams.Where(t =>
+                    t.Symbol == game.AwayTeam)?.FirstOrDefault()
+            };
 
-            gameModel.HomeTeam = teams.Where(t =>
-                t.Symbol == game.HomeTeam)?.FirstOrDefault()!;
-            gameModel.AwayTeam = teams.Where(t =>
-                t.Symbol == game.AwayTeam)?.FirstOrDefault()!;
+            if(gameModel.HomeTeam is null || gameModel.AwayTeam is null)
+            {
+                continue;
+            }
+
             gameModel.HomeTeamId = gameModel.HomeTeam.Id;
             gameModel.AwayTeamId = gameModel.AwayTeam.Id;
             gameModel.DateOfGame = game.DateTime;
@@ -246,3 +256,5 @@ public class GameService : IGameService
         }
     }
 }
+
+#nullable restore

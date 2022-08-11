@@ -1,6 +1,9 @@
 ﻿using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
+
+#nullable enable
+
 public interface IParleyBetData
 {
     Task DeleteParleyBet(int id);
@@ -9,3 +12,5 @@ public interface IParleyBetData
     Task InsertParleyBet(ParleyBetModel parleyBet);
     Task UpdateParleyBet(ParleyBetModel parleyBet);
 }
+
+#nullable restore

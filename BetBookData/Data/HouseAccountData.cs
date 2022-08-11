@@ -4,6 +4,8 @@ using BetBookData.Models;
 
 namespace BetBookData.Data;
 
+#nullable enable
+
 public class HouseAccountData : IHouseAccountData
 {
     private readonly ISqlConnection _db;
@@ -45,3 +47,5 @@ public class HouseAccountData : IHouseAccountData
         });
     }
 }
+
+#nullable restore

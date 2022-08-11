@@ -1,6 +1,9 @@
 ﻿using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
+
+#nullable enable
+
 public interface ITeamData
 {
     Task DeleteTeam(int id);
@@ -9,3 +12,5 @@ public interface ITeamData
     Task<int> InsertTeam(TeamModel team);
     Task UpdateTeam(TeamModel team);
 }
+
+#nullable restore

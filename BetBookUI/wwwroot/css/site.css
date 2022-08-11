@@ -680,25 +680,15 @@ ul {
 }
 
 @media(max-width: 550px) {
-    .name {
-        font-size: 7px;
-    }
-
-    .fb-icon {
-        height: 14px;
-    }
 
     .balance-value {
         font-size: 7px;
     }
 
     .balance-item {
-        padding-top: .75em;
+        padding-top: 1em;
     }
 
-    .icon-container {
-        padding-top: .75em;
-    }
 }
 
 

@@ -1,5 +1,8 @@
 ﻿
 namespace BetBookData.Models;
+
+#nullable enable
+
 public class ParleyBetModel
 {
     // Id of ParleyBetModel
@@ -27,3 +30,5 @@ public class ParleyBetModel
     // List of bets in parley bet
     public List<BetModel> Bets { get; set; } = new();
 }
+
+#nullable restore

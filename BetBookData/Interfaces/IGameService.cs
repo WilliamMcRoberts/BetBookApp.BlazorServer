@@ -2,6 +2,9 @@
 using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
+
+#nullable enable
+
 public interface IGameService
 {
     Task FetchAllScoresForFinishedGames();
@@ -11,3 +14,5 @@ public interface IGameService
     Task<List<GameModel>> GetGamesForNextWeek(SeasonType currentSeason, int currentWeek);
     Task GetPointSpreadUpdateForAvailableGames();
 }
+
+#nullable restore

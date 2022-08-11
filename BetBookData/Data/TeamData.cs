@@ -4,6 +4,8 @@ using BetBookData.DbAccess;
 
 namespace BetBookData.Data;
 
+#nullable enable
+
 public class TeamData : ITeamData
 {
     private readonly ISqlConnection _db;
@@ -118,3 +120,5 @@ public class TeamData : ITeamData
         });
     }
 }
+
+#nullable restore

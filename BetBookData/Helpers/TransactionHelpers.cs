@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.Helpers;
 
+#nullable enable
+
 public static class TransactionHelpers
 {
     /// <summary>
@@ -206,3 +208,6 @@ public static class TransactionHelpers
         }
     }
 }
+
+
+#nullable restore

@@ -1,5 +1,8 @@
 ﻿
 namespace BetBookData.DbAccess;
+
+#nullable enable
+
 public interface ISqlConnection
 {
     Task<IEnumerable<T>> LoadData<T, U>(
@@ -7,3 +10,5 @@ public interface ISqlConnection
     Task SaveData<T>(
         string storedProcedure, T parameters, string connectionId = "BetBookDB");
 }
+
+#nullable restore

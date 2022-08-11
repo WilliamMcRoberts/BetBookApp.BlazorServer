@@ -7,6 +7,8 @@ using BetBookData.DbAccess;
 
 namespace BetBookData.Data;
 
+#nullable enable
+
 public class BetData : IBetData
 {
 
@@ -143,3 +145,5 @@ public class BetData : IBetData
         });
     }
 }
+
+#nullable restore

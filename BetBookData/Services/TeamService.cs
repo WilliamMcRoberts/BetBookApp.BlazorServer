@@ -6,16 +6,17 @@ using BetBookData.Lookups;
 using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.Services;
+
+#nullable enable
+
 public class TeamService : ITeamService
 {
     private readonly HttpClient _httpClient;
-    private readonly ITeamData _teamData;
     private readonly IConfiguration _config;
 
-    public TeamService(ITeamData teamData, IConfiguration config)
+    public TeamService(IConfiguration config)
     {
         _httpClient = new();
-        _teamData = teamData;
         _config = config;
     }
 
@@ -70,3 +71,5 @@ public class TeamService : ITeamService
         return teamGameStats;
     }
 }
+
+#nullable restore

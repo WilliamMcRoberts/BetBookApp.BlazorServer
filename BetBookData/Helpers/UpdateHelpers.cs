@@ -4,6 +4,9 @@ using BetBookData.Models;
 
 
 namespace BetBookData.Helpers;
+
+#nullable enable
+
 public static class UpdateHelpers
 {
     public static async Task UpdateParleyBetWinners(
@@ -150,3 +153,6 @@ public static class UpdateHelpers
         await gameData.UpdateGame(currentGame);
     }
 }
+
+
+#nullable restore

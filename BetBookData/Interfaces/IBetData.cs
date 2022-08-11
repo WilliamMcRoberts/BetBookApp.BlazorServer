@@ -1,6 +1,9 @@
 ﻿using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
+
+#nullable enable
+
 public interface IBetData
 {
     Task DeleteBet(int id);
@@ -9,3 +12,5 @@ public interface IBetData
     Task<int> InsertBet(BetModel bet);
     Task UpdateBet(BetModel bet);
 }
+
+#nullable restore

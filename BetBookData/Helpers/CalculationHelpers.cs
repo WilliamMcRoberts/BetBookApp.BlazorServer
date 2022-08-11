@@ -2,6 +2,9 @@
 
 namespace BetBookData.Helpers;
 
+
+#nullable enable
+
 public static class CalculationHelpers
 {
     /// <summary>
@@ -183,3 +186,5 @@ public static class CalculationHelpers
         return total;
     }
 }
+
+#nullable restore

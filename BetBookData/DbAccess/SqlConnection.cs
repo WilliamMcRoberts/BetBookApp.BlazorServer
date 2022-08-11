@@ -3,6 +3,9 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 
 namespace BetBookData.DbAccess;
+
+#nullable enable
+
 public class SqlConnection : ISqlConnection
 {
     private readonly IConfiguration _config;
@@ -71,3 +74,5 @@ public class SqlConnection : ISqlConnection
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
 }
+
+#nullable restore

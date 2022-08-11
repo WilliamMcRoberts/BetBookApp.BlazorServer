@@ -37,7 +37,7 @@ public static class RegisterServices
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
         builder.Services.AddSyncfusionBlazor();
 
-        //builder.Services.AddHostedService<TimerService>();
+        builder.Services.AddHostedService<TimerService>();
 
 
         /*********************** Data access *************************/

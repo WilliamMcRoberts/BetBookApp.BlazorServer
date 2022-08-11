@@ -3,6 +3,9 @@ using BetBookData.Interfaces;
 using BetBookData.Models;
 
 namespace BetBookData.Data;
+
+#nullable enable
+
 public class UserData : IUserData
 {
 
@@ -149,3 +152,5 @@ public class UserData : IUserData
         });
     }
 }
+
+#nullable restore

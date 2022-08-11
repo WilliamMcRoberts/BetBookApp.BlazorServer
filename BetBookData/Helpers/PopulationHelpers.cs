@@ -2,6 +2,8 @@
 
 namespace BetBookData.Helpers;
 
+#nullable enable
+
 public static class PopulationHelpers
 {
     public static List<GameModel> PopulateGameModelsWithTeams(
@@ -84,3 +86,5 @@ public static class PopulationHelpers
         return parleyBets;
     }
 }
+
+#nullable restore

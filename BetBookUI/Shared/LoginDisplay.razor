@@ -33,6 +33,7 @@
             <SfDropDownButton CssClass="e-caret-hide" Content="Account">
                 <DropDownMenuItems>
                     <DropDownMenuItem Url="MicrosoftIdentity/Account/SignOut" Text="Sign Out"></DropDownMenuItem>
+                    <DropDownMenuItem Text="@Balance"></DropDownMenuItem>
                 </DropDownMenuItems>
             </SfDropDownButton>
     </Authorized>
@@ -45,7 +46,10 @@
     </NotAuthorized>
 </AuthorizeView>
 
-
+@code {
+    [Parameter]
+    public string Balance { get; set; } = string.Empty;
+}
 <style>
     .e-dropdown-btn, .e-dropdown-btn.e-btn {
         color: white;

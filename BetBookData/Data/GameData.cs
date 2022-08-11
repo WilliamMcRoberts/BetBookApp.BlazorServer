@@ -4,6 +4,8 @@ using BetBookData.Models;
 
 namespace BetBookData.Data;
 
+#nullable enable
+
 public class GameData : IGameData
 {
     private readonly ISqlConnection _db;
@@ -151,5 +153,5 @@ public class GameData : IGameData
 }
 
 
-
+#nullable restore
 

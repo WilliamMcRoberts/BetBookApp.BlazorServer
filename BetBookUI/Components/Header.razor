@@ -12,7 +12,7 @@
     </div>
 
     <div class="login">
-        <LoginDisplay />
+        <LoginDisplay Balance="@Convert.ToDecimal(loggedInUser?.AccountBalance).ToString("#,##0.00")"/>
     </div>
     
 </div>
