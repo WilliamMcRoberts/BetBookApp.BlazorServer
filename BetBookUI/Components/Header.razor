@@ -1,25 +1,23 @@
 ﻿@inject AuthenticationStateProvider authProvider
 @inject IUserData userData
-@inject IBetData betData
 
-<div id="header" class="header px-5 pt-3 nav-links">
+<div id="header" class="headernew px-5 pt-3 nav-links">
     <a href="/" class="icon-container">
         <image class="fb-icon" src="/images/fbicon.png" />
         <h3 class="name">Bet Book</h3>
     </a>
 
     <div class="balance-item">
-        <h6 style="font-size:30px;font-weight:700;margin-top:.35em;">$@Convert.ToDecimal(loggedInUser?.AccountBalance).ToString("#,##0.00")</h6>
+        <h6 class="balance-value">$@Convert.ToDecimal(loggedInUser?.AccountBalance).ToString("#,##0.00")</h6>
     </div>
 
     <div class="login">
         <LoginDisplay />
     </div>
+    
 </div>
 
-
 @code {
-
     UserModel? loggedInUser;
 
     /// <summary>

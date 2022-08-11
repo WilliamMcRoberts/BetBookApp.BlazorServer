@@ -3,46 +3,27 @@
 
 @if(AvailableGameList is not null && AvailableGameList.Count != 0)
 {
-    foreach(GameModel g in AvailableGameList)
+    foreach(GameModel game in AvailableGameList)
     {
-        <div class="game-container">
-            <div class="away-team">
-                <label>Away</label>
-                <img style="height:100px;" src="/images/@g.AwayTeam.ImagePath" alt="team logo">
-                <div class="basic-record">
-                    @if(g.AwayTeam.Wins is not null && g.AwayTeam.Losses is not null && g.AwayTeam.Draws is not null)
-                    {
-                        <p>@g.AwayTeam.Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                        <p>@g.AwayTeam.Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                        <p>@g.AwayTeam.Draws.Split('|').SkipLast(1).ToArray().Length</p>
-                    }
+        <div class="game-item-list" >
+            <div class="game-title">
+                <div class="helmet-icon-away">
+                    <img style="height:80px;" src="/images/@game.AwayTeam.ImagePath" alt="team logo">
+                </div>
+                <div class="game-description">
+                    <h6 style="font-size:18px; font-weight:700">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName @game.PointSpreadDescription</h6>
+                    <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
+                </div>
+                <div class="helmet-icon-home">
+                    <img style="height:80px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
                 </div>
             </div>
-            <div class="game-details">
-                <div style="margin-top: 2em;">
-                    <h3 class="team-item">@g.AwayTeam.TeamName at @g.HomeTeam.TeamName @g.PointSpreadDescription</h3>
-                    <h3 style="font-size:20px;font-weight:700;" class="game-time-date">@g.DateOfGameOnly at @g.TimeOfGameOnly pm</h3>
-                </div>
-
-                <div class="bet-selection-single">
-                    <button @onclick="(() => CreateBet(g.Id))" 
-                        class="mb-4 site-btn btn site-btn-light btn-sm text-uppercase">
+            <div class="bet-selection-single">
+                    <button @onclick="(() => CreateBet(game.Id))" 
+                        class="mb-2 site-btn btn site-btn-light btn-sm text-uppercase">
                         Bet On This Game
                     </button>
                 </div>
-            </div>
-            <div class="home-team">
-                <label>Home</label>
-                <img style="height:100px;" src="/images/@g.HomeTeam.ImagePath" alt="team logo">
-                <div class="basic-record">
-                    @if(g.HomeTeam.Wins is not null && g.HomeTeam.Losses is not null && g.HomeTeam.Draws is not null)
-                    {
-                        <p>@g.HomeTeam.Wins.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                        <p>@g.HomeTeam.Losses.Split('|').SkipLast(1).ToArray().Length<span class="dash">-</span></p>
-                        <p>@g.HomeTeam.Draws.Split('|').SkipLast(1).ToArray().Length</p>
-                    }
-                </div>
-            </div>
         </div>
     }
 }
@@ -51,6 +32,8 @@ else
     <h1 style="margin-top:2em;" class="title">There are no games currently available.</h1>
     <h1 style="margin-top:1em;" class="title">We'll have to wait until next week.</h1>
 }
+
+
 
 
 @code {

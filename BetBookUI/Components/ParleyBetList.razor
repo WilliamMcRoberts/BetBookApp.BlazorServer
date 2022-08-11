@@ -3,12 +3,10 @@
     <label style="margin-left: 3.5em;">@BetType Parley Bets</label>
     @if(BetList.Count != 0)
     {
-        int index = 1;
         @foreach(ParleyBetModel parleyBet in BetList)
         {
             <div class="parley-bet">
                 <div class="parley-bet-label">
-                    @*<label style="margin-left:4.25em;margin-top:1em;">Parley Bet #@index</label>*@
                     <label style="margin-left:4em;margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
                 </div>
                 @foreach(BetModel bet in parleyBet.Bets)
@@ -30,7 +28,6 @@
                     </div>
                 }
             </div>
-            index++;
         }
     }
     else

@@ -3,32 +3,97 @@
 
 <AuthorizeView Policy="Admin">
     <Authorized>
-        <a href="/AdminPage">
-            <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Admin</button>
-        </a>
+        <SfDropDownButton CssClass="e-caret-hide" Content="Admin">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Url="AdminPage" Text="Admin Page"></DropDownMenuItem>
+                </DropDownMenuItems>
+        </SfDropDownButton>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView>
     <Authorized>
-            <a href="/About">
-                <button  class="site-btn btn site-btn-light btn-sm text-uppercase">About</button>
-            </a>
-            <a href="/CreateParleyBet">
-                <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Create Parley Bet</button>
-            </a>
-            <a href="/Profile">
-                 <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Profile</button>
-            </a>
-            <a href="/">
-                <button  class="site-btn btn site-btn-light btn-sm text-uppercase">Home</button>
-            </a>
-            <a href="MicrosoftIdentity/Account/SignOut">
-                <button class="site-btn btn site-btn-light btn-sm text-uppercase">Logout</button>
-            </a>
+            <SfDropDownButton CssClass="e-caret-hide" Content="About">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Url="About" Text="Odds"></DropDownMenuItem>
+                    <DropDownMenuItem Url="About" Text="Bet Book"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfDropDownButton>
+            <SfDropDownButton CssClass="e-caret-hide" Content="Place Wager">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Url="/" Text="Single"></DropDownMenuItem>
+                    <DropDownMenuItem Url="CreateParleyBet" Text="Parley"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfDropDownButton>
+            <SfDropDownButton  CssClass="e-caret-hide" Content="Profile">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Url="ProfileSingleBets" Text="Single Bets"></DropDownMenuItem>
+                    <DropDownMenuItem Url="ProfileParleyBets" Text="Parley Bets"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfDropDownButton>
+            <SfDropDownButton CssClass="e-caret-hide" Content="Account">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Url="MicrosoftIdentity/Account/SignOut" Text="Sign Out"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfDropDownButton>
     </Authorized>
     <NotAuthorized>
-        <a href="MicrosoftIdentity/Account/SignIn">
-            <button style="margin-top:.5em;" class="site-btn btn site-btn-light btn-sm text-uppercase">SignIn / SignUp</button>
-        </a>
+        <SfDropDownButton CssClass="e-caret-hide" Content="Sign In / Sign Up">
+            <DropDownMenuItems>
+                <DropDownMenuItem Url="MicrosoftIdentity/Account/SignIn" Text="Sign In / Sign Up"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfDropDownButton>
     </NotAuthorized>
 </AuthorizeView>
+
+
+<style>
+    .e-dropdown-btn, .e-dropdown-btn.e-btn {
+        color: white;
+        background: none;
+        border: none;
+        font-size:17px;
+    }
+        .e-dropdown-btn:hover {
+           color:green;
+        }
+    
+    .e-dropdown-popup {/******PopUP********/
+        border: 1px solid green;
+        border-radius: 10px;
+        width: 10%;
+    }
+
+    .e-dropdown-btn.e-active {/*********Dropdown on active*********/
+        border: none;
+        color: green;
+    }
+
+    .e-dropdown-popup ul .e-item .e-menu-url{/*****Dropdown list items before hover*****/
+        background: rgb(152,251,152, 0.8);
+        font-weight: 700;
+        display: flex;
+        color:green;
+    }
+
+     .e-dropdown-popup ul .e-item .e-menu-url:hover {/*****Dropdown list items on hover******/
+        color: white;
+    }
+
+    @@media (max-width: 800px) {
+            .e-dropdown-btn, .e-dropdown-btn.e-btn {
+            font-size:13px;
+        }
+    }
+
+    @@media(max-width: 650px) {
+            .e-dropdown-btn, .e-dropdown-btn.e-btn {
+            font-size: 10px;
+        }
+    }
+
+    @@media(max-width: 550px) {
+            .e-dropdown-btn, .e-dropdown-btn.e-btn {
+            font-size: 7px;
+        }
+    }
+</style>

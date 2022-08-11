@@ -1,0 +1,156 @@
+﻿@page "/ProfileSingleBets"
+@attribute [Authorize]
+@inject IUserData userData
+@inject AuthenticationStateProvider authProvider
+@inject ITeamData teamData
+@inject IGameData gameData
+@inject IBetData betData
+@inject IParleyBetData parleyData
+@inject IHouseAccountData houseData
+@inject IConfiguration config
+
+<PageTitle>SINGLE BETS</PageTitle>
+
+
+
+<div class="user-profile-reg">
+
+    <div>
+        <div class="label-container">
+            <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Single Bets</h3>
+        </div>
+        <div class="item">
+            <p>Pending Payout: $@Convert.ToDecimal(totalPendingPayout).ToString("#,##0.00")</p>
+        </div>
+        <div class="item">
+            <p>Pending Refund: $@Convert.ToDecimal(totalPendingRefund).ToString("#,##0.00")</p>
+        </div>
+        <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningBets">Collect My Winnings</button>
+        </div>
+        <div style="text-align: center;margin-bottom: 2em;">
+            <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="RefundUnpaidPushBets">Refund My Push Bets</button>
+        </div>
+    </div>
+
+
+    <div class="bets">
+
+        <RegBetList BetType="Open"
+                    BetList="bettorInProgressBets"/>
+
+        <RegBetList BetType="Winning"
+                    BetList="bettorWinningBetsUnpaid"/>
+
+        <RegBetList BetType="Push"
+                    BetList="bettorPushBetsUnpaid"/>
+    </div>
+
+</div>
+
+
+
+@code {
+    private UserModel? loggedInUser;
+
+    private IEnumerable<TeamModel>? teams;
+
+    private IEnumerable<GameModel>? games;
+
+    private IEnumerable<BetModel>? bets;
+
+    private List<BetModel> bettorInProgressBets = new();
+
+    private List<BetModel> bettorWinningBetsUnpaid = new();
+
+    private List<BetModel> bettorPushBetsUnpaid = new();
+
+    private decimal totalPendingPayout;
+
+    private decimal totalPendingRefund;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
+
+        teams = await teamData.GetTeams();
+
+        games = await gameData.GetGames();
+
+        bets = await betData.GetBets();
+
+
+        bettorInProgressBets = 
+            bets.Where(b => b.BettorId == loggedInUser.Id &&
+                       b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+
+        if (bettorInProgressBets.Count != 0)
+            bettorInProgressBets = bettorInProgressBets.
+                PopulateBetModelsWithGamesAndTeams(games, teams);
+
+        bettorWinningBetsUnpaid = 
+            bets.Where(b => b.BettorId == loggedInUser.Id &&
+                       b.BetStatus == BetStatus.WINNER &&
+                       b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+
+        if (bettorWinningBetsUnpaid.Count != 0)
+            bettorWinningBetsUnpaid = 
+                bettorWinningBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
+
+        bettorPushBetsUnpaid = 
+            bets.Where(b => b.BettorId == loggedInUser.Id &&
+                       b.BetStatus == BetStatus.PUSH &&
+                       b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+
+        if (bettorPushBetsUnpaid.Count != 0)
+            bettorPushBetsUnpaid = bettorPushBetsUnpaid.
+                PopulateBetModelsWithGamesAndTeams(games, teams);
+
+        totalPendingPayout = 
+            bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
+
+        totalPendingRefund = 
+            bettorPushBetsUnpaid.CalculateTotalPendingRefund();
+    }
+
+    /// <summary>
+    /// Async method pays the user all unpaid 
+    /// payouts
+    /// </summary>
+    /// <returns></returns>
+    private async Task PayoutUnpaidWinningBets()
+    {
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+        if (houseAccount is null || loggedInUser is null)
+            return;
+
+        await loggedInUser.PayoutBetsTransaction(
+            bettorWinningBetsUnpaid, houseAccount, totalPendingPayout, config, userData, 
+                houseData, betData);
+
+        bettorWinningBetsUnpaid.Clear();
+
+        totalPendingRefund = 0;
+    }
+
+    /// <summary>
+    /// Async method refunds all unpaid push bets
+    /// </summary>
+    /// <returns></returns>
+    private async Task RefundUnpaidPushBets()
+    {
+        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+
+        if (houseAccount is null || loggedInUser is null)
+            return;
+
+        await loggedInUser.PayoutBetsTransaction(
+            bettorPushBetsUnpaid, houseAccount, totalPendingRefund, config, userData, 
+                houseData, betData);
+
+        bettorPushBetsUnpaid.Clear();
+
+        totalPendingRefund = 0;
+    }
+}

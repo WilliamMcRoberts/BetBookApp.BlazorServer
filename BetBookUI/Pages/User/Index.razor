@@ -8,37 +8,18 @@
 
 <PageTitle>HOME</PageTitle>
 
-<div class="games-page">
-
-    <div class="info-label-container">
-
-        @if(gamesAvailable is not null && gamesAvailable.Count != 1)
-        {
-            <div>
-                <h3 style="margin-left:15em;font-weight:700;">@gamesAvailable.Count Available Games</h3>
-            </div>
-        }
-        else if(gamesAvailable is not null)
-        {
-            <div>
-                <h3 style="margin-left:15em;font-weight:700;">@gamesAvailable.Count Available Game</h3>
-            </div>
-        }
-        <div>
-            <h3 style="margin-right:15em;font-weight:700;">@nextWeekSeason Season Week @nextWeek</h3>
-        </div>
-
-    </div>
-
-    <div class="games">
-
-        <GameDisplay AvailableGameList="gamesAvailable" 
-                     User="loggedInUser"
-                     Teams="teams"/>
-
-    </div>
+<div>
+    <h6 class="text-uppercase" style="text-align:center; font-weight:700;">@nextWeekSeason Season Week @nextWeek</h6>
 </div>
+    
 
+<div class="games">
+
+    <GameDisplay AvailableGameList="gamesAvailable" 
+                    User="loggedInUser"
+                    Teams="teams"/>
+
+</div>
 
 
 
