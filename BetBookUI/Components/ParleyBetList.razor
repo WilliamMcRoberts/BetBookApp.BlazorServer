@@ -7,24 +7,22 @@
         {
             <div class="parley-bet">
                 <div class="parley-bet-label">
-                    <label style="margin-left:4em;margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
+                    <label style="margin-top:1em;">Payout Amount $@Convert.ToDecimal(parleyBet.BetPayout).ToString("#.00")</label>
                 </div>
                 @foreach(BetModel bet in parleyBet.Bets)
                 {
                     <div class="bet">
-                        <ul style="margin-top:.5em;">
-                            <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
-                            @if(bet.FinalWinner is not null)
-                            {
-                                <li>Final Winner || @bet.FinalWinner.TeamName</li>
-                            }
-                            else
-                            {
-                                <li>Final Winner || NONE</li>
+                        <h6 style="margin-top:1em;" class="font">Chosen Winner || @bet.ChosenWinner?.TeamName</h6>
+                        @if(bet.FinalWinner is not null)
+                        {
+                            <h6 class="font">Final Winner || @bet.FinalWinner.TeamName</h6>
+                        }
+                        else
+                        {
+                            <h6 class="font">Final Winner || NONE</h6>
 
-                            }
-                                <li>Point Spread || @bet.Game?.PointSpread</li>
-                        </ul>
+                        }
+                        <h6 style="margin-bottom:1em;" class="font">Point Spread || @bet.Game?.PointSpread</h6>
                     </div>
                 }
             </div>

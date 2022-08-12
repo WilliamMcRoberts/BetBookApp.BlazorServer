@@ -316,8 +316,12 @@ a, .btn-link {
 }
 
 .parley-bet-label {
-    display: flex;
-    justify-content: space-between;
+    text-align:center;
+}
+
+.font {
+    font-weight: 700;
+    font-size:20px;
 }
 
 /*********************************
@@ -591,6 +595,8 @@ ul {
     font-weight: 700;
     border-width: 2px;
     border-color: red;
+    margin: 0 auto;
+    width: 185px;
 }
 
     .undo-btn-det:hover {
@@ -607,6 +613,8 @@ ul {
     border-color: green;
     color: white;
     background-color: rgb(152,251,152, 0.35);
+    margin:0 auto;
+    width:185px;
 }
 
     .site-btn-det-light:hover {
@@ -703,7 +711,6 @@ ul {
     .parley-bet {
         margin: 1em .5em;
     }
-    
 
     .nav-title {
         font-size: 10px;
@@ -730,34 +737,24 @@ ul {
 }
 
 @media(max-width: 650px) {
-    .name {
-        font-size:10px;
-    }
-    .fb-icon {
-        height: 17px;
-    }
 
-    .balance-value {
-        font-size: 10px;
-    }
+
 
     .balance-item {
-        padding-top: .7em;
+        display:none;
     }
 
-    .icon-container {
-        padding-top: .75em;
-    }
+
 }
 
 @media(max-width: 550px) {
 
-    .balance-value {
-        font-size: 7px;
-    }
 
-    .balance-item {
-        padding-top: 1em;
+
+
+
+    .font {
+        font-size: 15px;
     }
 
 }

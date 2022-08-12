@@ -14,20 +14,18 @@
             if(bet.PayoutStatus != PayoutStatus.PARLEY && bet.BetAmount != 0)
             {
                 <div class="bet">
-                    <ul style="margin-top:1em;">
-                        <li>Chosen Winner || @bet.ChosenWinner?.TeamName</li>
+                        <h6 style ="margin-top:1em;" class="font">Chosen Winner || @bet.ChosenWinner?.TeamName</h6>
                         @if(bet.FinalWinner is not null)
                         {
-                            <li>Final Winner || @bet.FinalWinner.TeamName</li>
+                        <h6 class="font">Final Winner || @bet.FinalWinner.TeamName</h6>
                         }
                         else
                         {
-                            <li>Final Winner || NONE</li>
+                        <h6 class="font">Final Winner || NONE</h6>
 
                         }
-                        <li>Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</li>
-                        <li>Point Spread || @bet.Game?.PointSpread</li>
-                    </ul>
+                        <h6 class="font">Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</h6>
+                        <h6 style="margin-bottom:1em;" class="font">Point Spread || @bet.Game?.PointSpread</h6>
                 </div>
             }
         }
@@ -35,7 +33,7 @@
     else
     {
         <div class="bet">
-            <p style="margin: 1em 0;">NONE</p>
+            <h6 class="font" style="margin: 1em 0;">NONE</h6>
         </div>
     }
 </div>
