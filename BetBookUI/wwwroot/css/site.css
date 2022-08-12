@@ -398,6 +398,20 @@ ul {
     
 }
 
+.footer-game-item {
+    font-size: 7px;
+}
+
+.at {
+    color: white;
+    margin: 0 .5em;
+    margin-top: 1.5em;
+}
+
+.at-symbol {
+    font-size: 35px;
+}
+
 .footer {
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0, 0.5);
@@ -570,19 +584,7 @@ ul {
 }
 
 
-.footer-game-item {
-    font-size: 7px;
-}
 
-.at {
-    color: white;
-    margin: 0 .5em;
-    margin-top: 1.5em;
-}
-
-.at-symbol {
-    font-size: 35px;
-}
 
 
 @media (max-width: 950px) {
@@ -666,6 +668,9 @@ ul {
         display:none;
     }
 
+    .parley-bet {
+        margin: 1em 2em;
+    }
     
 
     .nav-title {

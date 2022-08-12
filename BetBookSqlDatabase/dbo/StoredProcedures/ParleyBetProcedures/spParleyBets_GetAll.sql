@@ -4,7 +4,7 @@ AS
 begin
     select Id,
            Bet1Id,
-           Bet1Id,
+           Bet2Id,
            Bet3Id,
            Bet4Id,
            Bet5Id,
