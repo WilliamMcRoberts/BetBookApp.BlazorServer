@@ -403,7 +403,7 @@ ul {
 }
 
 .footer-game-item {
-    font-size: 7px;
+    font-size: 17px;
 }
 
 .at {
@@ -450,7 +450,7 @@ ul {
     width: 35%;
     padding: 1em 1em;
     text-align: center;
-    margin: 1em auto;
+    margin: 0 auto;
 }
 
 .name {
@@ -596,7 +596,7 @@ ul {
     border-width: 2px;
     border-color: red;
     margin: 0 auto;
-    width: 185px;
+    width: 125px;
 }
 
     .undo-btn-det:hover {
@@ -614,7 +614,7 @@ ul {
     color: white;
     background-color: rgb(152,251,152, 0.35);
     margin:0 auto;
-    width:185px;
+    width:125px;
 }
 
     .site-btn-det-light:hover {
@@ -716,8 +716,13 @@ ul {
         font-size: 10px;
     }
 
+    .footer-game-item {
+        font-size: 7px;
+    }
+
     .link-support {
         font-size: 10px;
+        margin:0 auto;
     }
 
     .link-support-about {
