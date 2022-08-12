@@ -38,8 +38,6 @@ public class TeamModel
 
     public string Conference { get; set; } = string.Empty;
 
-    //public string ImagePath { get => $"{TeamName.ToLower()}.svg"; }
-
     public string ImagePath 
     { 
         get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png" : $"{TeamName.ToLower()}.svg"; 
