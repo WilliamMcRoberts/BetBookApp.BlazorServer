@@ -64,14 +64,17 @@
                         }
                         else
                         {
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
-                                Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
-                            </button>
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
-                                Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
-                            </button>
+                            <div class="parley-buttons">
+                                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                    @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
+                                    Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                </button>
+                                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                    @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
+                                    Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                </button>
+                            </div>
+                            
                         }
                     </div>
                 }
