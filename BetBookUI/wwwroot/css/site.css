@@ -577,11 +577,43 @@ ul {
     background-color: rgb(152,251,152, 0.35);
 }
 
-.site-btn-light:hover {
-    color: green;
-    background-color: white;
-    border-color: green;
+    .site-btn-light:hover {
+        color: green;
+        background-color: white;
+        border-color: green;
+    }
+
+.undo-btn-det {
+    background: yellow;
+    color: red;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 15px;
+    font-weight: 700;
+    border-width: 2px;
+    border-color: red;
 }
+
+    .undo-btn-det:hover {
+        background: red;
+        color: yellow;
+        border-color: yellow;
+    }
+
+.site-btn-det {
+    font-family: 'Montserrat', sans-serif;
+    border-width: 2px;
+    border-radius: 15px;
+    font-weight: 700;
+    border-color: green;
+    color: white;
+    background-color: rgb(152,251,152, 0.35);
+}
+
+    .site-btn-det-light:hover {
+        color: green;
+        background-color: white;
+        border-color: green;
+    }
 
 
 
@@ -669,7 +701,7 @@ ul {
     }
 
     .parley-bet {
-        margin: 1em 2em;
+        margin: 1em .5em;
     }
     
 

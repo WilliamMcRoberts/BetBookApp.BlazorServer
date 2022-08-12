@@ -39,14 +39,14 @@
                         {
                             if(teamToWin?.TeamName == CurrentGame.AwayTeam.TeamName)
                             {
-                                <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                                <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection()">
                                     Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
                                 </button>
                             }
                             else
                             {
-                                <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                                <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                     @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
                                     Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
                                 </button>
@@ -54,7 +54,7 @@
                         }
                         else if(!winnerChosen)
                         {
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
                                 Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
                             </button>
@@ -84,14 +84,14 @@
                     {
                         if(teamToWin?.TeamName == CurrentGame.HomeTeam.TeamName)
                         {
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
+                            <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                 @onclick="UndoWinnerSelection">
                                 Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                         else
                         {
-                            <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                            <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
                                 Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
                             </button>
@@ -99,7 +99,7 @@
                     }
                     else if(!winnerChosen)
                     {
-                        <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
+                        <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                             @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
                             Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
                         </button>
