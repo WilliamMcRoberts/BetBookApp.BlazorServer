@@ -378,7 +378,9 @@ ul {
         Header And Footer
 ********************************/
 
-
+.link-support {
+    margin: 0 auto;
+}
 
 .balance-value {
     font-size: 20px;
@@ -557,13 +559,13 @@ ul {
     padding-right: 1rem;
     font-weight: 700;
     border-color: green;
-    color: green;
+    color: white;
     background-color: rgb(152,251,152, 0.35);
 }
 
 .site-btn-light:hover {
-    color: #FFFFFF;
-    background-color: green;
+    color: green;
+    background-color: white;
     border-color: green;
 }
 
@@ -590,6 +592,10 @@ ul {
 
     .footer-game-item {
         font-size: 10px;
+    }
+
+    .link-support {
+        font-size: 13px;
     }
 
     .nav-title {
@@ -644,7 +650,10 @@ ul {
     .nav-title {
         font-size: 10px;
     }
-    
+
+    .link-support {
+        font-size: 10px;
+    }
 
     .about-about {
         width: 95%;
@@ -671,7 +680,7 @@ ul {
     }
 
     .balance-item {
-        padding-top: .75em;
+        padding-top: .7em;
     }
 
     .icon-container {
