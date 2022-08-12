@@ -41,14 +41,16 @@
                             {
                                 <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection()">
-                                    Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                    Undo
+                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
                                 </button>
                             }
                             else
                             {
                                 <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                     @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                    Choose @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                                    Choose
+                                    @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
                                 </button>
                             }
                         }
@@ -56,7 +58,8 @@
                         {
                             <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                Choose @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                                Choose
+                                @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                     </div>
@@ -86,14 +89,16 @@
                         {
                             <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                 @onclick="UndoWinnerSelection">
-                                Undo @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                Undo
+                                @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                         else
                         {
                             <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                                Choose @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                                Choose 
+                                @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                     }
@@ -101,7 +106,8 @@
                     {
                         <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                             @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                            Choose @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                            Choose
+                            @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
                         </button>
                     }
                 </div>
@@ -129,7 +135,7 @@
             <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
             <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
         </div>  
-        <div style="text-align:center;margin-top:1em;">
+        <div style="text-align:center;margin-top:1em;margin:0 auto;">
             <p style="margin: .5em auto;">Your bet for $@betAmount is ready.</p>
             <p style="margin: .5em auto;">If everything looks good click "Submit Wager"</p>
         </div>

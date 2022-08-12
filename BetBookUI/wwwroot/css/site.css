@@ -605,7 +605,8 @@ ul {
     border-width: 2px;
     border-color: red;
     margin: 0 auto;
-    width: 125px;
+    width: 180px;
+    font-size: 11px;
 }
 
     .undo-btn-det:hover {
@@ -622,8 +623,9 @@ ul {
     border-color: green;
     color: white;
     background-color: rgb(152,251,152, 0.35);
-    margin:0 auto;
-    width:125px;
+    margin: 0 auto;
+    width: 180px;
+    font-size:11px;
 }
 
     .site-btn-det-light:hover {
