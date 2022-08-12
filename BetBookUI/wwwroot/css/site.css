@@ -355,6 +355,10 @@ label {
     font-size: 20px;
 }
 
+a:hover {
+    cursor: pointer;
+}
+
 p {
     font-size: 20px;
     font-weight: 700;

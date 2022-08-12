@@ -17,7 +17,6 @@ public static class RegisterServices
     /// <param name="builder"></param>
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
-
         // Microsoft authentication
         builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAdB2C"));

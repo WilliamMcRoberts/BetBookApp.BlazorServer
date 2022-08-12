@@ -58,7 +58,7 @@
             <div class="footer-link">
                     @foreach(GameModel game in availableGames)
                 {
-                    <a class="game-item-nav" href="/CreateBet/@game.Id">
+                    <a class="game-item-nav" @onclick="(() => CreateBet(game.Id))">
                         <h6 class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</h6>
                     </a>
                 }
@@ -152,7 +152,11 @@
     private void CreateBet(int gameId)
     {
         if(loggedInUser is not null)
+        {
+            navManager.NavigateTo("..");
             navManager.NavigateTo($"/CreateBet/{gameId}");
+        }
+            
         else
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
