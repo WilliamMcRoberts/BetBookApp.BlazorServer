@@ -20,7 +20,7 @@
             <div class="records">
                 <div class="stat-records">
                     <div class="helmet">
-                        <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.AwayTeam.ImagePath" alt="team logo">
+                        <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.AwayTeam?.ImagePath" alt="team logo">
                     </div>
                     <div class="stat-container">
 
@@ -33,6 +33,7 @@
                         <Stat StatType="Draws"
                               Stats="CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
+                    
                     <div class="mt-4 mb-2 team-selection-container">
                         @if(winnerChosen)
                         {

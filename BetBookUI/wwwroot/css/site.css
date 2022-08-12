@@ -569,6 +569,10 @@ ul {
     border-color: green;
 }
 
+.at {
+    color:white;
+}
+
 
 @media (max-width: 950px) {
     .parley-game-item-unchosen {
@@ -635,6 +639,14 @@ ul {
     }
 }
 
+@media(min-width: 700px) {
+
+    .at {
+        display: none;
+    }
+
+}
+
 @media(max-width: 700px){
     .game-description {
         display:none;
@@ -645,6 +657,16 @@ ul {
 
     .footer-game-item {
         font-size: 7px;
+    }
+
+    .at {
+       color:white;
+       margin: 0 auto;
+       margin-top: 1.5em;
+    }
+
+    .at-symbol {
+        font-size: 35px;
     }
 
     .nav-title {
