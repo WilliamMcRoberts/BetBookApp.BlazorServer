@@ -569,8 +569,15 @@ ul {
     border-color: green;
 }
 
+
+.footer-game-item {
+    font-size: 7px;
+}
+
 .at {
-    color:white;
+    color: white;
+    margin: 0 1em;
+    margin-top: 1.5em;
 }
 
 
@@ -653,16 +660,6 @@ ul {
     }
     .info-label-container {
         display:none;
-    }
-
-    .footer-game-item {
-        font-size: 7px;
-    }
-
-    .at {
-       color:white;
-       margin: 0 auto;
-       margin-top: 1.5em;
     }
 
     .at-symbol {
