@@ -450,7 +450,12 @@ ul {
     width: 35%;
     padding: 1em 1em;
     text-align: center;
-    margin: 0 auto;
+    margin-top:1em;
+    margin-bottom:1em;
+}
+
+.trust-logo {
+    margin-top:4em;
 }
 
 .name {
@@ -704,8 +709,14 @@ ul {
     .game-description {
         display:none;
     }
+
     .info-label-container {
         display:none;
+    }
+
+    .trust-logo {
+        margin-top: 3.5em;
+        height: 65px;
     }
 
     .parley-bet {
