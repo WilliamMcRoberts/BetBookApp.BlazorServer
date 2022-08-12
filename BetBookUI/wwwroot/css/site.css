@@ -185,13 +185,13 @@ a, .btn-link {
 
 .parley-helmet-icon-away {
     float: left;
-    margin-left: 4em;
+    margin: 0 auto;
     margin-top: 1em;
 }
 
 .parley-helmet-icon-home {
     float: right;
-    margin-right: 4em;
+    margin: 0 auto;
     margin-top: 1em;
 }
 
@@ -230,13 +230,13 @@ a, .btn-link {
 
 .helmet-icon-away {
     float: left;
-    margin-left: 4em;
+    margin: 0 auto;
     margin-top: 1em;
 }
 
 .helmet-icon-home {
     float: right;
-    margin-right: 4em;
+    margin:0 auto;
     margin-top: 1em;
 }
 

@@ -24,10 +24,8 @@ public class TeamModel
     // Teams that the current team have beaten
     public string Wins { get; set; } = string.Empty;
 
-
     // Teams that the current team has lost to
     public string Losses { get; set; } = string.Empty;
-
 
     // Teams that the current team have been in a draw with
     public string Draws { get; set; } = string.Empty;
@@ -38,9 +36,9 @@ public class TeamModel
 
     public string Conference { get; set; } = string.Empty;
 
-    public string ImagePath 
-    { 
-        get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png" : $"{TeamName.ToLower()}.svg"; 
+    public string ImagePath
+    {
+        get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png" : $"{TeamName.ToLower()}.svg";
     }
 
     public string[] TeamWins { get => Wins.Split('|').SkipLast(1).ToArray(); }
