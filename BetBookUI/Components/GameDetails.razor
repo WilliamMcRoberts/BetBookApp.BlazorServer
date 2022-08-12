@@ -13,7 +13,7 @@
     @if(CurrentGame is not null)
     {
         <div style="margin-bottom:1em;">
-            <h6 class="title fw-bold">@CurrentGame.AwayTeam.TeamName at @CurrentGame.HomeTeam.TeamName @CurrentGame.PointSpreadDescription</h6>
+            <h6 class="title fw-bold">@CurrentGame.AwayTeam?.TeamName at @CurrentGame.HomeTeam?.TeamName @CurrentGame.PointSpreadDescription</h6>
             <h6 class="title fw-bold">@CurrentGame.Stadium</h6>
             <h6 class="title fw-bold">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</h6>
             <br />
@@ -25,19 +25,19 @@
                     <div class="stat-container">
 
                         <Stat StatType="Wins"
-                              Stats="CurrentGame.AwayTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
+                              Stats="CurrentGame.AwayTeam?.Wins.Split('|').SkipLast(1).ToArray()"/>
 
                         <Stat StatType="Losses"
-                              Stats="CurrentGame.AwayTeam.Losses.Split('|').SkipLast(1).ToArray()"/>
+                              Stats="CurrentGame.AwayTeam?.Losses.Split('|').SkipLast(1).ToArray()"/>
 
                         <Stat StatType="Draws"
-                              Stats="CurrentGame.AwayTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
+                              Stats="CurrentGame.AwayTeam?.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
                     
                     <div class="mt-4 mb-2 team-selection-container">
                         @if(winnerChosen)
                         {
-                            if(teamToWin?.TeamName == CurrentGame.AwayTeam.TeamName)
+                            if(teamToWin?.TeamName == CurrentGame.AwayTeam?.TeamName)
                             {
                                 <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                     @onclick="() => UndoWinnerSelection()">
@@ -48,7 +48,7 @@
                             {
                                 <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                     @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                    Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
+                                    Choose @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
                                 </button>
                             }
                         }
@@ -56,7 +56,7 @@
                         {
                             <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                Choose @CurrentGame.AwayTeam.TeamName @GetSpread(CurrentGame.AwayTeam.TeamName, CurrentGame.PointSpread)
+                                Choose @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                     </div>
@@ -64,25 +64,25 @@
                 </div>
                 <div class="stat-records">
                     <div class="helmet">
-                        <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam.ImagePath" alt="team logo">
+                        <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam?.ImagePath" alt="team logo">
 
                     </div>
                     <div class="stat-container">
 
                         <Stat StatType="Wins"
-                          Stats="CurrentGame.HomeTeam.Wins.Split('|').SkipLast(1).ToArray()"/>
+                          Stats="CurrentGame.HomeTeam?.Wins.Split('|').SkipLast(1).ToArray()"/>
 
                         <Stat StatType="Losses"
-                              Stats="CurrentGame.HomeTeam.Losses.Split('|').SkipLast(1).ToArray()"/>
+                              Stats="CurrentGame.HomeTeam?.Losses.Split('|').SkipLast(1).ToArray()"/>
 
                         <Stat StatType="Draws"
-                              Stats="CurrentGame.HomeTeam.Draws.Split('|').SkipLast(1).ToArray()"/>
+                              Stats="CurrentGame.HomeTeam?.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
                      
                 <div class="mt-4 mb-2 team-selection-container">
                     @if(winnerChosen)
                     {
-                        if(teamToWin?.TeamName == CurrentGame.HomeTeam.TeamName)
+                        if(teamToWin?.TeamName == CurrentGame.HomeTeam?.TeamName)
                         {
                             <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
                                 @onclick="UndoWinnerSelection">
@@ -93,7 +93,7 @@
                         {
                             <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                                 @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                                Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
+                                Choose @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
                             </button>
                         }
                     }
@@ -101,7 +101,7 @@
                     {
                         <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
                             @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                            Choose @CurrentGame.HomeTeam.TeamName @GetSpread(CurrentGame.HomeTeam.TeamName, CurrentGame.PointSpread)
+                            Choose @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
                         </button>
                     }
                 </div>
