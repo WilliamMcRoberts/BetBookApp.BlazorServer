@@ -33,28 +33,28 @@
                     <div class="parley-game-item-unchosen" >
                         <div class="parley-game-title">
                             <div class="parley-helmet-icon-away">
-                                <img style="height:80px;" src="/images/@game.AwayTeam.ImagePath" alt="team logo">
+                                <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
                             </div>
                             <div class="game-description">
-                                <h6 style="font-size:18px;font-weight:700">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName @game.PointSpreadDescription</h6>
+                                <h6 style="font-size:18px;font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
                                 <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
                             </div>
                             <div class="at">
                                 <h6 class="at-symbol">@@</h6>
                             </div>
                             <div class="parley-helmet-icon-home">
-                                <img style="height:80px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
+                                <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
                             </div>
                         </div>
-                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam.TeamName))
+                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
                         {
-                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam.TeamName</label>
+                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                             <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                 @onclick="() => UndoWinnerSelection(game)">
                                 Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
                             </button>
                         }
-                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam.TeamName))
+                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
                         {
                             <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                 @onclick="() => UndoWinnerSelection(game)">
@@ -83,28 +83,28 @@
                     <div class="parley-game-item-chosen" >
                         <div class="parley-game-title">
                             <div class="parley-helmet-icon-away">
-                                <img style="height:80px;" src="/images/@game.AwayTeam.ImagePath" alt="team logo">
+                                <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
                             </div>
                             <div class="game-description">
-                                <h6 style="font-size:18px; font-weight:700">@game.AwayTeam.TeamName At @game.HomeTeam.TeamName @game.PointSpreadDescription</h6>
+                                <h6 style="font-size:18px; font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
                                 <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
                             </div>
                             <div class="at">
                                 <h6 class="at-symbol">@@</h6>
                             </div>
                             <div class="parley-helmet-icon-home">
-                                <img style="height:80px;" src="/images/@game.HomeTeam.ImagePath" alt="team logo">
+                                <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
                             </div>
                         </div>
-                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam.TeamName))
+                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
                         {
-                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam.TeamName</label>
+                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                             <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                 @onclick="() => UndoWinnerSelection(game)">
                                 Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
                             </button>
                         }
-                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam.TeamName))
+                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
                         {
                             <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
                                 @onclick="() => UndoWinnerSelection(game)">
@@ -138,7 +138,7 @@
                 }
                 @if(gameNotStarted == false)
                 {
-                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED..TRY AGAIN</div>
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED...TRY A DIFFERENT GAME</div>
                 }
                 <div class="wager-box">
                     <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
