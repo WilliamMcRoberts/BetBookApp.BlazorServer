@@ -9,7 +9,7 @@ namespace BetBookData.Services;
 public class TimerService : BackgroundService
 {
     private readonly IGameService _gameService;
-    private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(1));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(3));
 
     public TimerService(IGameService gameService)
     {
@@ -22,9 +22,9 @@ public class TimerService : BackgroundService
         while (await _timer.WaitForNextTickAsync(stoppingToken)
                     && !stoppingToken.IsCancellationRequested)
         {
-            Console.WriteLine($"Timer trigger count: {index}");
             await _gameService.FetchAllScoresForFinishedGames();
             await _gameService.GetPointSpreadUpdateForAvailableGames();
+            Console.WriteLine($"Timer trigger count: {index}");
             index++;
         }
     }

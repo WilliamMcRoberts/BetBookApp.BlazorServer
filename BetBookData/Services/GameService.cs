@@ -209,9 +209,13 @@ public class GameService : IGameService
 
             if (gameLookup.Score.IsOver == false)
                 continue;
+            if (double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore) == false)
+                continue;
+            if (double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore) == false)
+                continue;
 
-            game.HomeTeamFinalScore = (double)gameLookup.Score.HomeScore;
-            game.AwayTeamFinalScore = (double)gameLookup.Score.AwayScore;
+            game.HomeTeamFinalScore = homeScore;
+            game.AwayTeamFinalScore = awayScore;
 
             await game.UpdateScores(
                 game.HomeTeamFinalScore, game.AwayTeamFinalScore,
