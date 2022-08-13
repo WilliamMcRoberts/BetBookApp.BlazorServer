@@ -130,15 +130,15 @@
             <div class="parley-game-item-unchosen">
                 @if(betAmountBad)
                 {
-                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 .5em;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
                 }
                 @if(betCountBad)
                 {
-                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU MUST PICK AT LEAST 2 GAMES AND NO MORE THAN 5 FOR A PARLEY</div>
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 .5em;">YOU MUST PICK AT LEAST 2 GAMES AND NO MORE THAN 5 FOR A PARLEY</div>
                 }
                 @if(gameNotStarted == false)
                 {
-                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED...TRY A DIFFERENT GAME</div>
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 .5em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED...TRY A DIFFERENT GAME</div>
                 }
                 <div class="wager-box">
                     <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
