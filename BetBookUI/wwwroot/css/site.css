@@ -634,26 +634,40 @@ ul {
         border-color: green;
     }
 
+@media (max-width: 1100px) {
 
+    .game-info-container {
+        width: 95%;
+    }
 
+    .bet-details {
+        width: 95%;
+    }
 
+}
 
 @media (max-width: 950px) {
+
     .parley-game-item-unchosen {
         width: 95%;
     }
+
     .parley-game-item-chosen {
         width: 95%;
     }
+
     .game-item-list {
         width: 95%;
     }
+
     .bet-details {
         width:95%;
     }
+
 }
 
 @media (max-width: 800px) {
+
     .title {
         font-size: 10px;
     }
@@ -701,15 +715,10 @@ ul {
     .user-profile-parley {
         width: 95%;
     }
+
 }
 
-@media(max-width: 580px) {
-    .parley-buttons {
-        display:flex;
-        flex-direction:column;
-        margin: 0 .75em;
-    }
-}
+
 
 @media(min-width: 700px) {
 
@@ -720,11 +729,8 @@ ul {
 }
 
 @media(max-width: 700px){
-    .game-description {
-        display:none;
-    }
 
-    .info-label-container {
+    .game-description {
         display:none;
     }
 
@@ -756,35 +762,32 @@ ul {
     .about-odds {
         width: 95%;
     }
+
     .stat {
         display:none;
     }
+
 }
 
-@media(max-width: 500px) {
-    .footer-game-item {
-        font-size: 5px;
+@media(max-width: 580px) {
+
+    .parley-buttons {
+        display: flex;
+        flex-direction: column;
+        margin: 0 .75em;
     }
+
 }
 
 @media(max-width: 650px) {
 
-
-
     .balance-item {
-        display:none;
+        display: none;
     }
-
-    
-
 
 }
 
 @media(max-width: 550px) {
-
-
-
-
 
     .font {
         font-size: 15px;
@@ -792,16 +795,15 @@ ul {
 
 }
 
+@media(max-width: 500px) {
 
-@media (max-width: 1100px) {
-    .game-info-container {
-        width:95%;
+    .footer-game-item {
+        font-size: 5px;
     }
 
-    .bet-details {
-        width: 95%;
-    }
 }
+
+
 
 
 

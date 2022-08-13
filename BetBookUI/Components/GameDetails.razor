@@ -121,15 +121,15 @@
     {
         @if (teamToWinNull)
         {
-            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITHOUT A CHOSEN WINNER</div>
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 auto;">YOU CANNOT SUBMIT A WAGER WITHOUT A CHOSEN WINNER</div>
         }
         @if(betAmountBad)
         {
-            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 auto;">YOU CANNOT SUBMIT A WAGER WITH A BET AMOUNT OF ZERO</div>
         }
         @if(gameNotStarted == false)
         {
-            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin-right:2em;">THIS GAME HAS ALREADY STARTED...PLEASE CHOOSE ANOTHER GAME</div>
+            <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 auto;">THIS GAME HAS ALREADY STARTED...PLEASE CHOOSE ANOTHER GAME</div>
         }
         <div class="wager-box">
             <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
