@@ -129,7 +129,7 @@
         }
         @if(gameNotStarted == false)
         {
-            <div style="color:red;text-align:center;font-size:15px;font-weight:700;margin:1em .5em;">THIS GAME HAS ALREADY STARTED...PLEASE CHOOSE ANOTHER GAME</div>
+            <div style="color:red;text-align:center;font-size:15px;font-weight:700;margin:1em .5em;">@startedGameDescription HAS ALREADY STARTED...PLEASE CHOOSE ANOTHER GAME</div>
         }
         <div class="wager-box">
             <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
@@ -175,6 +175,8 @@
 
     private IEnumerable<TeamModel>? teams;
 
+    private string startedGameDescription = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         teams = await teamData.GetTeams();
@@ -199,6 +201,9 @@
 
         if (gameLookup.Score.HasStarted)
         {
+            startedGameDescription = $"{CurrentGame.AwayTeam?.TeamName} at {CurrentGame.HomeTeam?.TeamName}";
+            CurrentGame.GameStatus = GameStatus.IN_PROGRESS;
+            await gameData.UpdateGame(CurrentGame);
             gameNotStarted = false;
             return;
         }

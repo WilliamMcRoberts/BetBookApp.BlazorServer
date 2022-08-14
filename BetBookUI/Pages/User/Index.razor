@@ -25,24 +25,24 @@
 
 @code {
 
-    // Current logged in user
-    UserModel? loggedInUser;
+        // Current logged in user
+        UserModel? loggedInUser;
 
-    // Current week of season
-    int currentWeek;
+        // Current week of season
+        int lastWeek;
 
-    int nextWeek;
+        int nextWeek;
 
-    // Current season type
-    SeasonType currentSeason;
+        // Current season type
+        SeasonType currentSeason;
 
-    SeasonType nextWeekSeason;
+        SeasonType nextWeekSeason;
 
-    List<GameModel> gamesAvailable = new();
+        List<GameModel> gamesAvailable = new();
 
-    IEnumerable<TeamModel>? teams;
+        IEnumerable<TeamModel>? teams;
 
-    IEnumerable<GameModel>? games;
+        IEnumerable<GameModel>? games;
 
     /// <summary>
     /// Async initialization method
@@ -53,19 +53,20 @@
         teams = await teamData.GetTeams();
         games = await gameData.GetGames();
 
+        lastWeek = games.Select(g => g.WeekNumber).LastOrDefault();
+
         gamesAvailable = games.Where(g => 
             g.GameStatus == GameStatus.NOT_STARTED).ToList();
 
         currentSeason = DateTime.Now.CalculateSeason();
-        currentWeek = currentSeason.CalculateWeek(DateTime.Now);
 
         (nextWeek, nextWeekSeason) = 
-            (currentWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
+            (lastWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
 
         if (gamesAvailable.Count < 1)
         {
             gamesAvailable = 
-                await gameService.GetGamesForNextWeek(currentSeason, currentWeek);
+                await gameService.GetGamesForNextWeek(currentSeason, lastWeek);
         }
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);

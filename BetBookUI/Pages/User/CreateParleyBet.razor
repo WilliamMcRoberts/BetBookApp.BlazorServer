@@ -162,7 +162,7 @@
                 }
                 @if(gameNotStarted == false)
                 {
-                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 .5em;">ONE OF THE GAMES YOU'VE CHOSEN HAS ALREADY STARTED...TRY A DIFFERENT GAME</div>
+                    <div style="color:red;text-align:center;margin-top:1em;font-size:15px;font-weight:700;margin:0 .5em;">@startedGameDescription HAS ALREADY STARTED...TRY A DIFFERENT GAME</div>
                 }
                 <div class="wager-box">
                     <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
@@ -220,6 +220,8 @@ else
 
     private bool gameNotStarted = true;
 
+    private string startedGameDescription = string.Empty;
+
 
     /// <summary>
     /// Async initialization method
@@ -269,6 +271,9 @@ else
 
             if (gameLookup.Score.HasStarted)
             {
+                startedGameDescription = $"{kv.Key.AwayTeam?.TeamName} at {kv.Key.HomeTeam?.TeamName}";
+                kv.Key.GameStatus = GameStatus.IN_PROGRESS;
+                await gameData.UpdateGame(kv.Key);
                 gameNotStarted = false;
                 return;
             }
