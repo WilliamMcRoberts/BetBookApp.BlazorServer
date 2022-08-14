@@ -17,7 +17,7 @@
     <div class="info-label-container">
         @if (chosenGamesAndWinners.Count < 5)
         {
-           <h6 style="text-align:center; font-weight:700;">CHOOSE 5 GAMES</h6>
+           <h6 style="text-align:center; font-weight:700;">CHOOSE UP TO 5 GAMES</h6>
         }
         else
         {
@@ -28,103 +28,127 @@
         <div style="width:100%;">
             @foreach(GameModel game in gamesAvailable)
             {
-                @if (!chosenGamesAndWinners.ContainsKey(game))
+                @if(gamesAvailable.Count > 1)
                 {
-                    <div class="parley-game-item-unchosen" >
-                        <div class="parley-game-title">
-                            <div class="parley-helmet-icon-away">
-                                <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
+                    @if (!chosenGamesAndWinners.ContainsKey(game))
+                    {
+                        <div class="parley-game-item-unchosen">
+                            <div class="parley-game-title">
+                                <div class="parley-helmet-icon-away">
+                                    <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
+                                </div>
+                                <div class="game-description">
+                                    <h6 style="font-size:18px;font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
+                                    <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
+                                </div>
+                                <div class="at">
+                                    <h6 class="at-symbol">@@</h6>
+                                </div>
+                                <div class="parley-helmet-icon-home">
+                                    <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
+                                </div>
                             </div>
-                            <div class="game-description">
-                                <h6 style="font-size:18px;font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
-                                <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
-                            </div>
-                            <div class="at">
-                                <h6 class="at-symbol">@@</h6>
-                            </div>
-                            <div class="parley-helmet-icon-home">
-                                <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
-                            </div>
+                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
+                            {
+                                <div class="parley-buttons">
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                        @onclick="() => UndoWinnerSelection(game)">
+                                        Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                    </button>
+                                </div>
+                            }
+                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
+                            {
+                                <div class="parley-buttons">
+                                    <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                        @onclick="() => UndoWinnerSelection(game)">
+                                        Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                    </button>
+                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
+                                </div>
+                                
+                            }
+                            else
+                            {
+                                <div class="parley-buttons">
+                                    <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
+                                        Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                    </button>
+                                    <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
+                                        Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                    </button>
+                                </div>
+
+                            }
                         </div>
-                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
-                        {
-                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                @onclick="() => UndoWinnerSelection(game)">
-                                Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
-                            </button>
-                        }
-                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
-                        {
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                @onclick="() => UndoWinnerSelection(game)">
-                                Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
-                            </button>
-                            <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
-                        }
-                        else
-                        {
-                            <div class="parley-buttons">
-                                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                    @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
-                                    Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
-                                </button>
-                                <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                    @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
-                                    Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
-                                </button>
+                    }
+                    else
+                    {
+                        <div class="parley-game-item-chosen">
+                            <div class="parley-game-title">
+                                <div class="parley-helmet-icon-away">
+                                    <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
+                                </div>
+                                <div class="game-description">
+                                    <h6 style="font-size:18px; font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
+                                    <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
+                                </div>
+                                <div class="at">
+                                    <h6 class="at-symbol">@@</h6>
+                                </div>
+                                <div class="parley-helmet-icon-home">
+                                    <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
+                                </div>
                             </div>
-                            
-                        }
+                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
+                            {
+                                <div class="parley-buttons">
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                        @onclick="() => UndoWinnerSelection(game)">
+                                        Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                    </button>
+                                </div>
+                                
+                            }
+                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
+                            {
+                                <div class="parley-buttons">
+                                    <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                        @onclick="() => UndoWinnerSelection(game)">
+                                        Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                    </button>
+                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
+                                </div>
+                                
+                            }
+                            else
+                            {
+                                <div class="parley-buttons">
+                                    <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
+                                        Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                    </button>
+                                    <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
+                                        Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                    </button>
+                                </div>
+                                
+                            }
+                        </div>
+                    }
+                }
+                else 
+                {
+                    <div class="parley-game-item-unchosen">
+                        <h3 style="text-align:center;margin:4em auto;">There are not enough games left in this week to create a parley...we'll have to wait until next week.</h3>
                     </div>
                 }
-                else
-                {
-                    <div class="parley-game-item-chosen" >
-                        <div class="parley-game-title">
-                            <div class="parley-helmet-icon-away">
-                                <img style="height:80px;" src="/images/@game.AwayTeam?.ImagePath" alt="team logo">
-                            </div>
-                            <div class="game-description">
-                                <h6 style="font-size:18px; font-weight:700">@game.AwayTeam?.TeamName At @game.HomeTeam?.TeamName @game.PointSpreadDescription</h6>
-                                <h6 style="font-weight:700;">@game.DateOfGameOnly at @game.TimeOfGameOnly pm</h6>
-                            </div>
-                            <div class="at">
-                                <h6 class="at-symbol">@@</h6>
-                            </div>
-                            <div class="parley-helmet-icon-home">
-                                <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
-                            </div>
-                        </div>
-                        @if(chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
-                        {
-                            <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                @onclick="() => UndoWinnerSelection(game)">
-                                Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
-                            </button>
-                        }
-                        else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
-                        {
-                            <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase" 
-                                @onclick="() => UndoWinnerSelection(game)">
-                                Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
-                            </button>
-                            <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
-                        }
-                        else
-                        {
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
-                                Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
-                            </button>
-                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
-                                Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
-                            </button>
-                        }
-                    </div>
-                }
+                
 
             }
             <div class="parley-game-item-unchosen">
@@ -291,7 +315,7 @@ else
     /// <param name="game">GameModel represents game the winner is being chosen for</param>
     private void UndoWinnerSelection(GameModel game)
     {
-        if(chosenGamesAndWinners.ContainsKey(game))
+        if (chosenGamesAndWinners.ContainsKey(game)) 
             chosenGamesAndWinners.Remove(game);
     }
 
@@ -340,7 +364,7 @@ else
 
     private string GetSpread(GameModel currentGame, string teamName)
     {
-        if(teamName == currentGame.AwayTeam.TeamName)
+        if(teamName == currentGame.AwayTeam?.TeamName)
         {
             return (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}" 
                 : (currentGame.PointSpread == 0) ? $"+ 0" 

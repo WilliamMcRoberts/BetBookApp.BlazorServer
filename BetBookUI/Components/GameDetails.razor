@@ -171,7 +171,6 @@
 
     private bool gameNotStarted = true;
 
-    // 10% vigorish for all bets
     private double VIG = .1;
 
     private IEnumerable<TeamModel>? teams;
@@ -263,7 +262,7 @@
 
     private string GetSpread(string teamName, double pointSpread)
     {
-        if(teamName == CurrentGame.AwayTeam.TeamName)
+        if(teamName == CurrentGame.AwayTeam?.TeamName)
         {
             return pointSpread < 0 ? $"+ {pointSpread * -1}" 
                    : pointSpread == 0 ? $"+ 0" 
