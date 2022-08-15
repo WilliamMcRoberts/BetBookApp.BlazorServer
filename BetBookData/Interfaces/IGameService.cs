@@ -8,6 +8,6 @@ public interface IGameService
     Task<GameByScoreIdDto> GetGameByScoreIdLookup(int scoreId);
     Task<GameByTeamDto> GetGameByTeamLookup(TeamModel team);
     Task<Game[]> GetGamesByWeekLookup(SeasonType currentSeason, int week);
-    Task<List<GameModel>> GetGamesForNextWeek(SeasonType currentSeason, int currentWeek);
+    Task<HashSet<GameModel>> GetGamesForThisWeek(SeasonType currentSeason, int currentWeek);
     Task GetPointSpreadUpdateForAvailableGames();
 }

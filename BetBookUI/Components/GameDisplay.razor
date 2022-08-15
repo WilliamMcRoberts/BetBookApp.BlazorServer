@@ -45,7 +45,7 @@ else
     public UserModel User { get; set; } = new();
 
     [Parameter]
-    public List<GameModel> AvailableGameList { get; set; } = new();
+    public HashSet<GameModel> AvailableGameList { get; set; } = new();
 
     [Parameter]
     public IEnumerable<TeamModel>? Teams { get; set; }

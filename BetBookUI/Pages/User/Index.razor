@@ -21,18 +21,16 @@
 
 </div>
 
-
-
 @code {
 
     // Current logged in user
     UserModel? loggedInUser;
 
-    int week;
-
     SeasonType season;
 
-    List<GameModel> gamesAvailable = new();
+    int week;
+
+    HashSet<GameModel> gamesAvailable = new();
 
     IEnumerable<TeamModel>? teams;
 
@@ -44,26 +42,26 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
+        season = DateTime.Now.CalculateSeason();
+        week = season.CalculateWeek(DateTime.Now);
+
         if(teams is null)
             teams = await teamData.GetTeams();
         if(games is null)
             games = await gameData.GetGames();
 
-        gamesAvailable = games.Where(g => 
-            g.GameStatus == GameStatus.NOT_STARTED).ToList();
+        HashSet<GameModel> thisWeeksGames = 
+            games.Where(g => g.WeekNumber == week).ToHashSet<GameModel>();
 
-        if (gamesAvailable.Count < 1)
+        if(thisWeeksGames.Count != 16)
         {
-            int lastWeek = games.Select(g => g.WeekNumber).LastOrDefault();
-            SeasonType lastWeekSeason = games.Select(g => g.Season).LastOrDefault();
-            gamesAvailable = 
-                await gameService.GetGamesForNextWeek(lastWeekSeason, lastWeek);
+            thisWeeksGames = await gameService.GetGamesForThisWeek(season, week);
         }
 
-        gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
+        gamesAvailable = thisWeeksGames.Where(g => 
+            g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
 
-        week = gamesAvailable.Select(g => g.WeekNumber).LastOrDefault();
-        season = gamesAvailable.Select(g => g.Season).LastOrDefault();
+        gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 

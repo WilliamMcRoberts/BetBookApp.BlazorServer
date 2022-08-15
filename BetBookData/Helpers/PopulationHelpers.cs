@@ -6,8 +6,8 @@ namespace BetBookData.Helpers;
 
 public static class PopulationHelpers
 {
-    public static List<GameModel> PopulateGameModelsWithTeams(
-        this List<GameModel> games, IEnumerable<TeamModel> teams)
+    public static HashSet<GameModel> PopulateGameModelsWithTeams(
+        this HashSet<GameModel> games, IEnumerable<TeamModel> teams)
     {
         foreach (GameModel g in games)
         {
@@ -28,7 +28,7 @@ public static class PopulationHelpers
         foreach(BetModel b in bets)
         {
 
-            b.Game = games.Where(g => g.Id == b?.GameId).ToList().PopulateGameModelsWithTeams(teams).FirstOrDefault();
+            b.Game = games.Where(g => g.Id == b?.GameId).ToList().ToHashSet<GameModel>().PopulateGameModelsWithTeams(teams).FirstOrDefault();
 
             b.ChosenWinner = teams.Where(t => t.Id == b.ChosenWinnerId).FirstOrDefault();
 

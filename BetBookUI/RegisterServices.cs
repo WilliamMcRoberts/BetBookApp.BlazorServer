@@ -38,6 +38,11 @@ public static class RegisterServices
 
         builder.Services.AddHostedService<TimerService>();
 
+        builder.Services.AddHttpClient("sportsdata", client =>
+        {
+            client.BaseAddress = new Uri("https://api.sportsdata.io/v3/nfl/");
+        });
+
 
         /*********************** Data access *************************/
 

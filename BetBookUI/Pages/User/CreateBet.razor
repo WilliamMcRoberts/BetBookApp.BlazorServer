@@ -39,7 +39,7 @@
             teams = await teamData.GetTeams();
 
         CurrentGame = games.Where(g => g.Id == gameId)
-                           .ToList()
+                           .ToHashSet<GameModel>()
                            .PopulateGameModelsWithTeams(teams)
                            .FirstOrDefault();
     }

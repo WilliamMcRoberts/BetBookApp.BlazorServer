@@ -192,7 +192,7 @@ else
 @code {
 
     // List of available games
-    private List<GameModel> gamesAvailable = new();
+    private HashSet<GameModel> gamesAvailable = new();
 
     // List of available games
     private List<GameModel> gamesChosen = new();
@@ -236,7 +236,7 @@ else
             teams = await teamData.GetTeams();
 
         gamesAvailable = 
-            games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToList();
+            games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
     }

@@ -5,7 +5,8 @@ using BetBookData.Lookups;
 using BetBookData.Models;
 using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
-
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace BetBookData.Services;
 
@@ -13,7 +14,7 @@ namespace BetBookData.Services;
 
 public class GameService : IGameService
 {
-    private readonly HttpClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IGameData _gameData;
     private readonly ITeamData _teamData;
     private readonly IBetData _betData;
@@ -28,32 +29,28 @@ public class GameService : IGameService
                        ITeamData teamData,
                        IBetData betData,
                        IParleyBetData parleyData,
-                       IConfiguration config)
+                       IConfiguration config,
+                       IHttpClientFactory httpClientFactory)
     {
-        _httpClient = new();
         _gameData = gameData;
         _teamData = teamData;
         _betData = betData;
         _parleyData = parleyData;
         _config = config;
+        _httpClientFactory = httpClientFactory;
     }
 
     public async Task<GameByTeamDto> GetGameByTeamLookup(TeamModel team)
     {
-        GameByTeamDto? teamLookup = new();
+        GameByTeamDto? game = new();
 
         try
         {
-            var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/odds/json/TeamTrends/" +
-                    $"{team.Symbol}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
+            var client = _httpClientFactory.CreateClient("sportsdata");
 
-            if (response.IsSuccessStatusCode)
-            {
-                string json = await response.Content.ReadAsStringAsync();
+            game = await client.GetFromJsonAsync<GameByTeamDto>(
+                    $"odds/json/TeamTrends/{team.Symbol}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
 
-                teamLookup = JsonSerializer.Deserialize<GameByTeamDto>(json);
-            }
         }
         catch (Exception ex)
         {
@@ -61,25 +58,19 @@ public class GameService : IGameService
             Console.WriteLine(ex.Message);
         }
 
-        return teamLookup!;
+        return game!;
     }
 
     public async Task<GameByScoreIdDto> GetGameByScoreIdLookup(int scoreId)
     {
-        GameByScoreIdDto? gameLookup = new();
+        GameByScoreIdDto? game = new();
 
         try
         {
-            var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/stats/json/BoxScoreByScoreIDV3/" +
-                    $"{scoreId}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
+            var client = _httpClientFactory.CreateClient("sportsdata");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-
-                gameLookup = JsonSerializer.Deserialize<GameByScoreIdDto>(json);
-            }
+            game = await client.GetFromJsonAsync<GameByScoreIdDto>(
+                    $"stats/json/BoxScoreByScoreIDV3/{scoreId}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
         }
 
         catch (Exception ex)
@@ -88,7 +79,7 @@ public class GameService : IGameService
             Console.WriteLine(ex.Message);
         }
 
-        return gameLookup!;
+        return game!;
     }
 
     public async Task<Game[]> GetGamesByWeekLookup(SeasonType currentSeason, int week)
@@ -98,16 +89,10 @@ public class GameService : IGameService
 
         try
         {
-            var response = await _httpClient.GetAsync(
-                    $"https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/2022{currentSeason}" +
-                    $"/{week}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
+            var client = _httpClientFactory.CreateClient("sportsdata");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsByteArrayAsync();
-
-                games = JsonSerializer.Deserialize<Game[]>(data)!;
-            }
+            games = await client.GetFromJsonAsync<Game[]>(
+                    $"scores/json/ScoresByWeek/2022{currentSeason}/{week}?key={_config.GetSection("SportsDataIO").GetSection("Key").Value}");
         }
 
         catch (Exception ex)
@@ -115,26 +100,27 @@ public class GameService : IGameService
             Console.WriteLine(ex.Message);
         }
 
-        return games;
+        return games!;
     }
 
-    public async Task<List<GameModel>> GetGamesForNextWeek(
+    public async Task<HashSet<GameModel>> GetGamesForThisWeek(
         SeasonType currentSeason, int currentWeek)
     {
         if (teams is null || !teams.Any())
             teams = await _teamData.GetTeams();
 
-        List<GameModel> nextWeekGames = new();
+        if (games is null || !teams.Any())
+            games = await _gameData.GetGames();
 
-        (int, SeasonType) nextWeekSeason =
-            (currentWeek, currentSeason).CalculateNextWeekAndSeasonFromCurrentWeekAndSeason();
+        HashSet<GameModel> thisWeekGames =
+            games.Where(g => g.GameStatus != GameStatus.FINISHED).ToHashSet<GameModel>();
 
         Game[] gameArray = new Game[16];
 
         try
         {
             gameArray = await GetGamesByWeekLookup(
-                nextWeekSeason.Item2, nextWeekSeason.Item1);
+                currentSeason, currentWeek);
         }
 
         catch (Exception ex)
@@ -145,6 +131,11 @@ public class GameService : IGameService
         foreach (Game game in gameArray)
         {
             if (game.PointSpread is null)
+            {
+                continue;
+            }
+
+            if (thisWeekGames.Contains(games.Where(g => g.ScoreId == game.ScoreID).FirstOrDefault()!))
             {
                 continue;
             }
@@ -174,11 +165,11 @@ public class GameService : IGameService
             gameModel.GameStatus = GameStatus.NOT_STARTED;
             gameModel.ScoreId = game.ScoreID;
 
-            nextWeekGames.Add(gameModel);
+            thisWeekGames.Add(gameModel);
             await _gameData.InsertGame(gameModel);
         }
 
-        return nextWeekGames;
+        return thisWeekGames;
     }
 
     public async Task FetchAllScoresForFinishedGames()
@@ -245,7 +236,7 @@ public class GameService : IGameService
             }
 
             if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
 
             await _gameData.UpdateGame(game);
         }
