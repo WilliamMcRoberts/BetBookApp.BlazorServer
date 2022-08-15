@@ -43,8 +43,8 @@ public static class CalculationHelpers
         this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore,
             IEnumerable<TeamModel> teams)
     {
-        double pointSpread = game.PointSpread;
-        double homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + pointSpread;
+        double? pointSpread = game.PointSpread;
+        double? homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + pointSpread;
 
         TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
         TeamModel? awayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
@@ -71,7 +71,7 @@ public static class CalculationHelpers
         if (week < 0)
             return 0;
 
-        return week;
+        return week + 1;
     }
 
     public static (int, SeasonType) CalculateNextWeekAndSeasonFromCurrentWeekAndSeason(

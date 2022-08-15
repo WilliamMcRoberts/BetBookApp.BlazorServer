@@ -179,7 +179,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        teams = await teamData.GetTeams();
+        if(teams is null)
+            teams = await teamData.GetTeams();
     }
 
     private async Task SubmitSingleWager()
@@ -196,7 +197,7 @@
             return;
         }
 
-        GameByScoreIdLookup gameLookup =
+        GameByScoreIdDto gameLookup =
             await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
 
         if (gameLookup.Score.HasStarted)
@@ -265,7 +266,7 @@
         winnerChosen = false;
     }
 
-    private string GetSpread(string teamName, double pointSpread)
+    private string GetSpread(string teamName, double? pointSpread)
     {
         if(teamName == CurrentGame.AwayTeam?.TeamName)
         {
@@ -274,7 +275,7 @@
                    : $"- {pointSpread}";
         }
         
-        return pointSpread < 0 ? $"- {pointSpread.ToString().Trim('-')}"
+        return pointSpread < 0 ? $"- {pointSpread?.ToString().Trim('-')}"
                : pointSpread == 0 ? $"+ 0" 
                : $"+ {pointSpread}";
     }

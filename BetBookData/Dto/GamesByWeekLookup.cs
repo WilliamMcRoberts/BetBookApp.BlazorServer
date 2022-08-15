@@ -1,18 +1,10 @@
 ﻿namespace BetBookData.Lookups;
-
-
-public class GameByScoreIdLookup
+public class GamesByWeekDto
 {
-    public Score Score { get; set; }
-    public object[] Quarters { get; set; }
-    public object[] TeamGames { get; set; }
-    public object[] PlayerGames { get; set; }
-    public object[] FantasyDefenseGames { get; set; }
-    public object[] ScoringPlays { get; set; }
-    public object[] ScoringDetails { get; set; }
+    public Game[] GamesInWeek { get; set; }
 }
 
-public class Score
+public class Game
 {
     public string GameKey { get; set; }
     public int SeasonType { get; set; }
@@ -24,8 +16,8 @@ public class Score
     public object AwayScore { get; set; }
     public object HomeScore { get; set; }
     public string Channel { get; set; }
-    public float PointSpread { get; set; }
-    public float OverUnder { get; set; }
+    public float? PointSpread { get; set; }
+    public float? OverUnder { get; set; }
     public object Quarter { get; set; }
     public object TimeRemaining { get; set; }
     public object Possession { get; set; }
@@ -63,8 +55,8 @@ public class Score
     public object ForecastDescription { get; set; }
     public object ForecastWindChill { get; set; }
     public object ForecastWindSpeed { get; set; }
-    public int AwayTeamMoneyLine { get; set; }
-    public int HomeTeamMoneyLine { get; set; }
+    public int? AwayTeamMoneyLine { get; set; }
+    public int? HomeTeamMoneyLine { get; set; }
     public bool Canceled { get; set; }
     public bool Closed { get; set; }
     public string LastPlay { get; set; }
@@ -75,8 +67,8 @@ public class Score
     public int GlobalGameID { get; set; }
     public int GlobalAwayTeamID { get; set; }
     public int GlobalHomeTeamID { get; set; }
-    public int PointSpreadAwayTeamMoneyLine { get; set; }
-    public int PointSpreadHomeTeamMoneyLine { get; set; }
+    public int? PointSpreadAwayTeamMoneyLine { get; set; }
+    public int? PointSpreadHomeTeamMoneyLine { get; set; }
     public int ScoreID { get; set; }
     public string Status { get; set; }
     public object GameEndDateTime { get; set; }
@@ -84,17 +76,14 @@ public class Score
     public object AwayRotationNumber { get; set; }
     public object NeutralVenue { get; set; }
     public object RefereeID { get; set; }
-    public int OverPayout { get; set; }
-    public int UnderPayout { get; set; }
+    public int? OverPayout { get; set; }
+    public int? UnderPayout { get; set; }
     public object HomeTimeouts { get; set; }
     public object AwayTimeouts { get; set; }
     public DateTime DateTimeUTC { get; set; }
-    public int Attendance { get; set; }
-    public StadiumDetailsLookup StadiumDetails { get; set; }
+    public int? Attendance { get; set; }
+    public StadiumDetailsDto StadiumDetails { get; set; }
 }
-
-
-
 
 
 

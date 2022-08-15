@@ -71,13 +71,17 @@
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        teams = await teamData.GetTeams();
+        if (games is null)
+            games = await gameData.GetGames();
 
-        games = await gameData.GetGames();
+        if (teams is null)
+            teams = await teamData.GetTeams();
 
-        bets = await betData.GetBets();
+        if(bets is null)
+            bets = await betData.GetBets();
 
-        parleyBets = await parleyData.GetParleyBets();
+        if(parleyBets is null)
+            parleyBets = await parleyData.GetParleyBets();
 
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&

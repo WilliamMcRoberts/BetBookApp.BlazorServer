@@ -4,8 +4,6 @@ begin
     select Id, 
            HomeTeamId, 
            AwayTeamId, 
-           FavoriteId, 
-           UnderdogId, 
            Stadium, 
            PointSpread,
            HomeTeamFinalScore, 

@@ -51,7 +51,7 @@
                             @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
                             {
                                 <div class="parley-buttons">
-                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
                                         Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
@@ -106,7 +106,7 @@
                             @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
                             {
                                 <div class="parley-buttons">
-                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
                                         Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
@@ -229,9 +229,11 @@ else
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-        games = await gameData.GetGames();
+        if (games is null)
+            games = await gameData.GetGames();
 
-        teams = await teamData.GetTeams();
+        if (teams is null)
+            teams = await teamData.GetTeams();
 
         gamesAvailable = 
             games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToList();
@@ -263,7 +265,7 @@ else
 
         foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
         {
-            GameByScoreIdLookup? gameLookup = 
+            GameByScoreIdDto? gameLookup = 
                 await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
 
             if (gameLookup is null)
@@ -377,7 +379,7 @@ else
         }
 
 
-        return (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread.ToString().Trim('-')}" 
+        return (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread?.ToString().Trim('-')}" 
             : (currentGame.PointSpread == 0) ? $"+ 0" 
             : $"+ {currentGame.PointSpread}";
     }

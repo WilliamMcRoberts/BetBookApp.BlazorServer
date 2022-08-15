@@ -4,7 +4,7 @@ namespace BetBookData.Lookups;
 
 
 
-public class GameByTeamLookup
+public class GameByTeamDto
 {
     public string Team { get; set; }
     public int TeamID { get; set; }
@@ -90,7 +90,7 @@ public class UpcomingGame
     public object AwayTimeouts { get; set; }
     public DateTime DateTimeUTC { get; set; }
     public int Attendance { get; set; }
-    public StadiumDetailsLookup StadiumDetails { get; set; }
+    public StadiumDetailsDto StadiumDetails { get; set; }
 }
 
 

@@ -22,21 +22,11 @@ public class GameModel
 
     public TeamModel? AwayTeam { get; set; }
 
-    // Team that is declared the favorite
-    public int FavoriteId { get; set; }
-
-    public TeamModel? Favorite { get; set; }
-
-    // Team that is declared the underdog
-    public int UnderdogId { get; set; }
-
-    public TeamModel? Underdog { get; set; }
-
     // Stadium the game is being played in
     public string Stadium { get; set; } = string.Empty;
 
     // The point spread of the game
-    public double PointSpread { get; set; }
+    public double? PointSpread { get; set; }
 
     // Final score of the favorite
     public double HomeTeamFinalScore { get; set; }
@@ -45,7 +35,7 @@ public class GameModel
     public double AwayTeamFinalScore { get; set; }
 
     // Winner of the game
-    public int GameWinnerId { get; set; }
+    public int? GameWinnerId { get; set; }
 
     public TeamModel? GameWinner { get; set; }
 
@@ -63,11 +53,11 @@ public class GameModel
 
     public int ScoreId { get; set; }
 
-    public string PointSpreadDescription 
+    public string? PointSpreadDescription 
     { 
         get => 
             PointSpread < 0 ? 
-            $"- {PointSpread.ToString().Trim('-')} points" : 
+            $"- {PointSpread?.ToString().Trim('-')} points" : 
             $"+ {PointSpread} points";
     }
 

@@ -32,9 +32,11 @@
     /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
-        games = await gameData.GetGames();
+        if(games is null)
+            games = await gameData.GetGames();
 
-        teams = await teamData.GetTeams();
+        if(teams is null)
+            teams = await teamData.GetTeams();
 
         CurrentGame = games.Where(g => g.Id == gameId)
                            .ToList()

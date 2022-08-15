@@ -3,7 +3,7 @@
 namespace BetBookData.Lookups;
 
 
-public class TeamGameStatsByWeekLookup
+public class TeamGameStatsByWeekDto
 {
     public TeamGameStat[] TeamGameStats { get; set; }
 }

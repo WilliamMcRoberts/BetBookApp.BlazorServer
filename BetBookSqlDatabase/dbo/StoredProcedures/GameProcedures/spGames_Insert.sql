@@ -1,8 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spGames_Insert]
 	@HomeTeamId int,
 	@AwayTeamId int,
-	@FavoriteId int,
-	@UnderdogId int,
 	@Stadium nvarchar(50),
 	@PointSpread float,
 	@WeekNumber int,
@@ -16,8 +14,6 @@ AS
 begin
     insert into dbo.Games (HomeTeamId, 
                            AwayTeamId, 
-                           FavoriteId, 
-                           UnderdogId, 
                            Stadium, 
                            PointSpread, 
                            WeekNumber, 
@@ -28,9 +24,7 @@ begin
                            DateOfGameOnly,
                            TimeOfGameOnly)
 	values (@HomeTeamId, 
-            @AwayTeamId, 
-            @FavoriteId, 
-            @UnderdogId, 
+            @AwayTeamId,  
             @Stadium, 
             @PointSpread, 
             @WeekNumber, 

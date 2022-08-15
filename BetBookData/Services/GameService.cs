@@ -6,6 +6,7 @@ using BetBookData.Models;
 using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
 
+
 namespace BetBookData.Services;
 
 #nullable enable
@@ -23,10 +24,10 @@ public class GameService : IGameService
     IEnumerable<BetModel>? bets;
     IEnumerable<ParleyBetModel>? parleyBets;
 
-    public GameService(IGameData gameData, 
+    public GameService(IGameData gameData,
                        ITeamData teamData,
-                       IBetData betData, 
-                       IParleyBetData parleyData, 
+                       IBetData betData,
+                       IParleyBetData parleyData,
                        IConfiguration config)
     {
         _httpClient = new();
@@ -37,9 +38,9 @@ public class GameService : IGameService
         _config = config;
     }
 
-    public async Task<GameByTeamLookup> GetGameByTeamLookup(TeamModel team)
+    public async Task<GameByTeamDto> GetGameByTeamLookup(TeamModel team)
     {
-        GameByTeamLookup? teamLookup = new();
+        GameByTeamDto? teamLookup = new();
 
         try
         {
@@ -51,7 +52,7 @@ public class GameService : IGameService
             {
                 string json = await response.Content.ReadAsStringAsync();
 
-                teamLookup = JsonSerializer.Deserialize<GameByTeamLookup>(json);
+                teamLookup = JsonSerializer.Deserialize<GameByTeamDto>(json);
             }
         }
         catch (Exception ex)
@@ -63,9 +64,9 @@ public class GameService : IGameService
         return teamLookup!;
     }
 
-    public async Task<GameByScoreIdLookup> GetGameByScoreIdLookup(int scoreId)
+    public async Task<GameByScoreIdDto> GetGameByScoreIdLookup(int scoreId)
     {
-        GameByScoreIdLookup? gameLookup = new();
+        GameByScoreIdDto? gameLookup = new();
 
         try
         {
@@ -75,9 +76,9 @@ public class GameService : IGameService
 
             if (response.IsSuccessStatusCode)
             {
-                string json = await response.Content.ReadAsStringAsync();
+                var json = await response.Content.ReadAsStringAsync();
 
-                gameLookup = JsonSerializer.Deserialize<GameByScoreIdLookup>(json);
+                gameLookup = JsonSerializer.Deserialize<GameByScoreIdDto>(json);
             }
         }
 
@@ -92,7 +93,8 @@ public class GameService : IGameService
 
     public async Task<Game[]> GetGamesByWeekLookup(SeasonType currentSeason, int week)
     {
-        Game[] games = new Game[16];
+
+        Game[]? games = new Game[16];
 
         try
         {
@@ -142,15 +144,19 @@ public class GameService : IGameService
 
         foreach (Game game in gameArray)
         {
-            GameModel gameModel = new()
+            if (game.PointSpread is null)
             {
-                HomeTeam = teams.Where(t =>
-                t.Symbol == game.HomeTeam)?.FirstOrDefault(),
-                AwayTeam = teams.Where(t =>
-                    t.Symbol == game.AwayTeam)?.FirstOrDefault()
-            };
+                continue;
+            }
 
-            if(gameModel.HomeTeam is null || gameModel.AwayTeam is null)
+            GameModel gameModel = new();
+
+            gameModel.HomeTeam = teams.Where(t =>
+                t.Symbol == game.HomeTeam)?.FirstOrDefault();
+            gameModel.AwayTeam = teams.Where(t =>
+                t.Symbol == game.AwayTeam)?.FirstOrDefault();
+
+            if (gameModel.HomeTeam is null || gameModel.AwayTeam is null)
             {
                 continue;
             }
@@ -162,27 +168,12 @@ public class GameService : IGameService
             gameModel.TimeOfGameOnly = gameModel.DateOfGame.ToString("hh:mm");
             gameModel.GameStatus = GameStatus.NOT_STARTED;
             gameModel.WeekNumber = game.Week;
-            gameModel.PointSpread = Math.Round(game.PointSpread, 1);
+            gameModel.PointSpread = Math.Round(Convert.ToDouble(game.PointSpread), 1);
             gameModel.Stadium = game.StadiumDetails.Name;
             gameModel.Season = currentSeason;
             gameModel.GameStatus = GameStatus.NOT_STARTED;
             gameModel.ScoreId = game.ScoreID;
 
-            if (gameModel.PointSpread > 0)
-            {
-                gameModel.Favorite = gameModel.AwayTeam;
-                gameModel.FavoriteId = gameModel.AwayTeam.Id;
-                gameModel.Underdog = gameModel.HomeTeam;
-                gameModel.UnderdogId = gameModel.Underdog.Id;
-                nextWeekGames.Add(gameModel);
-                await _gameData.InsertGame(gameModel);
-                continue;
-            }
-
-            gameModel.Favorite = gameModel.HomeTeam;
-            gameModel.FavoriteId = gameModel.Favorite.Id;
-            gameModel.Underdog = gameModel.AwayTeam;
-            gameModel.UnderdogId = gameModel.Underdog.Id;
             nextWeekGames.Add(gameModel);
             await _gameData.InsertGame(gameModel);
         }
@@ -204,7 +195,7 @@ public class GameService : IGameService
         foreach (GameModel game in games!.Where(g =>
             g.GameStatus != GameStatus.FINISHED))
         {
-            GameByScoreIdLookup gameLookup = await GetGameByScoreIdLookup(
+            GameByScoreIdDto gameLookup = await GetGameByScoreIdLookup(
                     game.ScoreId);
 
             if (gameLookup.Score.IsOver == false)
@@ -242,7 +233,7 @@ public class GameService : IGameService
         foreach (GameModel game in games.Where(g
                     => g.GameStatus == GameStatus.NOT_STARTED))
         {
-            GameByScoreIdLookup gameLookup = new();
+            GameByScoreIdDto gameLookup = new();
 
             gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
 

@@ -2,8 +2,6 @@
     @Id int,
 	@HomeTeamId int,
 	@AwayTeamId int,
-	@FavoriteId int,
-	@UnderdogId int,
 	@Stadium nvarchar(50),
 	@PointSpread float,
 	@HomeTeamFinalScore float,
@@ -19,8 +17,6 @@ BEGIN
     update dbo.Games
 	set HomeTeamId = @HomeTeamId, 
         AwayTeamId = @AwayTeamId, 
-        FavoriteId = @FavoriteId, 
-        UnderdogId = @UnderdogId, 
         Stadium = @Stadium, 
         PointSpread = @PointSpread, 
         HomeTeamFinalScore = @HomeTeamFinalScore, 

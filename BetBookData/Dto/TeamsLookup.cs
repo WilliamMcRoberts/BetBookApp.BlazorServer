@@ -1,5 +1,5 @@
 ﻿namespace BetBookData.Lookups;
-public class TeamsLookup
+public class TeamsDto
 {
     public Team[] Teams { get; set; }
 }
@@ -48,7 +48,7 @@ public class Team
     public int YahooPlayerID { get; set; }
     public float AverageDraftPosition2QB { get; set; }
     public float? AverageDraftPositionDynasty { get; set; }
-    public StadiumDetailsLookup StadiumDetails { get; set; }
+    public StadiumDetailsDto StadiumDetails { get; set; }
 }
 
 

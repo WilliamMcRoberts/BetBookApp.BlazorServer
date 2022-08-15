@@ -1,10 +1,18 @@
 ﻿namespace BetBookData.Lookups;
-public class GamesByWeekLookup
+
+
+public class GameByScoreIdDto
 {
-    public Game[] GamesInWeek { get; set; }
+    public Score Score { get; set; }
+    public object[] Quarters { get; set; }
+    public object[] TeamGames { get; set; }
+    public object[] PlayerGames { get; set; }
+    public object[] FantasyDefenseGames { get; set; }
+    public object[] ScoringPlays { get; set; }
+    public object[] ScoringDetails { get; set; }
 }
 
-public class Game
+public class Score
 {
     public string GameKey { get; set; }
     public int SeasonType { get; set; }
@@ -82,7 +90,11 @@ public class Game
     public object AwayTimeouts { get; set; }
     public DateTime DateTimeUTC { get; set; }
     public int Attendance { get; set; }
-    public StadiumDetailsLookup StadiumDetails { get; set; }
+    public StadiumDetailsDto StadiumDetails { get; set; }
 }
+
+
+
+
 
 

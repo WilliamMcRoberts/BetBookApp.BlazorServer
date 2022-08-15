@@ -14,9 +14,6 @@ public static class PopulationHelpers
             g.HomeTeam = teams.Where(t => t.Id == g.HomeTeamId).FirstOrDefault()!;
             g.AwayTeam = teams.Where(t => t.Id == g.AwayTeamId).FirstOrDefault()!;
 
-            g.Favorite = teams.Where(t => t.Id == g.FavoriteId).FirstOrDefault()!;
-            g.Underdog = teams.Where(t => t.Id == g.UnderdogId).FirstOrDefault()!;
-
             if (g.GameWinnerId != 0)
                 g.GameWinner = teams.Where(t => t.Id == g.GameWinnerId).FirstOrDefault()!;
         }
