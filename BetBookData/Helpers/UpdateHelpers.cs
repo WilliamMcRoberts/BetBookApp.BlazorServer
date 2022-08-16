@@ -10,17 +10,19 @@ namespace BetBookData.Helpers;
 public static class UpdateHelpers
 {
     public static async Task UpdateParleyBetWinners(
-        this IParleyBetData parleyData, IEnumerable<ParleyBetModel> parleyBets, 
-            IEnumerable<GameModel> games, IEnumerable<TeamModel> teams, 
-                IEnumerable<BetModel> bets)
+                                                    this IParleyBetData parleyData, 
+                                                    IEnumerable<ParleyBetModel> parleyBets, 
+                                                    IEnumerable<GameModel> games, 
+                                                    IEnumerable<TeamModel> teams, 
+                                                    IEnumerable<BetModel> bets)
     {
 
         List<ParleyBetModel> parleyBetsInProgress = parleyBets.Where(pb =>
-            pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
+                pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
 
         parleyBetsInProgress = 
-            parleyBetsInProgress.PopulateParleyBetsWithBetsWithGamesAndTeams(
-                games, teams, bets);
+                parleyBetsInProgress.PopulateParleyBetsWithBetsWithGamesAndTeams(
+                      games, teams, bets);
 
         foreach (ParleyBetModel pb in parleyBetsInProgress)
         {
@@ -62,7 +64,7 @@ public static class UpdateHelpers
 
         foreach(BetModel bet in betsOnCurrentGame)
         {
-            TeamModel winningTeamForBet = bet.CalculateWinnerForBet(
+            TeamModel? winningTeamForBet = bet.CalculateWinnerForBet(
                     currentGame, homeTeamFinalScore, awayTeamFinalScore, teams);
 
             if(winningTeamForBet is null)
@@ -77,7 +79,7 @@ public static class UpdateHelpers
             bet.FinalWinnerId = winningTeamForBet.Id;
 
             bet.BetStatus = winningTeamForBet.Id == bet.ChosenWinnerId ? BetStatus.WINNER
-                : BetStatus.LOSER;
+                            : BetStatus.LOSER;
 
             await betData.UpdateBet(bet);
         }
@@ -90,16 +92,16 @@ public static class UpdateHelpers
     {
         if(DateTime.Now > new DateTime(2022, 9, 7))
         {
-            TeamModel? homeTeam = teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
-            TeamModel? awayTeam = teams.Where(t => t.Id == currentGame.AwayTeamId).FirstOrDefault();
+            TeamModel? homeTeam = 
+                    teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
+            TeamModel? awayTeam = 
+                    teams.Where(t => t.Id == currentGame.AwayTeamId).FirstOrDefault();
 
             if (homeTeam is null || awayTeam is null)
-                return;
+                    return;
 
-            TeamModel actualWinningTeam = 
+            TeamModel? actualWinningTeam = 
                 currentGame.CalculateWinningTeam(homeTeamFinalScore, awayTeamFinalScore, teams);
-            TeamModel actualLosingTeam = 
-                actualWinningTeam == homeTeam ? awayTeam : homeTeam;
 
             // If game is a draw
             if (actualWinningTeam is null)
@@ -113,6 +115,8 @@ public static class UpdateHelpers
             }
 
             // If game is not a draw
+            TeamModel actualLosingTeam = actualWinningTeam == homeTeam ? awayTeam : homeTeam;
+
             actualWinningTeam.Wins += $"{actualLosingTeam.TeamName}|";
             actualLosingTeam.Losses += $"{actualWinningTeam.TeamName}|";
 
@@ -131,7 +135,7 @@ public static class UpdateHelpers
             IGameData gameData)
     {
         if (currentGame.GameStatus == GameStatus.FINISHED)
-            return;
+                return;
 
         currentGame.HomeTeamFinalScore = homeTeamScore;
         currentGame.AwayTeamFinalScore = awayTeamScore;
@@ -142,7 +146,7 @@ public static class UpdateHelpers
                     awayTeamScore, teams);
 
         if (gameWinner is not null)
-            currentGame.GameWinnerId = gameWinner.Id;
+                currentGame.GameWinnerId = gameWinner.Id;
 
         await gameData.UpdateGame(currentGame);
     }

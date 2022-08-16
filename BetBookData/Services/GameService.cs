@@ -107,10 +107,10 @@ public class GameService : IGameService
         SeasonType currentSeason, int currentWeek)
     {
         if (teams is null || !teams.Any())
-            teams = await _teamData.GetTeams();
+                teams = await _teamData.GetTeams();
 
         if (games is null || !teams.Any())
-            games = await _gameData.GetGames();
+                games = await _gameData.GetGames();
 
         HashSet<GameModel> thisWeekGames =
             games.Where(g => g.GameStatus != GameStatus.FINISHED).ToHashSet<GameModel>();
@@ -131,14 +131,10 @@ public class GameService : IGameService
         foreach (Game game in gameArray)
         {
             if (game.PointSpread is null)
-            {
                 continue;
-            }
 
             if (thisWeekGames.Contains(games.Where(g => g.ScoreId == game.ScoreID).FirstOrDefault()!))
-            {
                 continue;
-            }
 
             GameModel gameModel = new();
 
@@ -148,9 +144,7 @@ public class GameService : IGameService
                 t.Symbol == game.AwayTeam)?.FirstOrDefault();
 
             if (gameModel.HomeTeam is null || gameModel.AwayTeam is null)
-            {
                 continue;
-            }
 
             gameModel.HomeTeamId = gameModel.HomeTeam.Id;
             gameModel.AwayTeamId = gameModel.AwayTeam.Id;
@@ -222,7 +216,7 @@ public class GameService : IGameService
     public async Task GetPointSpreadUpdateForAvailableGames()
     {
         if (games is null || !games.Any())
-            games = await _gameData.GetGames();
+                games = await _gameData.GetGames();
 
         foreach (GameModel game in games.Where(g
                     => g.GameStatus == GameStatus.NOT_STARTED))
@@ -239,7 +233,7 @@ public class GameService : IGameService
             }
 
             if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
 
             await _gameData.UpdateGame(game);
         }

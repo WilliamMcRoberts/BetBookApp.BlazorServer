@@ -222,6 +222,7 @@
         bet.ChosenWinnerId = teamToWin.Id;
         bet.BettorId = loggedInUser!.Id;
         bet.GameId = CurrentGame.Id;
+        bet.PointSpread = CurrentGame.PointSpread;
 
         loggedInUser.AccountBalance -= bet.BetAmount;
         houseAccount!.AccountBalance += bet.BetAmount;
@@ -236,30 +237,19 @@
         betAmount = 0;
     }
 
-    /// <summary>
-    /// Async method to select chosen winner of game
-    /// and grab that team from the database
-    /// </summary>
-    /// <param name="teamId">int representing the Id of the team being chosen</param>
-    /// <returns></returns>
     private void ChooseWinner(int teamId)
     {
         if(teamId == CurrentGame.AwayTeamId)
         {
-            teamToWin = 
-                teams?.Where(t => t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
+            teamToWin = teams?.Where(t => t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
             winnerChosen = true;
             return;
         }
 
-        teamToWin = 
-            teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
+        teamToWin = teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
         winnerChosen = true;
     }
 
-    /// <summary>
-    /// Method reverts a winner selection
-    /// </summary>
     private void UndoWinnerSelection()
     {
         teamToWin = null;

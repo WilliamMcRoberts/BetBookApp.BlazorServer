@@ -294,6 +294,8 @@ else
             bet.GameId = kv.Key.Id;
             bet.ChosenWinnerId = chosenWinner.Id;
             bet.PayoutStatus = PayoutStatus.PARLEY;
+            bet.PointSpread = kv.Key.PointSpread;
+
             bet.Id = await betData.InsertBet(bet);
 
             parleyBet.Bets.Add(bet);
