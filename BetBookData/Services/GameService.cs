@@ -40,7 +40,7 @@ public class GameService : IGameService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<GameByTeamDto> GetGameByTeamLookup(TeamModel team)
+    public async Task<GameByTeamDto> GetGameByTeam(TeamModel team)
     {
         GameByTeamDto? game = new();
 
@@ -61,7 +61,7 @@ public class GameService : IGameService
         return game!;
     }
 
-    public async Task<GameByScoreIdDto> GetGameByScoreIdLookup(int scoreId)
+    public async Task<GameByScoreIdDto> GetGameByScoreId(int scoreId)
     {
         GameByScoreIdDto? game = new();
 
@@ -82,7 +82,7 @@ public class GameService : IGameService
         return game!;
     }
 
-    public async Task<Game[]> GetGamesByWeekLookup(SeasonType currentSeason, int week)
+    public async Task<Game[]> GetGamesByWeek(SeasonType currentSeason, int week)
     {
 
         Game[]? games = new Game[16];
@@ -119,7 +119,7 @@ public class GameService : IGameService
 
         try
         {
-            gameArray = await GetGamesByWeekLookup(
+            gameArray = await GetGamesByWeek(
                 currentSeason, currentWeek);
         }
 
@@ -183,10 +183,13 @@ public class GameService : IGameService
         if (parleyBets is null || !parleyBets.Any())
             parleyBets = await _parleyData.GetParleyBets();
 
-        foreach (GameModel game in games!.Where(g =>
+        SeasonType season = DateTime.Now.CalculateSeason();
+        int week = season.CalculateWeek(DateTime.Now);
+
+        foreach (GameModel game in games!.Where(g => g.WeekNumber == week &&
             g.GameStatus != GameStatus.FINISHED))
         {
-            GameByScoreIdDto gameLookup = await GetGameByScoreIdLookup(
+            GameByScoreIdDto gameLookup = await GetGameByScoreId(
                     game.ScoreId);
 
             if (gameLookup.Score.IsOver == false)
@@ -203,7 +206,7 @@ public class GameService : IGameService
                 game.HomeTeamFinalScore, game.AwayTeamFinalScore,
                     teams!, _gameData);
 
-            await game.UpdateBetWinners(
+            await game.UpdateBettors(
                 game.HomeTeamFinalScore, game.AwayTeamFinalScore,
                     _betData, games!, teams!, bets!);
 
@@ -226,7 +229,7 @@ public class GameService : IGameService
         {
             GameByScoreIdDto gameLookup = new();
 
-            gameLookup = await GetGameByScoreIdLookup(game.ScoreId);
+            gameLookup = await GetGameByScoreId(game.ScoreId);
 
             if (gameLookup.Score.HasStarted)
             {
@@ -236,7 +239,7 @@ public class GameService : IGameService
             }
 
             if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+                game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
 
             await _gameData.UpdateGame(game);
         }

@@ -9,6 +9,7 @@ begin
            ChosenWinnerId,
            FinalWinnerId,
            BetStatus,
-           PayoutStatus
+           PayoutStatus,
+           PointSpread
 	from dbo.Bets;
 end

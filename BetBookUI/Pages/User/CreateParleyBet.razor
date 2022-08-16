@@ -266,7 +266,7 @@ else
         foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
         {
             GameByScoreIdDto? gameLookup = 
-                await gameService.GetGameByScoreIdLookup(kv.Key.ScoreId);
+                await gameService.GetGameByScoreId(kv.Key.ScoreId);
 
             if (gameLookup is null)
                 return;

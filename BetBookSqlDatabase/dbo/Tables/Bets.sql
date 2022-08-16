@@ -9,6 +9,7 @@
     [FinalWinnerId] INT NULL, 
     [BetStatus] NVARCHAR(20) NOT NULL,
     [PayoutStatus] NVARCHAR(20) NOT NULL, 
+    [PointSpread] FLOAT NOT NULL, 
     FOREIGN KEY (BettorId) REFERENCES Users(Id),
     FOREIGN KEY (GameId) REFERENCES Games(Id),
     FOREIGN KEY (ChosenWinnerId) REFERENCES Teams(Id),

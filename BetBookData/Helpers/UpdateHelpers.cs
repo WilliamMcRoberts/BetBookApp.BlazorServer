@@ -48,7 +48,7 @@ public static class UpdateHelpers
     }
 
 
-    public static async Task UpdateBetWinners(
+    public static async Task UpdateBettors(
         this GameModel currentGame, double homeTeamFinalScore,
             double awayTeamFinalScore, IBetData betData, IEnumerable<GameModel> games, 
                 IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
@@ -60,29 +60,23 @@ public static class UpdateHelpers
         betsOnCurrentGame = 
             betsOnCurrentGame.PopulateBetModelsWithGamesAndTeams(games, teams);
 
-        TeamModel? winningTeamForBets = currentGame.CalculateWinningTeamForBet(
-                homeTeamFinalScore, awayTeamFinalScore, teams);
-
-        // Bets are a push
-        if(winningTeamForBets is null)
+        foreach(BetModel bet in betsOnCurrentGame)
         {
-            foreach (BetModel bet in betsOnCurrentGame)
+            TeamModel winningTeamForBet = bet.CalculateWinnerForBet(
+                    currentGame, homeTeamFinalScore, awayTeamFinalScore, teams);
+
+            if(winningTeamForBet is null)
             {
                 bet.BetStatus = BetStatus.PUSH;
                 bet.FinalWinnerId = 0;
 
                 await betData.UpdateBet(bet);
+                continue;
             }
 
-            return;
-        }
+            bet.FinalWinnerId = winningTeamForBet.Id;
 
-        // Bets are winners or losers
-        foreach (BetModel bet in betsOnCurrentGame)
-        {
-            bet.FinalWinnerId = winningTeamForBets.Id;
-
-            bet.BetStatus = winningTeamForBets.Id == bet.ChosenWinnerId ? BetStatus.WINNER 
+            bet.BetStatus = winningTeamForBet.Id == bet.ChosenWinnerId ? BetStatus.WINNER
                 : BetStatus.LOSER;
 
             await betData.UpdateBet(bet);

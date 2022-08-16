@@ -44,6 +44,8 @@ public class BetModel
 
     // Status of the payout of the bet
     public PayoutStatus PayoutStatus { get; set; }
+
+    public double PointSpread { get; set; }
 }
 
 #nullable restore

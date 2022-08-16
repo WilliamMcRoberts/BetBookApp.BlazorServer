@@ -76,6 +76,7 @@ public class BetData : IBetData
         p.Add("@ChosenWinnerId", bet.ChosenWinnerId);
         p.Add("@BetStatus", betStatus);
         p.Add("@PayoutStatus", payoutStatus);
+        p.Add("@PointSpread", bet.PointSpread);
         p.Add( "@Id", 0, dbType: DbType.Int32,
             direction: ParameterDirection.Output);
 
@@ -110,7 +111,8 @@ public class BetData : IBetData
                 bet.ChosenWinnerId,
                 bet.FinalWinnerId,
                 betStatus,
-                payoutStatus
+                payoutStatus,
+                bet.PointSpread
             });
 
             return;
@@ -125,7 +127,8 @@ public class BetData : IBetData
             bet.GameId,
             bet.ChosenWinnerId,
             betStatus,
-            payoutStatus
+            payoutStatus,
+            bet.PointSpread
         });
 
     }

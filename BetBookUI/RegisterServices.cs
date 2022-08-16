@@ -36,13 +36,17 @@ public static class RegisterServices
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
         builder.Services.AddSyncfusionBlazor();
 
+        /********************** Services *****************************/
+
         builder.Services.AddHostedService<TimerService>();
+        builder.Services.AddSingleton<IGameService, GameService>();
+
+        /***************** Http Client Factory **********************/
 
         builder.Services.AddHttpClient("sportsdata", client =>
         {
             client.BaseAddress = new Uri("https://api.sportsdata.io/v3/nfl/");
         });
-
 
         /*********************** Data access *************************/
 
@@ -53,8 +57,5 @@ public static class RegisterServices
         builder.Services.AddTransient<IGameData, GameData>();
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
-        builder.Services.AddSingleton<IGameService, GameService>();
-        builder.Services.AddSingleton<ITeamService, TeamService>();
-
     }
 }

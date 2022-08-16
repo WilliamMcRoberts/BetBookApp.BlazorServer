@@ -15,9 +15,10 @@ public static class CalculationHelpers
     /// <param name="underdogScore"></param>
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
-    public static TeamModel CalculateWinningTeam(
-        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore,
-            IEnumerable<TeamModel> teams)
+    public static TeamModel CalculateWinningTeam(this GameModel game,
+                                                 double homeTeamFinalScore, 
+                                                 double awayTeamFinalScore,
+                                                 IEnumerable<TeamModel> teams)
     {
 
         TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
@@ -39,18 +40,19 @@ public static class CalculationHelpers
     /// <param name="underdogScore"></param>
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
-    public static TeamModel CalculateWinningTeamForBet(
-        this GameModel game, double homeTeamFinalScore, double awayTeamFinalScore,
-            IEnumerable<TeamModel> teams)
+    public static TeamModel CalculateWinnerForBet(this BetModel bet, 
+                                                  GameModel game, 
+                                                  double homeTeamFinalScore, 
+                                                  double awayTeamFinalScore,
+                                                  IEnumerable<TeamModel> teams)
     {
-        double? pointSpread = game.PointSpread;
-        double? homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + pointSpread;
+        double? homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + bet.PointSpread;
 
         TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
         TeamModel? awayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
 
-        TeamModel? winner = (homeTeamScoreAfterPointSpreaad == awayTeamFinalScore) ? null :
-            (homeTeamScoreAfterPointSpreaad > awayTeamFinalScore) ? homeTeam :
+        TeamModel? winner = homeTeamScoreAfterPointSpreaad == awayTeamFinalScore ? null :
+            homeTeamScoreAfterPointSpreaad > awayTeamFinalScore ? homeTeam :
                 awayTeam;
 
         return winner!;
@@ -72,14 +74,6 @@ public static class CalculationHelpers
             return 0;
 
         return week + 1;
-    }
-
-    public static (int, SeasonType) CalculateNextWeekAndSeasonFromCurrentWeekAndSeason(
-            this (int currentWeek, SeasonType currentSeason) weekSeason)
-    {
-        return weekSeason == (4, SeasonType.PRE) ? (1, SeasonType.REG) 
-            : (weekSeason == (17, SeasonType.REG) ? (1, SeasonType.POST) 
-            : (weekSeason.currentWeek + 1, weekSeason.currentSeason));
     }
 
     /// <summary>
@@ -154,7 +148,8 @@ public static class CalculationHelpers
     /// </summary>
     /// <param name="pushBets"></param>
     /// <returns>decimal</returns>
-    public static decimal CalculateTotalPendingParleyRefund(this List<ParleyBetModel> parleyPushBets)
+    public static decimal CalculateTotalPendingParleyRefund(
+                            this List<ParleyBetModel> parleyPushBets)
     {
         if (parleyPushBets.Count == 0)
             return 0;
@@ -173,7 +168,8 @@ public static class CalculationHelpers
     /// </summary>
     /// <param name="winningBets"></param>
     /// <returns>decimal</returns>
-    public static decimal CalculateTotalPendingParleyPayout(this List<ParleyBetModel> parleyWinningBets)
+    public static decimal CalculateTotalPendingParleyPayout(
+                            this List<ParleyBetModel> parleyWinningBets)
     {
         if (parleyWinningBets.Count == 0)
             return 0;

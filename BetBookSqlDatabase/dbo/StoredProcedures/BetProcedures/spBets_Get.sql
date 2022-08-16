@@ -9,7 +9,8 @@ begin
            GameId, 
            ChosenWinnerId,
            FinalWinnerId, 
-           BetStatus
+           BetStatus,
+           PointSpread
 	from dbo.Bets
 	where Id = @Id;
 end

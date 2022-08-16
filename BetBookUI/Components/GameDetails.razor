@@ -198,7 +198,7 @@
         }
 
         GameByScoreIdDto gameLookup =
-            await gameService.GetGameByScoreIdLookup(CurrentGame.ScoreId);
+            await gameService.GetGameByScoreId(CurrentGame.ScoreId);
 
         if (gameLookup.Score.HasStarted)
         {

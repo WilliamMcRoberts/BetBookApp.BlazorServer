@@ -6,7 +6,8 @@
 	@GameId int,
 	@ChosenWinnerId int,
 	@BetStatus nvarchar(20),
-	@PayoutStatus nvarchar(20)
+	@PayoutStatus nvarchar(20),
+    @PointSpread float
 AS
 begin
     update dbo.Bets
@@ -16,6 +17,7 @@ begin
         GameId = @GameId, 
         ChosenWinnerId = @ChosenWinnerId, 
         BetStatus = @BetStatus, 
-        PayoutStatus = @PayoutStatus
+        PayoutStatus = @PayoutStatus,
+        PointSpread = @PointSpread
 	where Id = @Id;
 end
