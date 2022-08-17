@@ -8,12 +8,13 @@ public static class BetsApi
     public static void ConfigureBetsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Bets", GetBets).WithName("GetAllBets");
+        app.MapGet("/Bets", GetBets).WithName("GetAllBets").AllowAnonymous();
         app.MapGet("/Bets/{id}", GetBet).WithName("GetBetById");
         app.MapPost("/Bets", InsertBet).WithName("InsertBet");
         app.MapPut("/Bets", UpdateBet).WithName("UpdateBet");
         app.MapDelete("/Bets/{id}", DeleteBet).WithName("DeleteBet");
     }
+
 
     public static async Task<IResult> GetBets(IBetData data)
     {

@@ -1,5 +1,6 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BetBookMinApi.Api;
 
@@ -8,7 +9,7 @@ public static class GamesApi
     public static void ConfigureGamesApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Games", GetGames).WithName("GetAllGames");
+        app.MapGet("/Games", GetGames).WithName("GetAllGames").AllowAnonymous();
         app.MapGet("/Games/{id}", GetGame).WithName("GetGameById");
         app.MapPost("/Games", InsertGame).WithName("InsertGame");
         app.MapPut("/Games", UpdateGame).WithName("UpdateGame");

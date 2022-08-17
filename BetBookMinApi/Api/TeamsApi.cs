@@ -9,7 +9,7 @@ public static class TeamsApi
     public static void ConfigureTeamsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Teams", GetTeams).WithName("GetAllTeams");
+        app.MapGet("/Teams", GetTeams).WithName("GetAllTeams").AllowAnonymous();
         app.MapGet("/Teams/{id}", GetTeam).WithName("GetTeamById"); ;
         app.MapPost("/Teams", InsertTeam).WithName("InsertTeam"); ;
         app.MapPut("/Teams", UpdateTeam).WithName("UpdateTeam"); ;
