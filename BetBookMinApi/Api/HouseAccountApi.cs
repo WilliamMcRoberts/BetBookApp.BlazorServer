@@ -8,8 +8,8 @@ public static class HouseAccountApi
     public static void ConfigureHouseAccountApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/HouseAccount", GetHouseAccount);
-        app.MapPut("/HouseAccount", UpdateHouseAccount);
+        app.MapGet("/HouseAccount", GetHouseAccount).WithName("GetHouseAccount");
+        app.MapPut("/HouseAccount", UpdateHouseAccount).WithName("UpdateHouseAccount");
     }
 
     public static async Task<IResult> GetHouseAccount(IHouseAccountData data)

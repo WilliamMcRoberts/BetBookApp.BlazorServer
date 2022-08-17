@@ -8,11 +8,11 @@ public static class ParleyBetsApi
     public static void ConfigureParleyBetsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/ParleyBets", GetParleyBets);
-        app.MapGet("/ParleyBets/{id}", GetParleyBet);
-        app.MapPost("/ParleyBets", InsertParleyBet);
-        app.MapPut("/ParleyBets", UpdateParleyBet);
-        app.MapDelete("/ParleyBets/{id}", DeleteParleyBet);
+        app.MapGet("/ParleyBets", GetParleyBets).WithName("GetAllParleyBets");
+        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById"); ;
+        app.MapPost("/ParleyBets", InsertParleyBet).WithName("InsertParleyBet"); ;
+        app.MapPut("/ParleyBets", UpdateParleyBet).WithName("UpdateParleyBet"); ;
+        app.MapDelete("/ParleyBets/{id}", DeleteParleyBet).WithName("DeleteParleyBet"); ;
     }
 
     public static async Task<IResult> GetParleyBets(IParleyBetData data)

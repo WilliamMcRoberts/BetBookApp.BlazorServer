@@ -9,11 +9,11 @@ public static class TeamsApi
     public static void ConfigureTeamsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Teams", GetTeams);
-        app.MapGet("/Teams/{id}", GetTeam);
-        app.MapPost("/Teams", InsertTeam);
-        app.MapPut("/Teams", UpdateTeam);
-        app.MapDelete("/Teams/{id}", DeleteTeam);
+        app.MapGet("/Teams", GetTeams).WithName("GetAllTeams");
+        app.MapGet("/Teams/{id}", GetTeam).WithName("GetTeamById"); ;
+        app.MapPost("/Teams", InsertTeam).WithName("InsertTeam"); ;
+        app.MapPut("/Teams", UpdateTeam).WithName("UpdateTeam"); ;
+        app.MapDelete("/Teams/{id}", DeleteTeam).WithName("DeleteTeam"); ;
     }
 
     public static async Task<IResult> GetTeams(ITeamData data)

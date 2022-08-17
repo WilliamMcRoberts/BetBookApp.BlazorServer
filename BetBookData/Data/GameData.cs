@@ -83,51 +83,26 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task UpdateGame(GameModel game)
     {
-
         string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
 
-        if (game.GameWinnerId == 0)
+        await _db.SaveData("dbo.spGames_Update", new
         {
-            await _db.SaveData("dbo.spGames_UpdateDraw", new
-            {
-                game.Id,
-                game.HomeTeamId,
-                game.AwayTeamId,
-                game.Stadium,
-                game.PointSpread,
-                game.HomeTeamFinalScore,
-                game.AwayTeamFinalScore,
-                seasonType,
-                game.DateOfGame,
-                gameStatus,
-                game.ScoreId,
-                game.DateOfGameOnly,
-                game.TimeOfGameOnly
-            });
-        }
-
-        else
-        {
-
-            await _db.SaveData("dbo.spGames_Update", new
-            {
-                game.Id,
-                game.HomeTeamId,
-                game.AwayTeamId,
-                game.Stadium,
-                game.PointSpread,
-                game.HomeTeamFinalScore,
-                game.AwayTeamFinalScore,
-                game.GameWinnerId,
-                seasonType,
-                game.DateOfGame,
-                gameStatus,
-                game.ScoreId,
-                game.DateOfGameOnly,
-                game.TimeOfGameOnly
-            });
-        }
+            game.Id,
+            game.HomeTeamId,
+            game.AwayTeamId,
+            game.Stadium,
+            game.PointSpread,
+            game.HomeTeamFinalScore,
+            game.AwayTeamFinalScore,
+            game.GameWinnerId,
+            seasonType,
+            game.DateOfGame,
+            gameStatus,
+            game.ScoreId,
+            game.DateOfGameOnly,
+            game.TimeOfGameOnly
+        });
     }
 
     /// <summary>

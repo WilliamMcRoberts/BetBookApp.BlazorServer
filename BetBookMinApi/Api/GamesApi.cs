@@ -8,11 +8,11 @@ public static class GamesApi
     public static void ConfigureGamesApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Games", GetGames);
-        app.MapGet("/Games/{id}", GetGame);
-        app.MapPost("/Games", InsertGame);
-        app.MapPut("/Games", UpdateGame);
-        app.MapDelete("/Games/{id}", DeleteGame);
+        app.MapGet("/Games", GetGames).WithName("GetAllGames");
+        app.MapGet("/Games/{id}", GetGame).WithName("GetGameById");
+        app.MapPost("/Games", InsertGame).WithName("InsertGame");
+        app.MapPut("/Games", UpdateGame).WithName("UpdateGame");
+        app.MapDelete("/Games/{id}", DeleteGame).WithName("DeleteGame");
     }
 
     public static async Task<IResult> GetGames(IGameData data)

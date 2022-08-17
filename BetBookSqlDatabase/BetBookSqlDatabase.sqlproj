@@ -97,7 +97,6 @@
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_GetAll.sql" />
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Insert.sql" />
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Update.sql" />
-    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_UpdateDraw.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Delete.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Get.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spBets_GetAll.sql" />

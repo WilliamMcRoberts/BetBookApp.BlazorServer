@@ -16,8 +16,8 @@ public static class CalculationHelpers
     /// <param name="teams"></param>
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinningTeam(this GameModel game,
-                                                 double homeTeamFinalScore, 
-                                                 double awayTeamFinalScore,
+                                                 double? homeTeamFinalScore, 
+                                                 double? awayTeamFinalScore,
                                                  IEnumerable<TeamModel> teams)
     {
 
@@ -42,8 +42,8 @@ public static class CalculationHelpers
     /// <returns>TeamModel</returns>
     public static TeamModel CalculateWinnerForBet(this BetModel bet, 
                                                   GameModel game, 
-                                                  double homeTeamFinalScore, 
-                                                  double awayTeamFinalScore,
+                                                  double? homeTeamFinalScore, 
+                                                  double? awayTeamFinalScore,
                                                   IEnumerable<TeamModel> teams)
     {
         double? homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + bet.PointSpread;

@@ -8,7 +8,7 @@ public static class UsersApi
     public static void ConfigureUsersApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/Users", GetUsers).WithName("GetUsers");
+        app.MapGet("/Users", GetUsers).WithName("GetAllUsers");
         app.MapGet("/Users/{id}", GetUser).WithName("GetUserById");
         app.MapGet("/Users/objectIdentifier", GetUserFromAuthentication).WithName("GetUserByObjectId");
         app.MapPost("/Users", InsertUser).WithName("InsertUser");
