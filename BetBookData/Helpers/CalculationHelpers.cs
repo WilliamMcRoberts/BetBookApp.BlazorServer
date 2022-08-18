@@ -21,8 +21,10 @@ public static class CalculationHelpers
                                                  IEnumerable<TeamModel> teams)
     {
 
-        TeamModel? homeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
-        TeamModel? awayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
+        TeamModel? homeTeam = 
+            teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
+        TeamModel? awayTeam = 
+            teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
 
         TeamModel? winner = (homeTeamFinalScore == awayTeamFinalScore) ? null :
             (homeTeamFinalScore > awayTeamFinalScore) ? homeTeam :

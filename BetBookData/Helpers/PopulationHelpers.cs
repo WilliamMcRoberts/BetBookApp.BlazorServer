@@ -22,8 +22,7 @@ public static class PopulationHelpers
     }
 
     public static List<BetModel> PopulateBetModelsWithGamesAndTeams(
-        this List<BetModel> bets, IEnumerable<GameModel> games, 
-            IEnumerable<TeamModel> teams)
+        this List<BetModel> bets,IEnumerable<GameModel> games, IEnumerable<TeamModel> teams)
     {
         foreach(BetModel b in bets)
         {
@@ -41,7 +40,7 @@ public static class PopulationHelpers
 
     public static List<ParleyBetModel> PopulateParleyBetsWithBetsWithGamesAndTeams(
         this List<ParleyBetModel> parleyBets, IEnumerable<GameModel> games, 
-            IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
+        IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
     {
         foreach(ParleyBetModel parleyBet in parleyBets)
         {

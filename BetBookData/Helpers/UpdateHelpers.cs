@@ -9,11 +9,10 @@ namespace BetBookData.Helpers;
 
 public static class UpdateHelpers
 {
-    public static async Task UpdateParleyBetWinners(
-                                                    this IParleyBetData parleyData, 
-                                                    IEnumerable<ParleyBetModel> parleyBets, 
+    public static async Task UpdateParleyBetWinners(this IParleyBetData parleyData, 
+                                                    IEnumerable<ParleyBetModel> parleyBets,
                                                     IEnumerable<GameModel> games, 
-                                                    IEnumerable<TeamModel> teams, 
+                                                    IEnumerable<TeamModel> teams,
                                                     IEnumerable<BetModel> bets)
     {
 

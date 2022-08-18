@@ -112,28 +112,21 @@ public class GameService : IGameService
         if (games is null || !teams.Any())
                 games = await _gameData.GetGames();
 
-        HashSet<GameModel> thisWeekGames =
-            games.Where(g => g.GameStatus != GameStatus.FINISHED).ToHashSet<GameModel>();
+        HashSet<GameModel> thisWeekGames = games.Where(g =>
+            g.GameStatus != GameStatus.FINISHED).ToHashSet<GameModel>();
 
         Game[] gameArray = new Game[16];
 
-        try
-        {
-            gameArray = await GetGamesByWeek(
-                currentSeason, currentWeek);
-        }
-
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        gameArray = await GetGamesByWeek(
+            currentSeason, currentWeek);
 
         foreach (Game game in gameArray)
         {
             if (game.PointSpread is null)
                 continue;
 
-            if (thisWeekGames.Contains(games.Where(g => g.ScoreId == game.ScoreID).FirstOrDefault()!))
+            if (thisWeekGames.Contains(games.Where(g => 
+                g.ScoreId == game.ScoreID).FirstOrDefault()!))
                 continue;
 
             GameModel gameModel = new();
@@ -235,8 +228,10 @@ public class GameService : IGameService
                 continue;
             }
 
-            if (Math.Round(gameLookup.Score.PointSpread, 1) != game.PointSpread)
-                    game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+            if (game.PointSpread == Math.Round(gameLookup.Score.PointSpread, 1))
+                continue;
+
+            game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
 
             await _gameData.UpdateGame(game);
         }
