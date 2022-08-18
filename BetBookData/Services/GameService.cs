@@ -180,17 +180,20 @@ public class GameService : IGameService
         SeasonType season = DateTime.Now.CalculateSeason();
         int week = season.CalculateWeek(DateTime.Now);
 
-        foreach (GameModel game in games!.Where(g => g.WeekNumber == week &&
-            g.GameStatus != GameStatus.FINISHED))
+        HashSet<GameModel> unfinishedGamesOfCurrentWeek = games.Where(g =>
+            g.WeekNumber == week && g.GameStatus != GameStatus.FINISHED)
+            .ToHashSet<GameModel>();
+
+        foreach (GameModel game in unfinishedGamesOfCurrentWeek)
         {
             GameByScoreIdDto gameLookup = await GetGameByScoreId(
                     game.ScoreId);
 
-            if (gameLookup.Score.IsOver == false)
+            if (!gameLookup.Score.IsOver)
                 continue;
-            if (double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore) == false)
+            if (!double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore))
                 continue;
-            if (double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore) == false)
+            if (!double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore))
                 continue;
 
             game.HomeTeamFinalScore = homeScore;
