@@ -151,7 +151,7 @@ public static class CalculationHelpers
     /// <param name="pushBets"></param>
     /// <returns>decimal</returns>
     public static decimal CalculateTotalPendingParleyRefund(
-                            this List<ParleyBetModel> parleyPushBets)
+        this List<ParleyBetModel> parleyPushBets)
     {
         if (parleyPushBets.Count == 0)
             return 0;
@@ -171,7 +171,7 @@ public static class CalculationHelpers
     /// <param name="winningBets"></param>
     /// <returns>decimal</returns>
     public static decimal CalculateTotalPendingParleyPayout(
-                            this List<ParleyBetModel> parleyWinningBets)
+        this List<ParleyBetModel> parleyWinningBets)
     {
         if (parleyWinningBets.Count == 0)
             return 0;
