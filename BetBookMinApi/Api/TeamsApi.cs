@@ -10,10 +10,10 @@ public static class TeamsApi
     {
         // Endpoint mappings
         app.MapGet("/Teams", GetTeams).WithName("GetAllTeams").AllowAnonymous();
-        app.MapGet("/Teams/{id}", GetTeam).WithName("GetTeamById"); ;
-        app.MapPost("/Teams", InsertTeam).WithName("InsertTeam"); ;
-        app.MapPut("/Teams", UpdateTeam).WithName("UpdateTeam"); ;
-        app.MapDelete("/Teams/{id}", DeleteTeam).WithName("DeleteTeam"); ;
+        app.MapGet("/Teams/{id}", GetTeam).WithName("GetTeamById").AllowAnonymous();
+        app.MapPost("/Teams", InsertTeam).WithName("InsertTeam");
+        app.MapPut("/Teams", UpdateTeam).WithName("UpdateTeam");
+        app.MapDelete("/Teams/{id}", DeleteTeam).WithName("DeleteTeam");
     }
 
     public static async Task<IResult> GetTeams(ITeamData data)

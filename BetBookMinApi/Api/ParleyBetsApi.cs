@@ -9,10 +9,10 @@ public static class ParleyBetsApi
     {
         // Endpoint mappings
         app.MapGet("/ParleyBets", GetParleyBets).WithName("GetAllParleyBets");
-        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById"); ;
-        app.MapPost("/ParleyBets", InsertParleyBet).WithName("InsertParleyBet"); ;
-        app.MapPut("/ParleyBets", UpdateParleyBet).WithName("UpdateParleyBet"); ;
-        app.MapDelete("/ParleyBets/{id}", DeleteParleyBet).WithName("DeleteParleyBet"); ;
+        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById");
+        app.MapPost("/ParleyBets", InsertParleyBet).WithName("InsertParleyBet");
+        app.MapPut("/ParleyBets", UpdateParleyBet).WithName("UpdateParleyBet");
+        app.MapDelete("/ParleyBets/{id}", DeleteParleyBet).WithName("DeleteParleyBet");
     }
 
     public static async Task<IResult> GetParleyBets(IParleyBetData data)

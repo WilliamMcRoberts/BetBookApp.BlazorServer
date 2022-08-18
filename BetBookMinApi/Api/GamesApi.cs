@@ -10,7 +10,7 @@ public static class GamesApi
     {
         // Endpoint mappings
         app.MapGet("/Games", GetGames).WithName("GetAllGames").AllowAnonymous();
-        app.MapGet("/Games/{id}", GetGame).WithName("GetGameById");
+        app.MapGet("/Games/{id}", GetGame).WithName("GetGameById").AllowAnonymous();
         app.MapPost("/Games", InsertGame).WithName("InsertGame");
         app.MapPut("/Games", UpdateGame).WithName("UpdateGame");
         app.MapDelete("/Games/{id}", DeleteGame).WithName("DeleteGame");
