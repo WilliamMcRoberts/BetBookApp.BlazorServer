@@ -15,21 +15,12 @@
 
 @code {
 
-    // Game id from selected game
     [Parameter]
     public int gameId { get; set; }
-
-    // Current game being viewed
     private GameModel? CurrentGame { get; set; }
-
     private IEnumerable<GameModel>? games;
-
     private IEnumerable<TeamModel>? teams;
 
-    /// <summary>
-    /// Async initialization method
-    /// </summary>
-    /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
         if(games is null)

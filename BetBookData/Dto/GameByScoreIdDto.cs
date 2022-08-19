@@ -1,4 +1,4 @@
-﻿namespace BetBookData.Lookups;
+﻿namespace BetBookData.Dto;
 
 
 public class GameByScoreIdDto

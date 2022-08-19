@@ -1,4 +1,5 @@
-﻿namespace BetBookData.Lookups;
+﻿namespace BetBookData.Dto;
+
 public class GamesByWeekDto
 {
     public Game[] GamesInWeek { get; set; }

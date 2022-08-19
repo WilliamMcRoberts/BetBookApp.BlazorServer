@@ -1,6 +1,7 @@
 ﻿
 
-namespace BetBookData.Lookups;
+namespace BetBookData.Dto;
+
 public class StadiumDetailsDto
 {
     public int StadiumID { get; set; }

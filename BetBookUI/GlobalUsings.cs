@@ -6,7 +6,7 @@ global using BetBookUI.Dto;
 global using BetBookData.Helpers;
 global using BetBookUI.Helpers;
 global using BetBookData.Services;
-global using BetBookData.Lookups;
+global using BetBookData.Dto;
 
 
 

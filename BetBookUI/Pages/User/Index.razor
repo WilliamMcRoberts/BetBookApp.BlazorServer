@@ -23,7 +23,7 @@
 
 @code {
 
-    UserModel? loggedInUser;
+    UserModel loggedInUser;
     SeasonType season;
     int week;
     HashSet<GameModel> gamesAvailable = new();
@@ -56,8 +56,6 @@
             g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
-
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
 
         await authProvider.LoadAndVerifyUser(loggedInUser, userData);
     }

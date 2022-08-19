@@ -1,7 +1,7 @@
 ﻿
 using System.Text.Json;
 using BetBookData.Interfaces;
-using BetBookData.Lookups;
+using BetBookData.Dto;
 using BetBookData.Models;
 using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;

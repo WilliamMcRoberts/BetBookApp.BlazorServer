@@ -1,4 +1,4 @@
-﻿using BetBookData.Lookups;
+﻿using BetBookData.Dto;
 using BetBookData.Models;
 
 namespace BetBookData.Interfaces;

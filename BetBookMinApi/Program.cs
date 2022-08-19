@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(x =>
             Id = "Bearer",
             Type = ReferenceType.SecurityScheme,
         }},  new List<string>() }
-    }); 
+    });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BetBookUI.Helpers;
@@ -25,7 +26,7 @@ public static class AuthenticationStateProviderHelpers
         this AuthenticationStateProvider provider, IUserData userData)
     {
         var authState = await provider.GetAuthenticationStateAsync();
-        string? objectId = authState.User.Claims.FirstOrDefault(
+        string objectId = authState.User.Claims.FirstOrDefault(
             c => c.Type.Contains("objectidentifier"))?.Value;
 
         return await userData.GetUserFromAuthentication(objectId);
@@ -41,12 +42,12 @@ public static class AuthenticationStateProviderHelpers
             IUserData userData)
     {
         var authState = await provider.GetAuthenticationStateAsync();
-        string? objectIdentifier = authState.User.Claims.FirstOrDefault(
+        string objectId = authState.User.Claims.FirstOrDefault(
             c => c.Type.Contains("objectidentifier"))?.Value;
 
-        if (string.IsNullOrWhiteSpace(objectIdentifier) == false)
+        if (string.IsNullOrWhiteSpace(objectId) == false)
         {
-            loggedInUser ??= new();
+            loggedInUser = await userData.GetUserFromAuthentication(objectId) ?? new();
 
             string? firstName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("givenname"))?.Value;
@@ -59,10 +60,10 @@ public static class AuthenticationStateProviderHelpers
 
             bool isDirty = false;
 
-            if (objectIdentifier.Equals(loggedInUser.ObjectIdentifier) == false)
+            if (objectId.Equals(loggedInUser.ObjectIdentifier) == false)
             {
                 isDirty = true;
-                loggedInUser.ObjectIdentifier = objectIdentifier;
+                loggedInUser.ObjectIdentifier = objectId;
             }
             if (firstName?.Equals(loggedInUser.FirstName) == false)
             {

@@ -1,4 +1,4 @@
-﻿using BetBookData.Lookups;
+﻿using BetBookData.Dto;
 
 namespace BetBookData.Interfaces;
 public interface ITeamService

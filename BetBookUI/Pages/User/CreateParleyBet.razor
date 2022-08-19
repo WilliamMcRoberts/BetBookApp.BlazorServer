@@ -191,42 +191,18 @@ else
 
 @code {
 
-    // List of available games
     private HashSet<GameModel> gamesAvailable = new();
-
-    // List of available games
     private List<GameModel> gamesChosen = new();
-
-    // Dictionary with basic games chosen for keys and chosen winner team names for values
     private Dictionary<GameModel, string> chosenGamesAndWinners = new();
-
-    // IEnumerable of all games
     private IEnumerable<GameModel>? games;
-
-    // IEnumerable of all teams
     private IEnumerable<TeamModel>? teams;
-
-    // Amount being wagered on parley bet
     private decimal betAmount;
-
-    // Bool to check if wager has been submitted
     private bool wagerPlaced = false;
-
-    // Bool to check if bet amount is greater than zero
     private bool betAmountBad = false;
-
-    // Bool to check if bet count is less than 6
     private bool betCountBad = false;
-
     private bool gameNotStarted = true;
-
     private string startedGameDescription = string.Empty;
 
-
-    /// <summary>
-    /// Async initialization method
-    /// </summary>
-    /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
         if (games is null)
@@ -241,10 +217,6 @@ else
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
     }
 
-    /// <summary>
-    /// Async method processes the parley bet and inserts it into the database
-    /// </summary>
-    /// <returns></returns>
     private async Task SubmitParleyWager()
     {
         if (chosenGamesAndWinners.Count < 2)
@@ -318,21 +290,12 @@ else
         wagerPlaced = true;
     }
 
-    /// <summary>
-    /// Method unselects the winner of game
-    /// </summary>
-    /// <param name="game">GameModel represents game the winner is being chosen for</param>
     private void UndoWinnerSelection(GameModel game)
     {
         if (chosenGamesAndWinners.ContainsKey(game)) 
             chosenGamesAndWinners.Remove(game);
     }
 
-    /// <summary>
-    /// Method chooses winner of game
-    /// </summary>
-    /// <param name="game">GameModel represents the game the winner is being chosen for</param>
-    /// <param name="chosenTeamName">string represents team name of chosen winner</param>
     private void ChooseWinnerForGame(GameModel game, string chosenTeamName)
     {
         if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(game))
@@ -341,34 +304,21 @@ else
             betCountBad = false;
     }
 
-    /// <summary>
-    /// Method selects basic game for parley bet
-    /// </summary>
-    /// <param name="game">GameModel represents game being selected for parley bet</param>
     private void SelectGame(GameModel game)
     {
-        if(gamesChosen.Count < 5 && !gamesChosen.Contains(game) 
-            && gamesAvailable.Contains(game))
-        {
-            gamesChosen.Add(game);
-            gamesAvailable.Remove(game);
-        }
+        if (gamesChosen.Count >= 5 || gamesChosen.Contains(game) || 
+            !gamesAvailable.Contains(game)) return;
+        gamesChosen.Add(game);
+        gamesAvailable.Remove(game);
     }
 
-    /// <summary>
-    /// Method unselects a basic game from parley bet
-    /// </summary>
-    /// <param name="game">
-    /// GameModel represents the game being removed from
-    /// parley bet
-    /// </param>
     private void UnselectGame(GameModel game)
     {
-        if(gamesChosen.Contains(game) && !gamesAvailable.Contains(game))
-        {
-            gamesAvailable.Add(game);
-            gamesChosen.Remove(game);
-        }
+        if (!gamesChosen.Contains(game) || gamesAvailable.Contains(game))
+            return;
+
+        gamesAvailable.Add(game);
+        gamesChosen.Remove(game);
     }
 
     private string GetSpread(GameModel currentGame, string teamName)

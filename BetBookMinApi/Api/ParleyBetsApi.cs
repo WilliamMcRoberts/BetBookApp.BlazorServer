@@ -8,8 +8,8 @@ public static class ParleyBetsApi
     public static void ConfigureParleyBetsApi(this WebApplication app)
     {
         // Endpoint mappings
-        app.MapGet("/ParleyBets", GetParleyBets).WithName("GetAllParleyBets");
-        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById");
+        app.MapGet("/ParleyBets", GetParleyBets).WithName("GetAllParleyBets").AllowAnonymous();
+        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById").AllowAnonymous();
         app.MapPost("/ParleyBets", InsertParleyBet).WithName("InsertParleyBet");
         app.MapPut("/ParleyBets", UpdateParleyBet).WithName("UpdateParleyBet");
         app.MapDelete("/ParleyBets/{id}", DeleteParleyBet).WithName("DeleteParleyBet");

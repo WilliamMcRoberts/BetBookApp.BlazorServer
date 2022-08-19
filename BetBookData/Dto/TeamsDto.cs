@@ -1,4 +1,5 @@
-﻿namespace BetBookData.Lookups;
+﻿namespace BetBookData.Dto;
+
 public class TeamsDto
 {
     public Team[] Teams { get; set; }
