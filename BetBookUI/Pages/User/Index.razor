@@ -58,5 +58,7 @@
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 
         await authProvider.LoadAndVerifyUser(loggedInUser, userData);
+
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
     }
 }
