@@ -9,7 +9,7 @@ namespace BetBookData.Services;
 public class PointSpreadUpdateTimerService : BackgroundService
 {
     private readonly IGameService _gameService;
-    private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(30));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(1));
 
     public PointSpreadUpdateTimerService(IGameService gameService)
     {
