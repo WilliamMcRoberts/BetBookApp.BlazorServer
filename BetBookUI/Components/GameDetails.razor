@@ -33,42 +33,10 @@
                         <Stat StatType="Draws"
                               Stats="CurrentGame.AwayTeam?.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                    
-                    <div class="mt-4 mb-2 team-selection-container">
-                        @if(winnerChosen)
-                        {
-                            if(teamToWin?.TeamName == CurrentGame.AwayTeam?.TeamName)
-                            {
-                                <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
-                                    @onclick="() => UndoWinnerSelection()">
-                                    Undo
-                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
-                                </button>
-                            }
-                            else
-                            {
-                                <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
-                                    @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                    Choose
-                                    @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
-                                </button>
-                            }
-                        }
-                        else if(!winnerChosen)
-                        {
-                            <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
-                                Choose
-                                @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
-                            </button>
-                        }
-                    </div>
-                    
                 </div>
                 <div class="stat-records">
                     <div class="helmet">
                         <img style="height:100px;margin-bottom:1em;" src="/images/@CurrentGame.HomeTeam?.ImagePath" alt="team logo">
-
                     </div>
                     <div class="stat-container">
 
@@ -81,39 +49,62 @@
                         <Stat StatType="Draws"
                               Stats="CurrentGame.HomeTeam?.Draws.Split('|').SkipLast(1).ToArray()"/>
                     </div>
-                     
-                <div class="mt-4 mb-2 team-selection-container">
-                    @if(winnerChosen)
-                    {
-                        if(teamToWin?.TeamName == CurrentGame.HomeTeam?.TeamName)
-                        {
-                            <button class="mb-2 mt-2 undo-btn-det btn undo-btn-det-light btn-sm text-uppercase" 
-                                @onclick="UndoWinnerSelection">
-                                Undo
-                                @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
-                            </button>
-                        }
-                        else
-                        {
-                            <button disabled class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
-                                @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                                Choose 
-                                @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
-                            </button>
-                        }
-                    }
-                    else if(!winnerChosen)
-                    {
-                        <button class="mb-2 mt-2 site-btn-det btn site-btn-det-light btn-sm text-uppercase" 
-                            @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
-                            Choose
-                            @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
-                        </button>
-                    }
-                </div>
                 </div>
             </div>
-        </div>
+                <div>
+                    @if (winnerChosen)
+                    {
+                        if (teamToWin?.TeamName == CurrentGame.AwayTeam?.TeamName)
+                        {
+                            <div class="details-buttons">
+                                <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                    @onclick="() => UndoWinnerSelection()">
+                                    Undo
+                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                </button>
+                                <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                    @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                                    Choose
+                                    @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                                </button>
+                            </div>
+                        }
+
+                        else if (teamToWin?.TeamName == CurrentGame.HomeTeam?.TeamName)
+                        {
+                            <div class="details-buttons">
+                                <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                                    @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                                    Choose
+                                    @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                                </button>
+                                <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
+                                    @onclick="UndoWinnerSelection">
+                                    Undo
+                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                </button>
+                            </div>
+                                    
+                        }
+                    }
+                    else if (!winnerChosen)
+                    {
+                        <div class="details-buttons">
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                            @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                                Choose
+                                @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                            </button>
+                            <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
+                            @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                                Choose
+                                @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                            </button>
+                        </div>
+
+                    }
+                </div>
+            </div>
     }
 </div>
 <div style="margin-top:.5em;" class="game-info-container">
@@ -136,8 +127,8 @@
             <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
         </div>  
         <div style="text-align:center;margin-top:1em;margin:0 auto;">
-            <p style="margin: .5em auto;">Your bet for $@betAmount is ready.</p>
-            <p style="margin: .5em auto;">If everything looks good click "Submit Wager"</p>
+            <p style="margin: .5em 2em;">Your bet for $@betAmount is ready.</p>
+            <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
         </div>
         <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase" 

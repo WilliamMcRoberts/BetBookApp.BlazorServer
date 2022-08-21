@@ -67,7 +67,6 @@
                                     </button>
                                     <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
                                 </div>
-                                
                             }
                             else
                             {
@@ -169,9 +168,9 @@
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                     </div>  
                     <div style="text-align:center;margin-top:1em;">
-                        <p style="margin: .5em auto;">Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
-                    <p style="margin: .5em auto;">If everything looks good click "Submit Wager"</p>
-                    </div>
+                        <p style="margin: .5em 2em;">Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
+                    <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
+                </div>
                 <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
                     <button class="mb-2 mt-4 site-btn btn site-btn-light btn-sm text-uppercase" 
                         @onclick="SubmitParleyWager">

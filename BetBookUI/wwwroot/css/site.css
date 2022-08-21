@@ -77,6 +77,11 @@ a, .btn-link {
         Create Bet Page
 ********************************/
 
+.details-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
 .game-wager-container {
     display: flex;
     justify-content: center;
@@ -774,9 +779,18 @@ ul {
     .parley-buttons {
         display: flex;
         flex-direction: column;
-        margin: 0 .75em;
+        margin: 0 2em;
     }
 
+}
+
+@media(max-width: 625px) {
+
+    .details-buttons {
+        display: flex;
+        flex-direction: column;
+        margin: 0 2em;
+    }
 }
 
 @media(max-width: 650px) {
