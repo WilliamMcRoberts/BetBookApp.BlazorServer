@@ -3,7 +3,7 @@
 
 @if(AvailableGameList is not null && AvailableGameList.Count != 0)
 {
-    foreach(GameModel game in AvailableGameList.OrderBy(g => g.DateOfGame))
+    foreach(GameModel game in AvailableGameList.OrderBy(g => g.DateOfGame).ThenBy(g => g.TimeOfGameOnly))
     {
         <div class="game-item-list" >
             <div class="game-title">

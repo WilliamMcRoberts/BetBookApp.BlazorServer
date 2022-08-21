@@ -26,7 +26,7 @@
     </div>
     <div class="parley-bet-game-list-section">
         <div style="width:100%;">
-            @foreach(GameModel game in gamesAvailable.OrderBy(g => g.DateOfGame))
+            @foreach (GameModel game in gamesAvailable.OrderBy(g => g.DateOfGame).ThenBy(g => g.TimeOfGameOnly))
             {
                 @if(gamesAvailable.Count > 1)
                 {
