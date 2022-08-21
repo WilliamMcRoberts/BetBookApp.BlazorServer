@@ -1,5 +1,5 @@
 # BetBookApp
-Bet Book is a .NET 6 Blazor Server application that allows users with an account to place wagers on NFL games in the 2022-2023 season using a paper account. Bet Book consumes a SportsData.IO api for up-to-date scores and lines. Users can place "parley" style bets with up to five games with appropriate payouts or bet on single games. Game info, team stats, bet info and user info is stored in a SQL database using Dapper for object mapping. Authentication is handled via Azure AD B2C. Bet Book is located at https://betbookgaming.com. Questions can be directed to support@betbookgaming.com.
+Bet Book is a .NET 6 Blazor Server application that allows users with an account to place wagers on NFL games in the 2022-2023 season using a paper account. Bet Book consumes a SportsData.IO api for up-to-date scores and lines. Users can place "parley" style bets with up to five games with appropriate payouts or bet on single games. Game data, team data, bet data and user data is stored in a SQL Server database using Dapper for object mapping. Authentication is handled via Azure AD B2C. Bet Book is located at https://betbookgaming.com. Questions can be directed to support@betbookgaming.com.
 
 BROWSE GAMES HOME PAGE
 ![PHOME](https://user-images.githubusercontent.com/95720340/184517616-ecc65420-53a2-4212-982d-64c5ceff5a23.png)
