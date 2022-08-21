@@ -9,13 +9,16 @@
 
 
 <div class="game-info-container">
-    <h3 style="font-weight: 700;margin-top: .5em;" class="title">Game Details</h3>
+    <h3 class="game-details">Game Details</h3>
     @if(CurrentGame is not null)
     {
         <div style="margin-bottom:1em;">
-            <h6 class="title fw-bold">@CurrentGame.AwayTeam?.TeamName at @CurrentGame.HomeTeam?.TeamName @CurrentGame.PointSpreadDescription</h6>
-            <h6 class="title fw-bold">@CurrentGame.Stadium</h6>
-            <h6 class="title fw-bold">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</h6>
+            <div style="margin-top:4em;text-align:center;">
+                <h6 class="details">@CurrentGame.AwayTeam?.TeamName at @CurrentGame.HomeTeam?.TeamName @CurrentGame.PointSpreadDescription</h6>
+                <h6 class="details">@CurrentGame.Stadium</h6>
+                <h6 class="details">@CurrentGame.DateOfGameOnly at @CurrentGame.TimeOfGameOnly pm</h6>
+            </div>
+            
             <br />
             <div class="records">
                 <div class="stat-records">

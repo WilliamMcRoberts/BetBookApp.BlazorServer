@@ -380,6 +380,19 @@ ul {
     justify-content: center;
 }
 
+.details {
+    font-size:20px;
+    text-align:center;
+    font-weight:700;
+}
+
+.game-details {
+    font-size: 25px;
+    text-align: center;
+    font-weight: 700;
+    margin-top: .5em;
+}
+
 .nav-links {
     display: flex;
     justify-content: flex-end;
@@ -671,6 +684,13 @@ ul {
 
 }
 
+@media (max-width: 850px) {
+    .stat {
+        display: none;
+    }
+
+}
+
 @media (max-width: 800px) {
 
     .title {
@@ -768,9 +788,7 @@ ul {
         width: 95%;
     }
 
-    .stat {
-        display:none;
-    }
+    
 
 }
 
@@ -813,6 +831,10 @@ ul {
 
     .footer-game-item {
         font-size: 5px;
+    }
+
+    .details {
+        font-size: 15px;
     }
 
 }

@@ -1,27 +1,13 @@
 ﻿
-using System;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BetBookUI.Helpers;
 
-/// <summary>
-/// Static Auth Provider helper class
-/// </summary>
+#nullable disable
+
 public static class AuthenticationStateProviderHelpers
 {
-    /// <summary>
-    /// Static method to grab object identifier from Azure, 
-    /// then grab user from database
-    /// </summary>
-    /// <param name="provider">
-    /// AuthenticationStateProvider represents the identity provider
-    /// </param>
-    /// <param name="userData">
-    /// IUserData represents instance of UserData class
-    /// </param>
-    /// <returns>
-    /// UserModel current logged in user
-    /// </returns>
+
     public static async Task<UserModel> GetUserFromAuth(
         this AuthenticationStateProvider provider, IUserData userData)
     {
@@ -32,11 +18,7 @@ public static class AuthenticationStateProviderHelpers
         return await userData.GetUserFromAuthentication(objectId);
     }
 
-    /// <summary>
-    /// Async method that grabs logged in user's info from Azure AD B2C and checks if they have a sql User entry and if not calls the spUsers_Insert stored procedure
-    /// If user has an entry it checks for any new info and if so calls the spUsers_Update stored procedure
-    /// </summary>
-    /// <returns></returns>
+
     public static async Task LoadAndVerifyUser(
         this AuthenticationStateProvider provider, UserModel loggedInUser,
             IUserData userData)
@@ -49,13 +31,13 @@ public static class AuthenticationStateProviderHelpers
         {
             loggedInUser = await userData.GetUserFromAuthentication(objectId) ?? new();
 
-            string? firstName = authState.User.Claims.FirstOrDefault(
+            string firstName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("givenname"))?.Value;
-            string? lastName = authState.User.Claims.FirstOrDefault(
+            string lastName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("surname"))?.Value;
-            string? displayName = authState.User.Claims.FirstOrDefault(
+            string displayName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Equals("name"))?.Value;
-            string? emailAddress = authState.User.Claims.FirstOrDefault(
+            string emailAddress = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("email"))?.Value;
 
             bool isDirty = false;
@@ -65,25 +47,25 @@ public static class AuthenticationStateProviderHelpers
                 isDirty = true;
                 loggedInUser.ObjectIdentifier = objectId;
             }
-            if (firstName?.Equals(loggedInUser.FirstName) == false)
+            if (firstName.Equals(loggedInUser.FirstName) == false)
             {
                 isDirty = true;
                 loggedInUser.FirstName = firstName;
             }
 
-            if (lastName?.Equals(loggedInUser.LastName) == false)
+            if (lastName.Equals(loggedInUser.LastName) == false)
             {
                 isDirty = true;
                 loggedInUser.LastName = lastName;
             }
 
-            if (displayName?.Equals(loggedInUser.DisplayName) == false)
+            if (displayName.Equals(loggedInUser.DisplayName) == false)
             {
                 isDirty = true;
                 loggedInUser.DisplayName = displayName;
             }
 
-            if (emailAddress?.Equals(loggedInUser.EmailAddress) == false)
+            if (emailAddress.Equals(loggedInUser.EmailAddress) == false)
             {
                 isDirty = true;
                 loggedInUser.EmailAddress = emailAddress;
@@ -106,4 +88,4 @@ public static class AuthenticationStateProviderHelpers
     }
 }
 
-
+#nullable enable
