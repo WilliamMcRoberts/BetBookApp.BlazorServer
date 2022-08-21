@@ -42,7 +42,7 @@ else
 @code {
 
     [Parameter]
-    public UserModel User { get; set; } = new();
+    public UserModel? User { get; set; } = new();
 
     [Parameter]
     public HashSet<GameModel> AvailableGameList { get; set; } = new();

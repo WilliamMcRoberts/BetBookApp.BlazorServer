@@ -4,11 +4,12 @@
 var prevScrollPos = window.pageYOffset;
 window.onscroll = function () {
     var currentScrollPos = window.pageYOffset;
-    if (prevScrollPos > currentScrollPos) {
-        document.getElementById("header").style.top = "0";
-    } else {
+    if (prevScrollPos <= currentScrollPos) {
         document.getElementById("header").style.top = "-100px";
+        prevScrollPos = currentScrollPos;
+        return;
     }
+    document.getElementById("header").style.top = "0";
     prevScrollPos = currentScrollPos;
 }
 
