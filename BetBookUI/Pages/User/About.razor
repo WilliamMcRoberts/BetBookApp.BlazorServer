@@ -18,20 +18,22 @@
     <SfGrid DataSource="@OddsList">
         <GridColumns>
             <GridColumn Field="@nameof(Odds.NumberOfGames)"
-                        HeaderText="Number Of Games"
-                        TextAlign="TextAlign.Justify">
+                        Width="70"
+                        HeaderText="# Games"
+                        TextAlign="TextAlign.Center">
             </GridColumn>
             <GridColumn Field="@nameof(Odds.Odd)"
                         HeaderText="Odds"
-                        TextAlign="TextAlign.Justify">
+                        TextAlign="TextAlign.Center">
             </GridColumn>
             <GridColumn Field="@nameof(Odds.Example)"
+                        Width="150"
                         HeaderText="Example"
-                        TextAlign="TextAlign.Justify">
+                        TextAlign="TextAlign.Center">
             </GridColumn>
             <GridColumn Field="@nameof(Odds.BetType)"
                         HeaderText="Bet Type"
-                        TextAlign="TextAlign.Justify">
+                        TextAlign="TextAlign.Center">
             </GridColumn>
         </GridColumns>
     </SfGrid>
