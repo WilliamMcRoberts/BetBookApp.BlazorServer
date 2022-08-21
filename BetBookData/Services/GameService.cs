@@ -1,11 +1,9 @@
 ﻿
-using System.Text.Json;
 using BetBookData.Interfaces;
 using BetBookData.Dto;
 using BetBookData.Models;
 using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace BetBookData.Services;
@@ -184,8 +182,10 @@ public class GameService : IGameService
 
             if (!gameLookup.Score.IsOver)
                 continue;
+
             if (!double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore))
                 continue;
+
             if (!double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore))
                 continue;
 

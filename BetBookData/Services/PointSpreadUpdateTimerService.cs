@@ -6,12 +6,12 @@ namespace BetBookData.Services;
 
 #nullable enable
 
-public class TimerService : BackgroundService
+public class PointSpreadUpdateTimerService : BackgroundService
 {
     private readonly IGameService _gameService;
-    private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(3));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(30));
 
-    public TimerService(IGameService gameService)
+    public PointSpreadUpdateTimerService(IGameService gameService)
     {
         _gameService = gameService;
     }
@@ -22,9 +22,8 @@ public class TimerService : BackgroundService
         while (await _timer.WaitForNextTickAsync(stoppingToken)
                     && !stoppingToken.IsCancellationRequested)
         {
-            await _gameService.FetchAllScoresForFinishedGames();
             await _gameService.GetPointSpreadUpdateForAvailableGames();
-            Console.WriteLine($"Timer trigger count: {index}");
+            Console.WriteLine($"Timer trigger count: {index} Time:{DateTime.Now}");
             index++;
         }
     }

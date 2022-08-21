@@ -38,7 +38,8 @@ public static class RegisterServices
 
         /********************** Services *****************************/
 
-        builder.Services.AddHostedService<TimerService>();
+        builder.Services.AddHostedService<PointSpreadUpdateTimerService>();
+        builder.Services.AddHostedService<ScoresUpdateTimerService>();
         builder.Services.AddSingleton<IGameService, GameService>();
 
         /***************** Http Client Factory **********************/
