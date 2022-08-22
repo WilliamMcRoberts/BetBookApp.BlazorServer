@@ -4,6 +4,7 @@ using System.Data;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using BetBookData.DbAccess;
+using Microsoft.Extensions.Logging;
 
 namespace BetBookData.Data;
 
@@ -14,15 +15,17 @@ public class BetData : IBetData
 
     private readonly ISqlConnection _db;
     private readonly IConfiguration _config;
+    private readonly ILogger<BetData> _logger;
 
     /// <summary>
     /// BetData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
-    public BetData(ISqlConnection db, IConfiguration config)
+    public BetData(ISqlConnection db, IConfiguration config, ILogger<BetData> logger)
     {
         _db = db;
         _config = config;
+        _logger = logger;
     }
 
     /// <summary>
@@ -30,8 +33,13 @@ public class BetData : IBetData
     /// all bets in the database
     /// </summary>
     /// <returns>IEnumerable of BetModel represents all bets in the database</returns>
-    public async Task<IEnumerable<BetModel>> GetBets() => 
-        await _db.LoadData<BetModel, dynamic>( "dbo.spBets_GetAll", new { });
+    public async Task<IEnumerable<BetModel>> GetBets() 
+    {
+        _logger.LogInformation(message: "Http Get / Get Bets");
+
+        return await _db.LoadData<BetModel, dynamic>(
+            "dbo.spBets_GetAll", new { });
+    }
 
     /// <summary>
     /// Async method calls spBets_Get stored procedure which retrieves one 
@@ -41,6 +49,8 @@ public class BetData : IBetData
     /// <returns>BetModel represents the bet being retrieved from the database</returns>
     public async Task<BetModel?> GetBet(int betId)
     {
+        _logger.LogInformation(message: "Http Get / Get Bet");
+
         var result = await _db.LoadData<BetModel, dynamic>(
             "dbo.spBets_Get", new
             {
@@ -80,6 +90,8 @@ public class BetData : IBetData
         p.Add( "@Id", 0, dbType: DbType.Int32,
             direction: ParameterDirection.Output);
 
+        _logger.LogInformation(message: "Http Post / Insert Bet");
+
         await connection.ExecuteAsync(
             "dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
 
@@ -99,26 +111,9 @@ public class BetData : IBetData
         string betStatus = bet.BetStatus.ToString();
         string payoutStatus = bet.PayoutStatus.ToString();
 
-        if (bet.FinalWinnerId != 0)
-        {
-            await _db.SaveData("dbo.spBets_Update", new
-            {
-                bet.Id,
-                bet.BetAmount,
-                bet.BetPayout,
-                bet.BettorId,
-                bet.GameId,
-                bet.ChosenWinnerId,
-                bet.FinalWinnerId,
-                betStatus,
-                payoutStatus,
-                bet.PointSpread
-            });
+        _logger.LogInformation(message: "Http Put / Update Bet");
 
-            return;
-        }
-
-        await _db.SaveData("dbo.spBets_UpdatePush", new
+        await _db.SaveData("dbo.spBets_Update", new
         {
             bet.Id,
             bet.BetAmount,
@@ -126,11 +121,13 @@ public class BetData : IBetData
             bet.BettorId,
             bet.GameId,
             bet.ChosenWinnerId,
+            bet.FinalWinnerId,
             betStatus,
             payoutStatus,
             bet.PointSpread
         });
 
+        return;
     }
 
     /// <summary>
@@ -141,6 +138,8 @@ public class BetData : IBetData
     /// <returns></returns>
     public async Task DeleteBet(int id)
     {
+        _logger.LogInformation(message: "Http Delete / Delete Bet");
+
         await _db.SaveData(
         "dbo.spBets_Delete", new
         {

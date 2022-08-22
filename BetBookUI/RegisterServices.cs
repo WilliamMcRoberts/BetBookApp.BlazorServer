@@ -44,6 +44,7 @@ public static class RegisterServices
         builder.Services.AddHostedService<PointSpreadUpdateTimerService>();
         builder.Services.AddHostedService<ScoresUpdateTimerService>();
         builder.Services.AddSingleton<IGameService, GameService>();
+        builder.Services.AddSingleton<ITransactionService, TransactionService>();
 
         /***************** Factories **********************/
 

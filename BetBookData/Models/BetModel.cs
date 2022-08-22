@@ -34,7 +34,7 @@ public class BetModel
     public TeamModel? ChosenWinner { get; set; }
 
     // Final winner of the game in the bet
-    public int FinalWinnerId { get; set; }
+    public int? FinalWinnerId { get; set; }
 
     // Team name of the final winner
     public TeamModel? FinalWinner { get; set; }

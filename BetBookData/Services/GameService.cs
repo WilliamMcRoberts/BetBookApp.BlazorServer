@@ -19,11 +19,11 @@ public class GameService : IGameService
     private readonly IBetData _betData;
     private readonly IParleyBetData _parleyData;
     private readonly IConfiguration _config;
+    private readonly ILogger<GameService> _logger;
     IEnumerable<TeamModel>? teams;
     IEnumerable<GameModel>? games;
     IEnumerable<BetModel>? bets;
     IEnumerable<ParleyBetModel>? parleyBets;
-    ILogger<GameService> _logger;
 
     public GameService(IGameData gameData,
                        ITeamData teamData,

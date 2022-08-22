@@ -6,6 +6,8 @@
 @inject IConfiguration config
 @inject IUserData userData
 @inject IBetData betData
+@inject ITransactionService transactionService
+@inject ILogger<GameDetails> logger
 
 
 <div class="game-info-container">
@@ -173,12 +175,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(teams is null)
-            teams = await teamData.GetTeams();
+        teams = await teamData.GetTeams();
     }
 
     private async Task SubmitSingleWager()
     {
+        if (CurrentGame is null)
+            return;
+
         if (betAmount == 0)
         {
             betAmountBad = true;
@@ -203,28 +207,34 @@
             return;
         }
 
-        BetModel bet = new();
-
         HouseAccountModel? houseAccount =
             await houseData.GetHouseAccount();
 
-        UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+        UserModel? loggedInUser = 
+            await authProvider.GetUserFromAuth(userData);
 
-        bet.BetAmount = betAmount;
-        bet.BetPayout =
-            (decimal)((double)betAmount - (double)betAmount * VIG);
-        bet.ChosenWinnerId = teamToWin.Id;
-        bet.BettorId = loggedInUser!.Id;
-        bet.GameId = CurrentGame.Id;
-        bet.PointSpread = CurrentGame.PointSpread;
+        BetModel bet = new();
 
-        loggedInUser.AccountBalance -= bet.BetAmount;
-        houseAccount!.AccountBalance += bet.BetAmount;
+        try
+        {
+            bet.BetAmount = betAmount;
+            bet.BetPayout =
+                (decimal)((double)betAmount - (double)betAmount * VIG);
+            bet.ChosenWinnerId = teamToWin.Id;
+            bet.BettorId = loggedInUser!.Id;
+            bet.GameId = CurrentGame.Id;
+            bet.PointSpread = CurrentGame.PointSpread;
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation(ex, "Exception On Creating Single Bet");
+        }
 
         // Transaction method transfers funds from user account
         // to house account and inserts bet into the database
-        await loggedInUser.CreateBetTransaction(
-            bet, houseAccount, config, userData, houseData, betData);
+        await transactionService.CreateBetTransaction(
+            loggedInUser, bet);
 
         wagerPlaced = true;
         CurrentGame = null!;

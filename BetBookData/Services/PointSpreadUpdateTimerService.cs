@@ -14,7 +14,8 @@ public class PointSpreadUpdateTimerService : BackgroundService
     private readonly ILogger<PointSpreadUpdateTimerService> _logger;
 
 
-    public PointSpreadUpdateTimerService(IGameService gameService, ILogger<PointSpreadUpdateTimerService> logger)
+    public PointSpreadUpdateTimerService(
+        IGameService gameService, ILogger<PointSpreadUpdateTimerService> logger)
     {
         _gameService = gameService;
         _logger = logger;

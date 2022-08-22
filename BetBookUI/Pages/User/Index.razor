@@ -5,6 +5,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject IGameService gameService
+@inject IBetData betData
 @inject ILogger<Index> logger
 
 <PageTitle>HOME</PageTitle>
@@ -31,6 +32,7 @@
     HashSet<GameModel> thisWeeksGames = new();
     IEnumerable<TeamModel>? teams;
     IEnumerable<GameModel>? games;
+    IEnumerable<BetModel>? bets;
 
     protected async override Task OnInitializedAsync()
     {

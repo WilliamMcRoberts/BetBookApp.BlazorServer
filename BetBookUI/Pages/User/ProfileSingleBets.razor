@@ -8,6 +8,7 @@
 @inject IParleyBetData parleyData
 @inject IHouseAccountData houseData
 @inject IConfiguration config
+@inject ITransactionService transactionService
 @inject ILogger<ProfileSingleBets> logger
 
 <PageTitle>SINGLE BETS</PageTitle>
@@ -53,21 +54,13 @@
 
 @code {
     private UserModel? loggedInUser;
-
     private IEnumerable<TeamModel>? teams;
-
     private IEnumerable<GameModel>? games;
-
     private IEnumerable<BetModel>? bets;
-
     private List<BetModel> bettorInProgressBets = new();
-
     private List<BetModel> bettorWinningBetsUnpaid = new();
-
     private List<BetModel> bettorPushBetsUnpaid = new();
-
     private decimal totalPendingPayout;
-
     private decimal totalPendingRefund;
 
     protected override async Task OnInitializedAsync()
@@ -76,15 +69,9 @@
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        if (games is null)
-            games = await gameData.GetGames();
-
-        if (teams is null)
-            teams = await teamData.GetTeams();
-
-        if (bets is null)
-            bets = await betData.GetBets();
-
+        games = await gameData.GetGames();
+        teams = await teamData.GetTeams();
+        bets = await betData.GetBets();
 
         bettorInProgressBets = 
             bets.Where(b => b.BettorId == loggedInUser.Id &&
@@ -119,11 +106,6 @@
             bettorPushBetsUnpaid.CalculateTotalPendingRefund();
     }
 
-    /// <summary>
-    /// Async method pays the user all unpaid 
-    /// payouts
-    /// </summary>
-    /// <returns></returns>
     private async Task PayoutUnpaidWinningBets()
     {
         HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
@@ -131,19 +113,14 @@
         if (houseAccount is null || loggedInUser is null)
             return;
 
-        await loggedInUser.PayoutBetsTransaction(
-            bettorWinningBetsUnpaid, houseAccount, totalPendingPayout, config, userData, 
-                houseData, betData);
+        await transactionService.PayoutBetsTransaction(
+            loggedInUser, bettorWinningBetsUnpaid, totalPendingPayout);
 
         bettorWinningBetsUnpaid.Clear();
 
         totalPendingRefund = 0;
     }
 
-    /// <summary>
-    /// Async method refunds all unpaid push bets
-    /// </summary>
-    /// <returns></returns>
     private async Task RefundUnpaidPushBets()
     {
         HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
@@ -151,9 +128,8 @@
         if (houseAccount is null || loggedInUser is null)
             return;
 
-        await loggedInUser.PayoutBetsTransaction(
-            bettorPushBetsUnpaid, houseAccount, totalPendingRefund, config, userData, 
-                houseData, betData);
+        await transactionService.PayoutBetsTransaction(
+            loggedInUser, bettorPushBetsUnpaid, totalPendingRefund);
 
         bettorPushBetsUnpaid.Clear();
 

@@ -8,6 +8,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject IConfiguration config
+@inject ITransactionService transactionService
 @inject ILogger<ProfileParleyBets> logger
 
 <PageTitle>PARLEY BETS</PageTitle>
@@ -47,25 +48,15 @@
  
 
 @code {
-
     private decimal totalPendingParleyPayout;
-
     private decimal totalPendingParleyRefund;
-
     private UserModel? loggedInUser;
-
     private IEnumerable<BetModel>? bets;
-
     private IEnumerable<ParleyBetModel>? parleyBets;
-
     private IEnumerable<TeamModel>? teams;
-
     private IEnumerable<GameModel>? games;
-
     private List<ParleyBetModel> bettorWinningParleyBetsUnpaid = new();
-
     private List<ParleyBetModel> bettorPushParleyBetsUnpaid = new();
-
     private List<ParleyBetModel> bettorInProgressParleyBets = new();
 
     protected override async Task OnInitializedAsync()
@@ -74,17 +65,10 @@
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
-        if (games is null)
-            games = await gameData.GetGames();
-
-        if (teams is null)
-            teams = await teamData.GetTeams();
-
-        if(bets is null)
-            bets = await betData.GetBets();
-
-        if(parleyBets is null)
-            parleyBets = await parleyData.GetParleyBets();
+        games = await gameData.GetGames();
+        teams = await teamData.GetTeams();
+        bets = await betData.GetBets();
+        parleyBets = await parleyData.GetParleyBets();
 
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&
@@ -136,9 +120,8 @@
         if (loggedInUser is null || houseAccount is null)
             return;
 
-        await loggedInUser.PayoutParleyBetsTransaction(
-                bettorWinningParleyBetsUnpaid, houseAccount, totalPendingParleyPayout, config, 
-                    userData, houseData, parleyData);
+        await transactionService.PayoutParleyBetsTransaction(
+            loggedInUser, bettorWinningParleyBetsUnpaid, totalPendingParleyPayout);
 
         bettorWinningParleyBetsUnpaid.Clear();
 
@@ -156,9 +139,8 @@
         if (loggedInUser is null || houseAccount is null)
             return;
 
-        await loggedInUser.PayoutParleyBetsTransaction(
-                bettorPushParleyBetsUnpaid, houseAccount, totalPendingParleyRefund, config, 
-                    userData, houseData, parleyData);
+        await transactionService.PayoutParleyBetsTransaction(
+            loggedInUser, bettorPushParleyBetsUnpaid, totalPendingParleyRefund);
 
         bettorPushParleyBetsUnpaid.Clear();
 

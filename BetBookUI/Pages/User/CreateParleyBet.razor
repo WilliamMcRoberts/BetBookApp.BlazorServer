@@ -9,6 +9,7 @@
 @inject IParleyBetData parleyData
 @inject IConfiguration config
 @inject IGameService gameService
+@inject ITransactionService transactionService
 @inject ILogger<CreateParleyBet> logger
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
@@ -145,7 +146,7 @@
                 else 
                 {
                     <div class="parley-game-item-unchosen">
-                        <h3 style="text-align:center;margin:4em auto;">There are not enough games left in this week to create a parley...we'll have to wait until next week.</h3>
+                        <h3 style="text-align:center;margin:4em 2em;">There are not enough games left in this week to create a parley...we'll have to wait until next week.</h3>
                     </div>
                 }
                 
@@ -207,12 +208,8 @@ else
     {
         logger.LogInformation("Create Parley Bet Page Requested");
 
-
-        if (games is null)
-            games = await gameData.GetGames();
-
-        if (teams is null)
-            teams = await teamData.GetTeams();
+        games = await gameData.GetGames();
+        teams = await teamData.GetTeams();
 
         gamesAvailable = 
             games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
@@ -258,37 +255,44 @@ else
             TeamModel? chosenWinner =
                     teams?.Where(t => t.TeamName == kv.Value).FirstOrDefault();
 
-            BetModel bet = new();
-
             if (chosenWinner is null)
                 return;
 
-            bet.BetAmount = 0;
-            bet.BetPayout = 0;
-            bet.BettorId = loggedInUser!.Id;
-            bet.GameId = kv.Key.Id;
-            bet.ChosenWinnerId = chosenWinner.Id;
-            bet.PayoutStatus = PayoutStatus.PARLEY;
-            bet.PointSpread = kv.Key.PointSpread;
+            BetModel bet = new();
 
-            bet.Id = await betData.InsertBet(bet);
+            try
+            {
+                bet.BetAmount = 0;
+                bet.BetPayout = 0;
+                bet.BettorId = loggedInUser!.Id;
+                bet.GameId = kv.Key.Id;
+                bet.ChosenWinnerId = chosenWinner.Id;
+                bet.PayoutStatus = PayoutStatus.PARLEY;
+                bet.PointSpread = kv.Key.PointSpread;
 
-            parleyBet.Bets.Add(bet);
+                bet.Id = await betData.InsertBet(bet);
+                parleyBet.Bets.Add(bet);
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation(ex, "Exception On Create Bet For Parley Bet");
+            }
         }
 
-        parleyBet.BetAmount = betAmount;
-        parleyBet.BetPayout = 
-            parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
-        parleyBet.BettorId = loggedInUser!.Id;
+        try
+        {
+            parleyBet.BetAmount = betAmount;
+            parleyBet.BetPayout =
+                parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+            parleyBet.BettorId = loggedInUser!.Id;
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation(ex, "Exception On Create Parley Bet");
+        }
 
-        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
-
-        loggedInUser.AccountBalance -= betAmount;
-        houseAccount!.AccountBalance += betAmount;
-
-        await loggedInUser.CreateParleyBetTransaction(
-            parleyBet, houseAccount, config, userData, houseData, 
-                parleyData);
+        await transactionService.CreateParleyBetTransaction(
+            loggedInUser, parleyBet);
 
         wagerPlaced = true;
     }
@@ -328,11 +332,10 @@ else
     {
         if(teamName == currentGame.AwayTeam?.TeamName)
         {
-            return (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}" 
-                : (currentGame.PointSpread == 0) ? $"+ 0" 
+            return (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}"
+                : (currentGame.PointSpread == 0) ? $"+ 0"
                 : $"- {currentGame.PointSpread}";
         }
-
 
         return (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread?.ToString().Trim('-')}" 
             : (currentGame.PointSpread == 0) ? $"+ 0" 

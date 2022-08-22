@@ -1,6 +1,7 @@
 ﻿using BetBookData.DbAccess;
 using BetBookData.Interfaces;
 using BetBookData.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BetBookData.Data;
 
@@ -9,14 +10,16 @@ namespace BetBookData.Data;
 public class GameData : IGameData
 {
     private readonly ISqlConnection _db;
+    private readonly ILogger<GameData> _logger;
 
     /// <summary>
     /// GameData Constructor
     /// </summary>
     /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
-    public GameData(ISqlConnection db)
+    public GameData(ISqlConnection db, ILogger<GameData> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
 
@@ -27,8 +30,14 @@ public class GameData : IGameData
     /// <returns>
     /// IEnumerable of GameModel representing all games in the database
     /// </returns>
-    public async Task<IEnumerable<GameModel>> GetGames() => 
-        await _db.LoadData<GameModel, dynamic>("dbo.spGames_GetAll", new{});
+    public async Task<IEnumerable<GameModel>> GetGames() 
+    {
+        _logger.LogInformation(message: "Http Get / Get Games");
+
+        return await _db.LoadData<GameModel, dynamic>(
+            "dbo.spGames_GetAll", new { });
+    }
+        
 
     /// <summary>
     /// Async method calls spGames_Get stored procedure which retrieves one 
@@ -40,6 +49,8 @@ public class GameData : IGameData
     /// </returns>
     public async Task<GameModel?> GetGame(int id)
     {
+        _logger.LogInformation(message: "Http Get / Get Game");
+
         var results = await _db.LoadData<GameModel, dynamic>(
             "dbo.spGames_Get", new
             {
@@ -59,6 +70,8 @@ public class GameData : IGameData
     {
         string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
+
+        _logger.LogInformation(message: "Http Post / Insert Game");
 
         await _db.SaveData("dbo.spGames_Insert", new
         {
@@ -85,6 +98,8 @@ public class GameData : IGameData
     {
         string seasonType = game.Season.ToString();
         string gameStatus = game.GameStatus.ToString();
+
+        _logger.LogInformation(message: "Http Put / Update Game");
 
         await _db.SaveData("dbo.spGames_Update", new
         {
@@ -113,6 +128,8 @@ public class GameData : IGameData
     /// <returns></returns>
     public async Task DeleteGame(int id)
     {
+        _logger.LogInformation(message: "Http Delete / Delete Game");
+
         await _db.SaveData(
         "dbo.spGames_Delete", new
         {
