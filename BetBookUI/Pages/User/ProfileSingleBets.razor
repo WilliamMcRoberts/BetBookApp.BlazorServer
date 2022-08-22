@@ -8,6 +8,7 @@
 @inject IParleyBetData parleyData
 @inject IHouseAccountData houseData
 @inject IConfiguration config
+@inject ILogger<ProfileSingleBets> logger
 
 <PageTitle>SINGLE BETS</PageTitle>
 
@@ -71,6 +72,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        logger.LogInformation("Profile Single Bets Page Requested");
+
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
         if (games is null)

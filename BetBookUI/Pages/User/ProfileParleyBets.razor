@@ -8,6 +8,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject IConfiguration config
+@inject ILogger<ProfileParleyBets> logger
 
 <PageTitle>PARLEY BETS</PageTitle>
 
@@ -69,6 +70,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        logger.LogInformation("Profile Parley Bets Page Requested");
+
         loggedInUser = await authProvider.GetUserFromAuth(userData);
 
         if (games is null)

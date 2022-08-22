@@ -9,6 +9,7 @@
 @inject IParleyBetData parleyData
 @inject IConfiguration config
 @inject IGameService gameService
+@inject ILogger<CreateParleyBet> logger
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
 
@@ -204,6 +205,9 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        logger.LogInformation("Create Parley Bet Page Requested");
+
+
         if (games is null)
             games = await gameData.GetGames();
 

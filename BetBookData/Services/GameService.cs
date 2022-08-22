@@ -5,6 +5,7 @@ using BetBookData.Models;
 using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 
 namespace BetBookData.Services;
 
@@ -22,13 +23,15 @@ public class GameService : IGameService
     IEnumerable<GameModel>? games;
     IEnumerable<BetModel>? bets;
     IEnumerable<ParleyBetModel>? parleyBets;
+    ILogger<GameService> _logger;
 
     public GameService(IGameData gameData,
                        ITeamData teamData,
                        IBetData betData,
                        IParleyBetData parleyData,
                        IConfiguration config,
-                       IHttpClientFactory httpClientFactory)
+                       IHttpClientFactory httpClientFactory,
+                       ILogger<GameService> logger)
     {
         _gameData = gameData;
         _teamData = teamData;
@@ -36,6 +39,7 @@ public class GameService : IGameService
         _parleyData = parleyData;
         _config = config;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public async Task<GameByTeamDto> GetGameByTeam(TeamModel team)
@@ -44,6 +48,7 @@ public class GameService : IGameService
 
         try
         {
+            _logger.LogInformation("Http Get / Get Game By Team");
             var client = _httpClientFactory.CreateClient("sportsdata");
 
             game = await client.GetFromJsonAsync<GameByTeamDto>(
@@ -52,8 +57,7 @@ public class GameService : IGameService
         }
         catch (Exception ex)
         {
-
-            Console.WriteLine(ex.Message);
+            _logger.LogInformation(ex, "Exception On Get Game By Team");
         }
 
         return game!;
@@ -65,6 +69,8 @@ public class GameService : IGameService
 
         try
         {
+            _logger.LogInformation("Http Get / Get Game By Score ID");
+
             var client = _httpClientFactory.CreateClient("sportsdata");
 
             game = await client.GetFromJsonAsync<GameByScoreIdDto>(
@@ -73,8 +79,7 @@ public class GameService : IGameService
 
         catch (Exception ex)
         {
-
-            Console.WriteLine(ex.Message);
+            _logger.LogInformation(ex, "Exception On Get Game By Score ID");
         }
 
         return game!;
@@ -87,6 +92,7 @@ public class GameService : IGameService
 
         try
         {
+            _logger.LogInformation("Http Get / Get Games By Week");
             var client = _httpClientFactory.CreateClient("sportsdata");
 
             games = await client.GetFromJsonAsync<Game[]>(
@@ -95,7 +101,7 @@ public class GameService : IGameService
 
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            _logger.LogInformation(ex, "Exception On Get Games By Week");
         }
 
         return games!;
@@ -105,13 +111,14 @@ public class GameService : IGameService
         SeasonType currentSeason, int currentWeek)
     {
         if (teams is null || !teams.Any())
-                teams = await _teamData.GetTeams();
+            teams = await _teamData.GetTeams();
 
         if (games is null || !teams.Any())
-                games = await _gameData.GetGames();
+            games = await _gameData.GetGames();
 
         HashSet<GameModel> thisWeekGames = games.Where(g =>
-            g.GameStatus != GameStatus.FINISHED).ToHashSet<GameModel>();
+            g.GameStatus != GameStatus.FINISHED && g.WeekNumber == currentWeek)
+            .ToHashSet<GameModel>();
 
         Game[] gameArray = new Game[16];
 
@@ -123,7 +130,7 @@ public class GameService : IGameService
             if (game.PointSpread is null)
                 continue;
 
-            if (thisWeekGames.Contains(games.Where(g => 
+            if (thisWeekGames.Contains(games.Where(g =>
                 g.ScoreId == game.ScoreID).FirstOrDefault()!))
                 continue;
 
@@ -212,7 +219,7 @@ public class GameService : IGameService
     public async Task GetPointSpreadUpdateForAvailableGames()
     {
         if (games is null || !games.Any())
-                games = await _gameData.GetGames();
+            games = await _gameData.GetGames();
 
         foreach (GameModel game in games.Where(g
                     => g.GameStatus == GameStatus.NOT_STARTED))

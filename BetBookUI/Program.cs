@@ -1,49 +1,71 @@
 ﻿using BetBookUI;
 using Microsoft.AspNetCore.Rewrite;
+using Serilog;
+using Serilog.Events;
 
-var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings.Development.json")
+    .Build();
 
-var secret = builder.Configuration["GoogleRecaptchaV3:Secret"];
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
 
-builder.ConfigureServices();
-
-var app = builder.Build();
-
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
-    builder.Configuration.GetValue<string>("Syncfusion:Key"));
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+try
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    Log.Information("Application Starting...");
+    var builder = WebApplication.CreateBuilder(args);
 
+    builder.ConfigureServices();
 
-app.UseHttpsRedirection();
+    var app = builder.Build();
 
-app.UseStaticFiles();
+    Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
+        builder.Configuration.GetValue<string>("Syncfusion:Key"));
 
-app.UseRouting();
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 
-app.UseAuthentication();
-app.UseAuthorization();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
 
-// Redirect
-app.UseRewriter(
-    new RewriteOptions().Add(
-        context =>
-        {
-            if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/SignedOut")
+    app.UseSerilogRequestLogging();
+    
+
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    // Redirect
+    app.UseRewriter(
+        new RewriteOptions().Add(
+            context =>
             {
-                context.HttpContext.Response.Redirect("/");
+                if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/SignedOut")
+                {
+                    context.HttpContext.Response.Redirect("/");
+                }
             }
-        }
-        ));
+            ));
 
-app.MapControllers();
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-app.Run();
+    app.MapControllers();
+    app.MapBlazorHub();
+    app.MapFallbackToPage("/_Host");
+    app.Run();
+}
+catch (Exception ex)
+{
+    string type = ex.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.OrdinalIgnoreCase)) throw;
+    Log.Fatal(ex, "The Host Stopped Unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

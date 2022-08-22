@@ -5,6 +5,7 @@
 @inject ITeamData teamData
 @inject IGameData gameData
 @inject IGameService gameService
+@inject ILogger<Index> logger
 
 <PageTitle>HOME</PageTitle>
 
@@ -27,32 +28,30 @@
     SeasonType season;
     int week;
     HashSet<GameModel> gamesAvailable = new();
+    HashSet<GameModel> thisWeeksGames = new();
     IEnumerable<TeamModel>? teams;
     IEnumerable<GameModel>? games;
 
-    /// <summary>
-    /// Async initialization method
-    /// </summary>
-    /// <returns></returns>
     protected async override Task OnInitializedAsync()
     {
+        logger.LogInformation("Index Page Requested");
+
         season = DateTime.Now.CalculateSeason();
         week = season.CalculateWeek(DateTime.Now);
 
-        if(teams is null)
+        if (teams is null)
             teams = await teamData.GetTeams();
-        if(games is null)
+        if (games is null)
             games = await gameData.GetGames();
 
-        HashSet<GameModel> thisWeeksGames = 
-            games.Where(g => g.WeekNumber == week).ToHashSet<GameModel>();
+        thisWeeksGames = games.Where(g => g.WeekNumber == week).ToHashSet<GameModel>();
 
-        if(thisWeeksGames.Count != 16)
+        if (thisWeeksGames.Count != 16)
         {
             thisWeeksGames = await gameService.GetGamesForThisWeek(season, week);
         }
 
-        gamesAvailable = thisWeeksGames.Where(g => 
+        gamesAvailable = thisWeeksGames.Where(g =>
             g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
@@ -61,4 +60,5 @@
 
         loggedInUser = await authProvider.GetUserFromAuth(userData);
     }
+
 }

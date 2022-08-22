@@ -4,6 +4,7 @@
 @inject IGameData gameData
 @inject ITeamData teamData
 @inject IUserData userData
+@inject ILogger<CreateBet> logger
 
 <PageTitle>CREATE A BET</PageTitle>
 
@@ -23,6 +24,8 @@
 
     protected async override Task OnInitializedAsync()
     {
+        logger.LogInformation("Create Bet Page Requestd");
+
         if(games is null)
             games = await gameData.GetGames();
 

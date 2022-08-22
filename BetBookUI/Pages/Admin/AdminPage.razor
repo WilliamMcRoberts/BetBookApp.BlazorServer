@@ -2,6 +2,8 @@
 @attribute [Authorize(Policy = "Admin")]
 @inject IGameData gameData
 @inject IGameService gameService
+@inject ILogger<AdminPage> logger
+
 
 <PageTitle>ADMIN</PageTitle>
 
