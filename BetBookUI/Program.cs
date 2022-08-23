@@ -13,7 +13,7 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    Log.Information("Application Starting...");
+    Log.Information("Application Starting...Bet Book App");
     var builder = WebApplication.CreateBuilder(args);
 
     builder.ConfigureServices();
@@ -62,7 +62,7 @@ catch (Exception ex)
 {
     string type = ex.GetType().Name;
     if (type.Equals("StopTheHostException", StringComparison.OrdinalIgnoreCase)) throw;
-    Log.Fatal(ex, "The Host Stopped Unexpectedly");
+    Log.Fatal(ex, "The Host Stopped Unexpectedly...Bet Book App");
 }
 finally
 {
