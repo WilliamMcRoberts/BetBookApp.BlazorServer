@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using BetBookData.Data;
 using BetBookData.Interfaces;
 using BetBookData.Models;
 using Microsoft.Extensions.Configuration;

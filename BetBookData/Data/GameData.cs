@@ -12,24 +12,12 @@ public class GameData : IGameData
     private readonly ISqlConnection _db;
     private readonly ILogger<GameData> _logger;
 
-    /// <summary>
-    /// GameData Constructor
-    /// </summary>
-    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public GameData(ISqlConnection db, ILogger<GameData> logger)
     {
         _db = db;
         _logger = logger;
     }
 
-
-    /// <summary>
-    /// Async method calls the spGames_GetAll stored procedure to retrieve 
-    /// all games in the database
-    /// </summary>
-    /// <returns>
-    /// IEnumerable of GameModel representing all games in the database
-    /// </returns>
     public async Task<IEnumerable<GameModel>> GetGames() 
     {
         _logger.LogInformation(message: "Http Get / Get Games");
@@ -38,15 +26,6 @@ public class GameData : IGameData
             "dbo.spGames_GetAll", new { });
     }
         
-
-    /// <summary>
-    /// Async method calls spGames_Get stored procedure which retrieves one 
-    /// game by game id
-    /// </summary>
-    /// <param name="id">int represents the Id of a game</param>
-    /// <returns>
-    /// GameModel represents a game to retrieve from database
-    /// </returns>
     public async Task<GameModel?> GetGame(int id)
     {
         _logger.LogInformation(message: "Http Get / Get Game");
@@ -60,12 +39,6 @@ public class GameData : IGameData
         return results.FirstOrDefault();
     }
 
-    /// <summary>
-    /// Async method calls the spGames_Insert stored procedure to insert one game 
-    /// entry into the database
-    /// </summary>
-    /// <param name="game">GameModel represents a game to insert into the database</param>
-    /// <returns></returns>
     public async Task InsertGame(GameModel game)
     {
         string seasonType = game.Season.ToString();
@@ -89,11 +62,6 @@ public class GameData : IGameData
         });
     }
 
-    /// <summary>
-    /// Async method calls the spGames_Update stored procedure to update a game
-    /// </summary>
-    /// <param name="game">GameModel represents a game to update in the database</param>
-    /// <returns></returns>
     public async Task UpdateGame(GameModel game)
     {
         string seasonType = game.Season.ToString();
@@ -120,12 +88,6 @@ public class GameData : IGameData
         });
     }
 
-    /// <summary>
-    /// Async method calls the spGames_Delete stored procedure which deletes one game
-    /// entry in the database
-    /// </summary>
-    /// <param name="id">int represents the Id of a game to delete from database</param>
-    /// <returns></returns>
     public async Task DeleteGame(int id)
     {
         _logger.LogInformation(message: "Http Delete / Delete Game");

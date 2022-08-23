@@ -17,10 +17,6 @@ public class BetData : IBetData
     private readonly IConfiguration _config;
     private readonly ILogger<BetData> _logger;
 
-    /// <summary>
-    /// BetData Constructor
-    /// </summary>
-    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
     public BetData(ISqlConnection db, IConfiguration config, ILogger<BetData> logger)
     {
         _db = db;
@@ -28,11 +24,6 @@ public class BetData : IBetData
         _logger = logger;
     }
 
-    /// <summary>
-    /// Async method calls the spBets_GetAll stored procedure to retrieve 
-    /// all bets in the database
-    /// </summary>
-    /// <returns>IEnumerable of BetModel represents all bets in the database</returns>
     public async Task<IEnumerable<BetModel>> GetBets() 
     {
         _logger.LogInformation(message: "Http Get / Get Bets");
@@ -41,12 +32,6 @@ public class BetData : IBetData
             "dbo.spBets_GetAll", new { });
     }
 
-    /// <summary>
-    /// Async method calls spBets_Get stored procedure which retrieves one 
-    /// bet by bet id
-    /// </summary>
-    /// <param name="betId">int represents the id of the bet being retrieved from the database</param>
-    /// <returns>BetModel represents the bet being retrieved from the database</returns>
     public async Task<BetModel?> GetBet(int betId)
     {
         _logger.LogInformation(message: "Http Get / Get Bet");
@@ -60,12 +45,6 @@ public class BetData : IBetData
         return result.FirstOrDefault();
     }
 
-    /// <summary>
-    /// Async method calls the spBets_Insert stored procedure to insert one bet 
-    /// entry into the database
-    /// </summary>
-    /// <param name="bet">BetModel represents a bet to insert into the database</param>
-    /// <returns></returns>
     public async Task<int> InsertBet(BetModel bet)
     {
         string betStatus = BetStatus.IN_PROGRESS.ToString();
@@ -100,12 +79,6 @@ public class BetData : IBetData
         return bet.Id;
     }
 
-    /// <summary>
-    /// Async method calls the spBets_Update stored procedure if the bet is not a push
-    /// and calls the spBets_UpdatePush stored procedure if the bet is a push
-    /// </summary>
-    /// <param name="bet">BetModel represents a bet being updated into the database</param>
-    /// <returns></returns>
     public async Task UpdateBet(BetModel bet)
     {
         string betStatus = bet.BetStatus.ToString();
@@ -130,12 +103,6 @@ public class BetData : IBetData
         return;
     }
 
-    /// <summary>
-    /// Async method calls the spBets_Delete stored procedure which deletes one bet
-    /// entry in the database
-    /// </summary>
-    /// <param name="id">int represents the id of the bet to be deleted from the database</param>
-    /// <returns></returns>
     public async Task DeleteBet(int id)
     {
         _logger.LogInformation(message: "Http Delete / Delete Bet");

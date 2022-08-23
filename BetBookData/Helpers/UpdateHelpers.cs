@@ -9,13 +9,11 @@ namespace BetBookData.Helpers;
 
 public static class UpdateHelpers
 {
-    public static async Task UpdateParleyBetWinners(this IParleyBetData parleyData, 
-                                                    IEnumerable<ParleyBetModel> parleyBets,
-                                                    IEnumerable<GameModel> games, 
-                                                    IEnumerable<TeamModel> teams,
-                                                    IEnumerable<BetModel> bets)
+    public static async Task UpdateParleyBetWinners(
+        this IParleyBetData parleyData, IEnumerable<ParleyBetModel> parleyBets,
+        IEnumerable<GameModel> games, IEnumerable<TeamModel> teams,
+        IEnumerable<BetModel> bets)
     {
-
         List<ParleyBetModel> parleyBetsInProgress = parleyBets.Where(pb =>
                 pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
 
@@ -48,14 +46,11 @@ public static class UpdateHelpers
         }
     }
 
-
-    public static async Task UpdateBettors(this GameModel currentGame,
-                                           double? homeTeamFinalScore,
-                                           double? awayTeamFinalScore, 
-                                           IBetData betData, 
-                                           IEnumerable<GameModel> games,
-                                           IEnumerable<TeamModel> teams,
-                                           IEnumerable<BetModel> bets)
+    public static async Task UpdateBettors(
+        this GameModel currentGame,double? homeTeamFinalScore,
+        double? awayTeamFinalScore, IBetData betData,
+        IEnumerable<GameModel> games,IEnumerable<TeamModel> teams,
+        IEnumerable<BetModel> bets)
     {
 
         List<BetModel> betsOnCurrentGame = bets.Where(b =>
@@ -87,12 +82,10 @@ public static class UpdateHelpers
         }
     }
 
-
-    public static async Task UpdateTeamRecords(this GameModel currentGame,
-                                               double? homeTeamFinalScore,
-                                               double? awayTeamFinalScore,
-                                               IEnumerable<TeamModel> teams,
-                                               ITeamData teamData)
+    public static async Task UpdateTeamRecords(
+        this GameModel currentGame,double? homeTeamFinalScore,
+        double? awayTeamFinalScore,IEnumerable<TeamModel> teams,
+        ITeamData teamData)
     {
         if(DateTime.Now > new DateTime(2022, 9, 7))
         {
@@ -130,15 +123,10 @@ public static class UpdateHelpers
         
     }
 
-    /// <summary>
-    /// Async method updates game with scores and statuses
-    /// </summary>
-    /// <returns></returns>
-    public static async Task UpdateScores(this GameModel currentGame, 
-                                          double? homeTeamScore, 
-                                          double? awayTeamScore, 
-                                          IEnumerable<TeamModel> teams,
-                                          IGameData gameData)
+    public static async Task UpdateScores(
+        this GameModel currentGame, double? homeTeamScore, 
+        double? awayTeamScore, IEnumerable<TeamModel> teams,
+        IGameData gameData)
     {
         if (currentGame.GameStatus == GameStatus.FINISHED)
                 return;

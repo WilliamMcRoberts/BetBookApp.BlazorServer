@@ -2,6 +2,7 @@
 using BetBookData.Models;
 using BetBookData.Interfaces;
 using BetBookData.DbAccess;
+using Microsoft.Extensions.Logging;
 
 namespace BetBookData.Data;
 
@@ -11,30 +12,26 @@ namespace BetBookData.Data;
 public class ParleyBetData : IParleyBetData
 {
     private readonly ISqlConnection _db;
-    private readonly IBetData _betData;
+    private readonly ILogger<ParleyBetData> _logger;
 
-    public ParleyBetData(ISqlConnection db, IBetData betData)
+    public ParleyBetData(ISqlConnection db, ILogger<ParleyBetData> logger)
     {
         _db = db;
-        _betData = betData;
+        _logger = logger;
     }
 
-    /// <summary>
-    /// Async method calls the spParleyBets_GetAll stored procedure to retrieve 
-    /// all parley bets in the database
-    /// </summary>
-    /// <returns>IEnumerable of ParleyBetModel represents all parley bets in the database</returns>
-    public async Task<IEnumerable<ParleyBetModel>> GetParleyBets() => 
-        await _db.LoadData<ParleyBetModel, dynamic>( "dbo.spParleyBets_GetAll", new { });
+    public async Task<IEnumerable<ParleyBetModel>> GetParleyBets()
+    {
+        _logger.LogInformation(message: "Http Get / Get Parley Bets");
 
-    /// <summary>
-    /// Async method calls spParleyBets_Get stored procedure which retrieves one 
-    /// parley bet by parley bet id
-    /// </summary>
-    /// <param name="parleyBetId">int represents the id of the bet being retrieved from the database</param>
-    /// <returns>ParleyBetModel represents the parley bet being retrieved from the database</returns>
+        return await _db.LoadData<ParleyBetModel, dynamic>(
+            "dbo.spParleyBets_GetAll", new { });
+    }
+
     public async Task<ParleyBetModel?> GetParleyBet(int parleyBetId)
     {
+        _logger.LogInformation(message: "Http Get / Get Parley Bet");
+
         var result = await _db.LoadData<ParleyBetModel, dynamic>(
             "dbo.spParleyBets_Get", new
             {
@@ -44,14 +41,6 @@ public class ParleyBetData : IParleyBetData
         return result.FirstOrDefault();
     }
 
-
-
-    /// <summary>
-    /// Async method calls the spParleyBets_Insert stored procedure to insert one parley bet 
-    /// entry into the database
-    /// </summary>
-    /// <param name="parleyBet">ParleyBetModel represents a parley bet to insert into the database</param>
-    /// <returns></returns>
     public async Task InsertParleyBet(ParleyBetModel parleyBet)
     {
 
@@ -84,6 +73,8 @@ public class ParleyBetData : IParleyBetData
         string parleyBetStatus = ParleyBetStatus.IN_PROGRESS.ToString();
         string parleyPayoutStatus = ParleyPayoutStatus.UNPAID.ToString();
 
+        _logger.LogInformation(message: "Http Post / Insert Parley Bet");
+
         await _db.SaveData("dbo.spParleyBets_Insert", new
         {
             parleyBet.Bet1Id,
@@ -99,16 +90,12 @@ public class ParleyBetData : IParleyBetData
         });
     }
 
-    /// <summary>
-    /// Async method calls the spParleyBets_Update stored procedure to update
-    /// a parley bet
-    /// </summary>
-    /// <param name="parleyBet">ParleyBetModel represents a parley bet being updated into the database</param>
-    /// <returns></returns>
     public async Task UpdateParleyBet(ParleyBetModel parleyBet)
     {
         string parleyBetStatus = parleyBet.ParleyBetStatus.ToString();
         string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToString();
+
+        _logger.LogInformation(message: "Http Put / Update Parley Bet");
 
         await _db.SaveData("dbo.spParleyBets_Update", new
         {
@@ -126,14 +113,10 @@ public class ParleyBetData : IParleyBetData
         });
     }
 
-    /// <summary>
-    /// Async method calls the spBets_Delete stored procedure which deletes one bet
-    /// entry in the database
-    /// </summary>
-    /// <param name="id">int represents the id of the bet to be deleted from the database</param>
-    /// <returns></returns>
     public async Task DeleteParleyBet(int id)
     {
+        _logger.LogInformation(message: "Http Delete / Delete Parley Bet");
+
         await _db.SaveData(
         "dbo.spBets_Delete", new
         {

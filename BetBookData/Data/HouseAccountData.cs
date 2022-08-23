@@ -1,6 +1,7 @@
 ﻿using BetBookData.DbAccess;
 using BetBookData.Interfaces;
 using BetBookData.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BetBookData.Data;
 
@@ -9,38 +10,30 @@ namespace BetBookData.Data;
 public class HouseAccountData : IHouseAccountData
 {
     private readonly ISqlConnection _db;
+    private readonly ILogger<HouseAccountData> _logger;
 
-    /// <summary>
-    /// HouseAccountData Constructor
-    /// </summary>
-    /// <param name="db">ISqlConnection represents SqlConnection class interface</param>
-    public HouseAccountData(ISqlConnection db)
+    public HouseAccountData(ISqlConnection db, ILogger<HouseAccountData> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
-    /// <summary>
-    /// Async method retrieves the house account
-    /// </summary>
-    /// <returns>
-    /// HouseAccountModel represents the house account
-    /// </returns>
     public async Task<HouseAccountModel?> GetHouseAccount()
     {
+        _logger.LogInformation(message: "Http Get / Get House Account");
+
+
         var result = await _db.LoadData<HouseAccountModel, dynamic>(
             "dbo.spHouseAccount_Get", new { });
 
         return result.FirstOrDefault();
     }
 
-    /// <summary>
-    /// Async method calls the spHouseAccount_Update stored procedure to update
-    /// the house account
-    /// </summary>
-    /// <param name="houseAccount">HouseAccountModel represents the house account</param>
-    /// <returns></returns>
     public async Task UpdateHouseAccount(HouseAccountModel houseAccount)
     {
+        _logger.LogInformation(message: "Http Put / Update House Account");
+
+
         await _db.SaveData("dbo.spHouseAccount_Update", new
         {
             houseAccount.AccountBalance
