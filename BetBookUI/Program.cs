@@ -1,7 +1,6 @@
 ﻿using BetBookUI;
 using Microsoft.AspNetCore.Rewrite;
 using Serilog;
-using Serilog.Events;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
