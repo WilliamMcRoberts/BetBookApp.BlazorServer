@@ -189,14 +189,34 @@ else
         <h3 style="text-align:center;margin-top:4em;margin-bottom:4em;">Good luck!</h3>
     </div>
 }
+
 <SfToast @ref="ToastObj" Timeout="0" ShowCloseButton="true" Title="Great Choices! You Must Know Your Stuff!" Content="@Content">
     <ToastPosition X="Right" Y="Bottom"></ToastPosition>
 </SfToast>
 
+<style>
+    .e-toast-container .e-toast { /*Toast Background*/
+        background-color: rgb(0,0,0, .9);
+    }
 
+        .e-toast-container .e-toast:hover { /*Toast Background*/
+            background-color: rgb(0,0,0, .9);
+        }
 
-    
+        .e-toast-container .e-toast .e-toast-message .e-toast-title { /*Toast Title*/
+            color: white;
+            font-weight: 700;
+        }
 
+        .e-toast-container .e-toast .e-toast-message .e-toast-content { /*Toast Content*/
+            color: white;
+            font-weight: 700;
+        }
+
+        .e-toast-container .e-toast .e-toast-icon { /*Toast Icon*/
+            color: red;
+        }
+</style>
 
 @code {
 
