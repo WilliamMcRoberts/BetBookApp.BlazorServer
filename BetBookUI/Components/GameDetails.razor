@@ -8,6 +8,7 @@
 @inject IBetData betData
 @inject ITransactionService transactionService
 @inject ILogger<GameDetails> logger
+@using Syncfusion.Blazor.Notifications
 
 
 <div class="game-info-container">
@@ -148,11 +149,16 @@
     }
 </div>
 
+<SfToast @ref="ToastObj" Timeout="0" ShowCloseButton="true" Title="Good Luck On Your New Wager!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+</SfToast>
+
 @code {
 
     [Parameter]
     public GameModel CurrentGame { get; set; } = new();
-
+    SfToast? ToastObj;
+    public string Content { get => $"{teamToWin?.TeamName} was a great choice!"; }
     private decimal betAmount;
 
     private bool betAmountBad;
@@ -233,8 +239,11 @@
 
         // Transaction method transfers funds from user account
         // to house account and inserts bet into the database
-        await transactionService.CreateBetTransaction(
+        bool transactionGood = await transactionService.CreateBetTransaction(
             loggedInUser, bet);
+
+        if (transactionGood) 
+            this.ToastObj?.ShowAsync();
 
         wagerPlaced = true;
         CurrentGame = null!;

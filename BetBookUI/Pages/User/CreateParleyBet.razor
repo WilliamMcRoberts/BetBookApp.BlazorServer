@@ -11,6 +11,7 @@
 @inject IGameService gameService
 @inject ITransactionService transactionService
 @inject ILogger<CreateParleyBet> logger
+@using Syncfusion.Blazor.Notifications
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
 
@@ -149,7 +150,6 @@
                         <h3 style="text-align:center;margin:4em 2em;">There are not enough games left in this week to create a parley...we'll have to wait until next week.</h3>
                     </div>
                 }
-                
 
             }
             <div class="parley-game-item-unchosen">
@@ -189,9 +189,19 @@ else
         <h3 style="text-align:center;margin-top:4em;margin-bottom:4em;">Good luck!</h3>
     </div>
 }
+<SfToast @ref="ToastObj" Timeout="0" ShowCloseButton="true" Title="Great Choices! You Must Know Your Stuff!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+</SfToast>
+
+
+
+    
+
 
 @code {
 
+    SfToast? ToastObj;
+    public string Content { get => "Thank you for choosing Bet Book Gaming."; }
     private HashSet<GameModel> gamesAvailable = new();
     private List<GameModel> gamesChosen = new();
     private Dictionary<GameModel, string> chosenGamesAndWinners = new();
@@ -291,8 +301,10 @@ else
             logger.LogInformation(ex, "Exception On Create Parley Bet");
         }
 
-        await transactionService.CreateParleyBetTransaction(
+        bool transactionGood = await transactionService.CreateParleyBetTransaction(
             loggedInUser, parleyBet);
+
+        if (transactionGood) this.ToastObj?.ShowAsync();
 
         wagerPlaced = true;
     }
