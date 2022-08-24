@@ -46,8 +46,59 @@
                     BetList="bettorPushParleyBetsUnpaid" />
 </div>
  
+<SfToast @ref="ToastObjPayout" Timeout="0" ShowCloseButton="true" Title="Your Winnings Have Been Deposited Into Your Account!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    <ToastAnimationSettings>
+        <ToastShowAnimationSettings Effect="@ShowAnimation"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="@HideAnimation"></ToastHideAnimationSettings>
+    </ToastAnimationSettings>
+</SfToast>
+
+<SfToast @ref="ToastObjRefund" Timeout="0" ShowCloseButton="true" Title="Your Push Bets Have Been Refunded!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    <ToastAnimationSettings>
+        <ToastShowAnimationSettings Effect="@ShowAnimation"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="@HideAnimation"></ToastHideAnimationSettings>
+    </ToastAnimationSettings>
+</SfToast>
+
+<style>
+
+    /*Toast Background*/
+    .e-toast-container .e-toast { 
+        /*Black w/opacity*/
+        background-color: rgba(0,0,0, .9);
+        border: 1px solid white;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+    }
+        
+        /*Toast Background*/
+        .e-toast-container .e-toast:hover { 
+            /*Black w/opacity*/
+            background-color: rgba(0,0,0, .9);
+        }
+
+        /*Toast Title*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-title { 
+            color: white;
+            font-weight: 700;
+        }
+
+        /*Toast Content*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-content { 
+            color: white;
+            font-weight: 700;
+        }
+
+</style>
 
 @code {
+    SfToast? ToastObjPayout;
+    SfToast? ToastObjRefund;
+    private ToastEffect ShowAnimation = ToastEffect.FadeIn;
+    private ToastEffect HideAnimation = ToastEffect.FadeOut;
+    private string Content { get => "Thank you for choosing Bet Book Gaming."; }
     private decimal totalPendingParleyPayout;
     private decimal totalPendingParleyRefund;
     private UserModel? loggedInUser;
@@ -120,8 +171,11 @@
         if (loggedInUser is null || houseAccount is null)
             return;
 
-        await transactionService.PayoutParleyBetsTransaction(
+        bool transactionGood = await transactionService.PayoutParleyBetsTransaction(
             loggedInUser, bettorWinningParleyBetsUnpaid, totalPendingParleyPayout);
+
+        if (transactionGood)
+            await this.ToastObjPayout!.ShowAsync();
 
         bettorWinningParleyBetsUnpaid.Clear();
 
@@ -139,8 +193,11 @@
         if (loggedInUser is null || houseAccount is null)
             return;
 
-        await transactionService.PayoutParleyBetsTransaction(
+        bool transactionGood = await transactionService.PayoutParleyBetsTransaction(
             loggedInUser, bettorPushParleyBetsUnpaid, totalPendingParleyRefund);
+
+        if (transactionGood)
+            await this.ToastObjRefund!.ShowAsync();
 
         bettorPushParleyBetsUnpaid.Clear();
 

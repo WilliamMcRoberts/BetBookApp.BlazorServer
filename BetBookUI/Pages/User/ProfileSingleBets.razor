@@ -50,9 +50,60 @@
 
 </div>
 
+<SfToast @ref="ToastObjPayout" Timeout="0" ShowCloseButton="true" Title="Your Winnings Have Been Deposited Into Your Account!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    <ToastAnimationSettings>
+        <ToastShowAnimationSettings Effect="@ShowAnimation"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="@HideAnimation"></ToastHideAnimationSettings>
+    </ToastAnimationSettings>
+</SfToast>
 
+<SfToast @ref="ToastObjRefund" Timeout="0" ShowCloseButton="true" Title="Your Push Bets Have Been Refunded!" Content="@Content">
+    <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    <ToastAnimationSettings>
+        <ToastShowAnimationSettings Effect="@ShowAnimation"></ToastShowAnimationSettings>
+        <ToastHideAnimationSettings Effect="@HideAnimation"></ToastHideAnimationSettings>
+    </ToastAnimationSettings>
+</SfToast>
+
+
+<style>
+
+    /*Toast Background*/
+    .e-toast-container .e-toast { 
+        /*Black w/opacity*/
+        background-color: rgba(0,0,0, .9);
+        border: 1px solid white;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+    }
+        
+        /*Toast Background Hover*/
+        .e-toast-container .e-toast:hover { 
+            /*Black w/opacity*/
+            background-color: rgba(0,0,0, .9);
+        }
+
+        /*Toast Title*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-title { 
+            color: white;
+            font-weight: 700;
+        }
+
+        /*Toast Content*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-content { 
+            color: white;
+            font-weight: 700;
+        }
+
+</style>
 
 @code {
+    SfToast? ToastObjPayout;
+    SfToast? ToastObjRefund;
+    private ToastEffect ShowAnimation = ToastEffect.FadeIn;
+    private ToastEffect HideAnimation = ToastEffect.FadeOut;
+    public string Content { get => "Thank you for choosing Bet Book Gaming."; }
     private UserModel? loggedInUser;
     private IEnumerable<TeamModel>? teams;
     private IEnumerable<GameModel>? games;
@@ -73,31 +124,31 @@
         teams = await teamData.GetTeams();
         bets = await betData.GetBets();
 
-        bettorInProgressBets = 
-            bets.Where(b => b.BettorId == loggedInUser.Id &&
-                       b.BetStatus == BetStatus.IN_PROGRESS).ToList();
-
+        bettorInProgressBets = bets.Where(
+            b => b.BettorId == loggedInUser.Id 
+            && b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+                
         if (bettorInProgressBets.Count != 0)
-            bettorInProgressBets = bettorInProgressBets.
-                PopulateBetModelsWithGamesAndTeams(games, teams);
+            bettorInProgressBets = 
+                bettorInProgressBets.PopulateBetModelsWithGamesAndTeams(games, teams);
 
-        bettorWinningBetsUnpaid = 
-            bets.Where(b => b.BettorId == loggedInUser.Id &&
-                       b.BetStatus == BetStatus.WINNER &&
-                       b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+        bettorWinningBetsUnpaid = bets.Where(
+            b => b.BettorId == loggedInUser.Id 
+            && b.BetStatus == BetStatus.WINNER 
+            && b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
         if (bettorWinningBetsUnpaid.Count != 0)
             bettorWinningBetsUnpaid = 
                 bettorWinningBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
 
-        bettorPushBetsUnpaid = 
-            bets.Where(b => b.BettorId == loggedInUser.Id &&
-                       b.BetStatus == BetStatus.PUSH &&
-                       b.PayoutStatus == PayoutStatus.UNPAID).ToList();
+        bettorPushBetsUnpaid = bets.Where(
+            b => b.BettorId == loggedInUser.Id 
+            && b.BetStatus == BetStatus.PUSH &&b.PayoutStatus == PayoutStatus.UNPAID)
+            .ToList();
 
         if (bettorPushBetsUnpaid.Count != 0)
-            bettorPushBetsUnpaid = bettorPushBetsUnpaid.
-                PopulateBetModelsWithGamesAndTeams(games, teams);
+            bettorPushBetsUnpaid = 
+                bettorPushBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
 
         totalPendingPayout = 
             bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
@@ -113,8 +164,11 @@
         if (houseAccount is null || loggedInUser is null)
             return;
 
-        await transactionService.PayoutBetsTransaction(
+        bool transactionGood = await transactionService.PayoutBetsTransaction(
             loggedInUser, bettorWinningBetsUnpaid, totalPendingPayout);
+
+        if (transactionGood)
+            await this.ToastObjPayout!.ShowAsync();
 
         bettorWinningBetsUnpaid.Clear();
 
@@ -128,8 +182,11 @@
         if (houseAccount is null || loggedInUser is null)
             return;
 
-        await transactionService.PayoutBetsTransaction(
+        bool transactionGood = await transactionService.PayoutBetsTransaction(
             loggedInUser, bettorPushBetsUnpaid, totalPendingRefund);
+
+        if (transactionGood)
+            await this.ToastObjRefund!.ShowAsync();
 
         bettorPushBetsUnpaid.Clear();
 

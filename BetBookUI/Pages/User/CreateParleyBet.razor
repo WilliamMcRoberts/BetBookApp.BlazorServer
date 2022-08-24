@@ -11,7 +11,7 @@
 @inject IGameService gameService
 @inject ITransactionService transactionService
 @inject ILogger<CreateParleyBet> logger
-@using Syncfusion.Blazor.Notifications
+
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
 
@@ -232,7 +232,7 @@ else
     SfToast? ToastObj;
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
-    public string Content { get => "Thank you for choosing Bet Book Gaming."; }
+    private string Content { get => "Thank you for choosing Bet Book Gaming."; }
     private HashSet<GameModel> gamesAvailable = new();
     private List<GameModel> gamesChosen = new();
     private Dictionary<GameModel, string> chosenGamesAndWinners = new();

@@ -8,7 +8,6 @@
 @inject IBetData betData
 @inject ITransactionService transactionService
 @inject ILogger<GameDetails> logger
-@using Syncfusion.Blazor.Notifications
 
 
 <div class="game-info-container">
@@ -158,30 +157,31 @@
 
 <style>
 
-    .e-toast-container .e-toast { /*Toast Background*/
+    /*Toast Background*/
+    .e-toast-container .e-toast { 
         /*Black w/opacity*/
         background-color: rgba(0,0,0, .9);
         border: 1px solid white;
         border-radius: 10px;
         backdrop-filter: blur(10px);
     }
-
-        .e-toast-container .e-toast:hover { /*Toast Background*/
+        /*Toast Background Hover*/
+        .e-toast-container .e-toast:hover { 
             /*Black w/opacity*/
             background-color: rgba(0,0,0, .9);
         }
 
-        .e-toast-container .e-toast .e-toast-message .e-toast-title { /*Toast Title*/
+        /*Toast Title*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-title { 
             color: white;
             font-weight: 700;
         }
 
-        .e-toast-container .e-toast .e-toast-message .e-toast-content { /*Toast Content*/
+        /*Toast Content*/
+        .e-toast-container .e-toast .e-toast-message .e-toast-content { 
             color: white;
             font-weight: 700;
         }
-
-
 
 </style>
 
