@@ -1,5 +1,6 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -23,6 +24,14 @@ public static class ParleyBetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Parley Bets");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -35,6 +44,14 @@ public static class ParleyBetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Parley Bet");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -48,6 +65,14 @@ public static class ParleyBetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Insert Parley Bet");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -61,6 +86,14 @@ public static class ParleyBetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update Parley Bet");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -74,6 +107,14 @@ public static class ParleyBetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Delete Parley Bet");
+
             return Results.Problem(ex.Message);
         }
     }

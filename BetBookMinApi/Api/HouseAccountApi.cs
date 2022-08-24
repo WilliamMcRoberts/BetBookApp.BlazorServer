@@ -1,5 +1,6 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -20,6 +21,14 @@ public static class HouseAccountApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get House Account");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -33,6 +42,14 @@ public static class HouseAccountApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update House Account");
+
             return Results.Problem(ex.Message);
         }
     }

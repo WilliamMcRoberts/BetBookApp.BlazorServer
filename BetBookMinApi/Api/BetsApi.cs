@@ -1,5 +1,6 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -24,6 +25,14 @@ public static class BetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Bets");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -36,6 +45,14 @@ public static class BetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Bet");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -49,6 +66,14 @@ public static class BetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception Insert Get Bet");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -62,12 +87,22 @@ public static class BetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update Bet");
+
             return Results.Problem(ex.Message);
         }
     }
 
     private static async Task<IResult> DeleteBet(int id, IBetData data)
     {
+        
+
         try
         {
             await data.DeleteBet(id);
@@ -75,6 +110,14 @@ public static class BetsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Delete Bet");
+
             return Results.Problem(ex.Message);
         }
     }

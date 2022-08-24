@@ -1,5 +1,7 @@
-﻿using BetBookData.Interfaces;
+﻿using System.Collections.Generic;
+using BetBookData.Interfaces;
 using BetBookData.Models;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -25,6 +27,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Users");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -37,6 +47,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get User");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -49,6 +67,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get User From Authentication");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -62,6 +88,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Insert User");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -75,6 +109,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update User");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -88,6 +130,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update User Account Balance");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -101,6 +151,14 @@ public static class UsersApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Delete User");
+
             return Results.Problem(ex.Message);
         }
     }

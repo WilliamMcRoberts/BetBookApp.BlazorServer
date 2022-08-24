@@ -1,6 +1,7 @@
 ﻿
 using BetBookData.Interfaces;
 using BetBookData.Models;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -24,6 +25,14 @@ public static class TeamsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Teams");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -36,6 +45,14 @@ public static class TeamsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Team");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -49,6 +66,14 @@ public static class TeamsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Insert Team");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -62,6 +87,14 @@ public static class TeamsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update Team");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -75,6 +108,14 @@ public static class TeamsApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Delete Team");
+
             return Results.Problem(ex.Message);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using BetBookData.Interfaces;
 using BetBookData.Models;
 using Microsoft.AspNetCore.Authorization;
+using Serilog;
 
 namespace BetBookMinApi.Api;
 
@@ -24,6 +25,13 @@ public static class GamesApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Games");
             return Results.Problem(ex.Message);
         }
     }
@@ -36,6 +44,14 @@ public static class GamesApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Get Game");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -49,6 +65,14 @@ public static class GamesApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Insert Game");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -62,6 +86,14 @@ public static class GamesApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Update Game");
+
             return Results.Problem(ex.Message);
         }
     }
@@ -75,6 +107,14 @@ public static class GamesApi
         }
         catch (Exception ex)
         {
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            logger.LogInformation(ex, "Exception On Delete Game");
+
             return Results.Problem(ex.Message);
         }
     }

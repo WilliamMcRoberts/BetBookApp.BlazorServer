@@ -7,15 +7,9 @@ using Syncfusion.Blazor;
 
 namespace BetBookUI;
 
-/// <summary>
-/// Register services class
-/// </summary>
+
 public static class RegisterServices
 {
-    /// <summary>
-    /// Method to configure project services
-    /// </summary>
-    /// <param name="builder"></param>
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Host.UseSerilog();
@@ -33,7 +27,6 @@ public static class RegisterServices
             });
         });
 
-        
 
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
@@ -65,6 +58,4 @@ public static class RegisterServices
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
     }
-
-
 }
