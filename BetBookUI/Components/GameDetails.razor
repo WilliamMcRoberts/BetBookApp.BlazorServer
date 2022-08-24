@@ -159,11 +159,16 @@
 <style>
 
     .e-toast-container .e-toast { /*Toast Background*/
-        background-color: rgb(0,0,0, .9);
+        /*Black w/opacity*/
+        background-color: rgba(0,0,0, .9);
+        border: 1px solid white;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
     }
 
         .e-toast-container .e-toast:hover { /*Toast Background*/
-            background-color: rgb(0,0,0, .9);
+            /*Black w/opacity*/
+            background-color: rgba(0,0,0, .9);
         }
 
         .e-toast-container .e-toast .e-toast-message .e-toast-title { /*Toast Title*/
@@ -176,9 +181,7 @@
             font-weight: 700;
         }
 
-        .e-toast-container .e-toast .e-toast-icon { /*Toast Icon*/
-            color: red;
-        }
+
 
 </style>
 
