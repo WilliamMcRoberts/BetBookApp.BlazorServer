@@ -1,7 +1,10 @@
-﻿using BetBookData.Data;
-using BetBookData.DbAccess;
+﻿using BetBookData;
+using BetBookData.Data;
 using BetBookData.Interfaces;
 using BetBookData.Services;
+using BetBookDbAccess;
+using BetBookMinApi.Api;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
@@ -35,6 +38,7 @@ public static class RegisterServices
             });
         });
 
+        builder.Services.AddMediatR(typeof(MediatREntryPoint).Assembly);
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         builder.Services.AddAuthorization(options =>
         {
@@ -44,13 +48,12 @@ public static class RegisterServices
             .Build();
         });
 
-
         builder.Services.AddSingleton<ISqlConnection, SqlConnection>();
-        builder.Services.AddTransient<IGameData, GameData>();
         builder.Services.AddTransient<IUserData, UserData>();
         builder.Services.AddTransient<ITeamData, TeamData>();
         builder.Services.AddTransient<IBetData, BetData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
         builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
+        builder.Services.AddTransient<IGameData, GameData>();
     }
 }

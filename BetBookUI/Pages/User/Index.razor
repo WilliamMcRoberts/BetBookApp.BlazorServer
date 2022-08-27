@@ -1,11 +1,8 @@
 ﻿@page "/"
 @inject NavigationManager navManager
 @inject AuthenticationStateProvider authProvider
-@inject IUserData userData
-@inject ITeamData teamData
-@inject IGameData gameData
 @inject IGameService gameService
-@inject IBetData betData
+@inject MediatR.IMediator _mediator
 @inject ILogger<Index> logger
 
 <PageTitle>HOME</PageTitle>
@@ -41,9 +38,9 @@
         week = season.CalculateWeek(DateTime.Now);
 
         if (teams is null)
-            teams = await teamData.GetTeams();
+            teams = await _mediator.Send(new GetTeamsQuery());
         if (games is null)
-            games = await gameData.GetGames();
+            games = await _mediator.Send(new GetGamesQuery());
 
         thisWeeksGames = games.Where(
             g => g.WeekNumber == week).ToHashSet<GameModel>();
@@ -56,9 +53,9 @@
 
         gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
 
-        await authProvider.LoadAndVerifyUser(loggedInUser, userData);
+        await authProvider.LoadAndVerifyUser(loggedInUser, _mediator);
 
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
     }
 
 }

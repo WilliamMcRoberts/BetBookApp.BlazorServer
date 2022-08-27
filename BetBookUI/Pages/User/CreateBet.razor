@@ -1,10 +1,8 @@
 ﻿@page "/CreateBet/{gameId:int}"
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
-@inject IGameData gameData
-@inject ITeamData teamData
-@inject IUserData userData
 @inject ILogger<CreateBet> logger
+@inject MediatR.IMediator _mediator
 
 <PageTitle>CREATE A BET</PageTitle>
 
@@ -24,17 +22,16 @@
 
     protected async override Task OnInitializedAsync()
     {
-        logger.LogInformation("Create Bet Page Requestd");
+        logger.LogInformation("Create Bet Page Requested");
 
-        if(games is null)
-            games = await gameData.GetGames();
+        if (games is null)
+            games = await _mediator.Send(new GetGamesQuery());
 
-        if(teams is null)
-            teams = await teamData.GetTeams();
+        if (teams is null)
+            teams = await _mediator.Send(new GetTeamsQuery());
 
         CurrentGame = games.Where(g => g.Id == gameId)
-                           .ToHashSet<GameModel>()
-                           .PopulateGameModelsWithTeams(teams)
-                           .FirstOrDefault();
+                           .FirstOrDefault()!
+                           .PopulateGameModelWithTeams(teams);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BetBookData.Data;
-using BetBookData.DbAccess;
 using BetBookData.Interfaces;
+using BetBookData.Models;
 using BetBookMinApi;
 using BetBookMinApi.Api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,11 +20,9 @@ try
 {
     Log.Information("Application Starting...");
     var builder = WebApplication.CreateBuilder(args);
-
     builder.ConfigureServices();
 
     var app = builder.Build();
-
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -38,6 +36,7 @@ try
     app.UseHttpsRedirection();
 
     app.UseSerilogRequestLogging();
+
 
     app.ConfigureGamesApi();
     app.ConfigureTeamsApi();

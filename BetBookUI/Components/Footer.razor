@@ -1,8 +1,6 @@
-﻿@inject IGameData gameData
-@inject ITeamData teamData
-@inject NavigationManager navManager
+﻿@inject NavigationManager navManager
 @inject AuthenticationStateProvider authProvider
-@inject IUserData userData
+@inject MediatR.IMediator _mediator
 
 
 <div class="footer">
@@ -130,11 +128,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
 
-        games = await gameData.GetGames();
-
-        teams = await teamData.GetTeams();
+        games = await _mediator.Send(new GetGamesQuery());
+        teams = await _mediator.Send(new GetTeamsQuery());
 
         availableGames = games.Where(g =>
             g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
@@ -142,13 +139,6 @@
         availableGames = availableGames.PopulateGameModelsWithTeams(teams);
     }
 
-    /// <summary>
-    /// Selects a game to place a wager on and navigates to
-    /// the create bet page
-    /// </summary>
-    /// <param name="gameId">
-    /// int represents the id of game being selected
-    /// </param>
     private void CreateBet(int gameId)
     {
         if(loggedInUser is not null)

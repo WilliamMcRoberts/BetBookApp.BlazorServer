@@ -1,8 +1,8 @@
 ﻿@page "/AdminPage"
 @attribute [Authorize(Policy = "Admin")]
-@inject IGameData gameData
 @inject IGameService gameService
 @inject ILogger<AdminPage> logger
+@inject MediatR.IMediator _mediator
 
 
 <PageTitle>ADMIN</PageTitle>
@@ -32,19 +32,19 @@
             </div>
         </div>
 
-        <EditForm Model="ug" OnValidSubmit="UpdateGame">
+        <EditForm Model="updateGameDto" OnValidSubmit="UpdateGame">
 
             <DataAnnotationsValidator />
             <ValidationSummary/>
 
             <div class="input-box">
                 <label>Game Id</label>
-                <input type="number" @bind-value="@ug.GameId" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.GameId" @bind-value:event="oninput" />
             </div>
 
             <div class="input-box">
                 <label>Game Stadium</label>
-                <SfTextBox @bind-Value="@ug.Stadium"></SfTextBox>  
+                <SfTextBox @bind-Value="@updateGameDto.Stadium"></SfTextBox>
             </div>
 
             <div class="input-box">
@@ -56,52 +56,52 @@
 
             <div class="input-box">
                 <label>Home Team Id</label>
-                <input type="number" @bind-value="@ug.HomeTeamId" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.HomeTeamId" @bind-value:event="oninput" />
             </div>
 
             <div class="input-box">
                 <label>Away Team Id</label>
-                <input type="number" @bind-value="@ug.AwayTeamId" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.AwayTeamId" @bind-value:event="oninput" />
             </div>
 
             <div class="input-box">
                 <label>Point Spread</label>
-                <SfTextBox @bind-value="@ug.PointSpread"></SfTextBox>
+                <SfTextBox @bind-value="@updateGameDto.PointSpread"></SfTextBox>
             </div>
 
             <div class="input-box">
                 <label>Home Team Final Score</label>
-                <input type="number" @bind-value="@ug.HomeTeamFinalScore" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.HomeTeamFinalScore" @bind-value:event="oninput" />
             </div>
 
             <div class="input-box">
                 <label>Away Team Final Score</label>
-                <input type="number" @bind-value="@ug.AwayTeamFinalScore" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.AwayTeamFinalScore" @bind-value:event="oninput" />
             </div>
 
            <div class="input-box">
                 <label>Game Winner Id</label>
-                <input type="number" @bind-value="@ug.GameWinnerId" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.GameWinnerId" @bind-value:event="oninput" />
             </div>
             
             <div class="input-box">
                 <label>Week</label>
-                <input type="number" @bind-value="@ug.Week" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.Week" @bind-value:event="oninput" />
             </div>
             
             <div class="input-box">
                 <label>Season Type</label>
-                <SfTextBox  @bind-Value="@ug.Season" ></SfTextBox>  
+                <SfTextBox @bind-Value="@updateGameDto.Season"></SfTextBox>
             </div>
              
             <div class="input-box">
                 <label>Game Status</label>
-                <SfTextBox  @bind-Value="@ug.GameStatus" ></SfTextBox>  
+                <SfTextBox @bind-Value="@updateGameDto.GameStatus"></SfTextBox>
             </div>
 
             <div style="margin-bottom: 2em;" class="input-box">
                 <label>Score Id</label>
-                <input type="number" @bind-value="@ug.ScoreId" @bind-value:event="oninput"/>
+                <input type="number" @bind-value="@updateGameDto.ScoreId" @bind-value:event="oninput" />
             </div>
 
             <div style="text-align:center;margin-bottom:2em;">
@@ -114,40 +114,32 @@
 
 @code {
 
-    // Model
-    UpdateGameDto ug = new();
+    UpdateGameDto updateGameDto = new();
 
-    /// <summary>
-    /// Async method for admin to insert a game into 
-    /// the database
-    /// </summary>
-    /// <returns></returns>
     private async Task UpdateGame()
     {
         GameModel updatedGame = new();
 
-        updatedGame.Id = ug.GameId;
-        updatedGame.HomeTeamId = ug.HomeTeamId;
-        updatedGame.AwayTeamId = ug.HomeTeamId;
-        updatedGame.Stadium = ug.Stadium;
-        updatedGame.PointSpread = double.Parse(ug.PointSpread);
-        updatedGame.DateOfGame = ug.DateOfGame;
-        updatedGame.HomeTeamFinalScore = ug.HomeTeamFinalScore;
-        updatedGame.AwayTeamFinalScore = ug.AwayTeamFinalScore;
-        updatedGame.GameWinnerId = ug.GameWinnerId;
-        updatedGame.WeekNumber = ug.Week;
+        updatedGame.Id = updateGameDto.GameId;
+        updatedGame.HomeTeamId = updateGameDto.HomeTeamId;
+        updatedGame.AwayTeamId = updateGameDto.HomeTeamId;
+        updatedGame.Stadium = updateGameDto.Stadium;
+        updatedGame.PointSpread = double.Parse(updateGameDto.PointSpread);
+        updatedGame.DateOfGame = updateGameDto.DateOfGame;
+        updatedGame.HomeTeamFinalScore = updateGameDto.HomeTeamFinalScore;
+        updatedGame.AwayTeamFinalScore = updateGameDto.AwayTeamFinalScore;
+        updatedGame.GameWinnerId = updateGameDto.GameWinnerId;
+        updatedGame.WeekNumber = updateGameDto.Week;
 
-        if (ug.GameStatus == "IN_PROGRESS")
-            updatedGame.GameStatus = GameStatus.IN_PROGRESS;
-        else if (ug.GameStatus == "NOT_STARTED")
-            updatedGame.GameStatus = GameStatus.NOT_STARTED;
-        else if (ug.GameStatus == "FINISHED")
-            updatedGame.GameStatus = GameStatus.FINISHED;
-        updatedGame.ScoreId = ug.ScoreId;
+        updatedGame.GameStatus = updateGameDto.GameStatus == "IN_PROGRESS" ? GameStatus.IN_PROGRESS
+                                  : updateGameDto.GameStatus == "NOT_STARTED" ? GameStatus.NOT_STARTED
+                                  :  GameStatus.FINISHED;
 
-        await gameData.UpdateGame(updatedGame);
+        updatedGame.ScoreId = updateGameDto.ScoreId;
 
-        ug = new();
+        await _mediator.Send(new UpdateGameCommand(updatedGame));
+
+        updateGameDto = new();
     }
 
     private async Task FetchAllScoresForFinishedGames() =>
@@ -156,13 +148,9 @@
     private async Task GetPointSpreadUpdateForAvailableGames() => 
         await gameService.GetPointSpreadUpdateForAvailableGames();
 
-    /// <summary>
-    /// Method for value change for date of game
-    /// </summary>
-    /// <param name="args">DateTime representing date of game</param>
     private void DateChangeHandler(ChangedEventArgs<DateTime> args)
     {
-        ug.DateOfGame = args.Value;
+        updateGameDto.DateOfGame = args.Value;
         StateHasChanged();
     }
 }

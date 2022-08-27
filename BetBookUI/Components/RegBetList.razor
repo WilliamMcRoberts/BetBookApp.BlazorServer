@@ -24,7 +24,7 @@
                         <h6 class="font">Final Winner || NONE</h6>
 
                         }
-                        <h6 class="font">Payout Amount || $@Convert.ToDecimal(bet.BetPayout).ToString("#.00")</h6>
+                    <h6 class="font">Payout Amount || $@bet.BetPayout.ToString("#,##0.00")</h6>
                         <h6 style="margin-bottom:1em;" class="font">Point Spread || @bet.Game?.PointSpread</h6>
                 </div>
             }

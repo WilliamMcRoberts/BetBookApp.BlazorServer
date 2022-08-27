@@ -1,6 +1,8 @@
 ﻿
-using BetBookData.Interfaces;
+using BetBookData.Commands.UpdateCommands;
 using BetBookData.Models;
+using BetBookData.Queries;
+using MediatR;
 using Serilog;
 
 namespace BetBookMinApi.Api;
@@ -11,110 +13,46 @@ public static class TeamsApi
     {
         // Endpoint mappings
         app.MapGet("/Teams", GetTeams).WithName("GetAllTeams").AllowAnonymous();
-        app.MapGet("/Teams/{id}", GetTeam).WithName("GetTeamById").AllowAnonymous();
-        app.MapPost("/Teams", InsertTeam).WithName("InsertTeam");
         app.MapPut("/Teams", UpdateTeam).WithName("UpdateTeam");
-        app.MapDelete("/Teams/{id}", DeleteTeam).WithName("DeleteTeam");
     }
 
-    public static async Task<IResult> GetTeams(ITeamData data)
+    public static async Task<IResult> GetTeams(IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetTeams());
+            return Results.Ok(await mediator.Send(
+                new GetTeamsQuery()));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(TeamsApi));
             logger.LogInformation(ex, "Exception On Get Teams");
 
             return Results.Problem(ex.Message);
         }
     }
 
-    private static async Task<IResult> GetTeam(int id, ITeamData data)
+    private static async Task<IResult> UpdateTeam(TeamModel team, IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetTeam(id));
+            return Results.Ok(await mediator.Send(
+                new UpdateTeamCommand(team)));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Get Team");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> InsertTeam(TeamModel team, ITeamData data)
-    {
-        try
-        {
-            await data.InsertTeam(team);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Insert Team");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> UpdateTeam(TeamModel team, ITeamData data)
-    {
-        try
-        {
-            await data.UpdateTeam(team);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(TeamsApi));
             logger.LogInformation(ex, "Exception On Update Team");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> DeleteTeam(int id, ITeamData data)
-    {
-        try
-        {
-            await data.DeleteTeam(id);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Delete Team");
 
             return Results.Problem(ex.Message);
         }

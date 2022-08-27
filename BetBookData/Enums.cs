@@ -1,9 +1,7 @@
 ﻿
 namespace BetBookData;
 
-/// <summary>
-/// Enum for the type of season for a GameModel
-/// </summary>
+
 public enum SeasonType
 {
     PRE,
@@ -11,9 +9,6 @@ public enum SeasonType
     POST
 }
 
-/// <summary>
-/// Enum for the status of a GameModel
-/// </summary>
 public enum GameStatus
 {
     NOT_STARTED,
@@ -21,9 +16,6 @@ public enum GameStatus
     FINISHED
 }
 
-/// <summary>
-/// Enum for the status of a BetModel
-/// </summary>
 public enum BetStatus
 {
     IN_PROGRESS,
@@ -32,9 +24,6 @@ public enum BetStatus
     PUSH
 }
 
-/// <summary>
-/// Enum for the status of the payout of a BetModel
-/// </summary>
 public enum PayoutStatus
 {
     UNPAID,
@@ -42,9 +31,6 @@ public enum PayoutStatus
     PARLEY
 }
 
-/// <summary>
-/// Enum for the status of a ParleyBetModel
-/// </summary>
 public enum ParleyBetStatus
 {
     IN_PROGRESS,
@@ -53,9 +39,6 @@ public enum ParleyBetStatus
     PUSH
 }
 
-/// <summary>
-/// Enum for the status of the payout of a ParleyBetModel
-/// </summary>
 public enum ParleyPayoutStatus
 {
     UNPAID,

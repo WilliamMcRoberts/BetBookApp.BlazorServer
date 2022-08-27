@@ -1,5 +1,8 @@
-﻿using BetBookData.Interfaces;
+﻿using BetBookData.Commands.InsertCommands;
+using BetBookData.Commands.UpdateCommands;
 using BetBookData.Models;
+using BetBookData.Queries;
+using MediatR;
 using Serilog;
 
 namespace BetBookMinApi.Api;
@@ -10,110 +13,69 @@ public static class ParleyBetsApi
     {
         // Endpoint mappings
         app.MapGet("/ParleyBets", GetParleyBets).WithName("GetAllParleyBets").AllowAnonymous();
-        app.MapGet("/ParleyBets/{id}", GetParleyBet).WithName("GetParleyBetById").AllowAnonymous();
         app.MapPost("/ParleyBets", InsertParleyBet).WithName("InsertParleyBet");
         app.MapPut("/ParleyBets", UpdateParleyBet).WithName("UpdateParleyBet");
-        app.MapDelete("/ParleyBets/{id}", DeleteParleyBet).WithName("DeleteParleyBet");
     }
 
-    public static async Task<IResult> GetParleyBets(IParleyBetData data)
+    public static async Task<IResult> GetParleyBets(IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetParleyBets());
+            return Results.Ok(await mediator.Send(new GetParleyBetsQuery()));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(ParleyBetsApi));
             logger.LogInformation(ex, "Exception On Get Parley Bets");
 
             return Results.Problem(ex.Message);
         }
     }
 
-    private static async Task<IResult> GetParleyBet(int id, IParleyBetData data)
+    private static async Task<IResult> InsertParleyBet(
+        ParleyBetModel parleyBet, IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetParleyBet(id));
+            return Results.Ok(await mediator.Send(
+                new InsertParleyBetCommand(parleyBet)));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Get Parley Bet");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> InsertParleyBet(ParleyBetModel parleyBet, IParleyBetData data)
-    {
-        try
-        {
-            await data.InsertParleyBet(parleyBet);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(ParleyBetsApi));
             logger.LogInformation(ex, "Exception On Insert Parley Bet");
 
             return Results.Problem(ex.Message);
         }
     }
 
-    private static async Task<IResult> UpdateParleyBet(ParleyBetModel parleyBet, IParleyBetData data)
+    private static async Task<IResult> UpdateParleyBet(
+        ParleyBetModel parleyBet, IMediator mediator)
     {
         try
         {
-            await data.UpdateParleyBet(parleyBet);
-            return Results.Ok();
+            return Results.Ok(await mediator.Send(
+                new UpdateParleyBetCommand(parleyBet)));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(ParleyBetsApi));
             logger.LogInformation(ex, "Exception On Update Parley Bet");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> DeleteParleyBet(int id, IParleyBetData data)
-    {
-        try
-        {
-            await data.DeleteParleyBet(id);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Delete Parley Bet");
 
             return Results.Problem(ex.Message);
         }

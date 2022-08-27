@@ -1,7 +1,8 @@
 ﻿
-using BetBookData.Interfaces;
+using BetBookData.Commands.UpdateCommands;
 using BetBookData.Models;
-
+using BetBookData.Queries;
+using MediatR;
 
 namespace BetBookData.Helpers;
 
@@ -9,49 +10,51 @@ namespace BetBookData.Helpers;
 
 public static class UpdateHelpers
 {
-    public static async Task UpdateParleyBetWinners(
-        this IParleyBetData parleyData, IEnumerable<ParleyBetModel> parleyBets,
-        IEnumerable<GameModel> games, IEnumerable<TeamModel> teams,
-        IEnumerable<BetModel> bets)
+    public static async Task UpdateParleyBetWinners(this IMediator mediator)
     {
+        IEnumerable<GameModel> games = await mediator.Send(new GetGamesQuery());
+        IEnumerable<TeamModel> teams = await mediator.Send(new GetTeamsQuery());
+        IEnumerable<BetModel> bets = await mediator.Send(new GetBetsQuery());
+        IEnumerable<ParleyBetModel> parleyBets = await mediator.Send(
+            new GetParleyBetsQuery());
+
         List<ParleyBetModel> parleyBetsInProgress = parleyBets.Where(pb =>
                 pb.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
 
         parleyBetsInProgress = 
-                parleyBetsInProgress.PopulateParleyBetsWithBetsWithGamesAndTeams(
-                      games, teams, bets);
+            parleyBetsInProgress.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
 
-        foreach (ParleyBetModel pb in parleyBetsInProgress)
+        foreach (ParleyBetModel parleyBet in parleyBetsInProgress)
         {
-            if (pb.CheckIfParleyBetLoser())
+            if (parleyBet.CheckIfParleyBetLoser())
             {
-                pb.ParleyBetStatus = ParleyBetStatus.LOSER;
-                await parleyData.UpdateParleyBet(pb);
+                parleyBet.ParleyBetStatus = ParleyBetStatus.LOSER;
+                await mediator.Send(new UpdateParleyBetCommand(parleyBet));
                 continue;
             }
 
-            if (pb.CheckIfParleyBetWinner())
+            if (parleyBet.CheckIfParleyBetWinner())
             {
-                pb.ParleyBetStatus = ParleyBetStatus.WINNER;
-                await parleyData.UpdateParleyBet(pb);
+                parleyBet.ParleyBetStatus = ParleyBetStatus.WINNER;
+                await mediator.Send(new UpdateParleyBetCommand(parleyBet));
                 continue;
             }
 
-            if (pb.CheckIfParleyBetPush())
+            if (parleyBet.CheckIfParleyBetPush())
             {
-                pb.ParleyBetStatus = ParleyBetStatus.PUSH;
-                await parleyData.UpdateParleyBet(pb);
+                parleyBet.ParleyBetStatus = ParleyBetStatus.PUSH;
+                await mediator.Send(new UpdateParleyBetCommand(parleyBet));
                 continue;
             }
         }
     }
 
     public static async Task UpdateBettors(
-        this GameModel currentGame,double? homeTeamFinalScore,
-        double? awayTeamFinalScore, IBetData betData,
-        IEnumerable<GameModel> games,IEnumerable<TeamModel> teams,
-        IEnumerable<BetModel> bets)
+        this GameModel currentGame, double? homeTeamFinalScore,
+        double? awayTeamFinalScore, IEnumerable<GameModel> games, IMediator mediator)
     {
+        IEnumerable<TeamModel> teams = await mediator.Send(new GetTeamsQuery());
+        IEnumerable<BetModel> bets = await mediator.Send(new GetBetsQuery());
 
         List<BetModel> betsOnCurrentGame = bets.Where(b =>
             b.GameId == currentGame.Id).ToList();
@@ -69,7 +72,7 @@ public static class UpdateHelpers
                 bet.BetStatus = BetStatus.PUSH;
                 bet.FinalWinnerId = 0;
 
-                await betData.UpdateBet(bet);
+                await mediator.Send(new UpdateBetCommand(bet));
                 continue;
             }
 
@@ -78,16 +81,17 @@ public static class UpdateHelpers
             bet.BetStatus = winningTeamForBet.Id == bet.ChosenWinnerId ? BetStatus.WINNER
                             : BetStatus.LOSER;
 
-            await betData.UpdateBet(bet);
+            await mediator.Send(new UpdateBetCommand(bet));
         }
     }
 
     public static async Task UpdateTeamRecords(
-        this GameModel currentGame,double? homeTeamFinalScore,
-        double? awayTeamFinalScore,IEnumerable<TeamModel> teams,
-        ITeamData teamData)
+        this GameModel currentGame, double? homeTeamFinalScore, 
+        double? awayTeamFinalScore, IMediator mediator)
     {
-        if(DateTime.Now > new DateTime(2022, 9, 7))
+        IEnumerable<TeamModel> teams = await mediator.Send(new GetTeamsQuery());
+
+        if (DateTime.Now > new DateTime(2022, 9, 7))
         {
             TeamModel? homeTeam = 
                     teams.Where(t => t.Id == currentGame.HomeTeamId).FirstOrDefault();
@@ -106,8 +110,8 @@ public static class UpdateHelpers
                 homeTeam.Draws += $"{awayTeam.TeamName}|";
                 awayTeam.Draws += $"{homeTeam.TeamName}|";
 
-                await teamData.UpdateTeam(homeTeam);
-                await teamData.UpdateTeam(awayTeam);
+                await mediator.Send(new UpdateTeamCommand(homeTeam));
+                await mediator.Send(new UpdateTeamCommand(awayTeam));
                 return;
             }
 
@@ -117,17 +121,18 @@ public static class UpdateHelpers
             actualWinningTeam.Wins += $"{actualLosingTeam.TeamName}|";
             actualLosingTeam.Losses += $"{actualWinningTeam.TeamName}|";
 
-            await teamData.UpdateTeam(actualWinningTeam);
-            await teamData.UpdateTeam(actualLosingTeam);
+            await mediator.Send(new UpdateTeamCommand(actualWinningTeam));
+            await mediator.Send(new UpdateTeamCommand(actualLosingTeam));
         }
         
     }
 
     public static async Task UpdateScores(
-        this GameModel currentGame, double? homeTeamScore, 
-        double? awayTeamScore, IEnumerable<TeamModel> teams,
-        IGameData gameData)
+        this GameModel currentGame, double? homeTeamScore,
+        double? awayTeamScore, IMediator mediator)
     {
+        IEnumerable<TeamModel> teams = await mediator.Send(new GetTeamsQuery());
+
         if (currentGame.GameStatus == GameStatus.FINISHED)
                 return;
 
@@ -140,9 +145,9 @@ public static class UpdateHelpers
                     awayTeamScore, teams);
 
         if (gameWinner is not null)
-                currentGame.GameWinnerId = gameWinner.Id;
+            currentGame.GameWinnerId = gameWinner.Id;
 
-        await gameData.UpdateGame(currentGame);
+        await mediator.Send(new UpdateGameCommand(currentGame));
     }
 }
 

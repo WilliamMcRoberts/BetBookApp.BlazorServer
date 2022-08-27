@@ -1,16 +1,11 @@
 ﻿@page "/CreateParleyBet"
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
-@inject IUserData userData
-@inject IBetData betData
-@inject IGameData gameData
-@inject ITeamData teamData
-@inject IHouseAccountData houseData
-@inject IParleyBetData parleyData
 @inject IConfiguration config
 @inject IGameService gameService
 @inject ITransactionService transactionService
 @inject ILogger<CreateParleyBet> logger
+@inject MediatR.IMediator _mediator
 
 
 <PageTitle>CREATE A PARLEY BET</PageTitle>
@@ -170,9 +165,10 @@
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
                     </div>  
                     <div style="text-align:center;margin-top:1em;">
-                        <p style="margin: .5em 2em;">Your @chosenGamesAndWinners.Count game parley for $@betAmount is ready.</p>
-                    <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
-                </div>
+                    <p style="margin: .5em 2em;">Your @chosenGamesAndWinners.Count game parley for $@betAmount.ToString("#,##0.00") is ready</p>
+                    <p style="margin: .5em 2em;">Your potential payout is $@GetPotentialParleyBetPayout(chosenGamesAndWinners.Count, betAmount).ToString("#,##0.00")</p>
+                        <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
+                    </div>
                 <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
                     <button class="mb-2 mt-4 site-btn btn site-btn-light btn-sm text-uppercase" 
                         @onclick="SubmitParleyWager">
@@ -249,8 +245,8 @@ else
     {
         logger.LogInformation("Create Parley Bet Page Requested");
 
-        games = await gameData.GetGames();
-        teams = await teamData.GetTeams();
+        games = await _mediator.Send(new GetGamesQuery());
+        teams = await _mediator.Send(new GetTeamsQuery());
 
         gamesAvailable = 
             games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
@@ -272,7 +268,7 @@ else
             return;
         }
 
-        UserModel loggedInUser = await authProvider.GetUserFromAuth(userData);
+        UserModel loggedInUser = await authProvider.GetUserFromAuth(_mediator);
 
         ParleyBetModel parleyBet = new();
 
@@ -288,7 +284,7 @@ else
             {
                 startedGameDescription = $"{kv.Key.AwayTeam?.TeamName} at {kv.Key.HomeTeam?.TeamName}";
                 kv.Key.GameStatus = GameStatus.IN_PROGRESS;
-                await gameData.UpdateGame(kv.Key);
+                await _mediator.Send(new UpdateGameCommand(kv.Key));
                 gameNotStarted = false;
                 return;
             }
@@ -310,33 +306,25 @@ else
                 bet.ChosenWinnerId = chosenWinner.Id;
                 bet.PayoutStatus = PayoutStatus.PARLEY;
                 bet.PointSpread = kv.Key.PointSpread;
-
-                bet.Id = await betData.InsertBet(bet);
+                bet = await _mediator.Send(new InsertBetCommand(bet));
                 parleyBet.Bets.Add(bet);
             }
             catch (Exception ex)
             {
-                logger.LogInformation(ex, "Exception On Create Bet For Parley Bet");
+                logger.LogInformation(ex, "Failed Parley Bet => Bet Creation");
             }
         }
 
-        try
-        {
-            parleyBet.BetAmount = betAmount;
-            parleyBet.BetPayout =
-                parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
-            parleyBet.BettorId = loggedInUser!.Id;
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(ex, "Exception On Create Parley Bet");
-        }
+        parleyBet.BetAmount = betAmount;
+        parleyBet.BetPayout =
+            parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
+        parleyBet.BettorId = loggedInUser!.Id;
 
         bool transactionGood = await transactionService.CreateParleyBetTransaction(
             loggedInUser, parleyBet);
 
         if (transactionGood) 
-           await this.ToastObj!.ShowAsync();
+            await this.ToastObj!.ShowAsync();
 
         wagerPlaced = true;
     }
@@ -355,23 +343,6 @@ else
             betCountBad = false;
     }
 
-    private void SelectGame(GameModel game)
-    {
-        if (gamesChosen.Count >= 5 || gamesChosen.Contains(game) || 
-            !gamesAvailable.Contains(game)) return;
-        gamesChosen.Add(game);
-        gamesAvailable.Remove(game);
-    }
-
-    private void UnselectGame(GameModel game)
-    {
-        if (!gamesChosen.Contains(game) || gamesAvailable.Contains(game))
-            return;
-
-        gamesAvailable.Add(game);
-        gamesChosen.Remove(game);
-    }
-
     private string GetSpread(GameModel currentGame, string teamName)
     {
         if(teamName == currentGame.AwayTeam?.TeamName)
@@ -384,5 +355,15 @@ else
         return (currentGame.PointSpread < 0) ? $"- {currentGame.PointSpread?.ToString().Trim('-')}" 
             : (currentGame.PointSpread == 0) ? $"+ 0" 
             : $"+ {currentGame.PointSpread}";
+    }
+
+    private decimal GetPotentialParleyBetPayout(int gameCount, decimal betAmount)
+    {
+        betAmount -= betAmount * (decimal).1;
+
+        return gameCount == 2 ? (betAmount * (decimal)2.6) + betAmount
+            : gameCount == 3 ? (betAmount * (decimal)6) + betAmount
+            : gameCount == 4 ? (betAmount * (decimal)11) + betAmount
+            : (betAmount * (decimal)22) + betAmount;
     }
 }

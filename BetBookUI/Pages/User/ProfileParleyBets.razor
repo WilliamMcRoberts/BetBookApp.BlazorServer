@@ -1,18 +1,12 @@
 ﻿@page "/ProfileParleyBets"
 @attribute [Authorize]
-@inject IUserData userData
 @inject AuthenticationStateProvider authProvider
-@inject IBetData betData
-@inject IParleyBetData parleyData
-@inject IHouseAccountData houseData
-@inject ITeamData teamData
-@inject IGameData gameData
 @inject IConfiguration config
 @inject ITransactionService transactionService
 @inject ILogger<ProfileParleyBets> logger
+@inject MediatR.IMediator _mediator
 
 <PageTitle>PARLEY BETS</PageTitle>
-
 
 <div class="user-profile-parley">
 
@@ -22,10 +16,10 @@
             <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Parley Bets</h3>
         </div>
         <div class="item">
-        <p>Pending Payout: $@Convert.ToDecimal(totalPendingParleyPayout).ToString("#,##0.00")</p>
+        <p>Pending Payout: $@totalPendingParleyPayout.ToString("#,##0.00")</p>
         </div>
         <div class="item">
-            <p>Pending Refund: $@Convert.ToDecimal(totalPendingParleyRefund).ToString("#,##0.00")</p>
+            <p>Pending Refund: $@totalPendingParleyRefund.ToString("#,##0.00")</p>
         </div>
         <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
             <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningParleyBets">Collect My Winnings</button>
@@ -98,7 +92,7 @@
     SfToast? ToastObjRefund;
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
-    private string Content { get => "Thank you for choosing Bet Book Gaming."; }
+    private string Content { get => "Refresh the page to see your new balance."; }
     private decimal totalPendingParleyPayout;
     private decimal totalPendingParleyRefund;
     private UserModel? loggedInUser;
@@ -114,12 +108,12 @@
     {
         logger.LogInformation("Profile Parley Bets Page Requested");
 
-        loggedInUser = await authProvider.GetUserFromAuth(userData);
+        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
 
-        games = await gameData.GetGames();
-        teams = await teamData.GetTeams();
-        bets = await betData.GetBets();
-        parleyBets = await parleyData.GetParleyBets();
+        games = await _mediator.Send(new GetGamesQuery());
+        teams = await _mediator.Send(new GetTeamsQuery());
+        bets = await _mediator.Send(new GetBetsQuery());
+        parleyBets = await _mediator.Send(new GetParleyBetsQuery());
 
         bettorInProgressParleyBets = parleyBets.Where(b =>
                 b.BettorId == loggedInUser.Id &&
@@ -127,8 +121,7 @@
 
         if(bettorInProgressParleyBets.Count != 0)
             bettorInProgressParleyBets = 
-                bettorInProgressParleyBets.PopulateParleyBetsWithBetsWithGamesAndTeams(
-                    games, teams, bets);
+                bettorInProgressParleyBets.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
 
         bettorWinningParleyBetsUnpaid = parleyBets.Where(pb => 
                 pb.BettorId == loggedInUser.Id &&
@@ -137,8 +130,7 @@
 
         if(bettorWinningParleyBetsUnpaid.Count != 0)
             bettorWinningParleyBetsUnpaid = 
-                bettorWinningParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(
-                    games, teams, bets);
+                bettorWinningParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
 
         bettorPushParleyBetsUnpaid = parleyBets.Where(b => 
                 b.BettorId == loggedInUser.Id &&
@@ -147,8 +139,7 @@
 
         if(bettorPushParleyBetsUnpaid.Count != 0)
             bettorPushParleyBetsUnpaid = 
-                bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(
-                    games, teams, bets);
+                bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
 
         // Total payout of all unpaid winning parley bets
         totalPendingParleyPayout =
@@ -160,13 +151,9 @@
             bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund();
     }
 
-    /// <summary>
-    /// Method pays out all unpaid winning parley bets
-    /// </summary>
-    /// <returns></returns>
     private async Task PayoutUnpaidWinningParleyBets()
     {
-        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
 
         if (loggedInUser is null || houseAccount is null)
             return;
@@ -182,13 +169,9 @@
         totalPendingParleyPayout = 0;
     }
 
-    /// <summary>
-    /// Method pays out all unpaid push parley bets
-    /// </summary>
-    /// <returns></returns>
     private async Task PayoutUnpaidPushParleyBets()
     {
-        HouseAccountModel? houseAccount = await houseData.GetHouseAccount();
+        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
 
         if (loggedInUser is null || houseAccount is null)
             return;

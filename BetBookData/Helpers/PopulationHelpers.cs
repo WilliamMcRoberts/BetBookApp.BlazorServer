@@ -7,42 +7,57 @@ namespace BetBookData.Helpers;
 public static class PopulationHelpers
 {
     public static HashSet<GameModel> PopulateGameModelsWithTeams(
-        this HashSet<GameModel> games, IEnumerable<TeamModel> teams)
+        this HashSet<GameModel> gamesToPopulate, IEnumerable<TeamModel> teams)
     {
-        foreach (GameModel g in games)
-        {
-            g.HomeTeam = teams.Where(t => t.Id == g.HomeTeamId).FirstOrDefault()!;
-            g.AwayTeam = teams.Where(t => t.Id == g.AwayTeamId).FirstOrDefault()!;
 
-            if (g.GameWinnerId != 0)
-                g.GameWinner = teams.Where(t => t.Id == g.GameWinnerId).FirstOrDefault()!;
+        foreach (GameModel game in gamesToPopulate)
+        {
+            game.HomeTeam = teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault()!;
+            game.AwayTeam = teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault()!;
+
+            if (game.GameWinnerId != 0)
+                game.GameWinner = teams.Where(t => t.Id == game.GameWinnerId).FirstOrDefault()!;
         }
 
-        return games;
+        return gamesToPopulate;
+    }
+
+    public static GameModel PopulateGameModelWithTeams(
+        this GameModel gameToPopulate, IEnumerable<TeamModel> teams)
+    {
+        gameToPopulate.HomeTeam = teams.Where(t => t.Id == gameToPopulate.HomeTeamId).FirstOrDefault()!;
+        gameToPopulate.AwayTeam = teams.Where(t => t.Id == gameToPopulate.AwayTeamId).FirstOrDefault()!;
+
+        if (gameToPopulate.GameWinnerId != 0)
+            gameToPopulate.GameWinner = teams.Where(t => t.Id == gameToPopulate.GameWinnerId).FirstOrDefault()!;
+
+        return gameToPopulate;
     }
 
     public static List<BetModel> PopulateBetModelsWithGamesAndTeams(
-        this List<BetModel> bets,IEnumerable<GameModel> games, IEnumerable<TeamModel> teams)
+        this List<BetModel> betsToPopulate, IEnumerable<GameModel> games, 
+        IEnumerable<TeamModel> teams)
     {
-        foreach(BetModel b in bets)
+        foreach (BetModel bet in betsToPopulate)
         {
 
-            b.Game = games.Where(g => g.Id == b?.GameId).ToList().ToHashSet<GameModel>().PopulateGameModelsWithTeams(teams).FirstOrDefault();
+            bet.Game = games.Where(g =>
+                g.Id == bet?.GameId).FirstOrDefault()!.PopulateGameModelWithTeams(teams);
+            bet.ChosenWinner = teams.Where(t =>
+                t.Id == bet.ChosenWinnerId).FirstOrDefault();
 
-            b.ChosenWinner = teams.Where(t => t.Id == b.ChosenWinnerId).FirstOrDefault();
-
-            b.FinalWinner = 
-                b.FinalWinnerId != 0 ? teams.Where(t => t.Id == b.FinalWinnerId).FirstOrDefault() : null;
+            bet.FinalWinner =
+                bet.FinalWinnerId != 0 ? teams.Where(t => t.Id == bet.FinalWinnerId).FirstOrDefault() : null;
         }
 
-        return bets;
+        return betsToPopulate;
     }
 
     public static List<ParleyBetModel> PopulateParleyBetsWithBetsWithGamesAndTeams(
-        this List<ParleyBetModel> parleyBets, IEnumerable<GameModel> games, 
+        this List<ParleyBetModel> parleyBetsToPopulate, IEnumerable<GameModel> games,
         IEnumerable<TeamModel> teams, IEnumerable<BetModel> bets)
     {
-        foreach(ParleyBetModel parleyBet in parleyBets)
+        foreach (ParleyBetModel parleyBet in parleyBetsToPopulate)
         {
             BetModel bet1 = bets.Where(b => b.Id == parleyBet.Bet1Id).FirstOrDefault()!;
             BetModel bet2 = bets.Where(b => b.Id == parleyBet.Bet2Id).FirstOrDefault()!;
@@ -79,7 +94,7 @@ public static class PopulationHelpers
             parleyBet.Bets.PopulateBetModelsWithGamesAndTeams(games, teams);
         }
 
-        return parleyBets;
+        return parleyBetsToPopulate;
     }
 }
 

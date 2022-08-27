@@ -1,7 +1,7 @@
 ﻿using BetBookData.Models;
 using BetBookData.Interfaces;
-using BetBookData.DbAccess;
 using Microsoft.Extensions.Logging;
+using BetBookDbAccess;
 
 namespace BetBookData.Data;
 

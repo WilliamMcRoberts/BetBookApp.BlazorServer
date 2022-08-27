@@ -1,13 +1,9 @@
 ﻿@inject AuthenticationStateProvider authProvider
-@inject IGameData gameData
-@inject ITeamData teamData
 @inject IGameService gameService
-@inject IHouseAccountData houseData
 @inject IConfiguration config
-@inject IUserData userData
-@inject IBetData betData
 @inject ITransactionService transactionService
 @inject ILogger<GameDetails> logger
+@inject MediatR.IMediator _mediator
 
 
 <div class="game-info-container">
@@ -132,7 +128,8 @@
             <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
         </div>  
         <div style="text-align:center;margin-top:1em;margin:0 auto;">
-            <p style="margin: .5em 2em;">Your bet for $@betAmount is ready.</p>
+            <p style="margin: .5em 2em;">Your bet for $@betAmount.ToString("#,##0.00") is ready</p>
+            <p style="margin: .5em 2em;">Your potential payout is $@GetPotentialBetPayout(betAmount).ToString("#,##0.00")</p>
             <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
         </div>
         <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
@@ -192,7 +189,7 @@
     private SfToast? ToastObj;
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
-    private string Content { get => $"{teamToWin?.TeamName} was a great choice!"; }
+    private string Content { get => $"LET'S GO {teamToWin?.TeamName}!"; }
     private decimal betAmount;
     private bool betAmountBad;
     private bool winnerChosen = false;
@@ -206,7 +203,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        teams = await teamData.GetTeams();
+        teams = await _mediator.Send(new GetTeamsQuery());
     }
 
     private async Task SubmitSingleWager()
@@ -233,16 +230,14 @@
         {
             startedGameDescription = $"{CurrentGame.AwayTeam?.TeamName} at {CurrentGame.HomeTeam?.TeamName}";
             CurrentGame.GameStatus = GameStatus.IN_PROGRESS;
-            await gameData.UpdateGame(CurrentGame);
+            await _mediator.Send(new UpdateGameCommand(CurrentGame));
             gameNotStarted = false;
             return;
         }
 
-        HouseAccountModel? houseAccount =
-            await houseData.GetHouseAccount();
+        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
 
-        UserModel? loggedInUser = 
-            await authProvider.GetUserFromAuth(userData);
+        UserModel? loggedInUser = await authProvider.GetUserFromAuth(_mediator);
 
         BetModel bet = new();
 
@@ -302,10 +297,17 @@
                    : pointSpread == 0 ? $"+ 0" 
                    : $"- {pointSpread}";
         }
-        
+
         return pointSpread < 0 ? $"- {pointSpread?.ToString().Trim('-')}"
                : pointSpread == 0 ? $"+ 0" 
                : $"+ {pointSpread}";
+    }
+
+    private decimal GetPotentialBetPayout(decimal betAmount)
+    {
+        decimal betAmountMinusVig = betAmount - betAmount * (decimal).1;
+
+        return betAmountMinusVig + betAmount;
     }
 }
 

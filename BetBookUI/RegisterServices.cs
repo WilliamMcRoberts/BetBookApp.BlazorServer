@@ -1,4 +1,5 @@
-﻿using BetBookData.DbAccess;
+﻿using BetBookDbAccess;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
@@ -33,13 +34,14 @@ public static class RegisterServices
         builder.Services.AddMemoryCache();
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
         builder.Services.AddSyncfusionBlazor();
+        builder.Services.AddMediatR(typeof(MediatREntryPoint).Assembly);
 
         /********************** Services *****************************/
 
         builder.Services.AddHostedService<PointSpreadUpdateTimerService>();
         builder.Services.AddHostedService<ScoresUpdateTimerService>();
-        builder.Services.AddSingleton<IGameService, GameService>();
-        builder.Services.AddSingleton<ITransactionService, TransactionService>();
+        builder.Services.AddTransient<IGameService, GameService>();
+        builder.Services.AddTransient<ITransactionService, TransactionService>();
 
         /***************** Factories **********************/
 

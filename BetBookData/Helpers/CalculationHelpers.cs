@@ -8,8 +8,8 @@ namespace BetBookData.Helpers;
 public static class CalculationHelpers
 {
     public static TeamModel CalculateWinningTeam(
-        this GameModel game,double? homeTeamFinalScore,
-        double? awayTeamFinalScore,IEnumerable<TeamModel> teams)
+        this GameModel game, double? homeTeamFinalScore,
+        double? awayTeamFinalScore, IEnumerable<TeamModel> teams)
     {
 
         TeamModel? homeTeam = 
@@ -26,7 +26,7 @@ public static class CalculationHelpers
 
     public static TeamModel CalculateWinnerForBet(
         this BetModel bet, GameModel game, double? homeTeamFinalScore,
-        double? awayTeamFinalScore,IEnumerable<TeamModel> teams)
+        double? awayTeamFinalScore, IEnumerable<TeamModel> teams)
     {
         double? homeTeamScoreAfterPointSpreaad = homeTeamFinalScore + bet.PointSpread;
 
@@ -92,10 +92,10 @@ public static class CalculationHelpers
     { 
         betAmount -= betAmount * (decimal).1;
 
-        return gamecount == 2 ? betAmount * (decimal)2.6 
-            : gamecount == 3 ? betAmount * (decimal)6 
-            : gamecount == 4 ? betAmount * (decimal)11 
-            : betAmount * (decimal)22;
+        return gamecount == 2 ? (betAmount * (decimal)2.6) + betAmount 
+            : gamecount == 3 ? (betAmount * (decimal)6) + betAmount 
+            : gamecount == 4 ? (betAmount * (decimal)11) + betAmount 
+            : (betAmount * (decimal)22) + betAmount;
     }
 
     public static decimal CalculateTotalPendingParleyRefund(

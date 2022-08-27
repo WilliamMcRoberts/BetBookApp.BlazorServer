@@ -1,5 +1,4 @@
 ﻿@inject NavigationManager navManager
-@inject IGameData gameData
 
 @if(AvailableGameList is not null && AvailableGameList.Count != 0)
 {
@@ -50,13 +49,7 @@ else
     [Parameter]
     public IEnumerable<TeamModel>? Teams { get; set; }
 
-    /// <summary>
-    /// Selects a game to place a wager on and navigates to
-    /// the create bet page
-    /// </summary>
-    /// <param name="gameId">
-    /// int represents the id of game being selected
-    /// </param>
+
     private void CreateBet(int gameId)
     {
         if(User is not null)

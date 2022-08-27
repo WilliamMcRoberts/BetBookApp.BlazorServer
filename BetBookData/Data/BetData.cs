@@ -3,8 +3,8 @@ using BetBookData.Models;
 using System.Data;
 using Microsoft.Extensions.Configuration;
 using Dapper;
-using BetBookData.DbAccess;
 using Microsoft.Extensions.Logging;
+using BetBookDbAccess;
 
 namespace BetBookData.Data;
 
@@ -69,14 +69,18 @@ public class BetData : IBetData
         p.Add( "@Id", 0, dbType: DbType.Int32,
             direction: ParameterDirection.Output);
 
-        _logger.LogInformation(message: "Http Post / Insert Bet");
+        try
+        {
+            _logger.LogInformation(message: "Http Post / Insert Bet");
+            await connection.ExecuteAsync(
+                "dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Exception On Insert Bet");
+        }
 
-        await connection.ExecuteAsync(
-            "dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
-
-        bet.Id = p.Get<int>("@Id");
-
-        return bet.Id;
+        return bet.Id = p.Get<int>("@Id");
     }
 
     public async Task UpdateBet(BetModel bet)
@@ -99,8 +103,6 @@ public class BetData : IBetData
             payoutStatus,
             bet.PointSpread
         });
-
-        return;
     }
 
     public async Task DeleteBet(int id)

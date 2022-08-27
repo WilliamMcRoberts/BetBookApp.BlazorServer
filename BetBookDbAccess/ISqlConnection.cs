@@ -1,5 +1,5 @@
 ﻿
-namespace BetBookData.DbAccess;
+namespace BetBookDbAccess;
 
 #nullable enable
 

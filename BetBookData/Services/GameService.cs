@@ -6,6 +6,10 @@ using BetBookData.Helpers;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
+using MediatR;
+using BetBookData.Queries;
+using BetBookData.Commands.InsertCommands;
+using BetBookData.Commands.UpdateCommands;
 
 namespace BetBookData.Services;
 
@@ -14,32 +18,19 @@ namespace BetBookData.Services;
 public class GameService : IGameService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IGameData _gameData;
-    private readonly ITeamData _teamData;
-    private readonly IBetData _betData;
-    private readonly IParleyBetData _parleyData;
     private readonly IConfiguration _config;
     private readonly ILogger<GameService> _logger;
-    IEnumerable<TeamModel>? teams;
-    IEnumerable<GameModel>? games;
-    IEnumerable<BetModel>? bets;
-    IEnumerable<ParleyBetModel>? parleyBets;
+    private readonly IMediator _mediator;
 
-    public GameService(IGameData gameData,
-                       ITeamData teamData,
-                       IBetData betData,
-                       IParleyBetData parleyData,
-                       IConfiguration config,
+    public GameService(IConfiguration config,
                        IHttpClientFactory httpClientFactory,
-                       ILogger<GameService> logger)
+                       ILogger<GameService> logger,
+                       IMediator mediator)
     {
-        _gameData = gameData;
-        _teamData = teamData;
-        _betData = betData;
-        _parleyData = parleyData;
         _config = config;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _mediator = mediator;
     }
 
     public async Task<GameByTeamDto> GetGameByTeam(TeamModel team)
@@ -87,7 +78,6 @@ public class GameService : IGameService
 
     public async Task<Game[]> GetGamesByWeek(SeasonType currentSeason, int week)
     {
-
         Game[]? games = new Game[16];
 
         try
@@ -110,11 +100,8 @@ public class GameService : IGameService
     public async Task<HashSet<GameModel>> GetGamesForThisWeek(
         SeasonType currentSeason, int currentWeek)
     {
-        if (teams is null || !teams.Any())
-            teams = await _teamData.GetTeams();
-
-        if (games is null || !teams.Any())
-            games = await _gameData.GetGames();
+        IEnumerable<GameModel> games = await _mediator.Send(new GetGamesQuery());
+        IEnumerable<TeamModel> teams = await _mediator.Send(new GetTeamsQuery());
 
         HashSet<GameModel> thisWeekGames = games.Where(g =>
             g.GameStatus != GameStatus.FINISHED && g.WeekNumber == currentWeek)
@@ -158,7 +145,7 @@ public class GameService : IGameService
             gameModel.ScoreId = game.ScoreID;
 
             thisWeekGames.Add(gameModel);
-            await _gameData.InsertGame(gameModel);
+            await _mediator.Send(new InsertGameCommand(gameModel));
         }
 
         return thisWeekGames;
@@ -166,14 +153,7 @@ public class GameService : IGameService
 
     public async Task FetchAllScoresForFinishedGames()
     {
-        if (teams is null || !teams.Any())
-            teams = await _teamData.GetTeams();
-        if (games is null || !games.Any())
-            games = await _gameData.GetGames();
-        if (bets is null || !bets.Any())
-            bets = await _betData.GetBets();
-        if (parleyBets is null || !parleyBets.Any())
-            parleyBets = await _parleyData.GetParleyBets();
+        IEnumerable<GameModel> games = await _mediator.Send(new GetGamesQuery());
 
         SeasonType season = DateTime.Now.CalculateSeason();
         int week = season.CalculateWeek(DateTime.Now);
@@ -200,26 +180,21 @@ public class GameService : IGameService
             game.AwayTeamFinalScore = awayScore;
 
             await game.UpdateScores(
-                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                    teams!, _gameData);
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, _mediator);
 
             await game.UpdateBettors(
-                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                    _betData, games!, teams!, bets!);
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, games, _mediator);
 
             await game.UpdateTeamRecords(
-                game.HomeTeamFinalScore, game.AwayTeamFinalScore,
-                    teams!, _teamData);
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, _mediator);
         }
 
-        await _parleyData.UpdateParleyBetWinners(
-                    parleyBets!, games!, teams!, bets!);
+        await _mediator.UpdateParleyBetWinners();
     }
 
     public async Task GetPointSpreadUpdateForAvailableGames()
     {
-        if (games is null || !games.Any())
-            games = await _gameData.GetGames();
+        IEnumerable<GameModel> games = await _mediator.Send(new GetGamesQuery());
 
         foreach (GameModel game in games.Where(g
                     => g.GameStatus == GameStatus.NOT_STARTED))
@@ -231,16 +206,16 @@ public class GameService : IGameService
             if (gameLookup.Score.HasStarted)
             {
                 game.GameStatus = GameStatus.IN_PROGRESS;
-                await _gameData.UpdateGame(game);
+                await _mediator.Send(new UpdateGameCommand(game));
                 continue;
             }
 
-            if (game.PointSpread == Math.Round(gameLookup.Score.PointSpread, 1))
+            if (Convert.ToDouble(game.PointSpread) == Math.Round(Convert.ToDouble(gameLookup.Score.PointSpread), 1))
                 continue;
 
-            game.PointSpread = Math.Round(gameLookup.Score.PointSpread, 1);
+            game.PointSpread = Math.Round(Convert.ToDouble(gameLookup.Score.PointSpread), 1);
 
-            await _gameData.UpdateGame(game);
+            await _mediator.Send(new UpdateGameCommand(game));
         }
     }
 }

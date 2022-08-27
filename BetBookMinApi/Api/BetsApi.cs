@@ -1,5 +1,8 @@
-﻿using BetBookData.Interfaces;
+﻿using BetBookData.Commands.InsertCommands;
+using BetBookData.Commands.UpdateCommands;
 using BetBookData.Models;
+using BetBookData.Queries;
+using MediatR;
 using Serilog;
 
 namespace BetBookMinApi.Api;
@@ -10,113 +13,68 @@ public static class BetsApi
     {
         // Endpoint mappings
         app.MapGet("/Bets", GetBets).WithName("GetAllBets").AllowAnonymous();
-        app.MapGet("/Bets/{id}", GetBet).WithName("GetBetById").AllowAnonymous();
         app.MapPost("/Bets", InsertBet).WithName("InsertBet");
         app.MapPut("/Bets", UpdateBet).WithName("UpdateBet");
-        app.MapDelete("/Bets/{id}", DeleteBet).WithName("DeleteBet");
     }
 
 
-    public static async Task<IResult> GetBets(IBetData data)
+    public static async Task<IResult> GetBets(IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetBets());
+            return Results.Ok(await mediator.Send(new GetBetsQuery()));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(BetsApi));
             logger.LogInformation(ex, "Exception On Get Bets");
 
             return Results.Problem(ex.Message);
         }
     }
 
-    private static async Task<IResult> GetBet(int id, IBetData data)
+    private static async Task<IResult> InsertBet(BetModel bet, IMediator mediator)
     {
         try
         {
-            return Results.Ok(await data.GetBet(id));
+            return Results.Ok(await mediator.Send(
+                new InsertBetCommand(bet)));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Get Bet");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> InsertBet(BetModel bet, IBetData data)
-    {
-        try
-        {
-            await data.InsertBet(bet);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(BetsApi));
             logger.LogInformation(ex, "Exception Insert Get Bet");
 
             return Results.Problem(ex.Message);
         }
     }
 
-    private static async Task<IResult> UpdateBet(BetModel bet, IBetData data)
+    private static async Task<IResult> UpdateBet(BetModel bet, IMediator mediator)
     {
         try
         {
-            await data.UpdateBet(bet);
-            return Results.Ok();
+            return Results.Ok(await mediator.Send(
+                new UpdateBetCommand(bet)));
         }
         catch (Exception ex)
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
             });
 
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
+            var logger = loggerFactory.CreateLogger(typeof(BetsApi));
             logger.LogInformation(ex, "Exception On Update Bet");
-
-            return Results.Problem(ex.Message);
-        }
-    }
-
-    private static async Task<IResult> DeleteBet(int id, IBetData data)
-    {
-        
-
-        try
-        {
-            await data.DeleteBet(id);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger(typeof(GamesApi));
-            logger.LogInformation(ex, "Exception On Delete Bet");
 
             return Results.Problem(ex.Message);
         }
