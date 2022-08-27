@@ -47,11 +47,11 @@ public class BetData : IBetData
 
     public async Task<int> InsertBet(BetModel bet)
     {
-        string betStatus = BetStatus.IN_PROGRESS.ToString();
+        string betStatus = BetStatus.IN_PROGRESS.ToStringFast();
         string payoutStatus;
 
-        payoutStatus = bet.PayoutStatus == PayoutStatus.PARLEY ? PayoutStatus.PARLEY.ToString() 
-                       : PayoutStatus.UNPAID.ToString();
+        payoutStatus = bet.PayoutStatus == PayoutStatus.PARLEY ? PayoutStatus.PARLEY.ToStringFast() 
+                       : PayoutStatus.UNPAID.ToStringFast();
 
         using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
             _config.GetConnectionString("BetBookDB"));
@@ -85,8 +85,8 @@ public class BetData : IBetData
 
     public async Task UpdateBet(BetModel bet)
     {
-        string betStatus = bet.BetStatus.ToString();
-        string payoutStatus = bet.PayoutStatus.ToString();
+        string betStatus = bet.BetStatus.ToStringFast();
+        string payoutStatus = bet.PayoutStatus.ToStringFast();
 
         _logger.LogInformation(message: "Http Put / Update Bet");
 

@@ -41,8 +41,8 @@ public class GameData : IGameData
 
     public async Task InsertGame(GameModel game)
     {
-        string seasonType = game.Season.ToString();
-        string gameStatus = game.GameStatus.ToString();
+        string seasonType = game.Season.ToStringFast();
+        string gameStatus = game.GameStatus.ToStringFast();
 
         _logger.LogInformation(message: "Http Post / Insert Game");
 
@@ -64,8 +64,8 @@ public class GameData : IGameData
 
     public async Task UpdateGame(GameModel game)
     {
-        string seasonType = game.Season.ToString();
-        string gameStatus = game.GameStatus.ToString();
+        string seasonType = game.Season.ToStringFast();
+        string gameStatus = game.GameStatus.ToStringFast();
 
         _logger.LogInformation(message: "Http Put / Update Game");
 

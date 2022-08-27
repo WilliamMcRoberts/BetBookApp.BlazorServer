@@ -22,17 +22,16 @@ public class GameModel
     public DateTime DateOfGame { get; set; }
     public GameStatus GameStatus { get; set; }
     public int ScoreId { get; set; }
-
-    public string? PointSpreadDescription 
-    { 
-        get => 
-            PointSpread < 0 ? 
-            $"- {PointSpread?.ToString().Trim('-')} points" : 
-            $"+ {PointSpread} points";
-    }
-
     public string DateOfGameOnly { get; set; } = string.Empty;
     public string TimeOfGameOnly { get; set; } = string.Empty;
+
+    public string? PointSpreadDescription
+    {
+        get =>
+            PointSpread < 0 ?
+            $"- {PointSpread?.ToString().Trim('-')} points" :
+            $"+ {PointSpread} points";
+    }
 }
 
 

@@ -70,8 +70,8 @@ public class ParleyBetData : IParleyBetData
 
 
 
-        string parleyBetStatus = ParleyBetStatus.IN_PROGRESS.ToString();
-        string parleyPayoutStatus = ParleyPayoutStatus.UNPAID.ToString();
+        string parleyBetStatus = ParleyBetStatus.IN_PROGRESS.ToStringFast();
+        string parleyPayoutStatus = ParleyPayoutStatus.UNPAID.ToStringFast();
 
         _logger.LogInformation(message: "Http Post / Insert Parley Bet");
 
@@ -92,8 +92,8 @@ public class ParleyBetData : IParleyBetData
 
     public async Task UpdateParleyBet(ParleyBetModel parleyBet)
     {
-        string parleyBetStatus = parleyBet.ParleyBetStatus.ToString();
-        string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToString();
+        string parleyBetStatus = parleyBet.ParleyBetStatus.ToStringFast();
+        string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToStringFast();
 
         _logger.LogInformation(message: "Http Put / Update Parley Bet");
 

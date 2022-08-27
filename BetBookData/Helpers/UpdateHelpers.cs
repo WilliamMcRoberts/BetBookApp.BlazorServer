@@ -165,16 +165,16 @@ public static class UpdateHelpers
 
         foreach (GameModel game in unfinishedGamesOfCurrentWeek)
         {
-            GameByScoreIdDto? gameLookup = await mediator.Send(
+            GameByScoreIdDto? gameByScoreIdDto = await mediator.Send(
                 new GetGameByScoreIdDtoQuery(game.ScoreId));
 
-            if (!gameLookup.Score.IsOver || gameLookup is null)
+            if (!gameByScoreIdDto.Score.IsOver || gameByScoreIdDto is null)
                 continue;
 
-            if (!double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore))
+            if (!double.TryParse(gameByScoreIdDto.Score.HomeScore.ToString(), out var homeScore))
                 continue;
 
-            if (!double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore))
+            if (!double.TryParse(gameByScoreIdDto.Score.AwayScore.ToString(), out var awayScore))
                 continue;
 
             game.HomeTeamFinalScore = homeScore;

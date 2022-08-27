@@ -40,10 +40,10 @@ public class TransactionService : ITransactionService
                     .SqlConnection(_configuration.GetConnectionString("BetBookDB"));
 
         connection.Open();
-        _logger.LogInformation("Opened Connection To Database");
+        _logger.LogInformation("Opened Connection...");
 
-        using var trans = connection.BeginTransaction();
-        _logger.LogInformation("Begin Transaction...");
+        using var transaction = connection.BeginTransaction();
+        _logger.LogInformation("Begin Transaction (CreateBetTransaction)...");
 
         try
         {
@@ -51,15 +51,15 @@ public class TransactionService : ITransactionService
             await _mediator.Send(new UpdateHouseAccountCommand(houseAccount));
             await _mediator.Send(new InsertBetCommand(bet));
 
-            trans.Commit();
-            _logger.LogInformation("Transaction Committed");
+            transaction.Commit();
+            _logger.LogInformation("Transaction Committed (CreateBetTransaction)...");
             return true;
         }
 
         catch (Exception ex)
         {
-            trans.Rollback();
-            _logger.LogInformation(ex, "Transaction Rolled Back");
+            transaction.Rollback();
+            _logger.LogInformation(ex, "Transaction Rolled Back (CreateBetTransaction)...");
 
             return false;
         }
@@ -79,10 +79,10 @@ public class TransactionService : ITransactionService
             _configuration.GetConnectionString("BetBookDB"));
 
         connection.Open();
-        _logger.LogInformation("Opened Connection To Database");
+        _logger.LogInformation("Opened Connection...");
 
-        using var trans = connection.BeginTransaction();
-        _logger.LogInformation("Begin Transaction...");
+        using var transaction = connection.BeginTransaction();
+        _logger.LogInformation("Begin Transaction (PayoutBetsTransaction)...");
 
         try
         {
@@ -96,16 +96,16 @@ public class TransactionService : ITransactionService
             await _mediator.Send(new UpdateHouseAccountCommand(houseAccount));
             await _mediator.Send(new UpdateUserAccountBalanceCommand(user));
 
-            trans.Commit();
-            _logger.LogInformation("Transaction Committed");
+            transaction.Commit();
+            _logger.LogInformation("Transaction Committed (PayoutBetsTransaction)...");
 
             return true;
         }
 
         catch (Exception ex)
         {
-            trans.Rollback();
-            _logger.LogInformation(ex, "Transaction Rolled Back");
+            transaction.Rollback();
+            _logger.LogInformation(ex, "Transaction Rolled Back (PayoutBetsTransaction)...");
 
             return false;
         }
@@ -121,10 +121,10 @@ public class TransactionService : ITransactionService
             _configuration.GetConnectionString("BetBookDB"));
 
         connection.Open();
-        _logger.LogInformation("Opened Connection To Database");
+        _logger.LogInformation("Opened Connection...");
 
         using var trans = connection.BeginTransaction();
-        _logger.LogInformation("Begin Transaction");
+        _logger.LogInformation("Begin Transaction (CreateParleyBetTransaction)...");
 
         try
         {
@@ -136,7 +136,7 @@ public class TransactionService : ITransactionService
             await _mediator.Send(new InsertParleyBetCommand(parleyBet));
 
             trans.Commit();
-            _logger.LogInformation("Transaction Committed");
+            _logger.LogInformation("Transaction Committed (CreateParleyBetTransaction)");
 
             return true;
         }
@@ -144,7 +144,7 @@ public class TransactionService : ITransactionService
         catch (Exception ex)
         {
             trans.Rollback();
-            _logger.LogInformation(ex, "Transaction Rolled Back");
+            _logger.LogInformation(ex, "Transaction Rolled Back (CreateParleyBetTransaction)");
 
             return false;
         }
@@ -161,10 +161,10 @@ public class TransactionService : ITransactionService
                     .SqlConnection(_configuration.GetConnectionString("BetBookDB"));
 
         connection.Open();
-        _logger.LogInformation("Opened Connection To Database");
+        _logger.LogInformation("Opened Connection...");
 
         using var trans = connection.BeginTransaction();
-        _logger.LogInformation("Begin Transaction");
+        _logger.LogInformation("Begin Transaction (PayoutParleyBetsTransaction)...");
 
         try
         {
@@ -182,7 +182,7 @@ public class TransactionService : ITransactionService
             await _mediator.Send(new UpdateUserAccountBalanceCommand(user));
 
             trans.Commit();
-            _logger.LogInformation("Transaction Committed");
+            _logger.LogInformation("Transaction Committed (PayoutParleyBetsTransaction)");
 
             return true;
         }
@@ -190,7 +190,7 @@ public class TransactionService : ITransactionService
         catch (Exception ex)
         {
             trans.Rollback();
-            _logger.LogInformation(ex, "Transaction Rolled Back");
+            _logger.LogInformation(ex, "Transaction Rolled Back (PayoutParleyBetsTransaction)");
 
             return false;
         }

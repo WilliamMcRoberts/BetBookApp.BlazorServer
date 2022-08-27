@@ -46,7 +46,7 @@ public class GameService : IGameService
         }
         catch (Exception ex)
         {
-            _logger.LogInformation(ex, "Exception On Get Game By Team");
+            _logger.LogInformation(ex, "Http Get Failed...GetGameByTeam()");
         }
 
         return game!;
@@ -68,7 +68,7 @@ public class GameService : IGameService
 
         catch (Exception ex)
         {
-            _logger.LogInformation(ex, "Exception On Get Game By Score ID");
+            _logger.LogInformation(ex, "Http Get Failed...GetGameByScoreId()");
         }
 
         return game!;
@@ -89,7 +89,7 @@ public class GameService : IGameService
 
         catch (Exception ex)
         {
-            _logger.LogInformation(ex, "Exception On Get Games By Week");
+            _logger.LogInformation(ex, "Http Get Failed...GetGamesByWeek()");
         }
 
         return games!;
@@ -156,7 +156,7 @@ public class GameService : IGameService
             }
             catch (Exception ex)
             {
-                _logger.LogInformation(ex, "Failed On Insert Game For Get Games For This Week");
+                _logger.LogInformation(ex, "Failed On Game Insertion...GetGamesForThisWeek()");
             }
         }
 
