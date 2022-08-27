@@ -94,7 +94,10 @@ public static class CalculationHelpers
 
     public static decimal CalculateParleyBetPayout(
             this int gameCount, decimal betAmount)
-    { 
+    {
+        if (gameCount < 2)
+            return 0;
+
         betAmount -= betAmount * (decimal).1;
 
         return gameCount == 2 ? (betAmount * (decimal)2.6) + betAmount 

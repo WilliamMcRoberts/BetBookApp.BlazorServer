@@ -67,15 +67,13 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-/**********************************************************************
-                                START 
-***********************************************************************/
+/***************************************************************************************************
+                                            START 
+****************************************************************************************************/
 
-
-
-/********************************
-        Create Bet Page
-********************************/
+/*******************************************************
+                Create Bet Page
+********************************************************/
 
 .details-buttons {
     display: flex;
@@ -148,9 +146,9 @@ a, .btn-link {
     margin: 1em auto;
 }
 
-/**********************************
-        Create Parley Bet Page
-***********************************/
+/*********************************************************
+                Create Parley Bet Page
+**********************************************************/
 
 .parley-bet-game-list-section {
     display: flex;
@@ -212,9 +210,9 @@ a, .btn-link {
     margin-top: 2em;
 }
 
-/********************************
-        Home Page
-********************************/
+/*******************************************************
+                    Home Page
+********************************************************/
 
 .games {
     margin-bottom: 2em;
@@ -257,9 +255,9 @@ a, .btn-link {
     margin-bottom: .25em;
 }
 
-/********************************
-        Profile Pages
-********************************/
+/*****************************************************
+                Profile Pages
+******************************************************/
 
 .user-profile-reg {
     width: 70%;
@@ -303,8 +301,6 @@ a, .btn-link {
 
 .bet {
     border-radius: 15px;
-    margin: 0 auto;
-    border: 1px solid white;
     width: 75%;
     font-size: 20px;
     font-weight: 700;
@@ -312,6 +308,24 @@ a, .btn-link {
     margin-top: 1em;
     margin-bottom: 1em;
     backdrop-filter: blur(1px);
+    margin: 0 auto;
+    border: 1px solid white;
+}
+
+.payout-container {
+    width: 30%;
+    border: 1px solid white;
+    backdrop-filter: blur(1px);
+    margin: .5em auto;
+    border-radius: 15px;
+}
+
+.payout-title {
+    margin:1em .5em;
+}
+
+.payout {
+    margin-top:1em;
 }
 
 .parley-bet {
@@ -329,9 +343,9 @@ a, .btn-link {
     font-size:20px;
 }
 
-/*********************************
-        About Page
-*********************************/
+/****************************************************
+                About Page
+*****************************************************/
 
 .about-about {
     background-color: rgb(0,0,0); /*Fallback color */
@@ -351,9 +365,9 @@ a, .btn-link {
     margin: 0 auto;
 }
 
-/**********************************
-        Shared
-**********************************/
+/****************************************************
+                    Shared
+*****************************************************/
 
 label {
     font-weight: 700;
@@ -399,9 +413,9 @@ ul {
     font-family: 'Montserrat', sans-serif;
 }
 
-/********************************
-        Header And Footer
-********************************/
+/****************************************************
+                Header And Footer
+****************************************************/
 
 .link-support {
     margin: 0 auto;
@@ -544,9 +558,9 @@ ul {
 }
 
 
-/*****************************
-        Admin Page
-*****************************/
+/*******************************************************
+                    Admin Page
+*******************************************************/
 
 .game-input {
     border: 2px solid green;
@@ -573,9 +587,9 @@ ul {
 }
 
 
-/*************************************
-        Buttons
- **************************************/
+/***************************************************
+                    Buttons
+ **************************************************/
 
 .undo-btn {
     background: yellow;
@@ -650,6 +664,10 @@ ul {
         background-color: white;
         border-color: green;
     }
+
+/*************************************************
+                Media Queries
+*************************************************/
 
 @media (max-width: 1100px) {
 
@@ -742,8 +760,6 @@ ul {
 
 }
 
-
-
 @media(min-width: 700px) {
 
     .at {
@@ -786,19 +802,13 @@ ul {
     .about-odds {
         width: 95%;
     }
-
-    
-
 }
 
-@media(max-width: 580px) {
+@media(max-width: 650px) {
 
-    .parley-buttons {
-        display: flex;
-        flex-direction: column;
-        margin: 0 2em;
+    .balance-item {
+        display: none;
     }
-
 }
 
 @media(max-width: 625px) {
@@ -810,12 +820,12 @@ ul {
     }
 }
 
-@media(max-width: 650px) {
+@media(max-width: 580px) {
 
-    .balance-item {
-        display: none;
+    .parley-buttons {
+        display: flex;
+        flex-direction: column;
     }
-
 }
 
 @media(max-width: 550px) {
@@ -823,7 +833,18 @@ ul {
     .font {
         font-size: 15px;
     }
+}
 
+@media(max-width: 530px) {
+
+
+    .payout-title {
+        font-size: 15px;
+    }
+
+    .payout {
+        font-size: 15px;
+    }
 }
 
 @media(max-width: 500px) {
@@ -835,8 +856,26 @@ ul {
     .details {
         font-size: 15px;
     }
-
 }
+
+@media(max-width: 400px) {
+
+
+    .payout-title {
+        font-size: 12px;
+    }
+
+    .payout {
+        font-size: 12px;
+        margin-top: 1em;
+    }
+}
+
+
+
+
+
+
 
 
 

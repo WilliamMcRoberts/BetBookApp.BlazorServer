@@ -161,12 +161,14 @@
                 <div class="wager-box">
                     <label style="text-align: center;margin: .5em auto;">Wager Amount</label>
                     <input type="number" @bind-value="@betAmount" @bind-value:event="oninput"/>
-                    </div>  
-                    <div style="text-align:center;margin-top:1em;">
-                    <p style="margin: .5em 2em;">Your @chosenGamesAndWinners.Count game parley for $@betAmount.ToString("#,##0.00") is ready</p>
-                    <p style="margin: .5em 2em;">Your potential payout is $@chosenGamesAndWinners.Count.CalculateParleyBetPayout(betAmount).ToString("#,##0.00")</p>
-                    <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
+                </div>  
+                <div style="text-align:center;margin-top:1em;">
+                    <div class="payout-container">
+                        <p class="payout-title">Potential Payout</p>
+                        <p class="payout">$@chosenGamesAndWinners.Count.CalculateParleyBetPayout(betAmount).ToString("#,##0.00")</p>
                     </div>
+                    <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
+                </div>
                 <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
                     <button class="mb-2 mt-4 site-btn btn site-btn-light btn-sm text-uppercase" 
                         @onclick="SubmitParleyWager">
@@ -192,7 +194,7 @@ else
 </SfToast>
 
 <style>
-
+    
     /*Toast Background*/
     .e-toast-container .e-toast { 
         /*Black w/opacity*/
