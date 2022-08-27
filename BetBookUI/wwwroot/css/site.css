@@ -146,6 +146,22 @@ a, .btn-link {
     margin: 1em auto;
 }
 
+.payout-container {
+    width: 40%;
+    border: 1px solid white;
+    backdrop-filter: blur(1px);
+    margin: .5em auto;
+    border-radius: 15px;
+}
+
+.payout-title {
+    margin: 1em .5em;
+}
+
+.payout {
+    margin-top: 1em;
+}
+
 /*********************************************************
                 Create Parley Bet Page
 **********************************************************/
@@ -310,22 +326,6 @@ a, .btn-link {
     backdrop-filter: blur(1px);
     margin: 0 auto;
     border: 1px solid white;
-}
-
-.payout-container {
-    width: 30%;
-    border: 1px solid white;
-    backdrop-filter: blur(1px);
-    margin: .5em auto;
-    border-radius: 15px;
-}
-
-.payout-title {
-    margin:1em .5em;
-}
-
-.payout {
-    margin-top:1em;
 }
 
 .parley-bet {
@@ -831,18 +831,6 @@ ul {
 @media(max-width: 550px) {
 
     .font {
-        font-size: 15px;
-    }
-}
-
-@media(max-width: 530px) {
-
-
-    .payout-title {
-        font-size: 15px;
-    }
-
-    .payout {
         font-size: 15px;
     }
 }
