@@ -70,7 +70,7 @@
             <div class="footer-link">
                 @foreach(GameModel game in availableGames)
                 {
-                    <a class="game-item-nav" href="/CreateParleyBet">
+                    <a class="game-item-nav" @onclick="CreateParleyBet">
                         <h6 class="footer-game-item">@game.AwayTeam?.TeamName @@ @game.HomeTeam?.TeamName</h6>
                     </a>
                 }
@@ -82,10 +82,10 @@
                 <h6 class="nav-title">Profile</h6>
             </div>
             <div class="footer-link">
-                <a class="game-item-nav" href="/ProfileSingleBets">
+                <a class="game-item-nav" @onclick="NavigateToParleyProfile">
                     <h6 class="footer-game-item">Single Bets</h6>
                 </a>
-                <a class="game-item-nav" href="/ProfileParleyBets">
+                <a class="game-item-nav" @onclick="NavigateToSingleProfile">
                     <h6 class="footer-game-item">Parley Bets</h6>
                 </a>
             </div>
@@ -100,7 +100,7 @@
                     <h6 class="footer-game-item">Site Info</h6>
                 </a>
                 <a class="game-item-nav" href="/About">
-                    <h6 class="footer-game-item">Odds For Bets</h6>
+                    <h6 class="footer-game-item">Odds</h6>
                 </a>
             </div>
            
@@ -109,22 +109,15 @@
 </div>
 
 
-
 @code {
 
     string copyright = "\u00a9 Copyright Bet Book Gaming Inc.";
     string lisence = "All Rights Reserved. Digital Millennium Copyright Act.";
     string city = "Cincinnati, OH 45248";
-
     IEnumerable<GameModel>? games;
-
     IEnumerable<TeamModel>? teams;
-
     HashSet<GameModel> availableGames = new();
-
     UserModel? loggedInUser;
-
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -141,13 +134,49 @@
 
     private void CreateBet(int gameId)
     {
-        if(loggedInUser is not null)
+        if(loggedInUser is null)
         {
-            navManager.NavigateTo("..");
-            navManager.NavigateTo($"/CreateBet/{gameId}");
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+            return;
         }
             
-        else
+        navManager.NavigateTo("..");
+        navManager.NavigateTo($"/CreateBet/{gameId}");
+    }
+
+    private void CreateParleyBet()
+    {
+        if (loggedInUser is null)
+        {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+            return;
+        }
+
+        navManager.NavigateTo("..");
+        navManager.NavigateTo($"/CreateParleyBet");
+    }
+
+    private void NavigateToParleyProfile()
+    {
+        if (loggedInUser is null)
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+            return;
+        }
+
+        navManager.NavigateTo("..");
+        navManager.NavigateTo($"/ProfileParleyBets");
+    }
+
+    private void NavigateToSingleProfile()
+    {
+        if (loggedInUser is null)
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+            return;
+        }
+
+        navManager.NavigateTo("..");
+        navManager.NavigateTo($"/ProfileSingleBets");
     }
 }

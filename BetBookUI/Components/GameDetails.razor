@@ -1,6 +1,4 @@
 ﻿@inject AuthenticationStateProvider authProvider
-@inject IGameService gameService
-@inject IConfiguration config
 @inject ITransactionService transactionService
 @inject ILogger<GameDetails> logger
 @inject MediatR.IMediator _mediator
@@ -129,7 +127,7 @@
         </div>  
         <div style="text-align:center;margin-top:1em;margin:0 auto;">
             <p style="margin: .5em 2em;">Your bet for $@betAmount.ToString("#,##0.00") is ready</p>
-            <p style="margin: .5em 2em;">Your potential payout is $@GetPotentialBetPayout(betAmount).ToString("#,##0.00")</p>
+            <p style="margin: .5em 2em;">Your potential payout is $@betAmount.CalculateBetPayout().ToString("#,##0.00")</p>
             <p style="margin: .5em 2em;">If everything looks good click "Submit Wager"</p>
         </div>
         <div style="text-align:center; margin-top:2em;margin-bottom: 2em;" class="undo-btn-container">
@@ -197,7 +195,6 @@
     private TeamModel? teamToWin;
     private bool wagerPlaced = false;
     private bool gameNotStarted = true;
-    private double VIG = .1;
     private IEnumerable<TeamModel>? teams;
     private string startedGameDescription = string.Empty;
 
@@ -223,42 +220,40 @@
             return;
         }
 
-        GameByScoreIdDto gameLookup =
-            await gameService.GetGameByScoreId(CurrentGame.ScoreId);
+        GameByScoreIdDto? gameLookup =
+            await _mediator.Send(new GetGameByScoreIdDtoQuery(CurrentGame.ScoreId));
+
+        if (gameLookup is null)
+            return;
 
         if (gameLookup.Score.HasStarted)
         {
-            startedGameDescription = $"{CurrentGame.AwayTeam?.TeamName} at {CurrentGame.HomeTeam?.TeamName}";
+            startedGameDescription = 
+                $"{CurrentGame.AwayTeam?.TeamName} at {CurrentGame.HomeTeam?.TeamName}";
             CurrentGame.GameStatus = GameStatus.IN_PROGRESS;
             await _mediator.Send(new UpdateGameCommand(CurrentGame));
             gameNotStarted = false;
             return;
         }
 
-        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
+        HouseAccountModel? houseAccount = 
+            await _mediator.Send(new GetHouseAccountQuery());
+        UserModel? loggedInUser = 
+            await authProvider.GetUserFromAuth(_mediator);
 
-        UserModel? loggedInUser = await authProvider.GetUserFromAuth(_mediator);
+        if (loggedInUser is null || houseAccount is null)
+            return;
 
-        BetModel bet = new();
-
-        try
+        BetModel bet = new()
         {
-            bet.BetAmount = betAmount;
-            bet.BetPayout =
-                (decimal)((double)betAmount - (double)betAmount * VIG);
-            bet.ChosenWinnerId = teamToWin.Id;
-            bet.BettorId = loggedInUser!.Id;
-            bet.GameId = CurrentGame.Id;
-            bet.PointSpread = CurrentGame.PointSpread;
+            BetAmount = betAmount,
+            BetPayout = betAmount.CalculateBetPayout(),
+            ChosenWinnerId = teamToWin.Id,
+            BettorId = loggedInUser.Id,
+            GameId = CurrentGame.Id,
+            PointSpread = CurrentGame.PointSpread
+        };
 
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(ex, "Exception On Creating Single Bet");
-        }
-
-        // Transaction method transfers funds from user account
-        // to house account and inserts bet into the database
         bool transactionGood = await transactionService.CreateBetTransaction(
             loggedInUser, bet);
 
@@ -274,12 +269,14 @@
     {
         if(teamId == CurrentGame.AwayTeamId)
         {
-            teamToWin = teams?.Where(t => t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
+            teamToWin = teams?.Where(t =>
+                t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
             winnerChosen = true;
             return;
         }
 
-        teamToWin = teams?.Where(t => t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
+        teamToWin = teams?.Where(t => 
+            t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
         winnerChosen = true;
     }
 
@@ -301,13 +298,6 @@
         return pointSpread < 0 ? $"- {pointSpread?.ToString().Trim('-')}"
                : pointSpread == 0 ? $"+ 0" 
                : $"+ {pointSpread}";
-    }
-
-    private decimal GetPotentialBetPayout(decimal betAmount)
-    {
-        decimal betAmountMinusVig = betAmount - betAmount * (decimal).1;
-
-        return betAmountMinusVig + betAmount;
     }
 }
 

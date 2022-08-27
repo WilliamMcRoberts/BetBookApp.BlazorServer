@@ -28,7 +28,7 @@ public class TeamModel
 
     public string ImagePath
     {
-        get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png" 
+        get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png"
                : $"{TeamName.ToLower()}.svg";
     }
 

@@ -1,6 +1,5 @@
 ﻿@page "/AdminPage"
 @attribute [Authorize(Policy = "Admin")]
-@inject IGameService gameService
 @inject ILogger<AdminPage> logger
 @inject MediatR.IMediator _mediator
 
@@ -143,10 +142,10 @@
     }
 
     private async Task FetchAllScoresForFinishedGames() =>
-        await gameService.FetchAllScoresForFinishedGames();
+        await _mediator.FetchAllScoresForFinishedGames();
 
     private async Task GetPointSpreadUpdateForAvailableGames() => 
-        await gameService.GetPointSpreadUpdateForAvailableGames();
+        await _mediator.GetPointSpreadUpdateForAvailableGames();
 
     private void DateChangeHandler(ChangedEventArgs<DateTime> args)
     {

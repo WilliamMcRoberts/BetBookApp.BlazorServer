@@ -1,5 +1,7 @@
 ﻿
+using BetBookData.Helpers;
 using BetBookData.Interfaces;
+using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -9,27 +11,31 @@ namespace BetBookData.Services;
 
 public class PointSpreadUpdateTimerService : BackgroundService
 {
-    private readonly IGameService _gameService;
+    private readonly IMediator _mediator;
     private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(3));
     private readonly ILogger<PointSpreadUpdateTimerService> _logger;
 
 
     public PointSpreadUpdateTimerService(
-        IGameService gameService, ILogger<PointSpreadUpdateTimerService> logger)
+        IMediator mediator, ILogger<PointSpreadUpdateTimerService> logger)
     {
-        _gameService = gameService;
         _logger = logger;
+        _mediator = mediator;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        int index = 1;
         while (await _timer.WaitForNextTickAsync(stoppingToken)
                     && !stoppingToken.IsCancellationRequested)
         {
-            await _gameService.GetPointSpreadUpdateForAvailableGames();
-            _logger.LogInformation($"Point Spread Update Fetch #{index}");
-            index++;
+            try
+            {
+                await _mediator.GetPointSpreadUpdateForAvailableGames();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex,"Failed Point Spread Update Call...");
+            }
         }
     }
 }

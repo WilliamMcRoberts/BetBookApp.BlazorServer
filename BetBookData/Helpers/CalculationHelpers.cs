@@ -87,14 +87,19 @@ public static class CalculationHelpers
         return total;
     }
 
+    public static decimal CalculateBetPayout(this decimal betAmount)
+    {
+        return (betAmount - betAmount * (decimal).1) + betAmount;
+    }
+
     public static decimal CalculateParleyBetPayout(
-            this int gamecount, decimal betAmount)
+            this int gameCount, decimal betAmount)
     { 
         betAmount -= betAmount * (decimal).1;
 
-        return gamecount == 2 ? (betAmount * (decimal)2.6) + betAmount 
-            : gamecount == 3 ? (betAmount * (decimal)6) + betAmount 
-            : gamecount == 4 ? (betAmount * (decimal)11) + betAmount 
+        return gameCount == 2 ? (betAmount * (decimal)2.6) + betAmount 
+            : gameCount == 3 ? (betAmount * (decimal)6) + betAmount 
+            : gameCount == 4 ? (betAmount * (decimal)11) + betAmount 
             : (betAmount * (decimal)22) + betAmount;
     }
 

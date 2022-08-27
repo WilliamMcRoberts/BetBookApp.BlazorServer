@@ -1,5 +1,6 @@
 ﻿
 using BetBookData.Commands.UpdateCommands;
+using BetBookData.Dto;
 using BetBookData.Models;
 using BetBookData.Queries;
 using MediatR;
@@ -148,6 +149,77 @@ public static class UpdateHelpers
             currentGame.GameWinnerId = gameWinner.Id;
 
         await mediator.Send(new UpdateGameCommand(currentGame));
+    }
+
+    public static async Task FetchAllScoresForFinishedGames(this IMediator mediator)
+    {
+        IEnumerable<GameModel> games = await mediator.Send(
+            new GetGamesQuery());
+
+        SeasonType season = DateTime.Now.CalculateSeason();
+        int week = season.CalculateWeek(DateTime.Now);
+
+        HashSet<GameModel> unfinishedGamesOfCurrentWeek = games.Where(g =>
+            g.WeekNumber == week && g.GameStatus != GameStatus.FINISHED)
+            .ToHashSet<GameModel>();
+
+        foreach (GameModel game in unfinishedGamesOfCurrentWeek)
+        {
+            GameByScoreIdDto? gameLookup = await mediator.Send(
+                new GetGameByScoreIdDtoQuery(game.ScoreId));
+
+            if (!gameLookup.Score.IsOver || gameLookup is null)
+                continue;
+
+            if (!double.TryParse(gameLookup.Score.HomeScore.ToString(), out var homeScore))
+                continue;
+
+            if (!double.TryParse(gameLookup.Score.AwayScore.ToString(), out var awayScore))
+                continue;
+
+            game.HomeTeamFinalScore = homeScore;
+            game.AwayTeamFinalScore = awayScore;
+
+            await game.UpdateScores(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, mediator);
+
+            await game.UpdateBettors(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, games, mediator);
+
+            await game.UpdateTeamRecords(
+                game.HomeTeamFinalScore, game.AwayTeamFinalScore, mediator);
+        }
+
+        await mediator.UpdateParleyBetWinners();
+    }
+
+    public static async Task GetPointSpreadUpdateForAvailableGames(this IMediator mediator)
+    {
+        IEnumerable<GameModel> games = await mediator.Send(new GetGamesQuery());
+
+        foreach (GameModel game in games.Where(g
+                    => g.GameStatus == GameStatus.NOT_STARTED))
+        {
+            GameByScoreIdDto? gameLookup = await mediator.Send(
+                new GetGameByScoreIdDtoQuery(game.ScoreId));
+
+            if (gameLookup is null)
+                continue;
+
+            if (gameLookup.Score.HasStarted)
+            {
+                game.GameStatus = GameStatus.IN_PROGRESS;
+                await mediator.Send(new UpdateGameCommand(game));
+                continue;
+            }
+
+            if (Convert.ToDouble(game.PointSpread) == Math.Round(Convert.ToDouble(gameLookup.Score.PointSpread), 1))
+                continue;
+
+            game.PointSpread = Math.Round(Convert.ToDouble(gameLookup.Score.PointSpread), 1);
+
+            await mediator.Send(new UpdateGameCommand(game));
+        }
     }
 }
 

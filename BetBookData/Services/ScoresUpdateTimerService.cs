@@ -1,6 +1,9 @@
 ﻿
 
+using System;
+using BetBookData.Helpers;
 using BetBookData.Interfaces;
+using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -8,25 +11,29 @@ namespace BetBookData.Services;
 
 public class ScoresUpdateTimerService : BackgroundService
 {
-    private readonly IGameService _gameService;
+    private readonly IMediator _mediator;
     private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(3));
     private readonly ILogger<ScoresUpdateTimerService> _logger;
 
-    public ScoresUpdateTimerService(IGameService gameService, ILogger<ScoresUpdateTimerService> logger)
+    public ScoresUpdateTimerService(IMediator mediator, ILogger<ScoresUpdateTimerService> logger)
     {
-        _gameService = gameService;
+        _mediator = mediator;
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        int index = 1;
         while (await _timer.WaitForNextTickAsync(stoppingToken)
                     && !stoppingToken.IsCancellationRequested)
         {
-            await _gameService.FetchAllScoresForFinishedGames();
-            _logger.LogInformation($"Scores Fetch #{index}");
-            index++;
+            try
+            {
+                await _mediator.FetchAllScoresForFinishedGames();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex,"Failed Scores Fetch Call...");
+            }
         }
     }
 }

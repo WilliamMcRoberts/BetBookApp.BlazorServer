@@ -1,7 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager navManager
 @inject AuthenticationStateProvider authProvider
-@inject IGameService gameService
 @inject MediatR.IMediator _mediator
 @inject ILogger<Index> logger
 
@@ -21,7 +20,6 @@
 </div>
 
 @code {
-
     UserModel? loggedInUser;
     SeasonType season;
     int week;
@@ -46,7 +44,7 @@
             g => g.WeekNumber == week).ToHashSet<GameModel>();
 
         if (thisWeeksGames.Count != 16)
-            thisWeeksGames = await gameService.GetGamesForThisWeek(season, week);
+            thisWeeksGames = await _mediator.Send(new GetGamesForThisWeekQuery(season, week));
 
         gamesAvailable = thisWeeksGames.Where(g =>
             g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
