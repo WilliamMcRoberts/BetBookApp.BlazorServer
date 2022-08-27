@@ -1,6 +1,8 @@
 ﻿
 <div>
-    <label style="margin-left: 5em;">@BetType Bets</label>
+    <div style="text-align:center;">
+        <label style="text-decoration:underline;">@BetType Bets</label>
+    </div>
     @if(BetList.Count != 0)
     {
         if(BetList.Where(b => b.BetPayout != 0).ToList().Count == 0)

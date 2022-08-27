@@ -22,7 +22,7 @@ public class ParleyBetData : IParleyBetData
 
     public async Task<IEnumerable<ParleyBetModel>> GetParleyBets()
     {
-        _logger.LogInformation(message: "Http Get / Get Parley Bets");
+        _logger.LogInformation( "Get Parley Bets Call");
 
         return await _db.LoadData<ParleyBetModel, dynamic>(
             "dbo.spParleyBets_GetAll", new { });
@@ -30,7 +30,7 @@ public class ParleyBetData : IParleyBetData
 
     public async Task<ParleyBetModel?> GetParleyBet(int parleyBetId)
     {
-        _logger.LogInformation(message: "Http Get / Get Parley Bet");
+        _logger.LogInformation( "Get Parley Bet Call");
 
         var result = await _db.LoadData<ParleyBetModel, dynamic>(
             "dbo.spParleyBets_Get", new
@@ -73,21 +73,29 @@ public class ParleyBetData : IParleyBetData
         string parleyBetStatus = ParleyBetStatus.IN_PROGRESS.ToStringFast();
         string parleyPayoutStatus = ParleyPayoutStatus.UNPAID.ToStringFast();
 
-        _logger.LogInformation(message: "Http Post / Insert Parley Bet");
+        _logger.LogInformation("Insert Parley Bet Call");
 
-        await _db.SaveData("dbo.spParleyBets_Insert", new
+        try
         {
-            parleyBet.Bet1Id,
-            parleyBet.Bet2Id,
-            parleyBet.Bet3Id,
-            parleyBet.Bet4Id,
-            parleyBet.Bet5Id,
-            parleyBet.BettorId,
-            parleyBet.BetAmount,
-            parleyBet.BetPayout,
-            parleyBetStatus,
-            parleyPayoutStatus
-        });
+            await _db.SaveData("dbo.spParleyBets_Insert", new
+            {
+                parleyBet.Bet1Id,
+                parleyBet.Bet2Id,
+                parleyBet.Bet3Id,
+                parleyBet.Bet4Id,
+                parleyBet.Bet5Id,
+                parleyBet.BettorId,
+                parleyBet.BetAmount,
+                parleyBet.BetPayout,
+                parleyBetStatus,
+                parleyPayoutStatus
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation( "Failed To Insert Parley Bet");
+
+        }
     }
 
     public async Task UpdateParleyBet(ParleyBetModel parleyBet)
@@ -95,33 +103,47 @@ public class ParleyBetData : IParleyBetData
         string parleyBetStatus = parleyBet.ParleyBetStatus.ToStringFast();
         string parleyPayoutStatus = parleyBet.ParleyPayoutStatus.ToStringFast();
 
-        _logger.LogInformation(message: "Http Put / Update Parley Bet");
+        _logger.LogInformation(message: "Update Parley Bet Call");
 
-        await _db.SaveData("dbo.spParleyBets_Update", new
+        try
         {
-            parleyBet.Id,
-            parleyBet.Bet1Id,
-            parleyBet.Bet2Id,
-            parleyBet.Bet3Id,
-            parleyBet.Bet4Id,
-            parleyBet.Bet5Id,
-            parleyBet.BettorId,
-            parleyBet.BetAmount,
-            parleyBet.BetPayout,
-            parleyBetStatus,
-            parleyPayoutStatus
-        });
+            await _db.SaveData("dbo.spParleyBets_Update", new
+            {
+                parleyBet.Id,
+                parleyBet.Bet1Id,
+                parleyBet.Bet2Id,
+                parleyBet.Bet3Id,
+                parleyBet.Bet4Id,
+                parleyBet.Bet5Id,
+                parleyBet.BettorId,
+                parleyBet.BetAmount,
+                parleyBet.BetPayout,
+                parleyBetStatus,
+                parleyPayoutStatus
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Update Parley Bet");
+        }
     }
 
     public async Task DeleteParleyBet(int id)
     {
-        _logger.LogInformation(message: "Http Delete / Delete Parley Bet");
+        _logger.LogInformation( "Delete Parley Bet Call");
 
-        await _db.SaveData(
-        "dbo.spBets_Delete", new
+        try
         {
-            Id = id
-        });
+            await _db.SaveData( "dbo.spBets_Delete", new
+            {
+                Id = id
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex,"Failed To Delete Parley Bet");
+
+        }
     }
 }
 

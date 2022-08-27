@@ -26,7 +26,7 @@ public class BetData : IBetData
 
     public async Task<IEnumerable<BetModel>> GetBets() 
     {
-        _logger.LogInformation(message: "Http Get / Get Bets");
+        _logger.LogInformation( "Get Bets Call");
 
         return await _db.LoadData<BetModel, dynamic>(
             "dbo.spBets_GetAll", new { });
@@ -34,15 +34,15 @@ public class BetData : IBetData
 
     public async Task<BetModel?> GetBet(int betId)
     {
-        _logger.LogInformation(message: "Http Get / Get Bet");
+        _logger.LogInformation( "Get Bet Call");
 
-        var result = await _db.LoadData<BetModel, dynamic>(
+        var results = await _db.LoadData<BetModel, dynamic>(
             "dbo.spBets_Get", new
             {
                 Id = betId
             });
 
-        return result.FirstOrDefault();
+        return results.FirstOrDefault();
     }
 
     public async Task<int> InsertBet(BetModel bet)
@@ -69,15 +69,15 @@ public class BetData : IBetData
         p.Add( "@Id", 0, dbType: DbType.Int32,
             direction: ParameterDirection.Output);
 
+        _logger.LogInformation( "Insert Bet Call");
         try
         {
-            _logger.LogInformation(message: "Http Post / Insert Bet");
             await connection.ExecuteAsync(
                 "dbo.spBets_Insert", p, commandType: CommandType.StoredProcedure);
         }
         catch (Exception ex)
         {
-            _logger.LogInformation(ex, "Exception On Insert Bet");
+            _logger.LogInformation(ex, "Failed To Insert Bet");
         }
 
         return bet.Id = p.Get<int>("@Id");
@@ -88,32 +88,43 @@ public class BetData : IBetData
         string betStatus = bet.BetStatus.ToStringFast();
         string payoutStatus = bet.PayoutStatus.ToStringFast();
 
-        _logger.LogInformation(message: "Http Put / Update Bet");
-
-        await _db.SaveData("dbo.spBets_Update", new
+        _logger.LogInformation( "Update Bet Call");
+        try
         {
-            bet.Id,
-            bet.BetAmount,
-            bet.BetPayout,
-            bet.BettorId,
-            bet.GameId,
-            bet.ChosenWinnerId,
-            bet.FinalWinnerId,
-            betStatus,
-            payoutStatus,
-            bet.PointSpread
-        });
+            await _db.SaveData("dbo.spBets_Update", new
+            {
+                bet.Id,
+                bet.BetAmount,
+                bet.BetPayout,
+                bet.BettorId,
+                bet.GameId,
+                bet.ChosenWinnerId,
+                bet.FinalWinnerId,
+                betStatus,
+                payoutStatus,
+                bet.PointSpread
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Update Bet");
+        }
     }
 
     public async Task DeleteBet(int id)
     {
-        _logger.LogInformation(message: "Http Delete / Delete Bet");
-
-        await _db.SaveData(
-        "dbo.spBets_Delete", new
+        _logger.LogInformation( "Delete Bet Call");
+        try
         {
-            Id = id
-        });
+            await _db.SaveData( "dbo.spBets_Delete", new
+            {
+                Id = id
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Delete Bet");
+        }
     }
 }
 

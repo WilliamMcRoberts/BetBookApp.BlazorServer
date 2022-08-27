@@ -20,7 +20,7 @@ public class HouseAccountData : IHouseAccountData
 
     public async Task<HouseAccountModel?> GetHouseAccount()
     {
-        _logger.LogInformation(message: "Http Get / Get House Account");
+        _logger.LogInformation("Get House Account Call");
 
 
         var result = await _db.LoadData<HouseAccountModel, dynamic>(
@@ -31,13 +31,19 @@ public class HouseAccountData : IHouseAccountData
 
     public async Task UpdateHouseAccount(HouseAccountModel houseAccount)
     {
-        _logger.LogInformation(message: "Http Put / Update House Account");
+        _logger.LogInformation( "Update House Account Call");
 
-
-        await _db.SaveData("dbo.spHouseAccount_Update", new
+        try
         {
-            houseAccount.AccountBalance
-        });
+            await _db.SaveData("dbo.spHouseAccount_Update", new
+            {
+                houseAccount.AccountBalance
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Update House Account");
+        }
     }
 }
 
