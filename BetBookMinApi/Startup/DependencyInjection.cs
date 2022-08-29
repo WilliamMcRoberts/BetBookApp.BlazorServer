@@ -10,15 +10,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace BetBookMinApi;
+namespace BetBookMinApi.Startup;
 
-public static class RegisterServices
+public static class DependencyInjection
 {
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
         // For MediatR DI
         builder.Host.UseDefaultServiceProvider(options => options.ValidateScopes = false);
-
+        builder.Host.UseSerilog();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(x =>
         {
@@ -41,6 +41,7 @@ public static class RegisterServices
 
         builder.Services.AddMediatR(typeof(MediatREntryPoint).Assembly);
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
         builder.Services.AddAuthorization(options =>
         {
             options.FallbackPolicy = new AuthorizationPolicyBuilder()

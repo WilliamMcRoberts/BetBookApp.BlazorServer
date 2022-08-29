@@ -1,8 +1,8 @@
 ﻿using BetBookData.Data;
 using BetBookData.Interfaces;
 using BetBookData.Models;
-using BetBookMinApi;
 using BetBookMinApi.Api;
+using BetBookMinApi.Startup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
@@ -23,32 +23,16 @@ try
 
     builder.ConfigureServices();
 
-    builder.Host.UseSerilog();
-
-
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    app.ConfigureSwagger();
 
     app.UseAuthentication();
     app.UseAuthorization();
-
     app.UseHttpsRedirection();
-
     app.UseSerilogRequestLogging();
 
-
-    app.ConfigureGamesApi();
-    app.ConfigureTeamsApi();
-    app.ConfigureUsersApi();
-    app.ConfigureBetsApi();
-    app.ConfigureParleyBetsApi();
-    app.ConfigureHouseAccountApi();
+    app.ConfigureApi();
 
     app.Run();
 }
