@@ -1,23 +1,18 @@
 ﻿using BetBookData;
 using BetBookData.Data;
 using BetBookData.Interfaces;
-using BetBookData.Services;
 using BetBookDbAccess;
-using BetBookMinApi.Api;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
-namespace BetBookMinApi;
+namespace BetBookMinimalApi;
 
 public static class RegisterServices
 {
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
-        // For MediatR DI
-        builder.Host.UseDefaultServiceProvider(options => options.ValidateScopes = false);
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(x =>

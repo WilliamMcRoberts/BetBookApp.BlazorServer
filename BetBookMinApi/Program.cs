@@ -20,9 +20,14 @@ try
 {
     Log.Information("Application Starting...");
     var builder = WebApplication.CreateBuilder(args);
+
     builder.ConfigureServices();
 
+    builder.Host.UseSerilog();
+
+
     var app = builder.Build();
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
