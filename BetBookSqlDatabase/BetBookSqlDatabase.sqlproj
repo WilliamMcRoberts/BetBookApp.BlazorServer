@@ -62,7 +62,6 @@
     <Folder Include="dbo\StoredProcedures\UserProcedures" />
     <Folder Include="dbo\StoredProcedures\TeamProcedures" />
     <Folder Include="dbo\StoredProcedures\ParleyBetProcedures" />
-    <Folder Include="dbo\StoredProcedures\HouseAccountProcedures" />
     <Folder Include="dbo\StoredProcedures\GameProcedures" />
     <Folder Include="dbo\StoredProcedures\BetProcedures" />
   </ItemGroup>
@@ -73,38 +72,19 @@
     <Build Include="dbo\Tables\Bets.sql" />
     <Build Include="dbo\Tables\ParleyBets.sql" />
     <Build Include="dbo\Tables\HouseAccount.sql" />
-    <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_Get.sql" />
-    <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_GetAll.sql" />
     <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_GetByObjectIdentifier.sql" />
     <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_Insert.sql" />
     <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_Update.sql" />
-    <Build Include="dbo\StoredProcedures\UserProcedures\spUsers_UpdateAccountBalance.sql" />
-    <Build Include="dbo\StoredProcedures\TeamProcedures\spTeams_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\TeamProcedures\spTeams_Get.sql" />
     <Build Include="dbo\StoredProcedures\TeamProcedures\spTeams_GetAll.sql" />
-    <Build Include="dbo\StoredProcedures\TeamProcedures\spTeams_Insert.sql" />
     <Build Include="dbo\StoredProcedures\TeamProcedures\spTeams_Update.sql" />
-    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Get.sql" />
-    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_GetAll.sql" />
-    <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Insert.sql" />
     <Build Include="dbo\StoredProcedures\ParleyBetProcedures\spParleyBets_Update.sql" />
-    <Build Include="dbo\StoredProcedures\HouseAccountProcedures\spHouseAccount_Get.sql" />
-    <Build Include="dbo\StoredProcedures\HouseAccountProcedures\spHouseAccount_Update.sql" />
-    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Get.sql" />
-    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_GetAll.sql" />
-    <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Insert.sql" />
     <Build Include="dbo\StoredProcedures\GameProcedures\spGames_Update.sql" />
-    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Get.sql" />
-    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_GetAll.sql" />
-    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Insert.sql" />
     <Build Include="dbo\StoredProcedures\BetProcedures\spBets_Update.sql" />
-    <Build Include="dbo\StoredProcedures\BetProcedures\spBets_UpdatePush.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BetBookSqlDatabase.refactorlog" />
   </ItemGroup>
 </Project>

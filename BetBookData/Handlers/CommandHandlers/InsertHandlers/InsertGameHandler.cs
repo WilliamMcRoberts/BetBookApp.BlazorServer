@@ -17,7 +17,7 @@ public class InsertGameHandler : IRequestHandler<InsertGameCommand, GameModel>
     public async Task<GameModel> Handle(
         InsertGameCommand request, CancellationToken cancellationToken)
     {
-        await _gameData.InsertGame(request.game);
+        request.game.Id = await _gameData.InsertGame(request.game);
 
         return request.game;
     }

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/53b7620f-705d-45e9-bf24-0d63cd1f1d71/microsoft.web/sites/subscriptions/53b7620f-705d-45e9-bf24-0d63cd1f1d71/resourceGroups/betbook/providers/Microsoft.Web/sites/betbooknfl",
+    "appService.deploySubpath": "BetBookUI"
+}

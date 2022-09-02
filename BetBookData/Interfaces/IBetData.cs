@@ -1,16 +1,13 @@
-﻿using BetBookData.Models;
+using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
 
-#nullable enable
-
 public interface IBetData
 {
-    Task DeleteBet(int id);
-    Task<BetModel?> GetBet(int betId);
-    Task<IEnumerable<BetModel>> GetBets();
-    Task<int> InsertBet(BetModel bet);
+    Task<IEnumerable<BetModel>> GetBetsOnCurrentGame(int _gameId);
+    Task<IEnumerable<BetModel>> GetBettorBetsUnpaid(int _bettorId);
+    Task<int> InsertBet(BetModel _bet);
+    Task<bool> PayoutUnpaidPushBets(decimal _totalPendingRefund, int _userId);
+    Task<bool> PayoutUnpaidWinningBets(decimal _totalPendingPayout, int _userId);
     Task UpdateBet(BetModel bet);
 }
-
-#nullable restore

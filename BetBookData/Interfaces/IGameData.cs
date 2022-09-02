@@ -1,16 +1,11 @@
-﻿using BetBookData.Models;
+using BetBookData.Models;
 
 namespace BetBookData.Interfaces;
 
-#nullable enable
-
 public interface IGameData
 {
-    Task DeleteGame(int id);
-    Task<GameModel?> GetGame(int id);
-    Task<IEnumerable<GameModel>> GetGames();
-    Task InsertGame(GameModel game);
+    Task<GameModel> GetCurrentGameByGameId(int _gameId);
+    Task<IEnumerable<GameModel>> GetGamesByWeekAndSeason(int _week, Season _season);
+    Task<int> InsertGame(GameModel _game);
     Task UpdateGame(GameModel game);
 }
-
-#nullable restore

@@ -16,8 +16,10 @@ public class InsertParleyBetHandler : IRequestHandler<InsertParleyBetCommand, Pa
 
     public async Task<ParleyBetModel> Handle(InsertParleyBetCommand request, CancellationToken cancellationToken)
     {
-        await _parleyData.InsertParleyBet(request.parleyBet);
+        int parleyBetId = await _parleyData.InsertParleyBet(request.parleyBet);
 
+        request.parleyBet.Id = parleyBetId;
+        
         return request.parleyBet;
     }
 }

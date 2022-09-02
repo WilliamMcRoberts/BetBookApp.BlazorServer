@@ -9,7 +9,7 @@
     [AwayTeamFinalScore] FLOAT NULL, 
     [GameWinnerId] INT NULL, 
     [WeekNumber] INT NOT NULL, 
-    [SeasonType] NVARCHAR(4) NOT NULL, 
+    [Season] NVARCHAR(4) NOT NULL, 
     [DateOfGame] DATE NOT NULL, 
     [GameStatus] NVARCHAR(20) NOT NULL,
     [ScoreId] INT NOT NULL, 

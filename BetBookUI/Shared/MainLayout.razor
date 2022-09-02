@@ -1,19 +1,28 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager navManager
+@inject MediatR.IMediator _mediator
+@inject AuthenticationStateProvider _authProvider
 
 <PageTitle>BetBookUI</PageTitle>
 
 <div class="page">
     <main>
         
-        <Header/>
+        <Header LoggedInUser="loggedInUser"/>
 
         <article class="content px-4">
             @Body
         </article>
 
-        <Footer/>
+        <Footer LoggedInUser="loggedInUser"/>
 
     </main>
 </div>
 
+@code {
+    UserModel? loggedInUser;
+
+    protected async override Task OnInitializedAsync()
+    {
+        loggedInUser = await _mediator.GetUserFromAuth(_authProvider);
+    }
+}

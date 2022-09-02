@@ -1,5 +1,4 @@
-﻿@inject AuthenticationStateProvider authProvider
-@inject MediatR.IMediator _mediator
+﻿@inject MediatR.IMediator _mediator
 
 <div id="header" class="headernew px-5 pt-3 nav-links">
     <a href="/" class="icon-container">
@@ -8,21 +7,16 @@
     </a>
 
     <div class="balance-item">
-        <h6 class="balance-value">$@loggedInUser?.AccountBalance.ToString("#,##0.00")</h6>
+        <h6 class="balance-value">$@LoggedInUser?.AccountBalance.ToString("#,##0.00")</h6>
     </div>
 
     <div class="login">
-        <LoginDisplay Balance="@loggedInUser?.AccountBalance.ToString("#,##0.00")"/>
+        <LoginDisplay Balance="@LoggedInUser?.AccountBalance.ToString("#,##0.00")"/>
     </div>
     
 </div>
 
 @code {
-    UserModel? loggedInUser;
-
-
-    protected async override Task OnInitializedAsync()
-    {
-        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
-    }
+    [Parameter]
+    public UserModel? LoggedInUser { get; set; }
 }

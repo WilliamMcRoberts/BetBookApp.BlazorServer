@@ -25,8 +25,6 @@ public class SqlConnection : ISqlConnection
             new System.Data.SqlClient.SqlConnection(
                 _config.GetConnectionString(connectionId));
 
-        _logger.LogInformation("Db Query...Load");
-
         return await connection.QueryAsync<T>(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
@@ -37,8 +35,6 @@ public class SqlConnection : ISqlConnection
         using IDbConnection connection = 
             new System.Data.SqlClient.SqlConnection(
                 _config.GetConnectionString(connectionId));
-
-        _logger.LogInformation("Db Query...Save");
 
         await connection.ExecuteAsync(
             storedProcedure, parameters, commandType: CommandType.StoredProcedure);

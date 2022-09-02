@@ -1,5 +1,4 @@
 ﻿@inject NavigationManager navManager
-@inject AuthenticationStateProvider authProvider
 @inject MediatR.IMediator _mediator
 
 
@@ -110,31 +109,30 @@
 
 
 @code {
-
+    [Parameter]
+    public UserModel? LoggedInUser { get; set; }
     string copyright = "\u00a9 Copyright Bet Book Gaming Inc.";
     string lisence = "All Rights Reserved. Digital Millennium Copyright Act.";
     string city = "Cincinnati, OH 45248";
-    IEnumerable<GameModel>? games;
-    IEnumerable<TeamModel>? teams;
-    HashSet<GameModel> availableGames = new();
-    UserModel? loggedInUser;
-
+    private Season season;
+    int week;
+    private List<GameModel> availableGames = new();
+    private List<GameModel> thisWeeksGames = new();
     protected override async Task OnInitializedAsync()
     {
-        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
+        season = DateTime.Now.CalculateSeason();
+        week = season.CalculateWeek(DateTime.Now);
 
-        games = await _mediator.Send(new GetGamesQuery());
-        teams = await _mediator.Send(new GetTeamsQuery());
+        thisWeeksGames =
+            (List<GameModel>)await _mediator.Send(new GetGameModelsByWeekAndSeasonQuery(week, season));
 
-        availableGames = games.Where(g =>
-            g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
-
-        availableGames = availableGames.PopulateGameModelsWithTeams(teams);
+        availableGames = thisWeeksGames.Where(g =>
+            g.GameStatus == GameStatus.NOT_STARTED).ToList();
     }
 
     private void CreateBet(int gameId)
     {
-        if(loggedInUser is null)
+        if(LoggedInUser is null)
         {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
             return;
@@ -146,7 +144,7 @@
 
     private void CreateParleyBet()
     {
-        if (loggedInUser is null)
+        if (LoggedInUser is null)
         {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
             return;
@@ -158,7 +156,7 @@
 
     private void NavigateToParleyProfile()
     {
-        if (loggedInUser is null)
+        if (LoggedInUser is null)
         {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
             return;
@@ -170,7 +168,7 @@
 
     private void NavigateToSingleProfile()
     {
-        if (loggedInUser is null)
+        if (LoggedInUser is null)
         {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
             return;

@@ -1,8 +1,6 @@
 ﻿@page "/ProfileSingleBets"
 @attribute [Authorize]
 @inject AuthenticationStateProvider authProvider
-@inject IConfiguration config
-@inject ITransactionService transactionService
 @inject ILogger<ProfileSingleBets> logger
 @inject MediatR.IMediator _mediator
 
@@ -101,12 +99,10 @@
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
     public string Content { get => "Refresh the page to see your new balance."; }
     private UserModel? loggedInUser;
-    private IEnumerable<TeamModel>? teams;
-    private IEnumerable<GameModel>? games;
-    private IEnumerable<BetModel>? bets;
     private List<BetModel> bettorInProgressBets = new();
     private List<BetModel> bettorWinningBetsUnpaid = new();
     private List<BetModel> bettorPushBetsUnpaid = new();
+    private List<BetModel> bettorBetsUnpaid = new();
     private decimal totalPendingPayout;
     private decimal totalPendingRefund;
 
@@ -114,37 +110,22 @@
     {
         logger.LogInformation("Profile Single Bets Page Requested");
 
-        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
+        loggedInUser = await _mediator.GetUserFromAuth(authProvider);
 
-        games = await _mediator.Send(new GetGamesQuery());
-        teams = await _mediator.Send(new GetTeamsQuery());
-        bets = await _mediator.Send(new GetBetsQuery());
+        bettorBetsUnpaid = 
+            (List<BetModel>)await _mediator.Send(
+                new GetBettorBetsUnpaidQuery(loggedInUser.Id));
 
-        bettorInProgressBets = bets.Where(
-            b => b.BettorId == loggedInUser.Id 
-            && b.BetStatus == BetStatus.IN_PROGRESS).ToList();
+        bettorInProgressBets = bettorBetsUnpaid.Where(
+            b => b.BetStatus == BetStatus.IN_PROGRESS).ToList();
 
-        if (bettorInProgressBets.Count != 0)
-            bettorInProgressBets = 
-                bettorInProgressBets.PopulateBetModelsWithGamesAndTeams(games, teams);
-
-        bettorWinningBetsUnpaid = bets.Where(
-            b => b.BettorId == loggedInUser.Id 
-            && b.BetStatus == BetStatus.WINNER 
+        bettorWinningBetsUnpaid = bettorBetsUnpaid.Where(
+            b => b.BetStatus == BetStatus.WINNER 
             && b.PayoutStatus == PayoutStatus.UNPAID).ToList();
 
-        if (bettorWinningBetsUnpaid.Count != 0)
-            bettorWinningBetsUnpaid = 
-                bettorWinningBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
-
-        bettorPushBetsUnpaid = bets.Where(
-            b => b.BettorId == loggedInUser.Id 
-            && b.BetStatus == BetStatus.PUSH &&b.PayoutStatus == PayoutStatus.UNPAID)
+        bettorPushBetsUnpaid = bettorBetsUnpaid.Where(
+            b => b.BetStatus == BetStatus.PUSH && b.PayoutStatus == PayoutStatus.UNPAID)
             .ToList();
-
-        if (bettorPushBetsUnpaid.Count != 0)
-            bettorPushBetsUnpaid = 
-                bettorPushBetsUnpaid.PopulateBetModelsWithGamesAndTeams(games, teams);
 
         totalPendingPayout = 
             bettorWinningBetsUnpaid.CalculateTotalPendingPayout();
@@ -155,13 +136,13 @@
 
     private async Task PayoutUnpaidWinningBets()
     {
-        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
-
-        if (houseAccount is null || loggedInUser is null)
+        if (loggedInUser is null)
             return;
 
-        bool transactionGood = await transactionService.PayoutBetsTransaction(
-            loggedInUser, bettorWinningBetsUnpaid, totalPendingPayout);
+        bool transactionGood =
+            await _mediator.Send(
+                new UpdateAndPayoutUnpaidWinningBetsByBettorCommand(
+                    totalPendingPayout, loggedInUser.Id));
 
         if (transactionGood)
             await this.ToastObjPayout!.ShowAsync();
@@ -173,13 +154,13 @@
 
     private async Task RefundUnpaidPushBets()
     {
-        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
-
-        if (houseAccount is null || loggedInUser is null)
+        if (loggedInUser is null)
             return;
 
-        bool transactionGood = await transactionService.PayoutBetsTransaction(
-            loggedInUser, bettorPushBetsUnpaid, totalPendingRefund);
+        bool transactionGood = 
+            await _mediator.Send(
+                new UpdateAndPayoutUnpaidPushBetsByBettorCommand(
+                    totalPendingRefund, loggedInUser.Id));
 
         if (transactionGood)
             await this.ToastObjRefund!.ShowAsync();

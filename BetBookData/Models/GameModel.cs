@@ -1,5 +1,4 @@
 ﻿
-
 namespace BetBookData.Models;
 
 #nullable enable
@@ -18,7 +17,7 @@ public class GameModel
     public int? GameWinnerId { get; set; }
     public TeamModel? GameWinner { get; set; }
     public int WeekNumber { get; set; }
-    public SeasonType Season { get; set; }
+    public Season Season { get; set; }
     public DateTime DateOfGame { get; set; }
     public GameStatus GameStatus { get; set; }
     public int ScoreId { get; set; }

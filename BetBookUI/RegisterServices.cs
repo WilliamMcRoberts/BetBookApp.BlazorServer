@@ -38,10 +38,8 @@ public static class RegisterServices
 
         /********************** Services *****************************/
 
-        builder.Services.AddHostedService<PointSpreadUpdateTimerService>();
-        builder.Services.AddHostedService<ScoresUpdateTimerService>();
+        builder.Services.AddHostedService<ThisWeeksGamesScoresAndPointSpreadUpdateTimerService>();
         builder.Services.AddTransient<IGameService, GameService>();
-        builder.Services.AddTransient<ITransactionService, TransactionService>();
 
         /***************** Factories **********************/
 
@@ -57,7 +55,6 @@ public static class RegisterServices
         builder.Services.AddTransient<ITeamData, TeamData>();
         builder.Services.AddTransient<IBetData, BetData>();
         builder.Services.AddTransient<IGameData, GameData>();
-        builder.Services.AddTransient<IHouseAccountData, HouseAccountData>();
         builder.Services.AddTransient<IParleyBetData, ParleyBetData>();
     }
 }

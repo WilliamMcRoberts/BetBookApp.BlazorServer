@@ -17,7 +17,7 @@ public class InsertBetHandler : IRequestHandler<InsertBetCommand, BetModel>
     public async Task<BetModel> Handle(
         InsertBetCommand request, CancellationToken cancellationToken)
     {
-        var betId = await _betData.InsertBet(request.bet);
+        int betId = await _betData.InsertBet(request.bet);
 
         request.bet.Id = betId;
 

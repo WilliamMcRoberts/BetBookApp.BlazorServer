@@ -1,7 +1,6 @@
 ﻿@page "/CreateParleyBet"
 @attribute [Authorize]
-@inject AuthenticationStateProvider _authProvider
-@inject ITransactionService transactionService
+@inject AuthenticationStateProvider authProvider
 @inject ILogger<CreateParleyBet> _logger
 @inject MediatR.IMediator _mediator
 
@@ -44,36 +43,36 @@
                                     <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
                                 </div>
                             </div>
-                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
+                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!))
                             {
                                 <div class="parley-buttons">
-                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam?.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
-                                        Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                        Undo @game.HomeTeam?.TeamName @GetSpreadForDisplay(game, game.HomeTeam!)
                                     </button>
                                 </div>
                             }
-                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
+                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!))
                             {
                                 <div class="parley-buttons">
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
-                                        Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                        Undo @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!)
                                     </button>
-                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
+                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!) over @game.HomeTeam?.TeamName</label>
                                 </div>
                             }
                             else
                             {
                                 <div class="parley-buttons">
                                     <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
-                                        Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam!))">
+                                        Choose @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!)
                                     </button>
                                     <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
-                                        Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam!))">
+                                        Choose @game.HomeTeam?.TeamName @GetSpreadForDisplay(game, game.HomeTeam!)
                                     </button>
                                 </div>
 
@@ -98,25 +97,25 @@
                                     <img style="height:80px;" src="/images/@game.HomeTeam?.ImagePath" alt="team logo">
                                 </div>
                             </div>
-                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!.TeamName))
+                            @if (chosenGamesAndWinners.ContainsValue(game.HomeTeam!))
                             {
                                 <div class="parley-buttons">
-                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
+                                    <label style="margin-right: .5em;font-size:18px;">You've chosen @game.HomeTeam?.TeamName @game.PointSpreadDescription?.Substring(0, 5) over @game.AwayTeam?.TeamName</label>
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
-                                        Undo @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                        Undo @game.HomeTeam?.TeamName @GetSpreadForDisplay(game, game.HomeTeam!)
                                     </button>
                                 </div>
                                 
                             }
-                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!.TeamName))
+                            else if (chosenGamesAndWinners.ContainsValue(game.AwayTeam!))
                             {
                                 <div class="parley-buttons">
                                     <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                         @onclick="() => UndoWinnerSelection(game)">
-                                        Undo @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                        Undo @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!)
                                     </button>
-                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName) over @game.HomeTeam.TeamName</label>
+                                    <label style="margin-left: .5em;font-size:18px;">You've chosen @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!) over @game.HomeTeam?.TeamName</label>
                                 </div>
                                 
                             }
@@ -124,12 +123,12 @@
                             {
                                 <div class="parley-buttons">
                                     <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam.TeamName))">
-                                        Choose @game.AwayTeam.TeamName @GetSpread(game, game.AwayTeam.TeamName)
+                                        @onclick="(() => ChooseWinnerForGame(game, game.AwayTeam!))">
+                                        Choose @game.AwayTeam?.TeamName @GetSpreadForDisplay(game, game.AwayTeam!)
                                     </button>
                                     <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam.TeamName))">
-                                        Choose @game.HomeTeam.TeamName @GetSpread(game, game.HomeTeam.TeamName)
+                                        @onclick="(() => ChooseWinnerForGame(game, game.HomeTeam!))">
+                                        Choose @game.HomeTeam?.TeamName @GetSpreadForDisplay(game, game.HomeTeam!)
                                     </button>
                                 </div>
                                 
@@ -229,29 +228,33 @@ else
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
     private string Content { get => "Thank you for choosing Bet Book Gaming."; }
-    private HashSet<GameModel> gamesAvailable = new();
+    private List<GameModel> gamesAvailable = new();
+    private List<GameModel> thisWeeksGames = new();
     private List<GameModel> gamesChosen = new();
-    private Dictionary<GameModel, string> chosenGamesAndWinners = new();
-    private IEnumerable<GameModel>? games;
-    private IEnumerable<TeamModel>? teams;
+    private Dictionary<GameModel, TeamModel> chosenGamesAndWinners = new();
     private decimal betAmount;
     private bool wagerPlaced = false;
     private bool betAmountBad = false;
     private bool betCountBad = false;
     private bool gameNotStarted = true;
     private string startedGameDescription = string.Empty;
+    private Season season;
+    private int week;
 
     protected async override Task OnInitializedAsync()
     {
         _logger.LogInformation("Create Parley Bet Page Requested");
 
-        games = await _mediator.Send(new GetGamesQuery());
-        teams = await _mediator.Send(new GetTeamsQuery());
+        season = DateTime.Now.CalculateSeason();
+        week = season.CalculateWeek(DateTime.Now);
+
+        thisWeeksGames = 
+            (List<GameModel>)await _mediator.Send(
+                new GetGameModelsByWeekAndSeasonQuery(week, season));
 
         gamesAvailable = 
-            games.Where(g => g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
-
-        gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
+            thisWeeksGames.Where(g =>
+                 g.GameStatus == GameStatus.NOT_STARTED).ToList();
     }
 
     private async Task SubmitParleyWager()
@@ -269,14 +272,14 @@ else
         }
 
         UserModel? loggedInUser = 
-            await _authProvider.GetUserFromAuth(_mediator);
+            await _mediator.GetUserFromAuth(authProvider);
 
         if (loggedInUser is null)
             return;
 
         ParleyBetModel parleyBet = new();
 
-        foreach (KeyValuePair<GameModel, string> kv in chosenGamesAndWinners)
+        foreach (KeyValuePair<GameModel, TeamModel> kv in chosenGamesAndWinners)
         {
             GameByScoreIdDto? gameLookup =
                 await _mediator.Send(new GetGameByScoreIdDtoQuery(kv.Key.ScoreId));
@@ -293,46 +296,35 @@ else
                 return;
             }
 
-            TeamModel? chosenWinner =
-                    teams?.Where(t => t.TeamName == kv.Value).FirstOrDefault();
-
-            if (chosenWinner is null)
-                return;
-            
             BetModel bet = new()
             {
                 BetAmount = 0,
                 BetPayout = 0,
                 BettorId = loggedInUser!.Id,
                 GameId = kv.Key.Id,
-                ChosenWinnerId = chosenWinner.Id,
+                ChosenWinnerId = kv.Value.Id,
                 PayoutStatus = PayoutStatus.PARLEY,
                 PointSpread = kv.Key.PointSpread
             };
 
-            try
-            {
-                bet = await _mediator.Send(new InsertBetCommand(bet));
-                parleyBet.Bets.Add(bet);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation(ex, "Failed To Insert Bet On Create Parley Bet");
-            }
+            bet = await _mediator.Send(new InsertBetCommand(bet));
+            parleyBet.Bets.Add(bet);
         }
 
         parleyBet.BetAmount = betAmount;
         parleyBet.BetPayout =
             parleyBet.Bets.Count.CalculateParleyBetPayout(betAmount);
         parleyBet.BettorId = loggedInUser!.Id;
+        parleyBet.ParleyBetStatus = ParleyBetStatus.IN_PROGRESS;
+        parleyBet.ParleyPayoutStatus = ParleyPayoutStatus.UNPAID;
 
-        bool transactionGood = await transactionService.CreateParleyBetTransaction(
-            loggedInUser, parleyBet);
+        parleyBet = await _mediator.Send(new InsertParleyBetCommand(parleyBet));
 
-        if (transactionGood) 
+        if (parleyBet.Id != 0) 
             await this.ToastObj!.ShowAsync();
 
         wagerPlaced = true;
+        betAmount = 0;
     }
 
     private void UndoWinnerSelection(GameModel game)
@@ -341,17 +333,17 @@ else
             chosenGamesAndWinners.Remove(game);
     }
 
-    private void ChooseWinnerForGame(GameModel game, string chosenTeamName)
+    private void ChooseWinnerForGame(GameModel game, TeamModel chosenTeam)
     {
         if (chosenGamesAndWinners.Count < 5 && !chosenGamesAndWinners.ContainsKey(game))
-            chosenGamesAndWinners.Add(game, chosenTeamName);
+            chosenGamesAndWinners.Add(game, chosenTeam);
         if (chosenGamesAndWinners.Count >= 2 && betCountBad)
             betCountBad = false;
     }
 
-    private string GetSpread(GameModel currentGame, string teamName)
+    private string GetSpreadForDisplay(GameModel currentGame, TeamModel team)
     {
-        if(teamName == currentGame.AwayTeam?.TeamName)
+        if(team == currentGame.AwayTeam)
         {
             return (currentGame.PointSpread < 0) ? $"+ {currentGame.PointSpread * -1}"
                 : (currentGame.PointSpread == 0) ? $"+ 0"

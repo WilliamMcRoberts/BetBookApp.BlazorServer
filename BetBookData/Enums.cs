@@ -4,7 +4,7 @@ using NetEscapades.EnumGenerators;
 namespace BetBookData;
 
 [EnumExtensions]
-public enum SeasonType
+public enum Season
 {
     PRE,
     REG,

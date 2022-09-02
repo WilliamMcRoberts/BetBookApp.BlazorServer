@@ -14,8 +14,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookData", "BetBookData\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BetBookSqlDatabase", "BetBookSqlDatabase\BetBookSqlDatabase.sqlproj", "{04880732-1CD8-4574-B6E7-63CE6DCB184A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookMinApi", "BetBookMinApi\BetBookMinApi.csproj", "{78542C38-8545-4250-96F5-9C6343523B54}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetBookDbAccess", "BetBookDbAccess\BetBookDbAccess.csproj", "{6B91A81E-E502-4C34-A803-3C044D2DB627}"
 EndProject
 Global
@@ -38,10 +36,6 @@ Global
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04880732-1CD8-4574-B6E7-63CE6DCB184A}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{78542C38-8545-4250-96F5-9C6343523B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78542C38-8545-4250-96F5-9C6343523B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78542C38-8545-4250-96F5-9C6343523B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78542C38-8545-4250-96F5-9C6343523B54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6B91A81E-E502-4C34-A803-3C044D2DB627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6B91A81E-E502-4C34-A803-3C044D2DB627}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B91A81E-E502-4C34-A803-3C044D2DB627}.Release|Any CPU.ActiveCfg = Release|Any CPU

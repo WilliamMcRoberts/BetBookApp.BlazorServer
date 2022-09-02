@@ -1,5 +1,4 @@
 ﻿@inject AuthenticationStateProvider authProvider
-@inject ITransactionService transactionService
 @inject ILogger<GameDetails> logger
 @inject MediatR.IMediator _mediator
 
@@ -59,12 +58,12 @@
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                     @onclick="() => UndoWinnerSelection()">
                                     Undo
-                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                    @teamToWin?.TeamName @GetSpreadForDisplay(teamToWin!, CurrentGame.PointSpread)
                                 </button>
                                 <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                    @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                                    @onclick="(() => ChooseWinner(CurrentGame.HomeTeam!))">
                                     Choose
-                                    @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                                    @CurrentGame.HomeTeam?.TeamName @GetSpreadForDisplay(CurrentGame.HomeTeam!, CurrentGame.PointSpread)
                                 </button>
                             </div>
                         }
@@ -73,14 +72,14 @@
                         {
                             <div class="details-buttons">
                                 <button disabled class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                                    @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                                    @onclick="(() => ChooseWinner(CurrentGame.AwayTeam!))">
                                     Choose
-                                    @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                                    @CurrentGame.AwayTeam?.TeamName @GetSpreadForDisplay(CurrentGame.AwayTeam!, CurrentGame.PointSpread)
                                 </button>
                                 <button class="mb-2 mt-2 undo-btn btn undo-btn-light btn-sm text-uppercase"
                                     @onclick="UndoWinnerSelection">
                                     Undo
-                                    @teamToWin?.TeamName @GetSpread(teamToWin!.TeamName, CurrentGame.PointSpread)
+                                    @teamToWin?.TeamName @GetSpreadForDisplay(teamToWin!, CurrentGame.PointSpread)
                                 </button>
                             </div>
                                     
@@ -90,14 +89,14 @@
                     {
                         <div class="details-buttons">
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                            @onclick="(() => ChooseWinner(CurrentGame.AwayTeamId))">
+                            @onclick="(() => ChooseWinner(CurrentGame.AwayTeam!))">
                                 Choose
-                                @CurrentGame.AwayTeam?.TeamName @GetSpread(CurrentGame.AwayTeam!.TeamName, CurrentGame.PointSpread)
+                                @CurrentGame.AwayTeam?.TeamName @GetSpreadForDisplay(CurrentGame.AwayTeam!, CurrentGame.PointSpread)
                             </button>
                             <button class="mb-2 mt-2 site-btn btn site-btn-light btn-sm text-uppercase"
-                            @onclick="(() => ChooseWinner(CurrentGame.HomeTeamId))">
+                            @onclick="(() => ChooseWinner(CurrentGame.HomeTeam!))">
                                 Choose
-                                @CurrentGame.HomeTeam?.TeamName @GetSpread(CurrentGame.HomeTeam!.TeamName, CurrentGame.PointSpread)
+                                @CurrentGame.HomeTeam?.TeamName @GetSpreadForDisplay(CurrentGame.HomeTeam!, CurrentGame.PointSpread)
                             </button>
                         </div>
 
@@ -198,13 +197,7 @@
     private TeamModel? teamToWin;
     private bool wagerPlaced = false;
     private bool gameNotStarted = true;
-    private IEnumerable<TeamModel>? teams;
     private string startedGameDescription = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        teams = await _mediator.Send(new GetTeamsQuery());
-    }
 
     private async Task SubmitSingleWager()
     {
@@ -226,7 +219,7 @@
         GameByScoreIdDto? gameLookup =
             await _mediator.Send(new GetGameByScoreIdDtoQuery(CurrentGame.ScoreId));
 
-        if (gameLookup is null)
+        if (gameLookup.Score is null)
             return;
 
         if (gameLookup.Score.HasStarted)
@@ -239,13 +232,8 @@
             return;
         }
 
-        HouseAccountModel? houseAccount = 
-            await _mediator.Send(new GetHouseAccountQuery());
-        UserModel? loggedInUser = 
-            await authProvider.GetUserFromAuth(_mediator);
-
-        if (loggedInUser is null || houseAccount is null)
-            return;
+        UserModel loggedInUser = 
+            await _mediator.GetUserFromAuth(authProvider);
 
         BetModel bet = new()
         {
@@ -257,10 +245,9 @@
             PointSpread = CurrentGame.PointSpread
         };
 
-        bool transactionGood = await transactionService.CreateBetTransaction(
-            loggedInUser, bet);
+        bet = await _mediator.Send(new InsertBetCommand(bet));
 
-        if (transactionGood) 
+        if (bet.Id != 0) 
             await this.ToastObj!.ShowAsync();
 
         wagerPlaced = true;
@@ -268,18 +255,10 @@
         betAmount = 0;
     }
 
-    private void ChooseWinner(int teamId)
+    private void ChooseWinner(TeamModel _teamToWin)
     {
-        if(teamId == CurrentGame.AwayTeamId)
-        {
-            teamToWin = teams?.Where(t =>
-                t.Id == CurrentGame.AwayTeamId).FirstOrDefault();
-            winnerChosen = true;
-            return;
-        }
+        teamToWin = _teamToWin;
 
-        teamToWin = teams?.Where(t => 
-            t.Id == CurrentGame.HomeTeamId).FirstOrDefault();
         winnerChosen = true;
     }
 
@@ -289,18 +268,18 @@
         winnerChosen = false;
     }
 
-    private string GetSpread(string teamName, double? pointSpread)
+    private string GetSpreadForDisplay(TeamModel _team, double? _pointSpread)
     {
-        if(teamName == CurrentGame.AwayTeam?.TeamName)
+        if(_team == CurrentGame.AwayTeam)
         {
-            return pointSpread < 0 ? $"+ {pointSpread * -1}" 
-                   : pointSpread == 0 ? $"+ 0" 
-                   : $"- {pointSpread}";
+            return _pointSpread < 0 ? $"+ {_pointSpread * -1}"
+                   : _pointSpread == 0 ? $"+ 0" 
+                   : $"- {_pointSpread}";
         }
 
-        return pointSpread < 0 ? $"- {pointSpread?.ToString().Trim('-')}"
-               : pointSpread == 0 ? $"+ 0" 
-               : $"+ {pointSpread}";
+        return _pointSpread < 0 ? $"- {_pointSpread?.ToString().Trim('-')}"
+               : _pointSpread == 0 ? $"+ 0"
+               : $"+ {_pointSpread}";
     }
 }
 

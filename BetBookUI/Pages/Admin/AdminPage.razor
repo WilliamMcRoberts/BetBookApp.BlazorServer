@@ -2,6 +2,7 @@
 @attribute [Authorize(Policy = "Admin")]
 @inject ILogger<AdminPage> logger
 @inject MediatR.IMediator _mediator
+@using BetBookData.Helpers
 
 
 <PageTitle>ADMIN</PageTitle>
@@ -19,14 +20,8 @@
 
         <div style="display:flex;justify-content:space-evenly;margin-bottom: 2em;">
             <div style="margin-top:2em;text-align:center;">
-                <button @onclick="FetchAllScoresForFinishedGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
-                    Fetch Scores
-                </button>
-            </div>
-
-            <div style="margin-top:2em;text-align:center;">
                 <button @onclick="GetPointSpreadUpdateForAvailableGames" class="mt-1 site-btn btn site-btn-light btn-sm text-uppercase">
-                    Fetch Spreads
+                    Fetch Scores
                 </button>
             </div>
         </div>
@@ -112,8 +107,15 @@
 </div>
 
 @code {
-
+    Season season;
+    int week;
     UpdateGameDto updateGameDto = new();
+
+    protected override void OnInitialized()
+    {
+       season = DateTime.Now.CalculateSeason();
+        week = season.CalculateWeek(DateTime.Now);
+    }
 
     private async Task UpdateGame()
     {
@@ -141,11 +143,8 @@
         updateGameDto = new();
     }
 
-    private async Task FetchAllScoresForFinishedGames() =>
-        await _mediator.FetchAllScoresForFinishedGames();
-
     private async Task GetPointSpreadUpdateForAvailableGames() => 
-        await _mediator.GetPointSpreadUpdateForAvailableGames();
+        await _mediator.UpdateAll(week, season);
 
     private void DateChangeHandler(ChangedEventArgs<DateTime> args)
     {

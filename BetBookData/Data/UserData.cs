@@ -9,7 +9,6 @@ namespace BetBookData.Data;
 
 public class UserData : IUserData
 {
-
     private readonly ISqlConnection _db;
     private readonly ILogger<UserData> _logger;
 
@@ -19,30 +18,9 @@ public class UserData : IUserData
         _logger = logger;
     }
 
-    public async Task<IEnumerable<UserModel>> GetUsers()
-    {
-        _logger.LogInformation(message: "Http Get / Get Users");
-
-        return await _db.LoadData<UserModel, dynamic>(
-            "dbo.spUsers_GetAll", new { });
-    }
-
-    public async Task<UserModel?> GetUser(int id)
-    {
-        _logger.LogInformation(message: "Http Get / Get User By Id");
-
-        var results = await _db.LoadData<UserModel, dynamic>(
-            "dbo.spUsers_Get", new
-            {
-                Id = id
-            });
-
-        return results.FirstOrDefault();
-    }
-
     public async Task<UserModel?> GetUserFromAuthentication(string objectIdentifier)
     {
-        _logger.LogInformation(message: "Http Get / Get User By Object Identifier");
+        _logger.LogInformation(message: "Get User From Authentication Call / UserData");
 
         var results = await _db.LoadData<UserModel, dynamic>(
             "dbo.spUsers_GetByObjectIdentifier", new
@@ -50,62 +28,53 @@ public class UserData : IUserData
                 ObjectIdentifier = objectIdentifier
             });
 
-        return results.FirstOrDefault();
+      return results.FirstOrDefault();
     }
 
     public async Task InsertUser(UserModel user)
     {
-        _logger.LogInformation(message: "Http Post / Insert User");
+        _logger.LogInformation(message: "Insert User Call / UserData");
 
-        await _db.SaveData(
-        "dbo.spUsers_Insert", new
+        try
         {
-            user.FirstName,
-            user.LastName,
-            user.EmailAddress,
-            user.ObjectIdentifier,
-            user.DisplayName,
-            user.AccountBalance
-        });
+            await _db.SaveData(
+            "dbo.spUsers_Insert", new
+            {
+                user.FirstName,
+                user.LastName,
+                user.EmailAddress,
+                user.ObjectIdentifier,
+                user.DisplayName,
+                user.AccountBalance
+            });
+        }
+        catch(Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Insert User / UserData");
+        }
     }
 
     public async Task UpdateUser(UserModel user)
     {
-        _logger.LogInformation(message: "Http Put / Update User");
+        _logger.LogInformation(message: "Update User Call / UserData");
 
-        await _db.SaveData(
-        "dbo.spUsers_Update", new
+        try
         {
-            user.Id,
-            user.FirstName,
-            user.LastName,
-            user.EmailAddress,
-            user.ObjectIdentifier,
-            user.DisplayName
-        });
-    }
-
-    public async Task UpdateUserAccountBalance(UserModel user)
-    {
-        _logger.LogInformation(message: "Http Put / Update User Account Balance");
-
-        await _db.SaveData(
-        "dbo.spUsers_UpdateAccountBalance", new
+            await _db.SaveData(
+            "dbo.spUsers_Update", new
+            {
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.EmailAddress,
+                user.ObjectIdentifier,
+                user.DisplayName
+            });
+        }
+        catch(Exception ex)
         {
-            user.Id,
-            user.AccountBalance
-        });
-    }
-
-    public async Task DeleteUser(int id)
-    {
-        _logger.LogInformation(message: "Http Delete / Delete User");
-
-        await _db.SaveData(
-        "dbo.spUsers_Delete", new
-        {
-            Id = id
-        });
+            _logger.LogInformation(ex, "Failed To Update User / UserData");
+        }
     }
 }
 

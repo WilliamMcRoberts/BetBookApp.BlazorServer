@@ -1,9 +1,7 @@
 ﻿@page "/ProfileParleyBets"
 @attribute [Authorize]
-@inject AuthenticationStateProvider authProvider
-@inject IConfiguration config
-@inject ITransactionService transactionService
-@inject ILogger<ProfileParleyBets> logger
+@inject AuthenticationStateProvider _authProvider
+@inject ILogger<ProfileParleyBets> _logger
 @inject MediatR.IMediator _mediator
 
 <PageTitle>PARLEY BETS</PageTitle>
@@ -96,70 +94,48 @@
     private decimal totalPendingParleyPayout;
     private decimal totalPendingParleyRefund;
     private UserModel? loggedInUser;
-    private IEnumerable<BetModel>? bets;
-    private IEnumerable<ParleyBetModel>? parleyBets;
-    private IEnumerable<TeamModel>? teams;
-    private IEnumerable<GameModel>? games;
+    private List<ParleyBetModel>? parleyBetsByBettorUnpaid = new();
     private List<ParleyBetModel> bettorWinningParleyBetsUnpaid = new();
     private List<ParleyBetModel> bettorPushParleyBetsUnpaid = new();
     private List<ParleyBetModel> bettorInProgressParleyBets = new();
 
     protected override async Task OnInitializedAsync()
     {
-        logger.LogInformation("Profile Parley Bets Page Requested");
+        _logger.LogInformation("Profile Parley Bets Page Requested");
 
-        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
+        loggedInUser = await _mediator.GetUserFromAuth(_authProvider);
 
-        games = await _mediator.Send(new GetGamesQuery());
-        teams = await _mediator.Send(new GetTeamsQuery());
-        bets = await _mediator.Send(new GetBetsQuery());
-        parleyBets = await _mediator.Send(new GetParleyBetsQuery());
+        parleyBetsByBettorUnpaid = 
+            (List<ParleyBetModel>)await _mediator.Send(
+                new GetBettorParleyBetsUnpaidQuery(loggedInUser.Id));
 
-        bettorInProgressParleyBets = parleyBets.Where(b =>
-                b.BettorId == loggedInUser.Id &&
+        bettorInProgressParleyBets = parleyBetsByBettorUnpaid.Where(b =>
                 b.ParleyBetStatus == ParleyBetStatus.IN_PROGRESS).ToList();
 
-        if(bettorInProgressParleyBets.Count != 0)
-            bettorInProgressParleyBets = 
-                bettorInProgressParleyBets.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
-
-        bettorWinningParleyBetsUnpaid = parleyBets.Where(pb => 
-                pb.BettorId == loggedInUser.Id &&
+        bettorWinningParleyBetsUnpaid = parleyBetsByBettorUnpaid.Where(pb =>
                 pb.ParleyBetStatus == ParleyBetStatus.WINNER && 
                 pb.ParleyPayoutStatus == ParleyPayoutStatus.UNPAID).ToList();
 
-        if(bettorWinningParleyBetsUnpaid.Count != 0)
-            bettorWinningParleyBetsUnpaid = 
-                bettorWinningParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
-
-        bettorPushParleyBetsUnpaid = parleyBets.Where(b => 
-                b.BettorId == loggedInUser.Id &&
+        bettorPushParleyBetsUnpaid = parleyBetsByBettorUnpaid.Where(b =>
                 b.ParleyBetStatus == ParleyBetStatus.PUSH && 
                 b.ParleyPayoutStatus == ParleyPayoutStatus.UNPAID).ToList();
 
-        if(bettorPushParleyBetsUnpaid.Count != 0)
-            bettorPushParleyBetsUnpaid = 
-                bettorPushParleyBetsUnpaid.PopulateParleyBetsWithBetsWithGamesAndTeams(games, teams, bets);
-
-        // Total payout of all unpaid winning parley bets
         totalPendingParleyPayout =
             bettorWinningParleyBetsUnpaid.CalculateTotalPendingParleyPayout();
 
-
-        // Total retfund of all unpaid parley push bets
         totalPendingParleyRefund = 
             bettorPushParleyBetsUnpaid.CalculateTotalPendingParleyRefund();
     }
 
     private async Task PayoutUnpaidWinningParleyBets()
     {
-        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
-
-        if (loggedInUser is null || houseAccount is null)
+        if (loggedInUser is null)
             return;
 
-        bool transactionGood = await transactionService.PayoutParleyBetsTransaction(
-            loggedInUser, bettorWinningParleyBetsUnpaid, totalPendingParleyPayout);
+        bool transactionGood =
+            await _mediator.Send(
+                new UpdateAndPayoutUnpaidWinningParleyBetsByBettorCommand(
+                    totalPendingParleyPayout, loggedInUser.Id)); ;
 
         if (transactionGood)
             await this.ToastObjPayout!.ShowAsync();
@@ -171,13 +147,13 @@
 
     private async Task PayoutUnpaidPushParleyBets()
     {
-        HouseAccountModel? houseAccount = await _mediator.Send(new GetHouseAccountQuery());
-
-        if (loggedInUser is null || houseAccount is null)
+        if (loggedInUser is null)
             return;
 
-        bool transactionGood = await transactionService.PayoutParleyBetsTransaction(
-            loggedInUser, bettorPushParleyBetsUnpaid, totalPendingParleyRefund);
+        bool transactionGood =
+            await _mediator.Send(
+                new UpdateAndPayoutUnpaidPushParleyBetsByBettorCommand(
+                    totalPendingParleyRefund, loggedInUser.Id)); ;
 
         if (transactionGood)
             await this.ToastObjRefund!.ShowAsync();

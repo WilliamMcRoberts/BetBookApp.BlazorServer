@@ -8,7 +8,7 @@
 
 <div class="game-wager-container">
 
-    <GameDetails CurrentGame="CurrentGame"/>
+    <GameDetails CurrentGame="currentGame"/>
 
 </div>
 
@@ -16,22 +16,17 @@
 
     [Parameter]
     public int gameId { get; set; }
-    private GameModel? CurrentGame { get; set; }
-    private IEnumerable<GameModel>? games;
-    private IEnumerable<TeamModel>? teams;
+    private GameModel? currentGame;
+
+    private UserModel? loggedInUser;
 
     protected async override Task OnInitializedAsync()
     {
         logger.LogInformation("Create Bet Page Requested");
 
-        if (games is null)
-            games = await _mediator.Send(new GetGamesQuery());
+        currentGame = await _mediator.Send(
+            new GetCurrentGameByGameIdQuery(gameId));
 
-        if (teams is null)
-            teams = await _mediator.Send(new GetTeamsQuery());
-
-        CurrentGame = games.Where(g => g.Id == gameId)
-                           .FirstOrDefault()!
-                           .PopulateGameModelWithTeams(teams);
+        loggedInUser = await _mediator.GetUserFromAuth(authProvider);
     }
 }

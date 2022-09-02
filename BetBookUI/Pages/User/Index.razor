@@ -14,19 +14,16 @@
 <div class="games">
 
     <GameDisplay AvailableGameList="gamesAvailable" 
-                    User="loggedInUser"
-                    Teams="teams"/>
+                    User="loggedInUser"/>
 
 </div>
 
 @code {
     UserModel? loggedInUser;
-    SeasonType season;
+    Season season;
     int week;
-    HashSet<GameModel> gamesAvailable = new();
-    HashSet<GameModel> thisWeeksGames = new();
-    IEnumerable<TeamModel>? teams;
-    IEnumerable<GameModel>? games;
+    List<GameModel> gamesAvailable = new();
+    List<GameModel> thisWeeksGames = new();
 
     protected async override Task OnInitializedAsync()
     {
@@ -35,25 +32,19 @@
         season = DateTime.Now.CalculateSeason();
         week = season.CalculateWeek(DateTime.Now);
 
-        if (teams is null)
-            teams = await _mediator.Send(new GetTeamsQuery());
-        if (games is null)
-            games = await _mediator.Send(new GetGamesQuery());
-
-        thisWeeksGames = games.Where(
-            g => g.WeekNumber == week).ToHashSet<GameModel>();
+        thisWeeksGames = 
+            (List<GameModel>)await _mediator.Send(
+                new GetGameModelsByWeekAndSeasonQuery(week, season));
 
         if (thisWeeksGames.Count != 16)
-            thisWeeksGames = await _mediator.Send(new GetGamesForThisWeekQuery(season, week));
+        {
+            await _mediator.UpdateAll(week, season);
+        }
 
         gamesAvailable = thisWeeksGames.Where(g =>
-            g.GameStatus == GameStatus.NOT_STARTED).ToHashSet<GameModel>();
+            g.GameStatus == GameStatus.NOT_STARTED).ToList<GameModel>();
 
-        gamesAvailable = gamesAvailable.PopulateGameModelsWithTeams(teams);
-
-        await authProvider.LoadAndVerifyUser(loggedInUser, _mediator);
-
-        loggedInUser = await authProvider.GetUserFromAuth(_mediator);
+        loggedInUser = await _mediator.GetUserFromAuth(authProvider);
+        await _mediator.LoadAndVerifyUser(authProvider, loggedInUser);
     }
-
 }

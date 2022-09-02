@@ -5,31 +5,22 @@
     </div>
     @if(BetList.Count != 0)
     {
-        if(BetList.Where(b => b.BetPayout != 0).ToList().Count == 0)
-        {
-            <div class="bet">
-                <p style="margin: 1em 0;">NONE</p>
-            </div>
-        }
         @foreach(BetModel bet in BetList)
         {
-            if(bet.PayoutStatus != PayoutStatus.PARLEY && bet.BetAmount != 0)
-            {
-                <div class="bet">
-                        <h6 style ="margin-top:1em;" class="font">Chosen Winner || @bet.ChosenWinner?.TeamName</h6>
-                        @if(bet.FinalWinner is not null)
-                        {
-                        <h6 class="font">Final Winner || @bet.FinalWinner.TeamName</h6>
-                        }
-                        else
-                        {
-                        <h6 class="font">Final Winner || NONE</h6>
+            <div class="bet">
+                    <h6 style ="margin-top:1em;" class="font">Chosen Winner || @bet.ChosenWinner?.TeamName</h6>
+                    @if(bet.FinalWinner is not null)
+                    {
+                    <h6 class="font">Final Winner || @bet.FinalWinner.TeamName</h6>
+                    }
+                    else
+                    {
+                    <h6 class="font">Final Winner || NONE</h6>
 
-                        }
-                    <h6 class="font">Payout Amount || $@bet.BetPayout.ToString("#,##0.00")</h6>
-                        <h6 style="margin-bottom:1em;" class="font">Point Spread || @bet.Game?.PointSpread</h6>
-                </div>
-            }
+                    }
+                <h6 class="font">Payout Amount || $@bet.BetPayout.ToString("#,##0.00")</h6>
+                    <h6 style="margin-bottom:1em;" class="font">Point Spread || @bet.Game?.PointSpread</h6>
+            </div>
         }
     }
     else

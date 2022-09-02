@@ -13,27 +13,27 @@ public static class AuthenticationStateProviderHelpers
 {
 
     public static async Task<UserModel> GetUserFromAuth(
-        this AuthenticationStateProvider provider, IMediator mediator)
+        this IMediator _mediator, AuthenticationStateProvider _provider)
     {
-        var authState = await provider.GetAuthenticationStateAsync();
+        var authState = await _provider.GetAuthenticationStateAsync();
         string objectId = authState.User.Claims.FirstOrDefault(
             c => c.Type.Contains("objectidentifier"))?.Value;
 
-        return await mediator.Send(new GetUserByObjectIdQuery(objectId));
+        return await _mediator.Send(new GetUserByObjectIdQuery(objectId));
     }
 
 
     public static async Task LoadAndVerifyUser(
-        this AuthenticationStateProvider provider, 
-        UserModel loggedInUser, IMediator mediator)
+        this IMediator _mediator, AuthenticationStateProvider _provider, 
+        UserModel _loggedInUser)
     {
-        var authState = await provider.GetAuthenticationStateAsync();
+        var authState = await _provider.GetAuthenticationStateAsync();
         string objectId = authState.User.Claims.FirstOrDefault(
             c => c.Type.Contains("objectidentifier"))?.Value;
 
         if (string.IsNullOrWhiteSpace(objectId) == false)
         {
-            loggedInUser = await mediator.Send(new GetUserByObjectIdQuery(objectId)) ?? new();
+            _loggedInUser = await _mediator.Send(new GetUserByObjectIdQuery(objectId)) ?? new();
 
             string firstName = authState.User.Claims.FirstOrDefault(
                 c => c.Type.Contains("givenname"))?.Value;
@@ -46,47 +46,47 @@ public static class AuthenticationStateProviderHelpers
 
             bool isDirty = false;
 
-            if (objectId.Equals(loggedInUser.ObjectIdentifier) == false)
+            if (objectId.Equals(_loggedInUser.ObjectIdentifier) == false)
             {
                 isDirty = true;
-                loggedInUser.ObjectIdentifier = objectId;
+                _loggedInUser.ObjectIdentifier = objectId;
             }
-            if (firstName.Equals(loggedInUser.FirstName) == false)
+            if (firstName.Equals(_loggedInUser.FirstName) == false)
             {
                 isDirty = true;
-                loggedInUser.FirstName = firstName;
-            }
-
-            if (lastName.Equals(loggedInUser.LastName) == false)
-            {
-                isDirty = true;
-                loggedInUser.LastName = lastName;
+                _loggedInUser.FirstName = firstName;
             }
 
-            if (displayName.Equals(loggedInUser.DisplayName) == false)
+            if (lastName.Equals(_loggedInUser.LastName) == false)
             {
                 isDirty = true;
-                loggedInUser.DisplayName = displayName;
+                _loggedInUser.LastName = lastName;
             }
 
-            if (emailAddress.Equals(loggedInUser.EmailAddress) == false)
+            if (displayName.Equals(_loggedInUser.DisplayName) == false)
             {
                 isDirty = true;
-                loggedInUser.EmailAddress = emailAddress;
+                _loggedInUser.DisplayName = displayName;
+            }
+
+            if (emailAddress.Equals(_loggedInUser.EmailAddress) == false)
+            {
+                isDirty = true;
+                _loggedInUser.EmailAddress = emailAddress;
             }
 
             if (isDirty)
             {
-                if (loggedInUser.Id == 0)
+                if (_loggedInUser.Id == 0)
                 {
                     // New user recieves 10,000 in account
-                    loggedInUser.AccountBalance = 10000;
+                    _loggedInUser.AccountBalance = 10000;
 
-                    await mediator.Send(new InsertUserCommand(loggedInUser));
+                    await _mediator.Send(new InsertUserCommand(_loggedInUser));
                 }
 
                 else
-                    await mediator.Send(new UpdateUserCommand(loggedInUser));
+                    await _mediator.Send(new UpdateUserCommand(_loggedInUser));
             }
         }
     }

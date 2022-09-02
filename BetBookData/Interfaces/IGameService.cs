@@ -1,11 +1,9 @@
-﻿using BetBookData.Dto;
-using BetBookData.Models;
+using BetBookData.Dto;
 
 namespace BetBookData.Interfaces;
+
 public interface IGameService
 {
     Task<GameByScoreIdDto> GetGameByScoreId(int scoreId);
-    Task<GameByTeamDto> GetGameByTeam(TeamModel team);
-    Task<Game[]> GetGamesByWeek(SeasonType currentSeason, int week);
-    Task<HashSet<GameModel>> GetGamesForThisWeek(SeasonType currentSeason, int currentWeek);
+    Task<GameDto[]> GetGameDtoArrayByWeekAndSeason(int _week, Season _season);
 }
