@@ -245,16 +245,15 @@ else
     {
         _logger.LogInformation("Create Parley Bet Page Requested");
 
-        season = DateTime.Now.CalculateSeason();
-        week = season.CalculateWeek(DateTime.Now);
+        //season = DateTime.Now.CalculateSeason();
+        //week = season.CalculateWeek(DateTime.Now);
 
-        thisWeeksGames = 
-            (List<GameModel>)await _mediator.Send(
-                new GetGameModelsByWeekAndSeasonQuery(week, season));
+        //thisWeeksGames = 
+        //    (List<GameModel>)await _mediator.Send(
+        //        new GetGameModelsByWeekAndSeasonQuery(week, season));
 
-        gamesAvailable = 
-            thisWeeksGames.Where(g =>
-                 g.GameStatus == GameStatus.NOT_STARTED).ToList();
+        gamesAvailable =
+            (List<GameModel>)await _mediator.Send(new GetGamesNotStartedQuery());
     }
 
     private async Task SubmitParleyWager()

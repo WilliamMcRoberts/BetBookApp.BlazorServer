@@ -42,11 +42,11 @@ public class GameData : IGameData
                 await connection.QueryFirstOrDefaultAsync<TeamModel>(
                     $@"select * from dbo.Teams where Id = {currentGame.HomeTeamId};");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogInformation(ex, "Failed To Populate Current Game / GameData");
         }
-        
+
         return currentGame;
     }
 
@@ -76,12 +76,46 @@ public class GameData : IGameData
                     teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogInformation(ex, "Failed To Populate Games By Week / GameData");
         }
 
         return gamesByWeek;
+    }
+
+    public async Task<IEnumerable<GameModel>> GetAllGamesNotStarted()
+    {
+        using IDbConnection connection = new System.Data.SqlClient.SqlConnection(
+           _configuration.GetConnectionString("BetBookDB"));
+
+        string sqlQueryForGamesByWeek =
+            $@"select * from dbo.Games where GameStatus != 'FINISHED';";
+        string sqlQueryForTeams =
+            $@"select * from dbo.Teams;";
+
+        IEnumerable<GameModel> gamesNotStarted =
+            await connection.QueryAsync<GameModel>(sqlQueryForGamesByWeek);
+
+        try
+        {
+            IEnumerable<TeamModel> teams =
+            await connection.QueryAsync<TeamModel>(sqlQueryForTeams);
+
+            foreach (GameModel game in gamesNotStarted)
+            {
+                game.AwayTeam =
+                    teams.Where(t => t.Id == game.AwayTeamId).FirstOrDefault();
+                game.HomeTeam =
+                    teams.Where(t => t.Id == game.HomeTeamId).FirstOrDefault();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation(ex, "Failed To Populate Games By Week / GameData");
+        }
+
+        return gamesNotStarted;
     }
 
     public async Task<int> InsertGame(GameModel _game)
