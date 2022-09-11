@@ -9,7 +9,7 @@
         {
             <div class="parley-bet">
                 <div class="parley-bet-label">
-                    <label style="margin-top:1em;">Payout Amount $@parleyBet.BetPayout.ToString("#,##0.00")</label>
+                    <label style="margin-top:1em;">Payout Amount @parleyBet.BetPayout.ToString("C")</label>
                 </div>
                 @foreach(BetModel bet in parleyBet.Bets)
                 {

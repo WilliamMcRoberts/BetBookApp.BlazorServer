@@ -16,10 +16,10 @@
             <h3 style="font-weight: 700">@loggedInUser?.DisplayName's Single Bets</h3>
         </div>
         <div class="item">
-            <p>Pending Payout: $@totalPendingPayout.ToString("#,##0.00")</p>
+            <p>Pending Payout: @totalPendingPayout.ToString("C")</p>
         </div>
         <div class="item">
-            <p>Pending Refund: $@totalPendingRefund.ToString("#,##0.00")</p>
+            <p>Pending Refund: @totalPendingRefund.ToString("C")</p>
         </div>
         <div style="text-align: center;margin-bottom: 1em;margin-top: 1em;">
             <button class="site-btn btn site-btn-light btn-sm text-uppercase" @onclick="PayoutUnpaidWinningBets">Collect My Winnings</button>

@@ -35,6 +35,7 @@
         thisWeeksGames = 
             (List<GameModel>)await _mediator.Send(
                 new GetGameModelsByWeekAndSeasonQuery(week, season));
+        await _mediator.UpdateAll(week, season);
 
         if (thisWeeksGames.Count != 16)
         {

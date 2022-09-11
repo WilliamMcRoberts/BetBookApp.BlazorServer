@@ -121,7 +121,7 @@ public class GameData : IGameData
 
     public async Task UpdateGame(GameModel game)
     {
-        string seasonType = game.Season.ToStringFast();
+        string season = game.Season.ToStringFast();
         string gameStatus = game.GameStatus.ToStringFast();
 
         _logger.LogInformation("Update Game Call");
@@ -139,7 +139,7 @@ public class GameData : IGameData
                 game.HomeTeamFinalScore,
                 game.AwayTeamFinalScore,
                 game.GameWinnerId,
-                seasonType,
+                season,
                 game.DateOfGame,
                 gameStatus,
                 game.ScoreId,

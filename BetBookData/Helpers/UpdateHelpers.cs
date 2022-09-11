@@ -125,6 +125,8 @@ public static class UpdateHelpers
             GameModel gameModel = _thisWeeksGamesNotFinished.Where(g =>
                     g.ScoreId == gameDto.ScoreID).FirstOrDefault()!;
 
+            if (gameModel is null) continue;
+
             if (!double.TryParse(gameDto.HomeScore?.ToString(), out var homeScore))
                 continue;
             if (!double.TryParse(gameDto.AwayScore?.ToString(), out var awayScore))
@@ -132,9 +134,8 @@ public static class UpdateHelpers
 
             gameModel.HomeTeamFinalScore = homeScore;
             gameModel.AwayTeamFinalScore = awayScore;
-
+            
             await _mediator.UpdateTeamRecords(gameModel);
-
             await _mediator.UpdateBettors(gameModel);
         }
 

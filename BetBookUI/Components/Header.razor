@@ -7,11 +7,11 @@
     </a>
 
     <div class="balance-item">
-        <h6 class="balance-value">$@LoggedInUser?.AccountBalance.ToString("#,##0.00")</h6>
+        <h6 class="balance-value">@LoggedInUser?.AccountBalance.ToString("C")</h6>
     </div>
 
     <div class="login">
-        <LoginDisplay Balance="@LoggedInUser?.AccountBalance.ToString("#,##0.00")"/>
+        <LoginDisplay Balance="@LoggedInUser?.AccountBalance.ToString("C")"/>
     </div>
     
 </div>
