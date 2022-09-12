@@ -30,7 +30,7 @@ public static class CalculationHelpers
     public static int CalculateWeek(this Season season, DateTime dateTime)
     {
         int week = season == Season.PRE ? (dateTime - new DateTime(2022, 8, 9)).Days / 7 
-                   : season == Season.REG ? (dateTime - new DateTime(2022, 9, 4)).Days / 7 
+                   : season == Season.REG ? (dateTime - new DateTime(2022, 9, 6)).Days / 7 
                    : (dateTime - new DateTime(2023, 1, 14)).Days / 7;
 
         if (week < 0)
@@ -42,7 +42,7 @@ public static class CalculationHelpers
     public static Season CalculateSeason(this DateTime dateTime)
     {
         return dateTime > new DateTime(2022, 8, 9) && dateTime < new DateTime(2022, 8, 28) ? Season.PRE 
-            : dateTime > new DateTime(2022, 8, 28) && dateTime < new DateTime(2023, 1, 14) ? Season.REG 
+            : dateTime > new DateTime(2022, 8, 31) && dateTime < new DateTime(2023, 1, 14) ? Season.REG 
             : Season.POST;
     }
 
