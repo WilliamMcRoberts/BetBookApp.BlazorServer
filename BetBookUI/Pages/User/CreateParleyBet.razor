@@ -227,7 +227,7 @@ else
     SfToast? ToastObj;
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
-    private string Content { get => "Thank you for choosing Bet Book Gaming."; }
+    private string Content => "Thank you for choosing Bet Book Gaming.";
     private List<GameModel> gamesAvailable = new();
     private List<GameModel> thisWeeksGames = new();
     private List<GameModel> gamesChosen = new();
@@ -244,13 +244,6 @@ else
     protected async override Task OnInitializedAsync()
     {
         _logger.LogInformation("Create Parley Bet Page Requested");
-
-        //season = DateTime.Now.CalculateSeason();
-        //week = season.CalculateWeek(DateTime.Now);
-
-        //thisWeeksGames = 
-        //    (List<GameModel>)await _mediator.Send(
-        //        new GetGameModelsByWeekAndSeasonQuery(week, season));
 
         gamesAvailable =
             (List<GameModel>)await _mediator.Send(new GetGamesNotStartedQuery());

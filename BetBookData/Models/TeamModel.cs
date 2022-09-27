@@ -26,26 +26,14 @@ public class TeamModel
 
     public string Conference { get; set; } = string.Empty;
 
-    public string ImagePath
-    {
-        get => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png"
+    public string ImagePath => TeamName == "Ravens" ? $"{TeamName.ToLower()}.png"
                : $"{TeamName.ToLower()}.svg";
-    }
 
-    public string[] TeamWins 
-    { 
-        get => Wins.Split('|').SkipLast(1).ToArray(); 
-    }
+    public string[] TeamWins => Wins.Split('|').SkipLast(1).ToArray(); 
 
-    public string[] TeamLosses 
-    {
-        get => Losses.Split('|').SkipLast(1).ToArray(); 
-    }
+    public string[] TeamLosses => Losses.Split('|').SkipLast(1).ToArray(); 
 
-    public string[] TeamDraws 
-    { 
-        get => Draws.Split('|').SkipLast(1).ToArray();
-    }
+    public string[] TeamDraws => Draws.Split('|').SkipLast(1).ToArray();
 }
 
 #nullable restore

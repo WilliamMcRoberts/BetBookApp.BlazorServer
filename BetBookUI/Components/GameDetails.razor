@@ -189,7 +189,7 @@
     private SfToast? ToastObj;
     private ToastEffect ShowAnimation = ToastEffect.FadeIn;
     private ToastEffect HideAnimation = ToastEffect.FadeOut;
-    private string Content { get => $"LET'S GO {teamToWin?.TeamName.ToUpper()}!"; }
+    private string Content => $"LET'S GO {teamToWin?.TeamName.ToUpper()}!";
     private decimal betAmount;
     private bool betAmountBad;
     private bool winnerChosen = false;

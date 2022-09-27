@@ -24,13 +24,10 @@ public class GameModel
     public string DateOfGameOnly { get; set; } = string.Empty;
     public string TimeOfGameOnly { get; set; } = string.Empty;
 
-    public string? PointSpreadDescription
-    {
-        get =>
-            PointSpread < 0 ?
-            $"- {PointSpread?.ToString().Trim('-')} points" :
-            $"+ {PointSpread} points";
-    }
+    public string? PointSpreadDescription =>
+        PointSpread < 0 ?
+        $"- {PointSpread?.ToString().Trim('-')} points" 
+        : $"+ {PointSpread} points";
 }
 
 
